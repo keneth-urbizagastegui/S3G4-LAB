@@ -1,0 +1,38 @@
+# S3G4 LAB - Git Ignore Configuration
+
+# Ignore local archive and docs folders
+docs/
+research_and_tests/
+
+# ESP32 Build Outputs
+firmware/esp32_firmware/build/
+firmware/esp32_firmware/sdkconfig
+firmware/esp32_firmware/sdkconfig.old
+
+# STM32 Build Outputs
+firmware/stm32_firmware/.metadata/
+firmware/stm32_firmware/Debug/
+firmware/stm32_firmware/Release/
+firmware/stm32_firmware/.settings/
+firmware/stm32_firmware/*.launch
+
+# Web Client Node Modules and Build Outputs
+software/web_client/node_modules/
+software/web_client/dist/
+software/web_client/.env.local
+software/web_client/.env.production.local
+software/web_client/.env.development.local
+software/web_client/.env.test.local
+
+# IDE Settings
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+
+# OS General Files
+.DS_Store
+Thumbs.db
