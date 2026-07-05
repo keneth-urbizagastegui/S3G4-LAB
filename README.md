@@ -57,5 +57,5 @@ El repositorio está organizado en las siguientes carpetas de producción:
 Este proyecto se basa y complementa su desarrollo utilizando recursos y flujos de los siguientes trabajos de código abierto:
 
 *   [1] J. G. Peiró, "*black_scope: An open-source STM32 and ESP32 oscilloscope project*," GitHub repository. [En línea]. Disponible en: https://github.com/jgpeiro/black_scope
-*   [2] P. Sury, "*EMBO: Embedded Oscilloscope desktop interface*," GitHub repository. [En línea]. Disponible en: https://github.com/psury/embo
+*   [2] P. Sury, "*EMBO: Embedded Oscilloscope desktop interface*," GitHub repository. [En línea]. Disponible en: https://github.com/parezj/EMBO
 *   [3] Digilent Inc., "*WaveForms Live and OpenScope MZ: Multi-function open-source instrument*," GitHub repository. [En línea]. Disponible en: https://github.com/Digilent/waveforms-live
