@@ -13,7 +13,7 @@ Este proyecto está siendo desarrollado para el curso de **Proyecto Final de Car
 
 ## Descripción del Proyecto
 
-**S3G4 LAB** es un prototipo de instrumentación de laboratorio autónomo y portátil que consolida en un solo dispositivo electrónico de mano los instrumentos clásicos de experimentación. El sistema está diseñado para ayudar a la realización de experimentos prácticos en cursos fundamentales de laboratorio como *Circuitos Eléctricos*, *Circuitos Analógicos*, y *Circuitos Eléctricos y Electrónicos* para estudiantes de primeros ciclos de las especialidades de **Ingeniería Electrónica** e **Ingeniería Mecatrónica**.
+**S3G4 LAB** es un prototipo de instrumentación de laboratorio portátil que consolida en un solo dispositivo electrónico de mano los instrumentos clásicos de experimentación. El sistema está diseñado para ayudar a la realización de experimentos prácticos en cursos fundamentales de laboratorio como *Circuitos Eléctricos*, *Circuitos Analógicos*, y *Circuitos Eléctricos y Electrónicos* para estudiantes de primeros ciclos de las especialidades de **Ingeniería Electrónica** e **Ingeniería Mecatrónica**.
 
 El dispositivo integra los siguientes instrumentos:
 1.  **Osciloscopio Digital**: Visualización multicanal de señales en tiempo real con escalas de tiempo y voltaje configurables.
@@ -24,7 +24,7 @@ El dispositivo integra los siguientes instrumentos:
 
 ## Características de Conectividad
 
-*   **Servidor Web Inalámbrico (Autónomo)**: El módulo principal (ESP32-S3) funciona como un punto de acceso o cliente de red (AP/STA) y aloja un servidor HTTP y WebSocket. Permite conectar laptops, tablets o celulares y abrir el cliente de control interactivo sin necesidad de redes de internet externas ni instalación de aplicaciones.
+*   **Servidor Web Inalámbrico**: El módulo principal (ESP32-S3) funciona como un punto de acceso o cliente de red (AP/STA) y aloja un servidor HTTP y WebSocket. Permite conectar laptops, tablets o celulares y abrir el cliente de control interactivo sin necesidad de redes de internet externas ni instalación de aplicaciones.
 *   **Conexión a PC mediante Aplicación de Escritorio**: Capacidad de interactuar y transmitir telemetría en tiempo real a una computadora mediante una interfaz física serial (USB CDC).
 
 ---
