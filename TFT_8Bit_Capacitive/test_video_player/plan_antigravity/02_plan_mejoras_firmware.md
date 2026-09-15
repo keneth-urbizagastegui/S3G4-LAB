@@ -312,3 +312,21 @@ Si `SPIRAM_SPEED_80M` da errores de arranque en esta placa WeAct, **anótalo** y
 `F0 → F1 → F2 → F3 → F4 → F5 → F6`, y F7 se aplica en paralelo desde F2.
 F3 es la única que puede fracasar por límites físicos: por eso F0 y F2 van antes, para poder
 distinguir un fallo de diseño de un fallo de silicio.
+
+---
+
+## ADENDA (15/09/2026): estado real y lo que se suma a F5
+
+Estado de las versiones: `vp-v0.1` F1 · `vp-v0.2` F2 · `vp-v0.3` F3 · **`vp-v0.4` F4** (0 descartes, 30 fps
+en pantalla con y sin OSD, lector adelantado en el núcleo 0, SD a 20 MHz, PSRAM a 80 MHz).
+
+**F5 arrastra de F4** (detalle en `informes/FASE_4.md`, «Cierre de F4»):
+1. Firmware normal sin `CONFIG_APP_PERF_AUTOTEST` (hoy colado en `sdkconfig`), verificado en el log de arranque.
+2. Prueba de extracción de la SD **manual y sin ventana de tiempo** con el firmware normal, supervisada por el
+   auditor desde el puerto serie. SDPULL del autotest: 120 s y sin falsos positivos.
+3. Métricas: lectura real del lector (`reader_rd_avg/max`, ocupación de la cola), la del consumidor renombrada
+   a `q_wait_ms`, y revisión de `title_wait_ms_max`.
+
+**F5 incorpora la sincronización con TE** (cable del pin 22 de JP1 al GPIO 7): ver `05_sincronizacion_TE.md`.
+Se hace en un encargo propio **antes** de la biblioteca dinámica, porque cambia el camino de envío al panel.
+Orden sugerido: F5a = pendientes de F4 + TE · F5b = biblioteca dinámica y conversor (FASE 5 original).
