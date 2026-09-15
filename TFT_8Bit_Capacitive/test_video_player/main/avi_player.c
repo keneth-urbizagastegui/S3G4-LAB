@@ -4,6 +4,8 @@
 #include <string.h>
 #include <strings.h>
 #include <dirent.h>
+#include <unistd.h>
+#include <fcntl.h>
 #include "esp_log.h"
 #include "esp_timer.h"
 #include "esp_heap_caps.h"
@@ -206,7 +208,7 @@ esp_err_t avi_player_open(const char *filepath) {
         }
     }
 
-    fseek(s_file, s_movi_start_offset, SEEK_SET);
+    lseek(fileno(s_file), s_movi_start_offset, SEEK_SET);
     s_need_index_seek = false;
 
     ESP_LOGI(TAG, "AVI Abierto: %ux%u @ %u FPS, %u cuadros (%u:%02u)",
@@ -240,16 +242,18 @@ esp_err_t avi_player_read_next_frame(uint16_t *out_rgb565, uint8_t scale) {
         return ESP_ERR_INVALID_STATE;
     }
 
+    int fd = fileno(s_file);
+
     // Si hubo un seek previo, posicionar en la tabla de índice
     if (s_need_index_seek && s_index_table && s_info.current_frame < s_info.total_frames) {
-        fseek(s_file, s_index_table[s_info.current_frame], SEEK_SET);
+        lseek(fd, s_index_table[s_info.current_frame], SEEK_SET);
         s_need_index_seek = false;
     }
 
     // Buscar siguiente chunk 00dc o 00db
     uint8_t chunk_hdr[8];
     while (1) {
-        size_t r = fread(chunk_hdr, 1, 8, s_file);
+        ssize_t r = read(fd, chunk_hdr, 8);
         if (r < 8) {
             s_info.is_eof = true;
             return ESP_ERR_NOT_FOUND; // EOF
@@ -260,21 +264,21 @@ esp_err_t avi_player_read_next_frame(uint16_t *out_rgb565, uint8_t scale) {
         if (memcmp(chunk_hdr, "00dc", 4) == 0 || memcmp(chunk_hdr, "00db", 4) == 0) {
             if (chunk_len > JPEG_INBUF_SIZE) {
                 ESP_LOGE(TAG, "Cuadro JPEG demasiado grande: %u bytes", (unsigned int)chunk_len);
-                fseek(s_file, chunk_len + (chunk_len & 1), SEEK_CUR);
+                lseek(fd, chunk_len + (chunk_len & 1), SEEK_CUR);
                 perf_mark_oversize();
                 return ESP_ERR_NO_MEM;
             }
 
             int64_t t_rd_start = esp_timer_get_time();
-            size_t jr = fread(s_jpeg_buf, 1, chunk_len, s_file);
+            ssize_t jr = read(fd, s_jpeg_buf, chunk_len);
             if (chunk_len & 1) {
                 uint8_t pad;
-                fread(&pad, 1, 1, s_file);
+                read(fd, &pad, 1);
             }
             int64_t t_rd_end = esp_timer_get_time();
             perf_mark_read((uint32_t)(t_rd_end - t_rd_start));
 
-            if (jr < chunk_len) {
+            if (jr < (ssize_t)chunk_len) {
                 s_info.is_eof = true;
                 return ESP_ERR_NOT_FOUND;
             }
@@ -316,7 +320,7 @@ esp_err_t avi_player_read_next_frame(uint16_t *out_rgb565, uint8_t scale) {
             return ESP_ERR_NOT_FOUND;
         } else {
             // Saltar chunk no relevante (JUNK, audio, etc.)
-            fseek(s_file, chunk_len + (chunk_len & 1), SEEK_CUR);
+            lseek(fd, chunk_len + (chunk_len & 1), SEEK_CUR);
         }
     }
 }
@@ -326,14 +330,16 @@ esp_err_t avi_player_read_and_blit_direct(void) {
         return ESP_ERR_INVALID_STATE;
     }
 
+    int fd = fileno(s_file);
+
     if (s_need_index_seek && s_index_table && s_info.current_frame < s_info.total_frames) {
-        fseek(s_file, s_index_table[s_info.current_frame], SEEK_SET);
+        lseek(fd, s_index_table[s_info.current_frame], SEEK_SET);
         s_need_index_seek = false;
     }
 
     uint8_t chunk_hdr[8];
     while (1) {
-        size_t r = fread(chunk_hdr, 1, 8, s_file);
+        ssize_t r = read(fd, chunk_hdr, 8);
         if (r < 8) {
             s_info.is_eof = true;
             return ESP_ERR_NOT_FOUND;
@@ -344,21 +350,21 @@ esp_err_t avi_player_read_and_blit_direct(void) {
         if (memcmp(chunk_hdr, "00dc", 4) == 0 || memcmp(chunk_hdr, "00db", 4) == 0) {
             if (chunk_len > JPEG_INBUF_SIZE) {
                 ESP_LOGE(TAG, "Cuadro JPEG demasiado grande: %u bytes", (unsigned int)chunk_len);
-                fseek(s_file, chunk_len + (chunk_len & 1), SEEK_CUR);
+                lseek(fd, chunk_len + (chunk_len & 1), SEEK_CUR);
                 perf_mark_oversize();
                 return ESP_ERR_NO_MEM;
             }
 
             int64_t t_rd_start = esp_timer_get_time();
-            size_t jr = fread(s_jpeg_buf, 1, chunk_len, s_file);
+            ssize_t jr = read(fd, s_jpeg_buf, chunk_len);
             if (chunk_len & 1) {
                 uint8_t pad;
-                fread(&pad, 1, 1, s_file);
+                read(fd, &pad, 1);
             }
             int64_t t_rd_end = esp_timer_get_time();
             perf_mark_read((uint32_t)(t_rd_end - t_rd_start));
 
-            if (jr < chunk_len) {
+            if (jr < (ssize_t)chunk_len) {
                 s_info.is_eof = true;
                 return ESP_ERR_NOT_FOUND;
             }
@@ -482,7 +488,7 @@ esp_err_t avi_player_read_and_blit_direct(void) {
             s_info.is_eof = true;
             return ESP_ERR_NOT_FOUND;
         } else {
-            fseek(s_file, chunk_len + (chunk_len & 1), SEEK_CUR);
+            lseek(fd, chunk_len + (chunk_len & 1), SEEK_CUR);
         }
     }
 }
@@ -497,15 +503,17 @@ esp_err_t avi_player_skip_next_frame(void) {
         return ESP_ERR_NOT_FOUND;
     }
 
+    int fd = fileno(s_file);
+
     // Si hubo un seek previo, posicionar en la tabla de índice
     if (s_need_index_seek && s_index_table && s_info.current_frame < s_info.total_frames) {
-        fseek(s_file, s_index_table[s_info.current_frame], SEEK_SET);
+        lseek(fd, s_index_table[s_info.current_frame], SEEK_SET);
         s_need_index_seek = false;
     }
 
     uint8_t chunk_hdr[8];
     while (1) {
-        size_t r = fread(chunk_hdr, 1, 8, s_file);
+        ssize_t r = read(fd, chunk_hdr, 8);
         if (r < 8) {
             s_info.is_eof = true;
             return ESP_ERR_NOT_FOUND;
@@ -515,7 +523,7 @@ esp_err_t avi_player_skip_next_frame(void) {
 
         if (memcmp(chunk_hdr, "00dc", 4) == 0 || memcmp(chunk_hdr, "00db", 4) == 0) {
             // Saltar chunk de video sin decodificar
-            fseek(s_file, chunk_len + (chunk_len & 1), SEEK_CUR);
+            lseek(fd, chunk_len + (chunk_len & 1), SEEK_CUR);
             s_info.current_frame++;
             s_info.elapsed_sec = (s_info.fps > 0) ? (s_info.current_frame / s_info.fps) : 0;
             return ESP_OK;
@@ -523,7 +531,7 @@ esp_err_t avi_player_skip_next_frame(void) {
             s_info.is_eof = true;
             return ESP_ERR_NOT_FOUND;
         } else {
-            fseek(s_file, chunk_len + (chunk_len & 1), SEEK_CUR);
+            lseek(fd, chunk_len + (chunk_len & 1), SEEK_CUR);
         }
     }
 }
@@ -534,18 +542,18 @@ void avi_player_seek_percent(int percent) {
     if (percent < 0) percent = 0;
     if (percent > 99) percent = 99;
 
+    int fd = fileno(s_file);
     uint32_t target_frame = (percent * s_info.total_frames) / 100;
     if (s_index_table && target_frame < s_info.total_frames) {
-        fseek(s_file, s_index_table[target_frame], SEEK_SET);
+        lseek(fd, s_index_table[target_frame], SEEK_SET);
         s_info.current_frame = target_frame;
         s_info.elapsed_sec = (s_info.fps > 0) ? (target_frame / s_info.fps) : 0;
         s_need_index_seek = false;
     } else {
         // Búsqueda por aproximación de archivo
-        fseek(s_file, 0, SEEK_END);
-        long sz = ftell(s_file);
-        long target_pos = s_movi_start_offset + (long)(((sz - s_movi_start_offset) * (int64_t)percent) / 100);
-        fseek(s_file, target_pos, SEEK_SET);
+        off_t sz = lseek(fd, 0, SEEK_END);
+        off_t target_pos = s_movi_start_offset + (off_t)(((sz - s_movi_start_offset) * (int64_t)percent) / 100);
+        lseek(fd, target_pos, SEEK_SET);
         s_info.current_frame = target_frame;
         s_info.elapsed_sec = (s_info.fps > 0) ? (target_frame / s_info.fps) : 0;
         s_need_index_seek = false;
@@ -556,7 +564,7 @@ void avi_player_seek_percent(int percent) {
 
 void avi_player_restart(void) {
     if (s_file) {
-        fseek(s_file, s_movi_start_offset, SEEK_SET);
+        lseek(fileno(s_file), s_movi_start_offset, SEEK_SET);
         s_info.current_frame = 0;
         s_info.elapsed_sec = 0;
         s_info.is_eof = false;
