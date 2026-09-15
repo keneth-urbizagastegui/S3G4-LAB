@@ -608,6 +608,55 @@ static void autotest_task(void *arg) {
            changes_count, seeks_count, title_mismatch_count, (long long)title_wait_ms_max);
     fflush(stdout);
 
+    // Escenario SDPULL (Fase 4): robustez ante extracción de MicroSD
+    ESP_LOGI(TAG, "Iniciando escenario SDPULL...");
+    printf("SDPULL,waiting=1\n");
+    fflush(stdout);
+
+    int64_t pull_start_us = esp_timer_get_time();
+    bool card_was_removed = false;
+    int64_t removed_time_us = 0;
+    int64_t remount_time_us = 0;
+
+    // Ventana de 15 s para detectar extracción
+    while ((esp_timer_get_time() - pull_start_us) < 15000000LL) {
+        player_status_t st;
+        player_get_status(&st);
+        if (st.state == PST_NO_MEDIA || !sdcard_is_mounted()) {
+            card_was_removed = true;
+            removed_time_us = esp_timer_get_time();
+            ESP_LOGW(TAG, "SDPULL: ¡MicroSD extraída! Esperando reinserción (hasta 120 s)...");
+            break;
+        }
+        vTaskDelay(pdMS_TO_TICKS(100));
+    }
+
+    if (card_was_removed) {
+        bool reinserted = false;
+        while ((esp_timer_get_time() - removed_time_us) < 120000000LL) {
+            player_status_t st;
+            player_get_status(&st);
+            if (st.state == PST_PLAYING && sdcard_is_mounted()) {
+                reinserted = true;
+                remount_time_us = esp_timer_get_time();
+                break;
+            }
+            vTaskDelay(pdMS_TO_TICKS(200));
+        }
+        if (reinserted) {
+            uint32_t rem_ms = (uint32_t)((removed_time_us - pull_start_us) / 1000);
+            uint32_t remount_ms = (uint32_t)((remount_time_us - removed_time_us) / 1000);
+            printf("SDPULL,removed_ms=%u,remount_ms=%u,resumed=1\n",
+                   (unsigned int)rem_ms, (unsigned int)remount_ms);
+        } else {
+            printf("SDPULL,skipped=1\n");
+        }
+    } else {
+        ESP_LOGI(TAG, "SDPULL: Sin evento de extracción en ventana de espera, continuando...");
+        printf("SDPULL,skipped=1\n");
+    }
+    fflush(stdout);
+
     log_stack_and_heap_diag("AUTOTEST_END");
 
     printf("AUTOTEST_DONE,tracks=%d\n", total_tracks);
@@ -645,10 +694,16 @@ void app_main(void) {
     ESP_ERROR_CHECK(ili9488_8080_init_clock(16 * 1000 * 1000));
     ESP_ERROR_CHECK(ft6236_i2c_init());
 
-    // 2. Inicializar MicroSD y escanear medios
+    // 2. Probar robustez y montar MicroSD
+    int sd_freq = sdcard_spi_get_freq_khz();
+    ESP_LOGI(TAG, "Probando robustez de montaje MicroSD (10 ciclos @ %d kHz)...", sd_freq);
+    int passed_cycles = sdcard_spi_test_mount_cycles(10, sd_freq);
+    printf("SD_FREQ_TEST,freq_khz=%d,passed=%d/10\n", sd_freq, passed_cycles);
+    fflush(stdout);
+
     esp_err_t sd_err = sdcard_spi_init();
     if (sd_err != ESP_OK) {
-        ESP_LOGE(TAG, "Fallo al inicializar MicroSD.");
+        ESP_LOGE(TAG, "Fallo al inicializar MicroSD tras test.");
     } else {
         media_scan_sdcard();
     }

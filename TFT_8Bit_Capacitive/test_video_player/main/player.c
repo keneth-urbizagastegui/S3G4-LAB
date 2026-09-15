@@ -85,6 +85,60 @@ void player_get_track_subtitle(int track_index, char *out_sub, size_t max_len) {
     out_sub[max_len - 1] = '\0';
 }
 
+static int s_consecutive_open_fails = 0;
+
+static void player_handle_sd_error(void) {
+    ESP_LOGE(TAG, "Detectado error critico de E/S en MicroSD. Iniciando procedimiento de recuperacion...");
+
+    // Guardar estado actual de reproduccion para reanudar
+    int saved_track = s_status.track_index;
+    const avi_info_t *info = avi_player_get_info();
+    uint32_t saved_frame = info ? info->current_frame : 0;
+    uint32_t total_frames = info ? info->total_frames : 0;
+
+    // Cerrar archivo y desmontar SD
+    avi_player_close();
+    sdcard_spi_deinit();
+
+    portENTER_CRITICAL(&s_player_mux);
+    s_status.state = PST_NO_MEDIA;
+    strncpy(s_status.title, "Sin microSD", sizeof(s_status.title) - 1);
+    s_status.title[sizeof(s_status.title) - 1] = '\0';
+    strncpy(s_status.subtitle, "Inserte tarjeta MicroSD", sizeof(s_status.subtitle) - 1);
+    s_status.subtitle[sizeof(s_status.subtitle) - 1] = '\0';
+    portEXIT_CRITICAL(&s_player_mux);
+
+    ESP_LOGW(TAG, "MicroSD desmontada. Reintentando montaje cada 1 s...");
+
+    // Bucle de reintento de montaje cada 1 s
+    while (1) {
+        vTaskDelay(pdMS_TO_TICKS(1000));
+        esp_err_t err = sdcard_spi_init();
+        if (err == ESP_OK) {
+            ESP_LOGI(TAG, "¡MicroSD reconectada con exito! Reescaneando archivos...");
+            media_scan_sdcard();
+            break;
+        }
+    }
+
+    // Restaurar reproduccion
+    if (media_get_avi_count() > 0) {
+        if (saved_track >= media_get_avi_count()) saved_track = 0;
+        player_open_track(saved_track);
+        if (total_frames > 0 && saved_frame > 0) {
+            int pct = (int)(((int64_t)saved_frame * 100) / total_frames);
+            if (pct > 99) pct = 99;
+            avi_player_seek_percent(pct);
+        }
+        portENTER_CRITICAL(&s_player_mux);
+        s_status.state = PST_PLAYING;
+        s_pts_started = false;
+        portEXIT_CRITICAL(&s_player_mux);
+        ESP_LOGI(TAG, "Reproduccion recuperada con exito en pista %d (cuadro %u)",
+                 saved_track, (unsigned int)saved_frame);
+    }
+}
+
 static void player_open_track(int index) {
     int total = media_get_avi_count();
     if (total <= 0) {
@@ -104,6 +158,12 @@ static void player_open_track(int index) {
     ESP_LOGI(TAG, "Abriendo pista %d: %s", index, path);
     esp_err_t ret = avi_player_open(path);
     if (ret != ESP_OK) {
+        s_consecutive_open_fails++;
+        if (s_consecutive_open_fails >= 2) {
+            s_consecutive_open_fails = 0;
+            player_handle_sd_error();
+            return;
+        }
         ESP_LOGE(TAG, "Fallo al abrir pista %d (%s): ret=%d", index, path, ret);
         portENTER_CRITICAL(&s_player_mux);
         s_status.state = PST_ERROR;
@@ -111,6 +171,7 @@ static void player_open_track(int index) {
         portEXIT_CRITICAL(&s_player_mux);
         return;
     }
+    s_consecutive_open_fails = 0;
 
     const avi_info_t *info = avi_player_get_info();
     portENTER_CRITICAL(&s_player_mux);
@@ -429,6 +490,8 @@ static void player_task(void *arg) {
                     perf_mark_drift(drift_ms);
                 } else if (ret == ESP_ERR_NOT_FOUND) {
                     player_handle_eof();
+                } else if (ret == ESP_ERR_INVALID_RESPONSE || ret == ESP_FAIL) {
+                    player_handle_sd_error();
                 } else {
                     vTaskDelay(pdMS_TO_TICKS(10));
                 }
@@ -450,6 +513,8 @@ static void player_task(void *arg) {
                     perf_mark_drift(drift_ms);
                 } else if (ret == ESP_ERR_NOT_FOUND) {
                     player_handle_eof();
+                } else if (ret == ESP_ERR_INVALID_RESPONSE || ret == ESP_FAIL) {
+                    player_handle_sd_error();
                 } else {
                     vTaskDelay(pdMS_TO_TICKS(10));
                 }

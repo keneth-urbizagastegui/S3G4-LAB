@@ -20,6 +20,9 @@ esp_err_t sdcard_spi_init(void);
 bool sdcard_is_mounted(void);
 void sdcard_spi_deinit(void);
 void sdcard_list_files(const char *dirpath);
+void sdcard_spi_set_freq_khz(int freq_khz);
+int sdcard_spi_get_freq_khz(void);
+int sdcard_spi_test_mount_cycles(int cycles, int freq_khz);
 
 #ifdef __cplusplus
 }

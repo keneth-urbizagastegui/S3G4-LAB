@@ -12,9 +12,25 @@
 
 static const char *TAG = "SDCARD_SPI";
 
+#include "sdkconfig.h"
+
 static sdmmc_card_t *s_card = NULL;
 static bool s_is_mounted = false;
 static sdmmc_host_t s_host = SDSPI_HOST_DEFAULT();
+
+#ifndef CONFIG_APP_SD_FREQ_KHZ
+#define CONFIG_APP_SD_FREQ_KHZ 20000
+#endif
+
+static int s_sd_freq_khz = CONFIG_APP_SD_FREQ_KHZ;
+
+void sdcard_spi_set_freq_khz(int freq_khz) {
+    s_sd_freq_khz = freq_khz;
+}
+
+int sdcard_spi_get_freq_khz(void) {
+    return s_sd_freq_khz;
+}
 
 esp_err_t sdcard_spi_init(void) {
     if (s_is_mounted) {
@@ -22,8 +38,8 @@ esp_err_t sdcard_spi_init(void) {
         return ESP_OK;
     }
 
-    ESP_LOGI(TAG, "Iniciando montaje MicroSD SPI (CS:%d, MOSI:%d, CLK:%d, MISO:%d)...",
-             SD_PIN_CS, SD_PIN_MOSI, SD_PIN_CLK, SD_PIN_MISO);
+    ESP_LOGI(TAG, "Iniciando montaje MicroSD SPI (CS:%d, MOSI:%d, CLK:%d, MISO:%d) @ %d kHz...",
+             SD_PIN_CS, SD_PIN_MOSI, SD_PIN_CLK, SD_PIN_MISO, s_sd_freq_khz);
 
     esp_vfs_fat_sdmmc_mount_config_t mount_config = {
         .format_if_mount_failed = false,
@@ -37,11 +53,11 @@ esp_err_t sdcard_spi_init(void) {
         .sclk_io_num = SD_PIN_CLK,
         .quadwp_io_num = -1,
         .quadhd_io_num = -1,
-        .max_transfer_sz = 16384,
+        .max_transfer_sz = 65536,
     };
 
     s_host.slot = SPI2_HOST;
-    s_host.max_freq_khz = 20000;
+    s_host.max_freq_khz = s_sd_freq_khz;
 
     esp_err_t ret = spi_bus_initialize(s_host.slot, &bus_cfg, SDSPI_DEFAULT_DMA);
     if (ret != ESP_OK && ret != ESP_ERR_INVALID_STATE) {
@@ -61,7 +77,7 @@ esp_err_t sdcard_spi_init(void) {
     }
 
     s_is_mounted = true;
-    ESP_LOGI(TAG, "MicroSD montada con éxito en %s", SD_MOUNT_POINT);
+    ESP_LOGI(TAG, "MicroSD montada con éxito en %s (%d kHz)", SD_MOUNT_POINT, s_sd_freq_khz);
     sdmmc_card_print_info(stdout, s_card);
 
     sdcard_list_files(SD_MOUNT_POINT);
@@ -79,6 +95,30 @@ void sdcard_spi_deinit(void) {
     s_card = NULL;
     s_is_mounted = false;
     ESP_LOGI(TAG, "MicroSD desmontada.");
+}
+
+int sdcard_spi_test_mount_cycles(int cycles, int freq_khz) {
+    int successful = 0;
+    ESP_LOGI(TAG, "--- Iniciando prueba de %d ciclos de montaje a %d kHz ---", cycles, freq_khz);
+    for (int i = 0; i < cycles; i++) {
+        sdcard_spi_deinit();
+        vTaskDelay(pdMS_TO_TICKS(50));
+        s_sd_freq_khz = freq_khz;
+        esp_err_t err = sdcard_spi_init();
+        if (err == ESP_OK) {
+            FILE *tf = fopen("/sdcard/ariana.avi", "rb");
+            if (tf) {
+                uint8_t dummy[512];
+                if (fread(dummy, 1, sizeof(dummy), tf) == sizeof(dummy)) {
+                    successful++;
+                }
+                fclose(tf);
+            }
+        }
+        ESP_LOGI(TAG, "Ciclo %d/%d: %s", i + 1, cycles, (successful == i + 1) ? "OK" : "FALLO");
+    }
+    ESP_LOGI(TAG, "Prueba montaje: %d/%d ciclos exitosos a %d kHz", successful, cycles, freq_khz);
+    return successful;
 }
 
 void sdcard_list_files(const char *dirpath) {
