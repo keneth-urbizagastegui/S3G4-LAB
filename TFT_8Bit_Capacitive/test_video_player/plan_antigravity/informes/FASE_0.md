@@ -117,3 +117,15 @@ Se solicita a Keneth responder textualmente a las siguientes 5 preguntas de `04 
 - Esperar la confirmación y respuestas de Keneth en la sección 7.
 - Revisión de auditoría por Claude para aprobación y etiquetado `vp-v0.0`.
 - Entrada en `CHANGELOG.md` con las cifras base medidas en esta fase.
+
+---
+
+## Verificación visual de Keneth (15/09/2026, respuestas literales resumidas) y análisis del auditor
+
+| # | Pregunta | Respuesta de Keneth | Análisis (Claude) |
+|---|---|---|---|
+| 1 | ¿Tearing / bandas? | «el video se renderiza de manera horizontal y sí hay cortes» | Confirmado. Dos causas del `01`: la imagen se envía en 8 franjas de 40 líneas (un flush bloqueante tras otro, la carga se ve bajar) y la carrera del ping-pong (C3). Se resuelve en **F3** (blit directo). |
+| 2 | ¿OSD parpadea / pisa barras? | «los botones no están bien acomodados» (UI antigua) | Esperado: la UI antigua se sustituye en **F6**. No se corrige antes. |
+| 3 | ¿Colores correctos? | «los colores se ven bien» | OK. MADCTL BGR + swap por hardware correctos. |
+| 4 | ¿Píxeles corruptos a 10 min? | sin respuesta | Pendiente; repetir al cerrar F3. |
+| 5 | ¿Gestos/toques? | «los toques están fallando, responden lentos» | Nuevo hallazgo **T1**: el FT6236 se lee dentro de `lv_timer_handler`, que está bloqueado por los flush del video (≈ 8 × 2,7 ms + composición) y por el mutex; además el bucle GUI duerme hasta 10 ms con tick de 10 ms. Se adelanta a **F1** la lectura del táctil en tarea propia (antes prevista en F6). |
