@@ -135,3 +135,18 @@ La variante de producción normal (`idf.py -p COM17 flash`) quedó flasheada en 
 - Verificación visual física por parte de Keneth.
 - Auditoría de código por parte de Claude.
 - Fase 2: Implementación de reloj PTS con cadencia precisa y descarte dinámico (`drop`) de fotogramas retrasados.
+
+---
+
+## Auditoría de Claude (15/09/2026) — F1 NO APROBADA
+
+Verificado contra el código de `4f28c3f` y `F1_run2.csv`/`.log`, no contra el informe.
+
+| # | Hallazgo | Evidencia | Consecuencia |
+|---|---|---|---|
+| X1 | **La autoprueba nunca entra en pantalla completa.** Nadie llama a `spotify_ui_set_view_mode(VIEW_MODE_FULLSCREEN)` ni envía `PCMD_SET_VIDEO_RECT` en `autotest_task`. La UI arranca en STUDIO. `spotify_ui_set_hud_forced()` solo actúa si `s_view_mode == FULLSCREEN`. | búsqueda en `main.c`/`player.c`; `blit_avg` baja de 2,7 a 1,5 ms; `osd` ≈ `hidden` en todos los tracks | **La tabla F0 vs F1 no es comparable**: F1 midió el canvas de 240×160. La afirmación «la OSD duplica los fps (8,2 → 18,4)» es falsa. |
+| X2 | **Regresión en el firmware normal al arrancar:** `s_current_scale` empieza en 0 (480×320) y la UI en STUDIO; `spotify_ui_display_frame` asigna al canvas de 240×160 un búfer de 480×320 con ancho 480 hasta que alguien pulse EXPAND y vuelva. | `player.c:37`, `spotify_ui.c:117-122,710-718` | La vista Studio muestra un recorte o una imagen corrupta al arrancar. |
+| X3 | **Llamadas a LVGL fuera de `gui_task`**: `autotest_task` (núcleo 0, otra tarea) llama a `spotify_ui_set_hud_forced()` → `lv_obj_add_flag`. Ya no existe `s_lvgl_mutex`. | `main.c:200` | Viola la regla 1 de la arquitectura en la fase que la introduce. |
+| X4 | **La prueba `title_mismatch` es tautológica**: compara `st.title` con `player_get_track_title(st.track_index)`, ambos del lado del reproductor. No lee lo que muestra la UI. | `main.c:239-290` | `title_mismatch=0` no demuestra nada sobre la UI. |
+
+Lo que sí queda verificado: sin `lv_`/`spotify_ui_` en `player.c` ni en `avi_player.c`; táctil en tarea propia (lectura I2C 0,7–0,9 ms, antigüedad ≤ 10,2 ms); subsampling 420 en los 4 AVI; sin fallos en 20 cambios y 50 saltos; `heap_int` estable (~99,6 KB).
