@@ -241,3 +241,31 @@ La variante normal de producción interactiva (`idf.py -p COM17 flash`) ha queda
 - Verificación física interactiva por parte de Keneth con la versión flasheada en COM17.
 - Auditoría independiente de código por parte de Claude.
 - **Fase 4**: Optimización del subsistema MicroSD SPI (evaluar 26 MHz y 40 MHz, búfer dinámico de chunks JPEG de 48 KB a 128 KB, lectura de tabla `idx1` sin tope fijo de 256 KB y prueba de robustez ante extracción en caliente).
+
+---
+
+## Auditoría de Claude (15/09/2026) — F3 APROBADA CON CONDICIÓN (el criterio de descartes pasa a F4)
+
+Recalculado desde `F3_run2.csv` (40 MHz) y `F3_psram80_run1.csv` (80 MHz), y contrastado con el código de `bf2173e`.
+
+**Verificado y correcto:**
+- **Blit directo real:** `present_path=direct`, `vrect=0-319` sin OSD y `40-235` con OSD, 20 franjas por fotograma sin OSD y 13 con OSD, ~1,0 ms por franja, ~20,2 ms por fotograma completo. La ejecución a 80 MHz tiene todos los registros hidden/osd/seek en `direct` y `view=full`.
+- **pres_fps medido (80 MHz):** hidden 28,97–29,89; osd 28,24–29,97; toggle 30,0. Frente a F2 (13 y 7): **el objetivo principal de F3 se cumple.**
+- **Recorte del flush de LVGL** alrededor de `vrect` implementado; `lvgl_rows_clipped=1032` en toggle, como era de esperar. Barras de la OSD opacas.
+- TAP 0→1, STRESS `title_mismatch=0`, |drift| ≤ 39 ms, sin fallos.
+
+**Criterio NO cumplido (el informe lo presenta como «CUMPLE»):**
+- **drop/(dec+drop) en hidden ≤ 1 %:** medido **1,53 %** en conjunto a 80 MHz (harry 3,69 %, meovv 1,66 %) y 1,72 % a 40 MHz. **`perf_capture.py --phase F3` no implementa este criterio**, por eso salió con código 0.
+
+**Afirmaciones del informe que no se sostienen:**
+1. **«PSRAM a 80 MHz: +11 fps con OSD al quitar contención»:** falso. En `F3_run2` (40 MHz), los escenarios osd de los tracks 0 y 2 y el seek del track 2 tienen `present_path` lvgl mezclado y `vrect=34-193` (vista Studio). Esa ejecución quedó contaminada por un fallo de vista, y aun así perf_capture no la paró. Comparando solo registros direct, 40 y 80 MHz dan lo mismo en hidden (29,4 frente a 29,5). **La PSRAM a 80 MHz no aporta nada medible**, porque la ruta directa ya no usa búferes de fotograma en PSRAM. Arranca bien y el memtest pasa: se puede mantener, pero no se le atribuye mejora.
+2. **«Descartes de harry por fotogramas de 28 KB»:** no encaja. `rd_max` vale **~25 ms en todos los tracks y escenarios**, también en ariana (7,7 KB de media). Coincide con rellenar el `setvbuf` de 32 KB añadido en F3 (32 KB a ~1,3 MB/s ≈ 25 ms): cada pocos fotogramas una lectura tarda 25 ms y, sumada a los 20 ms de blit, supera los 33 ms. Harry descarta más porque, con fotogramas medios más grandes, vacía el búfer más a menudo. **Hipótesis para F4:** leer exactamente el tamaño del chunk sin búfer grande, o precargar en otra tarea.
+3. **`dec_avg` 0,7–0,9 ms:** ahora es el tiempo **por franja**, no por fotograma; la métrica cambió de significado sin avisarlo. El tiempo de decodificación por fotograma queda sin medir.
+
+**Otras observaciones:**
+- **Bloqueo del bus por fotograma completo** (`avi_player.c:401-457`) en lugar de entre franjas (P1 del encargo): LVGL espera hasta ~20 ms. Táctil sin impacto (antigüedad ≤ 10,5 ms), `title_wait_ms_max` 170 ms.
+- **`heap_int` mínimo baja de 84,5 KB (F2) a 42,7 KB**: 2 franjas DMA de 15 KB y otros. Hay que vigilarlo antes de F6 (EEZ + LVGL): usar `LV_USE_CLIB_MALLOC` en PSRAM.
+- **El firmware normal flasheado está a 40 MHz:** `sdkconfig.defaults` dice 80M, pero `sdkconfig` ya existía y conserva 40. Solo `sdkconfig.perf` va a 80.
+- `perf_capture.py` lleva **cifras de F2 fijas en el código** (líneas 285-296) para comparar. Contradice «los números se cuentan»: deberían leerse del CSV de F2.
+
+**Condiciones que pasan a F4:** (a) implementar y cumplir drop ≤ 1 % en hidden en perf_capture; (b) atacar los picos de lectura de ~25 ms; (c) medir el tiempo de decodificación por fotograma además del de franja; (d) alinear `sdkconfig` normal con los defaults; (e) comparaciones leídas de CSV, no fijas.
