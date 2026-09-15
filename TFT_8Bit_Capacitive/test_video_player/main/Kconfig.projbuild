@@ -20,7 +20,7 @@ menu "App perf"
 
     config APP_SD_FREQ_KHZ
         int "Frecuencia SPI de la MicroSD en kHz"
-        default 26000
+        default 40000
         range 400 40000
         help
             Frecuencia máxima del bus SPI para la tarjeta MicroSD (20000, 26000 o 40000 kHz).

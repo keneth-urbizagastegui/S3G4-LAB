@@ -1,0 +1,289 @@
+ESP-ROM:esp32s3-20210327
+Build:Mar 27 2021
+rst:0x1 (POWERON),boot:0x2a (SPI_FAST_FLASH_BOOT)
+SPIWP:0xee
+mode:DIO, clock div:1
+load:0x3fce2820,len:0x14f0
+load:0x403c8700,len:0xda0
+load:0x403cb700,len:0x2f58
+entry 0x403c8908
+I (24) boot: ESP-IDF v6.0.1 2nd stage bootloader
+I (25) boot: compile time Sep 15 2026 14:05:47
+I (25) boot: Multicore bootloader
+I (25) boot: chip revision: v0.2
+I (28) boot: efuse block revision: v1.4
+I (31) boot.esp32s3: Boot SPI Speed : 80MHz
+I (35) boot.esp32s3: SPI Mode       : DIO
+I (39) boot.esp32s3: SPI Flash Size : 16MB
+I (43) boot: Enabling RNG early entropy source...
+I (47) boot: Partition Table:
+I (50) boot: ## Label            Usage          Type ST Offset   Length
+I (56) boot:  0 nvs              WiFi data        01 02 00009000 00006000
+I (63) boot:  1 phy_init         RF data          01 01 0000f000 00001000
+I (69) boot:  2 factory          factory app      00 00 00010000 00100000
+I (76) boot: End of partition table
+I (79) esp_image: segment 0: paddr=00010020 vaddr=3c090020 size=18444h ( 99396) map
+I (104) esp_image: segment 1: paddr=0002846c vaddr=3fc95d00 size=03934h ( 14644) load
+I (108) esp_image: segment 2: paddr=0002bda8 vaddr=40374000 size=04270h ( 17008) load
+I (112) esp_image: segment 3: paddr=00030020 vaddr=42000020 size=8906ch (561260) map
+I (216) esp_image: segment 4: paddr=000b9094 vaddr=40378270 size=0d994h ( 55700) load
+I (229) esp_image: segment 5: paddr=000c6a30 vaddr=50000000 size=00024h (    36) load
+I (237) boot: Loaded app from partition at offset 0x10000
+I (237) boot: Disabling RNG early entropy source...
+I (248) octal_psram: vendor id    : 0x0d (AP)
+I (248) octal_psram: dev id       : 0x02 (generation 3)
+I (248) octal_psram: density      : 0x03 (64 Mbit)
+I (250) octal_psram: good-die     : 0x01 (Pass)
+I (254) octal_psram: Latency      : 0x01 (Fixed)
+I (258) octal_psram: VCC          : 0x01 (3V)
+I (263) octal_psram: SRF          : 0x01 (Fast Refresh)
+I (267) octal_psram: BurstType    : 0x01 (Hybrid Wrap)
+I (272) octal_psram: BurstLen     : 0x01 (32 Byte)
+I (277) octal_psram: Readlatency  : 0x02 (10 cycles@Fixed)
+I (282) octal_psram: DriveStrength: 0x00 (1/1)
+I (286) MSPI Timing: Enter psram timing tuning
+I (291) esp_psram: Found 8MB PSRAM device
+I (294) esp_psram: Speed: 80MHz
+I (297) cpu_start: Multicore app
+I (713) esp_psram: SPI SRAM memory test OK
+I (721) cpu_start: GPIO 44 and 43 are used as console UART I/O pins
+I (722) cpu_start: Pro cpu start user code
+I (722) cpu_start: cpu freq: 240000000 Hz
+I (724) app_init: Application information:
+I (727) app_init: Project name:     tft_video_player
+I (732) app_init: App version:      vp-v0.3-6-gf24f013-dirty
+I (738) app_init: Compile time:     Sep 15 2026 17:20:54
+I (743) app_init: ELF file SHA256:  59b54f1a7...
+I (747) app_init: ESP-IDF:          v6.0.1
+I (751) efuse_init: Min chip rev:     v0.0
+I (755) efuse_init: Max chip rev:     v0.99 
+I (759) efuse_init: Chip rev:         v0.2
+I (762) heap_init: Initializing. RAM available for dynamic allocation:
+I (769) heap_init: At 3FCBD500 len 0002C210 (176 KiB): RAM
+I (774) heap_init: At 3FCE9710 len 00005724 (21 KiB): RAM
+I (779) heap_init: At 3FCF0000 len 00008000 (32 KiB): DRAM
+I (784) heap_init: At 600FE000 len 00001FE8 (7 KiB): RTCRAM
+I (790) esp_psram: Adding pool of 8192K of PSRAM memory to heap allocator
+I (797) spi_flash: detected chip: generic
+I (800) spi_flash: flash io: dio
+I (803) sleep_gpio: Configure to isolate all GPIO pins in sleep state
+I (809) sleep_gpio: Enable automatic switching of GPIO sleep configuration
+I (816) main_task: Started on CPU0
+I (840) esp_psram: Reserving pool of 32K of internal memory for DMA/internal allocations
+I (840) main_task: Calling app_main()
+I (841) MAIN_APP: ==========================================================
+I (847) MAIN_APP:    S3G4 LAB — REPRODUCTOR DE VIDEO FASE 3 (DIRECT BLIT / DMA)
+I (854) MAIN_APP:    Display: ILI9488 (8080 8-bit @ 16.0 MHz)
+I (860) MAIN_APP:    Touch:   FT6236 Capacitivo (Desacoplado, sondeo 10 ms)
+I (866) MAIN_APP:    Storage: MicroSD SPI @ 20 MHz (32 KB Buffer)
+I (872) MAIN_APP:    Core 1:  player_task (Motor video + cola comandos + PTS)
+I (879) MAIN_APP:    Core 0:  gui_task (LVGL) + touch_task
+I (884) MAIN_APP: ==========================================================
+I (891) LCD_BUS: lcd_bus inicializado con mutex recursivo.
+I (896) ili9488_8080: Iniciando hardware reset...
+I (1051) ili9488_8080: Configurando bus LCD 8080 de 8 bits a 16 MHz...
+I (1051) ili9488_8080: Enviando registros de inicialización ILI9488 IPS...
+I (1193) ili9488_8080: Inicialización completada.
+I (1193) ft6236_i2c: Configurando bus I2C maestro (SDA: 6, SCL: 5)...
+I (1194) ft6236_i2c: Escaneando bus I2C (0x08 a 0x77)...
+I (1204) ft6236_i2c:   -> Dispositivo I2C detectado en direccion: 0x38
+I (1214) ft6236_i2c:   -> Chip ID verificado: 0x36
+I (1214) ft6236_i2c:   -> Panel/Vendor ID: 0x11
+I (1214) ft6236_i2c: Panel táctil inicializado con éxito.
+I (1218) MAIN_APP: Probando robustez de montaje MicroSD (10 ciclos @ 40000 kHz)...
+I (1225) SDCARD_SPI: --- Iniciando prueba de 10 ciclos de montaje a 40000 kHz ---
+I (1282) SDCARD_SPI: Iniciando montaje MicroSD SPI (CS:21, MOSI:11, CLK:13, MISO:15) @ 40000 kHz...
+E (1345) sdmmc_sd: sdmmc_enable_hs_mode_and_check: send_csd returned 0x108
+E (1346) vfs_fat_sdmmc: sdmmc_card_init failed (0x108).
+E (1346) vfs_fat_sdmmc: esp_vfs_fat_sdspi_sdcard_init failed (0x108).
+E (1352) SDCARD_SPI: Fallo al montar sistema de archivos FATFS: ESP_ERR_INVALID_RESPONSE
+I (1360) SDCARD_SPI: Ciclo 1/10: FALLO
+I (1413) SDCARD_SPI: Iniciando montaje MicroSD SPI (CS:21, MOSI:11, CLK:13, MISO:15) @ 40000 kHz...
+E (1476) sdmmc_sd: sdmmc_enable_hs_mode_and_check: send_csd returned 0x108
+E (1477) vfs_fat_sdmmc: sdmmc_card_init failed (0x108).
+E (1477) vfs_fat_sdmmc: esp_vfs_fat_sdspi_sdcard_init failed (0x108).
+E (1483) SDCARD_SPI: Fallo al montar sistema de archivos FATFS: ESP_ERR_INVALID_RESPONSE
+I (1491) SDCARD_SPI: Ciclo 2/10: FALLO
+I (1544) SDCARD_SPI: Iniciando montaje MicroSD SPI (CS:21, MOSI:11, CLK:13, MISO:15) @ 40000 kHz...
+E (1607) sdmmc_sd: sdmmc_enable_hs_mode_and_check: send_csd returned 0x108
+E (1608) vfs_fat_sdmmc: sdmmc_card_init failed (0x108).
+E (1608) vfs_fat_sdmmc: esp_vfs_fat_sdspi_sdcard_init failed (0x108).
+E (1614) SDCARD_SPI: Fallo al montar sistema de archivos FATFS: ESP_ERR_INVALID_RESPONSE
+I (1622) SDCARD_SPI: Ciclo 3/10: FALLO
+I (1675) SDCARD_SPI: Iniciando montaje MicroSD SPI (CS:21, MOSI:11, CLK:13, MISO:15) @ 40000 kHz...
+E (1738) sdmmc_sd: sdmmc_enable_hs_mode_and_check: send_csd returned 0x108
+E (1739) vfs_fat_sdmmc: sdmmc_card_init failed (0x108).
+E (1739) vfs_fat_sdmmc: esp_vfs_fat_sdspi_sdcard_init failed (0x108).
+E (1745) SDCARD_SPI: Fallo al montar sistema de archivos FATFS: ESP_ERR_INVALID_RESPONSE
+I (1753) SDCARD_SPI: Ciclo 4/10: FALLO
+I (1806) SDCARD_SPI: Iniciando montaje MicroSD SPI (CS:21, MOSI:11, CLK:13, MISO:15) @ 40000 kHz...
+E (1869) sdmmc_sd: sdmmc_enable_hs_mode_and_check: send_csd returned 0x108
+E (1870) vfs_fat_sdmmc: sdmmc_card_init failed (0x108).
+E (1870) vfs_fat_sdmmc: esp_vfs_fat_sdspi_sdcard_init failed (0x108).
+E (1876) SDCARD_SPI: Fallo al montar sistema de archivos FATFS: ESP_ERR_INVALID_RESPONSE
+I (1884) SDCARD_SPI: Ciclo 5/10: FALLO
+I (1937) SDCARD_SPI: Iniciando montaje MicroSD SPI (CS:21, MOSI:11, CLK:13, MISO:15) @ 40000 kHz...
+E (2000) sdmmc_sd: sdmmc_enable_hs_mode_and_check: send_csd returned 0x108
+E (2001) vfs_fat_sdmmc: sdmmc_card_init failed (0x108).
+E (2001) vfs_fat_sdmmc: esp_vfs_fat_sdspi_sdcard_init failed (0x108).
+E (2007) SDCARD_SPI: Fallo al montar sistema de archivos FATFS: ESP_ERR_INVALID_RESPONSE
+I (2015) SDCARD_SPI: Ciclo 6/10: FALLO
+I (2068) SDCARD_SPI: Iniciando montaje MicroSD SPI (CS:21, MOSI:11, CLK:13, MISO:15) @ 40000 kHz...
+E (2131) sdmmc_sd: sdmmc_enable_hs_mode_and_check: send_csd returned 0x108
+E (2132) vfs_fat_sdmmc: sdmmc_card_init failed (0x108).
+E (2132) vfs_fat_sdmmc: esp_vfs_fat_sdspi_sdcard_init failed (0x108).
+E (2138) SDCARD_SPI: Fallo al montar sistema de archivos FATFS: ESP_ERR_INVALID_RESPONSE
+I (2146) SDCARD_SPI: Ciclo 7/10: FALLO
+I (2199) SDCARD_SPI: Iniciando montaje MicroSD SPI (CS:21, MOSI:11, CLK:13, MISO:15) @ 40000 kHz...
+E (2262) sdmmc_sd: sdmmc_enable_hs_mode_and_check: send_csd returned 0x108
+E (2263) vfs_fat_sdmmc: sdmmc_card_init failed (0x108).
+E (2263) vfs_fat_sdmmc: esp_vfs_fat_sdspi_sdcard_init failed (0x108).
+E (2269) SDCARD_SPI: Fallo al montar sistema de archivos FATFS: ESP_ERR_INVALID_RESPONSE
+I (2277) SDCARD_SPI: Ciclo 8/10: FALLO
+I (2330) SDCARD_SPI: Iniciando montaje MicroSD SPI (CS:21, MOSI:11, CLK:13, MISO:15) @ 40000 kHz...
+E (2393) sdmmc_sd: sdmmc_enable_hs_mode_and_check: send_csd returned 0x108
+E (2394) vfs_fat_sdmmc: sdmmc_card_init failed (0x108).
+E (2394) vfs_fat_sdmmc: esp_vfs_fat_sdspi_sdcard_init failed (0x108).
+E (2400) SDCARD_SPI: Fallo al montar sistema de archivos FATFS: ESP_ERR_INVALID_RESPONSE
+I (2408) SDCARD_SPI: Ciclo 9/10: FALLO
+I (2461) SDCARD_SPI: Iniciando montaje MicroSD SPI (CS:21, MOSI:11, CLK:13, MISO:15) @ 40000 kHz...
+E (2524) sdmmc_sd: sdmmc_enable_hs_mode_and_check: send_csd returned 0x108
+E (2525) vfs_fat_sdmmc: sdmmc_card_init failed (0x108).
+E (2525) vfs_fat_sdmmc: esp_vfs_fat_sdspi_sdcard_init failed (0x108).
+E (2531) SDCARD_SPI: Fallo al montar sistema de archivos FATFS: ESP_ERR_INVALID_RESPONSE
+I (2539) SDCARD_SPI: Ciclo 10/10: FALLO
+I (2542) SDCARD_SPI: Prueba montaje: 0/10 ciclos exitosos a 40000 kHz
+SD_FREQ_TEST,freq_khz=40000,passed=0/10
+I (2552) SDCARD_SPI: Iniciando montaje MicroSD SPI (CS:21, MOSI:11, CLK:13, MISO:15) @ 40000 kHz...
+E (2624) sdmmc_sd: sdmmc_enable_hs_mode_and_check: send_csd returned 0x108
+E (2625) vfs_fat_sdmmc: sdmmc_card_init failed (0x108).
+E (2625) vfs_fat_sdmmc: esp_vfs_fat_sdspi_sdcard_init failed (0x108).
+E (2631) SDCARD_SPI: Fallo al montar sistema de archivos FATFS: ESP_ERR_INVALID_RESPONSE
+E (2639) MAIN_APP: Fallo al inicializar MicroSD tras test.
+I (2644) AVI_PLAYER_SIMD: Inicializando motor de video SIMD (esp_new_jpeg)...
+I (2651) AVI_PLAYER_SIMD: Buffer JPEG asignado/expandido a 49152 bytes (Internal RAM)
+I (2659) AVI_PLAYER_SIMD: Decodificadores SIMD Fullscreen y Studio inicializados con éxito.
+I (2667) PLAYER: Iniciando subsistema player...
+I (2675) PLAYER: player_task iniciada con exito en CPU 1.
+I (2675) PLAYER: Tarea player_task ejecutandose en CPU 1.
+I (2676) MAIN_APP: Tarea touch_task iniciada en Core 0 (prioridad 6, intervalo 10 ms).
+I (2676) MAIN_APP: Iniciando gui_task en Core 0...
+I (2736) MAIN_APP: Bucle de eventos GUI LVGL iniciado en Core 0 (refresh: 250 ms).
+I (2676) MAIN_APP: Tarea de autotest F2 iniciada (usa cola de comandos y peticiones UI).
+I (2677) MAIN_APP: DIAG_HEAP [POST_INIT]: int=71283, psram=8230960 | STACK_FREE: touch=2464, gui=7068, player=6772, auto=2772
+Heap summary for capabilities 0x00000800:
+  At 0x3fcc5ea8 len 32767 free 27419 allocated 4608 min_free 27419
+    largest_free_block 26624 alloc_blocks 1 free_blocks 1 total_blocks 2
+  At 0x600fe000 len 8168 free 7788 allocated 0 min_free 7788
+    largest_free_block 7680 alloc_blocks 0 free_blocks 1 total_blocks 1
+  At 0x3fce9710 len 22308 free 36 allocated 21424 min_free 4
+    largest_free_block 28 alloc_blocks 28 free_blocks 1 total_blocks 29
+  At 0x3fcf0000 len 32768 free 32032 allocated 0 min_free 32032
+    largest_free_block 31744 alloc_blocks 0 free_blocks 1 total_blocks 1
+  At 0x3fcbd500 len 180752 free 3852 allocated 175732 min_free 3852
+    largest_free_block 3456 alloc_blocks 57 free_blocks 8 total_blocks 65
+  Totals:
+    free 71127 allocated 201764 min_free 71095 largest_free_block 31744
+I (2871) MAIN_APP: app_main inicializacion completada.
+I (2871) main_task: Returned from app_main()
+PERF,t_ms=2111,dec_fps=0.0,pres_fps=0.0,drop=0,over=0,frame_mismatch=0,rd_avg=0.0,rd_max=0.0,rd_p50=0.0,rd_p95=0.0,rd_slow=0,dec_avg=0.0,dec_max=0.0,dec_frame_ms_avg=0.0,dec_frame_ms_max=0.0,blit_avg=2.7,blit_max=2.7,late_max=0.0,drift_ms=0,touch_read_ms_avg=0.7,touch_read_ms_max=0.8,touch_age_ms_max=6.2,heap_int=96835,heap_psram=8077352,track=0,scn=init,view=studio,hud=0,present_path=lvgl,vrect=34-193,strips_per_frame=0,strip_ms_avg=0.00,frame_blit_ms_avg=0.0,lvgl_rows_clipped=0,dec_frames=0
+I (3774) MAIN_APP: DIAG_HEAP [AUTOTEST_START]: int=96835, psram=8077352 | STACK_FREE: touch=2400, gui=3148, player=5716, auto=2756
+Heap summary for capabilities 0x00000800:
+  At 0x3fcc5ea8 len 32767 free 27419 allocated 4608 min_free 27419
+    largest_free_block 26624 alloc_blocks 1 free_blocks 1 total_blocks 2
+  At 0x600fe000 len 8168 free 7788 allocated 0 min_free 7788
+    largest_free_block 7680 alloc_blocks 0 free_blocks 1 total_blocks 1
+  At 0x3fce9710 len 22308 free 36 allocated 21424 min_free 4
+    largest_free_block 28 alloc_blocks 28 free_blocks 1 total_blocks 29
+  At 0x3fcf0000 len 32768 free 32032 allocated 0 min_free 32032
+    largest_free_block 31744 alloc_blocks 0 free_blocks 1 total_blocks 1
+  At 0x3fcbd500 len 180752 free 29560 allocated 150032 min_free 3852
+    largest_free_block 25600 alloc_blocks 55 free_blocks 9 total_blocks 64
+  Totals:
+    free 96835 allocated 176064 min_free 71095 largest_free_block 31744
+I (3846) MAIN_APP: Iniciando escenario TAP (Bug T2)...
+I (4410) SPOTIFY_UI: [TOUCH] Fullscreen tap -> HUD mostrado
+TAP,hud_before=0,hud_after=1
+I (4469) MAIN_APP: Iniciando escenario TOGGLE (10 s, alterna cada 500 ms)...
+PERF,t_ms=4124,dec_fps=0.0,pres_fps=0.0,drop=0,over=0,frame_mismatch=0,rd_avg=0.0,rd_max=0.0,rd_p50=0.0,rd_p95=0.0,rd_slow=0,dec_avg=0.0,dec_max=0.0,dec_frame_ms_avg=0.0,dec_frame_ms_max=0.0,blit_avg=1.0,blit_max=2.7,late_max=0.0,drift_ms=0,touch_read_ms_avg=0.5,touch_read_ms_max=0.8,touch_age_ms_max=9.7,heap_int=96835,heap_psram=8077352,track=0,scn=toggle,view=full,hud=1,present_path=direct,vrect=40-235,strips_per_frame=0,strip_ms_avg=0.00,frame_blit_ms_avg=0.0,lvgl_rows_clipped=1032,dec_frames=0
+PERF,t_ms=6137,dec_fps=0.0,pres_fps=0.0,drop=0,over=0,frame_mismatch=0,rd_avg=0.0,rd_max=0.0,rd_p50=0.0,rd_p95=0.0,rd_slow=0,dec_avg=0.0,dec_max=0.0,dec_frame_ms_avg=0.0,dec_frame_ms_max=0.0,blit_avg=1.1,blit_max=2.7,late_max=0.0,drift_ms=0,touch_read_ms_avg=0.5,touch_read_ms_max=0.8,touch_age_ms_max=9.9,heap_int=96835,heap_psram=8077352,track=0,scn=toggle,view=full,hud=1,present_path=direct,vrect=40-235,strips_per_frame=0,strip_ms_avg=0.00,frame_blit_ms_avg=0.0,lvgl_rows_clipped=1032,dec_frames=0
+PERF,t_ms=8150,dec_fps=0.0,pres_fps=0.0,drop=0,over=0,frame_mismatch=0,rd_avg=0.0,rd_max=0.0,rd_p50=0.0,rd_p95=0.0,rd_slow=0,dec_avg=0.0,dec_max=0.0,dec_frame_ms_avg=0.0,dec_frame_ms_max=0.0,blit_avg=1.1,blit_max=2.7,late_max=0.0,drift_ms=0,touch_read_ms_avg=0.5,touch_read_ms_max=0.8,touch_age_ms_max=9.6,heap_int=96835,heap_psram=8077352,track=0,scn=toggle,view=full,hud=1,present_path=direct,vrect=40-235,strips_per_frame=0,strip_ms_avg=0.00,frame_blit_ms_avg=0.0,lvgl_rows_clipped=1032,dec_frames=0
+PERF,t_ms=10163,dec_fps=0.0,pres_fps=0.0,drop=0,over=0,frame_mismatch=0,rd_avg=0.0,rd_max=0.0,rd_p50=0.0,rd_p95=0.0,rd_slow=0,dec_avg=0.0,dec_max=0.0,dec_frame_ms_avg=0.0,dec_frame_ms_max=0.0,blit_avg=1.1,blit_max=2.7,late_max=0.0,drift_ms=0,touch_read_ms_avg=0.5,touch_read_ms_max=0.8,touch_age_ms_max=9.6,heap_int=96835,heap_psram=8077352,track=0,scn=toggle,view=full,hud=1,present_path=direct,vrect=40-235,strips_per_frame=0,strip_ms_avg=0.00,frame_blit_ms_avg=0.0,lvgl_rows_clipped=1032,dec_frames=0
+PERF,t_ms=12176,dec_fps=0.0,pres_fps=0.0,drop=0,over=0,frame_mismatch=0,rd_avg=0.0,rd_max=0.0,rd_p50=0.0,rd_p95=0.0,rd_slow=0,dec_avg=0.0,dec_max=0.0,dec_frame_ms_avg=0.0,dec_frame_ms_max=0.0,blit_avg=1.1,blit_max=2.7,late_max=0.0,drift_ms=0,touch_read_ms_avg=0.5,touch_read_ms_max=0.8,touch_age_ms_max=9.6,heap_int=96835,heap_psram=8077352,track=0,scn=toggle,view=full,hud=1,present_path=direct,vrect=40-235,strips_per_frame=0,strip_ms_avg=0.00,frame_blit_ms_avg=0.0,lvgl_rows_clipped=1032,dec_frames=0
+I (14669) MAIN_APP: Iniciando escenario final de STRESS...
+PERF,t_ms=14189,dec_fps=0.0,pres_fps=0.0,drop=0,over=0,frame_mismatch=0,rd_avg=0.0,rd_max=0.0,rd_p50=0.0,rd_p95=0.0,rd_slow=0,dec_avg=0.0,dec_max=0.0,dec_frame_ms_avg=0.0,dec_frame_ms_max=0.0,blit_avg=1.0,blit_max=2.7,late_max=0.0,drift_ms=0,touch_read_ms_avg=0.5,touch_read_ms_max=0.8,touch_age_ms_max=9.6,heap_int=96835,heap_psram=8077352,track=0,scn=stress,view=full,hud=0,present_path=direct,vrect=0-319,strips_per_frame=0,strip_ms_avg=0.00,frame_blit_ms_avg=0.0,lvgl_rows_clipped=836,dec_frames=0
+W (15779) MAIN_APP: Mismatch en cambio 0 tras 609 ms: esperado='Pista 1', UI='Dance No More'
+W (16889) MAIN_APP: Mismatch en cambio 1 tras 609 ms: esperado='Pista 1', UI='Dance No More'
+PERF,t_ms=16202,dec_fps=0.0,pres_fps=0.0,drop=0,over=0,frame_mismatch=0,rd_avg=0.0,rd_max=0.0,rd_p50=0.0,rd_p95=0.0,rd_slow=0,dec_avg=0.0,dec_max=0.0,dec_frame_ms_avg=0.0,dec_frame_ms_max=0.0,blit_avg=0.0,blit_max=0.0,late_max=0.0,drift_ms=0,touch_read_ms_avg=0.5,touch_read_ms_max=0.7,touch_age_ms_max=9.6,heap_int=96835,heap_psram=8077352,track=0,scn=stress,view=full,hud=0,present_path=direct,vrect=0-319,strips_per_frame=0,strip_ms_avg=0.00,frame_blit_ms_avg=0.0,lvgl_rows_clipped=0,dec_frames=0
+W (17989) MAIN_APP: Mismatch en cambio 2 tras 600 ms: esperado='Pista 1', UI='Dance No More'
+PERF,t_ms=18215,dec_fps=0.0,pres_fps=0.0,drop=0,over=0,frame_mismatch=0,rd_avg=0.0,rd_max=0.0,rd_p50=0.0,rd_p95=0.0,rd_slow=0,dec_avg=0.0,dec_max=0.0,dec_frame_ms_avg=0.0,dec_frame_ms_max=0.0,blit_avg=0.0,blit_max=0.0,late_max=0.0,drift_ms=0,touch_read_ms_avg=0.5,touch_read_ms_max=0.7,touch_age_ms_max=9.7,heap_int=96835,heap_psram=8077352,track=0,scn=stress,view=full,hud=0,present_path=direct,vrect=0-319,strips_per_frame=0,strip_ms_avg=0.00,frame_blit_ms_avg=0.0,lvgl_rows_clipped=0,dec_frames=0
+W (19099) MAIN_APP: Mismatch en cambio 3 tras 609 ms: esperado='Pista 1', UI='Dance No More'
+W (20209) MAIN_APP: Mismatch en cambio 4 tras 609 ms: esperado='Pista 1', UI='Dance No More'
+PERF,t_ms=20228,dec_fps=0.0,pres_fps=0.0,drop=0,over=0,frame_mismatch=0,rd_avg=0.0,rd_max=0.0,rd_p50=0.0,rd_p95=0.0,rd_slow=0,dec_avg=0.0,dec_max=0.0,dec_frame_ms_avg=0.0,dec_frame_ms_max=0.0,blit_avg=0.0,blit_max=0.0,late_max=0.0,drift_ms=0,touch_read_ms_avg=0.5,touch_read_ms_max=0.7,touch_age_ms_max=9.8,heap_int=96835,heap_psram=8077352,track=0,scn=stress,view=full,hud=0,present_path=direct,vrect=0-319,strips_per_frame=0,strip_ms_avg=0.00,frame_blit_ms_avg=0.0,lvgl_rows_clipped=0,dec_frames=0
+W (21319) MAIN_APP: Mismatch en cambio 5 tras 609 ms: esperado='Pista 1', UI='Dance No More'
+W (22429) MAIN_APP: Mismatch en cambio 6 tras 609 ms: esperado='Pista 1', UI='Dance No More'
+PERF,t_ms=22241,dec_fps=0.0,pres_fps=0.0,drop=0,over=0,frame_mismatch=0,rd_avg=0.0,rd_max=0.0,rd_p50=0.0,rd_p95=0.0,rd_slow=0,dec_avg=0.0,dec_max=0.0,dec_frame_ms_avg=0.0,dec_frame_ms_max=0.0,blit_avg=0.0,blit_max=0.0,late_max=0.0,drift_ms=0,touch_read_ms_avg=0.5,touch_read_ms_max=0.7,touch_age_ms_max=9.9,heap_int=96835,heap_psram=8077352,track=0,scn=stress,view=full,hud=0,present_path=direct,vrect=0-319,strips_per_frame=0,strip_ms_avg=0.00,frame_blit_ms_avg=0.0,lvgl_rows_clipped=0,dec_frames=0
+W (23539) MAIN_APP: Mismatch en cambio 7 tras 609 ms: esperado='Pista 1', UI='Dance No More'
+W (24649) MAIN_APP: Mismatch en cambio 8 tras 609 ms: esperado='Pista 1', UI='Dance No More'
+PERF,t_ms=24254,dec_fps=0.0,pres_fps=0.0,drop=0,over=0,frame_mismatch=0,rd_avg=0.0,rd_max=0.0,rd_p50=0.0,rd_p95=0.0,rd_slow=0,dec_avg=0.0,dec_max=0.0,dec_frame_ms_avg=0.0,dec_frame_ms_max=0.0,blit_avg=0.0,blit_max=0.0,late_max=0.0,drift_ms=0,touch_read_ms_avg=0.5,touch_read_ms_max=0.7,touch_age_ms_max=9.6,heap_int=96835,heap_psram=8077352,track=0,scn=stress,view=full,hud=0,present_path=direct,vrect=0-319,strips_per_frame=0,strip_ms_avg=0.00,frame_blit_ms_avg=0.0,lvgl_rows_clipped=0,dec_frames=0
+W (25749) MAIN_APP: Mismatch en cambio 9 tras 600 ms: esperado='Pista 1', UI='Dance No More'
+W (26859) MAIN_APP: Mismatch en cambio 10 tras 609 ms: esperado='Pista 1', UI='Dance No More'
+PERF,t_ms=26267,dec_fps=0.0,pres_fps=0.0,drop=0,over=0,frame_mismatch=0,rd_avg=0.0,rd_max=0.0,rd_p50=0.0,rd_p95=0.0,rd_slow=0,dec_avg=0.0,dec_max=0.0,dec_frame_ms_avg=0.0,dec_frame_ms_max=0.0,blit_avg=0.0,blit_max=0.0,late_max=0.0,drift_ms=0,touch_read_ms_avg=0.5,touch_read_ms_max=0.7,touch_age_ms_max=9.6,heap_int=96835,heap_psram=8077352,track=0,scn=stress,view=full,hud=0,present_path=direct,vrect=0-319,strips_per_frame=0,strip_ms_avg=0.00,frame_blit_ms_avg=0.0,lvgl_rows_clipped=0,dec_frames=0
+W (27969) MAIN_APP: Mismatch en cambio 11 tras 609 ms: esperado='Pista 1', UI='Dance No More'
+PERF,t_ms=28280,dec_fps=0.0,pres_fps=0.0,drop=0,over=0,frame_mismatch=0,rd_avg=0.0,rd_max=0.0,rd_p50=0.0,rd_p95=0.0,rd_slow=0,dec_avg=0.0,dec_max=0.0,dec_frame_ms_avg=0.0,dec_frame_ms_max=0.0,blit_avg=0.0,blit_max=0.0,late_max=0.0,drift_ms=0,touch_read_ms_avg=0.5,touch_read_ms_max=0.7,touch_age_ms_max=9.6,heap_int=96835,heap_psram=8077352,track=0,scn=stress,view=full,hud=0,present_path=direct,vrect=0-319,strips_per_frame=0,strip_ms_avg=0.00,frame_blit_ms_avg=0.0,lvgl_rows_clipped=0,dec_frames=0
+W (29079) MAIN_APP: Mismatch en cambio 12 tras 610 ms: esperado='Pista 1', UI='Dance No More'
+W (30221) MAIN_APP: Mismatch en cambio 13 tras 609 ms: esperado='Pista 1', UI='Dance No More'
+PERF,t_ms=30281,dec_fps=0.0,pres_fps=0.0,drop=0,over=0,frame_mismatch=0,rd_avg=0.0,rd_max=0.0,rd_p50=0.0,rd_p95=0.0,rd_slow=0,dec_avg=0.0,dec_max=0.0,dec_frame_ms_avg=0.0,dec_frame_ms_max=0.0,blit_avg=0.0,blit_max=0.0,late_max=0.0,drift_ms=0,touch_read_ms_avg=0.5,touch_read_ms_max=0.7,touch_age_ms_max=9.7,heap_int=96835,heap_psram=8077352,track=0,scn=stress,view=full,hud=0,present_path=direct,vrect=0-319,strips_per_frame=0,strip_ms_avg=0.00,frame_blit_ms_avg=0.0,lvgl_rows_clipped=0,dec_frames=0
+W (31331) MAIN_APP: Mismatch en cambio 14 tras 609 ms: esperado='Pista 1', UI='Dance No More'
+W (32441) MAIN_APP: Mismatch en cambio 15 tras 609 ms: esperado='Pista 1', UI='Dance No More'
+PERF,t_ms=32294,dec_fps=0.0,pres_fps=0.0,drop=0,over=0,frame_mismatch=0,rd_avg=0.0,rd_max=0.0,rd_p50=0.0,rd_p95=0.0,rd_slow=0,dec_avg=0.0,dec_max=0.0,dec_frame_ms_avg=0.0,dec_frame_ms_max=0.0,blit_avg=0.0,blit_max=0.0,late_max=0.0,drift_ms=0,touch_read_ms_avg=0.5,touch_read_ms_max=0.7,touch_age_ms_max=9.6,heap_int=96835,heap_psram=8077352,track=0,scn=stress,view=full,hud=0,present_path=direct,vrect=0-319,strips_per_frame=0,strip_ms_avg=0.00,frame_blit_ms_avg=0.0,lvgl_rows_clipped=0,dec_frames=0
+W (33541) MAIN_APP: Mismatch en cambio 16 tras 600 ms: esperado='Pista 1', UI='Dance No More'
+W (34651) MAIN_APP: Mismatch en cambio 17 tras 609 ms: esperado='Pista 1', UI='Dance No More'
+PERF,t_ms=34307,dec_fps=0.0,pres_fps=0.0,drop=0,over=0,frame_mismatch=0,rd_avg=0.0,rd_max=0.0,rd_p50=0.0,rd_p95=0.0,rd_slow=0,dec_avg=0.0,dec_max=0.0,dec_frame_ms_avg=0.0,dec_frame_ms_max=0.0,blit_avg=0.0,blit_max=0.0,late_max=0.0,drift_ms=0,touch_read_ms_avg=0.5,touch_read_ms_max=0.7,touch_age_ms_max=9.6,heap_int=96835,heap_psram=8077352,track=0,scn=stress,view=full,hud=0,present_path=direct,vrect=0-319,strips_per_frame=0,strip_ms_avg=0.00,frame_blit_ms_avg=0.0,lvgl_rows_clipped=0,dec_frames=0
+W (35761) MAIN_APP: Mismatch en cambio 18 tras 609 ms: esperado='Pista 1', UI='Dance No More'
+W (36871) MAIN_APP: Mismatch en cambio 19 tras 609 ms: esperado='Pista 1', UI='Dance No More'
+PERF,t_ms=36320,dec_fps=0.0,pres_fps=0.0,drop=0,over=0,frame_mismatch=0,rd_avg=0.0,rd_max=0.0,rd_p50=0.0,rd_p95=0.0,rd_slow=0,dec_avg=0.0,dec_max=0.0,dec_frame_ms_avg=0.0,dec_frame_ms_max=0.0,blit_avg=0.0,blit_max=0.0,late_max=0.0,drift_ms=0,touch_read_ms_avg=0.5,touch_read_ms_max=0.7,touch_age_ms_max=9.6,heap_int=96835,heap_psram=8077352,track=0,scn=stress,view=full,hud=0,present_path=direct,vrect=0-319,strips_per_frame=0,strip_ms_avg=0.00,frame_blit_ms_avg=0.0,lvgl_rows_clipped=0,dec_frames=0
+W (37581) MAIN_APP: Mismatch en seek 0 tras 610 ms: esperado='Pista 1', UI='Dance No More'
+W (38291) MAIN_APP: Mismatch en seek 1 tras 610 ms: esperado='Pista 1', UI='Dance No More'
+W (38991) MAIN_APP: Mismatch en seek 2 tras 600 ms: esperado='Pista 1', UI='Dance No More'
+PERF,t_ms=38333,dec_fps=0.0,pres_fps=0.0,drop=0,over=0,frame_mismatch=0,rd_avg=0.0,rd_max=0.0,rd_p50=0.0,rd_p95=0.0,rd_slow=0,dec_avg=0.0,dec_max=0.0,dec_frame_ms_avg=0.0,dec_frame_ms_max=0.0,blit_avg=0.0,blit_max=0.0,late_max=0.0,drift_ms=0,touch_read_ms_avg=0.5,touch_read_ms_max=0.7,touch_age_ms_max=9.9,heap_int=96835,heap_psram=8077352,track=0,scn=stress,view=full,hud=0,present_path=direct,vrect=0-319,strips_per_frame=0,strip_ms_avg=0.00,frame_blit_ms_avg=0.0,lvgl_rows_clipped=0,dec_frames=0
+W (39701) MAIN_APP: Mismatch en seek 3 tras 610 ms: esperado='Pista 1', UI='Dance No More'
+W (40411) MAIN_APP: Mismatch en seek 4 tras 610 ms: esperado='Pista 1', UI='Dance No More'
+W (41121) MAIN_APP: Mismatch en seek 5 tras 610 ms: esperado='Pista 1', UI='Dance No More'
+PERF,t_ms=40346,dec_fps=0.0,pres_fps=0.0,drop=0,over=0,frame_mismatch=0,rd_avg=0.0,rd_max=0.0,rd_p50=0.0,rd_p95=0.0,rd_slow=0,dec_avg=0.0,dec_max=0.0,dec_frame_ms_avg=0.0,dec_frame_ms_max=0.0,blit_avg=0.0,blit_max=0.0,late_max=0.0,drift_ms=0,touch_read_ms_avg=0.5,touch_read_ms_max=0.7,touch_age_ms_max=9.7,heap_int=96835,heap_psram=8077352,track=0,scn=stress,view=full,hud=0,present_path=direct,vrect=0-319,strips_per_frame=0,strip_ms_avg=0.00,frame_blit_ms_avg=0.0,lvgl_rows_clipped=0,dec_frames=0
+W (41831) MAIN_APP: Mismatch en seek 6 tras 610 ms: esperado='Pista 1', UI='Dance No More'
+W (42531) MAIN_APP: Mismatch en seek 7 tras 600 ms: esperado='Pista 1', UI='Dance No More'
+PERF,t_ms=42359,dec_fps=0.0,pres_fps=0.0,drop=0,over=0,frame_mismatch=0,rd_avg=0.0,rd_max=0.0,rd_p50=0.0,rd_p95=0.0,rd_slow=0,dec_avg=0.0,dec_max=0.0,dec_frame_ms_avg=0.0,dec_frame_ms_max=0.0,blit_avg=0.0,blit_max=0.0,late_max=0.0,drift_ms=0,touch_read_ms_avg=0.5,touch_read_ms_max=0.7,touch_age_ms_max=9.6,heap_int=96835,heap_psram=8077352,track=0,scn=stress,view=full,hud=0,present_path=direct,vrect=0-319,strips_per_frame=0,strip_ms_avg=0.00,frame_blit_ms_avg=0.0,lvgl_rows_clipped=0,dec_frames=0
+W (43241) MAIN_APP: Mismatch en seek 8 tras 610 ms: esperado='Pista 1', UI='Dance No More'
+W (43951) MAIN_APP: Mismatch en seek 9 tras 610 ms: esperado='Pista 1', UI='Dance No More'
+W (44661) MAIN_APP: Mismatch en seek 10 tras 609 ms: esperado='Pista 1', UI='Dance No More'
+PERF,t_ms=44372,dec_fps=0.0,pres_fps=0.0,drop=0,over=0,frame_mismatch=0,rd_avg=0.0,rd_max=0.0,rd_p50=0.0,rd_p95=0.0,rd_slow=0,dec_avg=0.0,dec_max=0.0,dec_frame_ms_avg=0.0,dec_frame_ms_max=0.0,blit_avg=0.0,blit_max=0.0,late_max=0.0,drift_ms=0,touch_read_ms_avg=0.5,touch_read_ms_max=0.7,touch_age_ms_max=9.6,heap_int=96835,heap_psram=8077352,track=0,scn=stress,view=full,hud=0,present_path=direct,vrect=0-319,strips_per_frame=0,strip_ms_avg=0.00,frame_blit_ms_avg=0.0,lvgl_rows_clipped=0,dec_frames=0
+W (45371) MAIN_APP: Mismatch en seek 11 tras 609 ms: esperado='Pista 1', UI='Dance No More'
+W (46081) MAIN_APP: Mismatch en seek 12 tras 610 ms: esperado='Pista 1', UI='Dance No More'
+W (46791) MAIN_APP: Mismatch en seek 13 tras 610 ms: esperado='Pista 1', UI='Dance No More'
+PERF,t_ms=46385,dec_fps=0.0,pres_fps=0.0,drop=0,over=0,frame_mismatch=0,rd_avg=0.0,rd_max=0.0,rd_p50=0.0,rd_p95=0.0,rd_slow=0,dec_avg=0.0,dec_max=0.0,dec_frame_ms_avg=0.0,dec_frame_ms_max=0.0,blit_avg=0.0,blit_max=0.0,late_max=0.0,drift_ms=0,touch_read_ms_avg=0.5,touch_read_ms_max=0.7,touch_age_ms_max=9.7,heap_int=96835,heap_psram=8077352,track=0,scn=stress,view=full,hud=0,present_path=direct,vrect=0-319,strips_per_frame=0,strip_ms_avg=0.00,frame_blit_ms_avg=0.0,lvgl_rows_clipped=0,dec_frames=0
+W (47491) MAIN_APP: Mismatch en seek 14 tras 600 ms: esperado='Pista 1', UI='Dance No More'
+W (48201) MAIN_APP: Mismatch en seek 15 tras 610 ms: esperado='Pista 1', UI='Dance No More'
+W (48911) MAIN_APP: Mismatch en seek 16 tras 609 ms: esperado='Pista 1', UI='Dance No More'
+PERF,t_ms=48398,dec_fps=0.0,pres_fps=0.0,drop=0,over=0,frame_mismatch=0,rd_avg=0.0,rd_max=0.0,rd_p50=0.0,rd_p95=0.0,rd_slow=0,dec_avg=0.0,dec_max=0.0,dec_frame_ms_avg=0.0,dec_frame_ms_max=0.0,blit_avg=0.0,blit_max=0.0,late_max=0.0,drift_ms=0,touch_read_ms_avg=0.5,touch_read_ms_max=0.7,touch_age_ms_max=9.7,heap_int=96835,heap_psram=8077352,track=0,scn=stress,view=full,hud=0,present_path=direct,vrect=0-319,strips_per_frame=0,strip_ms_avg=0.00,frame_blit_ms_avg=0.0,lvgl_rows_clipped=0,dec_frames=0
+W (49621) MAIN_APP: Mismatch en seek 17 tras 610 ms: esperado='Pista 1', UI='Dance No More'
+W (50331) MAIN_APP: Mismatch en seek 18 tras 610 ms: esperado='Pista 1', UI='Dance No More'
+W (51031) MAIN_APP: Mismatch en seek 19 tras 600 ms: esperado='Pista 1', UI='Dance No More'
+PERF,t_ms=50411,dec_fps=0.0,pres_fps=0.0,drop=0,over=0,frame_mismatch=0,rd_avg=0.0,rd_max=0.0,rd_p50=0.0,rd_p95=0.0,rd_slow=0,dec_avg=0.0,dec_max=0.0,dec_frame_ms_avg=0.0,dec_frame_ms_max=0.0,blit_avg=0.0,blit_max=0.0,late_max=0.0,drift_ms=0,touch_read_ms_avg=0.5,touch_read_ms_max=0.7,touch_age_ms_max=9.7,heap_int=96835,heap_psram=8077352,track=0,scn=stress,view=full,hud=0,present_path=direct,vrect=0-319,strips_per_frame=0,strip_ms_avg=0.00,frame_blit_ms_avg=0.0,lvgl_rows_clipped=0,dec_frames=0
+W (51741) MAIN_APP: Mismatch en seek 20 tras 610 ms: esperado='Pista 1', UI='Dance No More'
+W (52451) MAIN_APP: Mismatch en seek 21 tras 610 ms: esperado='Pista 1', UI='Dance No More'
+W (53161) MAIN_APP: Mismatch en seek 22 tras 609 ms: esperado='Pista 1', UI='Dance No More'
+PERF,t_ms=52424,dec_fps=0.0,pres_fps=0.0,drop=0,over=0,frame_mismatch=0,rd_avg=0.0,rd_max=0.0,rd_p50=0.0,rd_p95=0.0,rd_slow=0,dec_avg=0.0,dec_max=0.0,dec_frame_ms_avg=0.0,dec_frame_ms_max=0.0,blit_avg=0.0,blit_max=0.0,late_max=0.0,drift_ms=0,touch_read_ms_avg=0.5,touch_read_ms_max=0.7,touch_age_ms_max=9.6,heap_int=96835,heap_psram=8077352,track=0,scn=stress,view=full,hud=0,present_path=direct,vrect=0-319,strips_per_frame=0,strip_ms_avg=0.00,frame_blit_ms_avg=0.0,lvgl_rows_clipped=0,dec_frames=0
+W (53871) MAIN_APP: Mismatch en seek 23 tras 609 ms: esperado='Pista 1', UI='Dance No More'
+W (54581) MAIN_APP: Mismatch en seek 24 tras 610 ms: esperado='Pista 1', UI='Dance No More'
+PERF,t_ms=54437,dec_fps=0.0,pres_fps=0.0,drop=0,over=0,frame_mismatch=0,rd_avg=0.0,rd_max=0.0,rd_p50=0.0,rd_p95=0.0,rd_slow=0,dec_avg=0.0,dec_max=0.0,dec_frame_ms_avg=0.0,dec_frame_ms_max=0.0,blit_avg=0.0,blit_max=0.0,late_max=0.0,drift_ms=0,touch_read_ms_avg=0.5,touch_read_ms_max=0.7,touch_age_ms_max=10.0,heap_int=96835,heap_psram=8077352,track=0,scn=stress,view=full,hud=0,present_path=direct,vrect=0-319,strips_per_frame=0,strip_ms_avg=0.00,frame_blit_ms_avg=0.0,lvgl_rows_clipped=0,dec_frames=0
+W (55291) MAIN_APP: Mismatch en seek 25 tras 610 ms: esperado='Pista 1', UI='Dance No More'
+W (55991) MAIN_APP: Mismatch en seek 26 tras 600 ms: esperado='Pista 1', UI='Dance No More'
+W (56701) MAIN_APP: Mismatch en seek 27 tras 610 ms: esperado='Pista 1', UI='Dance No More'
+PERF,t_ms=56450,dec_fps=0.0,pres_fps=0.0,drop=0,over=0,frame_mismatch=0,rd_avg=0.0,rd_max=0.0,rd_p50=0.0,rd_p95=0.0,rd_slow=0,dec_avg=0.0,dec_max=0.0,dec_frame_ms_avg=0.0,dec_frame_ms_max=0.0,blit_avg=0.0,blit_max=0.0,late_max=0.0,drift_ms=0,touch_read_ms_avg=0.5,touch_read_ms_max=0.7,touch_age_ms_max=9.6,heap_int=96835,heap_psram=8077352,track=0,scn=stress,view=full,hud=0,present_path=direct,vrect=0-319,strips_per_frame=0,strip_ms_avg=0.00,frame_blit_ms_avg=0.0,lvgl_rows_clipped=0,dec_frames=0
+W (57411) MAIN_APP: Mismatch en seek 28 tras 610 ms: esperado='Pista 1', UI='Dance No More'
+W (58121) MAIN_APP: Mismatch en seek 29 tras 610 ms: esperado='Pista 1', UI='Dance No More'
+W (58831) MAIN_APP: Mismatch en seek 30 tras 610 ms: esperado='Pista 1', UI='Dance No More'
+PERF,t_ms=58463,dec_fps=0.0,pres_fps=0.0,drop=0,over=0,frame_mismatch=0,rd_avg=0.0,rd_max=0.0,rd_p50=0.0,rd_p95=0.0,rd_slow=0,dec_avg=0.0,dec_max=0.0,dec_frame_ms_avg=0.0,dec_frame_ms_max=0.0,blit_avg=0.0,blit_max=0.0,late_max=0.0,drift_ms=0,touch_read_ms_avg=0.5,touch_read_ms_max=0.7,touch_age_ms_max=9.7,heap_int=96835,heap_psram=8077352,track=0,scn=stress,view=full,hud=0,present_path=direct,vrect=0-319,strips_per_frame=0,strip_ms_avg=0.00,frame_blit_ms_avg=0.0,lvgl_rows_clipped=0,dec_frames=0
+W (59531) MAIN_APP: Mismatch en seek 31 tras 600 ms: esperado='Pista 1', UI='Dance No More'
+W (60241) MAIN_APP: Mismatch en seek 32 tras 610 ms: esperado='Pista 1', UI='Dance No More'

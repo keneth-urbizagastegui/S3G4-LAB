@@ -981,12 +981,13 @@ CONFIG_PARTITION_TABLE_MD5=y
 #
 # App perf
 #
-# default:
-# CONFIG_APP_PERF_AUTOTEST is not set
+CONFIG_APP_PERF_AUTOTEST=y
 # default:
 CONFIG_APP_PERF_SECONDS_PER_TRACK=60
 # default:
 CONFIG_APP_UI_REFRESH_MS=250
+# default:
+CONFIG_APP_SD_FREQ_KHZ=40000
 # end of App perf
 
 #
