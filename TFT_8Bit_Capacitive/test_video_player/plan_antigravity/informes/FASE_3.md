@@ -269,3 +269,9 @@ Recalculado desde `F3_run2.csv` (40 MHz) y `F3_psram80_run1.csv` (80 MHz), y con
 - `perf_capture.py` lleva **cifras de F2 fijas en el código** (líneas 285-296) para comparar. Contradice «los números se cuentan»: deberían leerse del CSV de F2.
 
 **Condiciones que pasan a F4:** (a) implementar y cumplir drop ≤ 1 % en hidden en perf_capture; (b) atacar los picos de lectura de ~25 ms; (c) medir el tiempo de decodificación por fotograma además del de franja; (d) alinear `sdkconfig` normal con los defaults; (e) comparaciones leídas de CSV, no fijas.
+
+## Verificación visual de Keneth sobre F3 (15/09/2026)
+- «La pantalla completa se ve fluida». **Objetivo de F3 confirmado en placa.**
+- Tearing: «siguen viendo cortes, pero esta vez se perciben como diagonales, tanto en pantalla completa como en normal; no es tanto como antes; se da cuando la escena es rápida». Análisis: escribir un fotograma completo tarda ~20 ms y el panel refresca a ~60 Hz (~16,7 ms) sin sincronía; la línea de corte se desplaza → diagonal. No se arregla por software sin sincronizar con el barrido del panel (pin TE) o sin cambiar la frecuencia de refresco del ILI9488 (registro B1, dentro de la secuencia de init congelada). **Decisión pendiente de Keneth.**
+- Mostrar y ocultar controles: funciona, el video no pisa las barras.
+- Píxeles corruptos: ninguno tras horas de reproducción desde el inicio del proyecto (bus a 16 MHz).
