@@ -1,0 +1,37 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&amp;display=swap">
+  <style>
+    body { margin: 0; background: #0B0C0F; font-family: Montserrat, "Segoe UI", sans-serif; }
+    a { color: #F2B33D; } a:hover { color: #FFCB6B; }
+    svg { display: block; }
+  </style>
+</helmet>
+<div style="position: relative; width: 480px; height: 320px; overflow: hidden; background: #000; color: #EDEDEA;">
+  <div style="position: absolute; left: 0; top: 0; width: 480px; height: 320px; background: radial-gradient(120% 90% at 70% 40%, #C9683A 0%, #5B2A3F 38%, #16213A 70%, #07090E 100%);"></div>
+  <div style="position: absolute; left: 12px; top: 52px; width: 212px; height: 172px; border-radius: 8px; background: #15171C; box-sizing: border-box;">
+    <div style="position: absolute; left: 12px; top: 11px; font-size: 13px; font-weight: 600;">Rendimiento</div>
+    <div style="position: absolute; left: 168px; top: 0; width: 44px; height: 36px; display: flex; align-items: center; justify-content: center; color: #8E929B;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+    </div>
+    <div style="position: absolute; left: 12px; top: 38px; width: 188px; display: flex; flex-direction: column; gap: 5px; font-size: 11px; font-variant-numeric: tabular-nums;">
+      <div style="display: flex; justify-content: space-between;"><span style="color: #8E929B;">Presentados</span><span style="color: #F2B33D; font-weight: 600;">29.6 fps</span></div>
+      <div style="display: flex; justify-content: space-between;"><span style="color: #8E929B;">Decodificados</span><span>29.9 fps</span></div>
+      <div style="display: flex; justify-content: space-between;"><span style="color: #8E929B;">Descartados</span><span>3</span></div>
+      <div style="display: flex; justify-content: space-between;"><span style="color: #8E929B;">Lectura SD</span><span>5.1 / 9.4 ms</span></div>
+      <div style="display: flex; justify-content: space-between;"><span style="color: #8E929B;">Decodificación</span><span>21.8 / 27.0 ms</span></div>
+      <div style="display: flex; justify-content: space-between;"><span style="color: #8E929B;">Envío al panel</span><span>18.9 ms</span></div>
+      <div style="display: flex; justify-content: space-between;"><span style="color: #8E929B;">Archivo</span><span>480×320 · 11.2 KB/f</span></div>
+    </div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

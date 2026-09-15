@@ -1,0 +1,57 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&amp;display=swap">
+  <style>
+    body { margin: 0; background: #0B0C0F; font-family: Montserrat, "Segoe UI", sans-serif; }
+    a { color: #F2B33D; } a:hover { color: #FFCB6B; }
+    svg { display: block; }
+  </style>
+</helmet>
+<div style="position: relative; width: 480px; height: 320px; overflow: hidden; background: #0B0C0F; color: #EDEDEA;">
+  <div style="position: absolute; left: 0; top: 0; width: 150px; height: 320px; border-right: 1px solid #2A2D34; box-sizing: border-box;">
+    <div style="position: absolute; left: 0; top: 0; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg>
+    </div>
+    <div style="position: absolute; left: 44px; top: 13px; font-size: 14px; font-weight: 600;">Ajustes</div>
+    <div style="position: absolute; left: 0; top: 52px; width: 149px; display: flex; flex-direction: column;">
+      <div style="height: 48px; padding-left: 16px; display: flex; align-items: center; background: #15171C; color: #F2B33D; font-size: 13px; font-weight: 600;">Pantalla</div>
+      <div style="height: 48px; padding-left: 16px; display: flex; align-items: center; font-size: 13px;">Reproducción</div>
+      <div style="height: 48px; padding-left: 16px; display: flex; align-items: center; font-size: 13px;">Almacenamiento</div>
+      <div style="height: 48px; padding-left: 16px; display: flex; align-items: center; font-size: 13px;">Acerca de</div>
+    </div>
+  </div>
+
+  <div style="position: absolute; left: 150px; top: 0; width: 330px; height: 320px; padding: 16px; box-sizing: border-box; display: flex; flex-direction: column; gap: 0;">
+    <div style="height: 56px; display: flex; flex-direction: column; justify-content: center; gap: 10px; border-bottom: 1px solid #2A2D34;">
+      <div style="display: flex; justify-content: space-between; font-size: 13px;"><span>Brillo</span><span style="color: #8E929B;">70 %</span></div>
+      <div style="position: relative; height: 4px; border-radius: 2px; background: #2A2D34;">
+        <div style="width: 67%; height: 4px; border-radius: 2px; background: #F2B33D;"></div>
+        <div style="position: absolute; left: 190px; top: -5px; width: 14px; height: 14px; border-radius: 7px; background: #F2B33D;"></div>
+      </div>
+    </div>
+    <div style="height: 56px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #2A2D34;">
+      <div style="font-size: 13px;">Ocultar controles tras</div>
+      <div style="height: 32px; padding: 0 10px; border-radius: 6px; background: #15171C; display: flex; align-items: center; gap: 8px; font-size: 13px;">3 s
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8E929B" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"></path></svg>
+      </div>
+    </div>
+    <div style="height: 56px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #2A2D34;">
+      <div style="font-size: 13px;">Mostrar FPS en la OSD</div>
+      <div style="position: relative; width: 44px; height: 24px; border-radius: 12px; background: #F2B33D;"><div style="position: absolute; left: 22px; top: 2px; width: 20px; height: 20px; border-radius: 10px; background: #1A1204;"></div></div>
+    </div>
+    <div style="height: 56px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #2A2D34;">
+      <div style="font-size: 13px;">Barra de progreso mínima</div>
+      <div style="position: relative; width: 44px; height: 24px; border-radius: 12px; background: #2A2D34;"><div style="position: absolute; left: 2px; top: 2px; width: 20px; height: 20px; border-radius: 10px; background: #8E929B;"></div></div>
+    </div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>
