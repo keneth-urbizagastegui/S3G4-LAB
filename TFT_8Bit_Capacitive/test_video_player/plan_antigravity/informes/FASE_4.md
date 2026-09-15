@@ -224,3 +224,16 @@ Recalculado desde `F4_final.csv` y los `.log` de cada ejecución, y contrastado 
 
 **Hallazgo adicional del auditor (15/09/2026, 17:49): el firmware «normal» es la autoprueba.**
 Al regenerar `sdkconfig` (T8) se coló `CONFIG_APP_PERF_AUTOTEST=y` en el `sdkconfig` normal (diff `vp-v0.3..f1230c5`: `-# CONFIG_APP_PERF_AUTOTEST is not set` / `+CONFIG_APP_PERF_AUTOTEST=y`). La placa, flasheada «con la variante normal», ejecuta la autoprueba (el puerto serie muestra `Track 3 -> Escenario 'osd'`). El informe dice que el diff de T8 «solo cambia opciones de defaults»: falso. Probable causa: `idf.py reconfigure` lanzado con `SDKCONFIG_DEFAULTS` que incluía `sdkconfig.perf.defaults`. **Condición (d):** el `sdkconfig` normal debe tener `# CONFIG_APP_PERF_AUTOTEST is not set` y la placa debe quedar con un firmware normal verificado por el log de arranque (sin líneas `Track N -> Escenario`).
+
+---
+
+## Cierre de F4 (decisión de Keneth, 15/09/2026)
+
+**Etiquetada `vp-v0.4` por rendimiento**: 0 descartes en 2100 fotogramas, 30 fps en pantalla con y sin OSD, lector adelantado en el núcleo 0, SD a 20 MHz (26/40 MHz no montan), PSRAM a 80 MHz.
+
+**Queda PENDIENTE y se arrastra a F5** (Antigravity sin cuota en este momento; nada delegado):
+1. **T6 extracción de la SD sin verificar.** Intentos: `F4_sd20` (15 s, sin extracción), `F4_sd26` (falso positivo: tarjeta nunca montada), `F4_final` (15 s) y un cuarto con la placa ejecutando la autoprueba (17:50:38–17:50:53). El aviso del auditor llegó a las 17:50:52: con ventanas de 15 s no es viable a mano. Hace falta firmware normal + extracción libre supervisada desde el puerto serie.
+2. **Firmware normal con `CONFIG_APP_PERF_AUTOTEST=y`** en `sdkconfig`: corregir y verificar en el log de arranque.
+3. **Métricas:** lectura real del lector (`reader_rd_avg/max`, ocupación de la cola); renombrar la del consumidor a `q_wait_ms`; revisar `title_wait_ms_max=0`.
+4. **SDPULL:** ventana de 120 s, exigir haber estado montada y reproduciendo antes de dar por extraída, y que perf_capture no acepte `skipped` como cumplido.
+5. **Nuevo (decisión de hardware de Keneth):** sincronización con el pin TE del panel para eliminar el tearing diagonal residual. Ver `plan_antigravity/05_sincronizacion_TE.md`.
