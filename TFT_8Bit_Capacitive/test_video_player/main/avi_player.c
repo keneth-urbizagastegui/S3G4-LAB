@@ -7,6 +7,10 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <errno.h>
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+#include "freertos/queue.h"
+#include "freertos/semphr.h"
 #include "esp_memory_utils.h"
 #include "esp_log.h"
 #include "esp_timer.h"
@@ -26,45 +30,25 @@ static bool s_need_index_seek = true;
 
 #define JPEG_INBUF_INIT_SIZE (48 * 1024)
 #define JPEG_INBUF_MAX_SIZE  (128 * 1024)
-static uint8_t *s_jpeg_buf = NULL;
-static size_t s_jpeg_buf_capacity = 0;
 
-static bool ensure_jpeg_buf_capacity(size_t required) {
-    if (required <= s_jpeg_buf_capacity && s_jpeg_buf != NULL) {
-        return true;
-    }
-    if (required > JPEG_INBUF_MAX_SIZE) {
-        return false;
-    }
-    size_t new_cap = (required + 4095) & ~4095;
-    if (new_cap < JPEG_INBUF_INIT_SIZE) new_cap = JPEG_INBUF_INIT_SIZE;
-    if (new_cap > JPEG_INBUF_MAX_SIZE) new_cap = JPEG_INBUF_MAX_SIZE;
+#define AVI_PREFETCH_SLOTS 3
 
-    uint8_t *new_buf = NULL;
-    if (new_cap <= 48 * 1024) {
-        new_buf = (uint8_t *)heap_caps_malloc(new_cap, MALLOC_CAP_DMA | MALLOC_CAP_INTERNAL);
-    }
-    if (!new_buf) {
-        new_buf = (uint8_t *)heap_caps_malloc(new_cap, MALLOC_CAP_SPIRAM);
-    }
-    if (!new_buf) {
-        new_buf = (uint8_t *)malloc(new_cap);
-    }
-    if (!new_buf) {
-        ESP_LOGE(TAG, "Fallo al reservar buffer JPEG de %u bytes", (unsigned int)new_cap);
-        return false;
-    }
+typedef struct {
+    uint8_t *buf;
+    size_t capacity;
+    size_t chunk_len;
+    uint32_t frame_idx;
+    esp_err_t err;
+    bool is_eof;
+} avi_slot_t;
 
-    if (s_jpeg_buf) {
-        free(s_jpeg_buf);
-    }
-    s_jpeg_buf = new_buf;
-    s_jpeg_buf_capacity = new_cap;
-    ESP_LOGI(TAG, "Buffer JPEG asignado/expandido a %u bytes (%s)",
-             (unsigned int)new_cap,
-             esp_ptr_internal(new_buf) ? "Internal RAM" : "PSRAM");
-    return true;
-}
+static avi_slot_t s_slots[AVI_PREFETCH_SLOTS];
+static QueueHandle_t s_q_free = NULL;
+static QueueHandle_t s_q_ready = NULL;
+static SemaphoreHandle_t s_file_mutex = NULL;
+static TaskHandle_t s_reader_task_handle = NULL;
+static volatile bool s_reader_run = false;
+static uint32_t s_reader_frame_idx = 0;
 
 static jpeg_dec_handle_t s_dec_full = NULL;
 static jpeg_dec_handle_t s_dec_studio = NULL;
@@ -76,15 +60,179 @@ static size_t s_strip_buf_len = 0;
 static char **s_scanned_avi_files = NULL;
 static int s_scanned_avi_count = 0;
 
+static void avi_reader_task(void *arg) {
+    ESP_LOGI(TAG, "Tarea avi_reader_task iniciada en Core 0.");
+    while (1) {
+        while (!s_reader_run) {
+            ulTaskNotifyTake(pdTRUE, pdMS_TO_TICKS(100));
+        }
+
+        avi_slot_t *slot = NULL;
+        if (xQueueReceive(s_q_free, &slot, pdMS_TO_TICKS(50)) != pdTRUE) {
+            continue;
+        }
+
+        if (!s_reader_run) {
+            xQueueSend(s_q_free, &slot, 0);
+            continue;
+        }
+
+        xSemaphoreTake(s_file_mutex, portMAX_DELAY);
+
+        if (!s_file || !s_info.is_open || s_info.is_eof) {
+            xSemaphoreGive(s_file_mutex);
+            xQueueSend(s_q_free, &slot, 0);
+            vTaskDelay(pdMS_TO_TICKS(10));
+            continue;
+        }
+
+        if (s_info.total_frames > 0 && s_reader_frame_idx >= s_info.total_frames) {
+            slot->is_eof = true;
+            slot->err = ESP_ERR_NOT_FOUND;
+            s_info.is_eof = true;
+            xSemaphoreGive(s_file_mutex);
+            xQueueSend(s_q_ready, &slot, portMAX_DELAY);
+            continue;
+        }
+
+        int fd = fileno(s_file);
+
+        if (s_need_index_seek && s_index_table && s_reader_frame_idx < s_info.total_frames) {
+            lseek(fd, s_index_table[s_reader_frame_idx], SEEK_SET);
+            s_need_index_seek = false;
+        }
+
+        uint8_t chunk_hdr[8];
+        bool got_frame = false;
+
+        while (!got_frame && s_reader_run) {
+            ssize_t r = read(fd, chunk_hdr, 8);
+            if (r < 8) {
+                if (r < 0) {
+                    ESP_LOGE(TAG, "Error de E/S leyendo cabecera en reader task: %d", errno);
+                    slot->err = ESP_ERR_INVALID_RESPONSE;
+                } else {
+                    slot->is_eof = true;
+                    slot->err = ESP_ERR_NOT_FOUND;
+                    s_info.is_eof = true;
+                }
+                got_frame = true;
+                break;
+            }
+
+            uint32_t chunk_len = *(uint32_t *)(chunk_hdr + 4);
+
+            if (memcmp(chunk_hdr, "00dc", 4) == 0 || memcmp(chunk_hdr, "00db", 4) == 0) {
+                if (chunk_len > JPEG_INBUF_MAX_SIZE) {
+                    ESP_LOGE(TAG, "Chunk JPEG excede 128 KB (%u B)", (unsigned int)chunk_len);
+                    lseek(fd, chunk_len + (chunk_len & 1), SEEK_CUR);
+                    perf_mark_oversize();
+                    continue;
+                }
+
+                if (chunk_len > slot->capacity) {
+                    size_t new_cap = (chunk_len + 4095) & ~4095;
+                    if (new_cap > JPEG_INBUF_MAX_SIZE) new_cap = JPEG_INBUF_MAX_SIZE;
+                    uint8_t *nb = (uint8_t *)heap_caps_realloc(slot->buf, new_cap, MALLOC_CAP_SPIRAM);
+                    if (!nb) {
+                        ESP_LOGE(TAG, "Fallo realloc buffer prefetch a %u B", (unsigned int)new_cap);
+                        lseek(fd, chunk_len + (chunk_len & 1), SEEK_CUR);
+                        perf_mark_oversize();
+                        continue;
+                    }
+                    slot->buf = nb;
+                    slot->capacity = new_cap;
+                }
+
+                ssize_t jr = read(fd, slot->buf, chunk_len);
+                if (chunk_len & 1) {
+                    uint8_t pad;
+                    read(fd, &pad, 1);
+                }
+
+                if (jr < (ssize_t)chunk_len) {
+                    if (jr < 0) {
+                        ESP_LOGE(TAG, "Error de E/S leyendo JPEG en reader task: %d", errno);
+                        slot->err = ESP_ERR_INVALID_RESPONSE;
+                    } else {
+                        slot->is_eof = true;
+                        slot->err = ESP_ERR_NOT_FOUND;
+                        s_info.is_eof = true;
+                    }
+                    got_frame = true;
+                    break;
+                }
+
+                slot->chunk_len = chunk_len;
+                slot->frame_idx = s_reader_frame_idx++;
+                slot->err = ESP_OK;
+                slot->is_eof = false;
+                got_frame = true;
+            } else if (memcmp(chunk_hdr, "idx1", 4) == 0) {
+                slot->is_eof = true;
+                slot->err = ESP_ERR_NOT_FOUND;
+                s_info.is_eof = true;
+                got_frame = true;
+            } else {
+                lseek(fd, chunk_len + (chunk_len & 1), SEEK_CUR);
+            }
+        }
+
+        xSemaphoreGive(s_file_mutex);
+
+        if (got_frame) {
+            xQueueSend(s_q_ready, &slot, portMAX_DELAY);
+        } else {
+            xQueueSend(s_q_free, &slot, 0);
+        }
+    }
+}
+
 esp_err_t avi_player_init(void) {
-    ESP_LOGI(TAG, "Inicializando motor de video SIMD (esp_new_jpeg)...");
+    ESP_LOGI(TAG, "Inicializando motor de video SIMD (esp_new_jpeg) con prefetch task...");
 
     memset(&s_info, 0, sizeof(s_info));
 
-    if (!s_jpeg_buf) {
-        if (!ensure_jpeg_buf_capacity(JPEG_INBUF_INIT_SIZE)) {
-            ESP_LOGE(TAG, "Fallo al reservar s_jpeg_buf inicial (48 KB)");
-            return ESP_ERR_NO_MEM;
+    if (!s_file_mutex) {
+        s_file_mutex = xSemaphoreCreateMutex();
+        assert(s_file_mutex != NULL);
+    }
+
+    if (!s_q_free) {
+        s_q_free = xQueueCreate(AVI_PREFETCH_SLOTS, sizeof(avi_slot_t *));
+        s_q_ready = xQueueCreate(AVI_PREFETCH_SLOTS, sizeof(avi_slot_t *));
+        assert(s_q_free != NULL && s_q_ready != NULL);
+
+        for (int i = 0; i < AVI_PREFETCH_SLOTS; i++) {
+            s_slots[i].capacity = JPEG_INBUF_INIT_SIZE;
+            s_slots[i].buf = (uint8_t *)heap_caps_malloc(s_slots[i].capacity, MALLOC_CAP_SPIRAM);
+            if (!s_slots[i].buf) {
+                s_slots[i].buf = (uint8_t *)malloc(s_slots[i].capacity);
+            }
+            assert(s_slots[i].buf != NULL);
+            s_slots[i].chunk_len = 0;
+            s_slots[i].frame_idx = 0;
+            s_slots[i].err = ESP_OK;
+            s_slots[i].is_eof = false;
+
+            avi_slot_t *p_slot = &s_slots[i];
+            xQueueSend(s_q_free, &p_slot, 0);
+        }
+    }
+
+    if (!s_reader_task_handle) {
+        BaseType_t ret_t = xTaskCreatePinnedToCore(
+            avi_reader_task,
+            "avi_reader",
+            4096,
+            NULL,
+            4,
+            &s_reader_task_handle,
+            0
+        );
+        if (ret_t != pdPASS) {
+            ESP_LOGE(TAG, "Fallo al crear avi_reader_task en Core 0");
+            return ESP_FAIL;
         }
     }
 
@@ -123,33 +271,38 @@ esp_err_t avi_player_init(void) {
 esp_err_t avi_player_open(const char *filepath) {
     avi_player_close();
 
+    if (s_file_mutex) {
+        xSemaphoreTake(s_file_mutex, portMAX_DELAY);
+    }
+
     ESP_LOGI(TAG, "Abriendo archivo AVI MJPEG: %s", filepath);
     s_file = fopen(filepath, "rb");
     if (!s_file) {
         ESP_LOGE(TAG, "No se pudo abrir el archivo %s", filepath);
+        if (s_file_mutex) xSemaphoreGive(s_file_mutex);
         return ESP_FAIL;
     }
-
-    // Variante A: Sin setvbuf, buffer por defecto de stdio/FatFS
-    /*
-    if (!s_file_vbuf) {
-        s_file_vbuf = (char *)heap_caps_malloc(32 * 1024, MALLOC_CAP_SPIRAM);
-    }
-    if (s_file_vbuf) {
-        setvbuf(s_file, s_file_vbuf, _IOFBF, 32 * 1024);
-    }
-    */
 
     fseek(s_file, 0, SEEK_END);
     long file_size = ftell(s_file);
     fseek(s_file, 0, SEEK_SET);
 
-    uint8_t *hdr = s_jpeg_buf;
-    size_t r = fread(hdr, 1, 16 * 1024, s_file);
-    if (r < 128 || memcmp(hdr, "RIFF", 4) != 0 || memcmp(hdr + 8, "AVI ", 4) != 0) {
-        ESP_LOGE(TAG, "Encabezado RIFF AVI no válido");
+    size_t hdr_cap = 16384;
+    uint8_t *hdr = (uint8_t *)malloc(hdr_cap);
+    if (!hdr) {
         fclose(s_file);
         s_file = NULL;
+        if (s_file_mutex) xSemaphoreGive(s_file_mutex);
+        return ESP_ERR_NO_MEM;
+    }
+
+    size_t r = fread(hdr, 1, hdr_cap, s_file);
+    if (r < 128 || memcmp(hdr, "RIFF", 4) != 0 || memcmp(hdr + 8, "AVI ", 4) != 0) {
+        ESP_LOGE(TAG, "Encabezado RIFF AVI no válido");
+        free(hdr);
+        fclose(s_file);
+        s_file = NULL;
+        if (s_file_mutex) xSemaphoreGive(s_file_mutex);
         return ESP_FAIL;
     }
 
@@ -190,7 +343,6 @@ esp_err_t avi_player_open(const char *filepath) {
         s_info.is_eof = false;
     }
 
-    // Buscar inicio de lista movi y tamaño
     int movi_pos = -1;
     int movi_chunk_start = -1;
     uint32_t movi_len = 0;
@@ -203,10 +355,12 @@ esp_err_t avi_player_open(const char *filepath) {
         }
     }
 
+    free(hdr);
+
     if (movi_pos >= 0) {
         s_movi_start_offset = movi_pos;
     } else {
-        s_movi_start_offset = 2048; // Offset estándar por defecto
+        s_movi_start_offset = 2048;
     }
 
     // T5: Cargar tabla de índices idx1 en O(1) calculando la posición tras LIST movi
@@ -230,7 +384,6 @@ esp_err_t avi_player_open(const char *filepath) {
             }
         }
 
-        // Fallback si no está justo después de LIST movi: escanear últimos bytes
         if (!idx_found) {
             long scan_bytes = (file_size > 64 * 1024) ? 64 * 1024 : file_size;
             fseek(s_file, file_size - scan_bytes, SEEK_SET);
@@ -281,16 +434,47 @@ esp_err_t avi_player_open(const char *filepath) {
 
     lseek(fileno(s_file), s_movi_start_offset, SEEK_SET);
     s_need_index_seek = false;
+    s_info.current_frame = 0;
+    s_reader_frame_idx = 0;
+    s_info.is_eof = false;
+    s_reader_run = true;
 
-    ESP_LOGI(TAG, "AVI Abierto: %ux%u @ %u FPS, %u cuadros (%u:%02u)",
+    if (s_file_mutex) {
+        xSemaphoreGive(s_file_mutex);
+    }
+
+    if (s_reader_task_handle) {
+        xTaskNotifyGive(s_reader_task_handle);
+    }
+
+    // Preroll: precargar hasta 2 cuadros
+    for (int w = 0; w < 40; w++) {
+        if (uxQueueMessagesWaiting(s_q_ready) >= 2 || s_info.is_eof) break;
+        vTaskDelay(pdMS_TO_TICKS(5));
+    }
+
+    ESP_LOGI(TAG, "AVI Abierto: %ux%u @ %u FPS, %u cuadros (%u:%02u), preroll listo (%d frames)",
              (unsigned int)s_info.width, (unsigned int)s_info.height,
              (unsigned int)s_info.fps, (unsigned int)s_info.total_frames,
-             (unsigned int)(s_info.duration_sec / 60), (unsigned int)(s_info.duration_sec % 60));
+             (unsigned int)(s_info.duration_sec / 60), (unsigned int)(s_info.duration_sec % 60),
+             (int)uxQueueMessagesWaiting(s_q_ready));
 
     return ESP_OK;
 }
 
 void avi_player_close(void) {
+    s_reader_run = false;
+    if (s_file_mutex) {
+        xSemaphoreTake(s_file_mutex, portMAX_DELAY);
+    }
+
+    if (s_q_ready && s_q_free) {
+        avi_slot_t *s;
+        while (xQueueReceive(s_q_ready, &s, 0) == pdTRUE) {
+            xQueueSend(s_q_free, &s, 0);
+        }
+    }
+
     if (s_file) {
         fclose(s_file);
         s_file = NULL;
@@ -306,6 +490,10 @@ void avi_player_close(void) {
     s_info.is_open = false;
     s_info.is_eof = true;
     s_need_index_seek = true;
+
+    if (s_file_mutex) {
+        xSemaphoreGive(s_file_mutex);
+    }
 }
 
 esp_err_t avi_player_read_next_frame(uint16_t *out_rgb565, uint8_t scale) {
@@ -313,104 +501,55 @@ esp_err_t avi_player_read_next_frame(uint16_t *out_rgb565, uint8_t scale) {
         return ESP_ERR_INVALID_STATE;
     }
 
-    int fd = fileno(s_file);
+    int64_t t_rd_start = esp_timer_get_time();
+    avi_slot_t *slot = NULL;
+    if (xQueueReceive(s_q_ready, &slot, pdMS_TO_TICKS(150)) != pdTRUE) {
+        return ESP_ERR_TIMEOUT;
+    }
+    int64_t t_rd_end = esp_timer_get_time();
+    perf_mark_read((uint32_t)(t_rd_end - t_rd_start));
 
-    // Si hubo un seek previo, posicionar en la tabla de índice
-    if (s_need_index_seek && s_index_table && s_info.current_frame < s_info.total_frames) {
-        lseek(fd, s_index_table[s_info.current_frame], SEEK_SET);
-        s_need_index_seek = false;
+    if (slot->err != ESP_OK) {
+        esp_err_t err = slot->err;
+        xQueueSend(s_q_free, &slot, 0);
+        return err;
     }
 
-    // Buscar siguiente chunk 00dc o 00db
-    uint8_t chunk_hdr[8];
-    while (1) {
-        ssize_t r = read(fd, chunk_hdr, 8);
-        if (r < 8) {
-            if (r < 0) {
-                ESP_LOGE(TAG, "Error de E/S leyendo cabecera de chunk: %d", errno);
-                return ESP_ERR_INVALID_RESPONSE;
-            }
-            s_info.is_eof = true;
-            return ESP_ERR_NOT_FOUND; // EOF
-        }
+    jpeg_dec_handle_t dec = (scale == 1) ? s_dec_studio : s_dec_full;
+    if (!dec) dec = s_dec_full;
 
-        uint32_t chunk_len = *(uint32_t *)(chunk_hdr + 4);
+    jpeg_dec_io_t io = {
+        .inbuf = slot->buf,
+        .inbuf_len = (int)slot->chunk_len,
+        .outbuf = (uint8_t *)out_rgb565,
+    };
 
-        if (memcmp(chunk_hdr, "00dc", 4) == 0 || memcmp(chunk_hdr, "00db", 4) == 0) {
-            if (chunk_len > JPEG_INBUF_MAX_SIZE) {
-                ESP_LOGE(TAG, "Cuadro JPEG demasiado grande (>128 KB): %u bytes", (unsigned int)chunk_len);
-                lseek(fd, chunk_len + (chunk_len & 1), SEEK_CUR);
-                perf_mark_oversize();
-                return ESP_ERR_NO_MEM;
-            }
-
-            if (chunk_len > s_jpeg_buf_capacity) {
-                if (!ensure_jpeg_buf_capacity(chunk_len)) {
-                    ESP_LOGE(TAG, "Fallo al redimensionar buffer para chunk: %u bytes", (unsigned int)chunk_len);
-                    lseek(fd, chunk_len + (chunk_len & 1), SEEK_CUR);
-                    perf_mark_oversize();
-                    return ESP_ERR_NO_MEM;
-                }
-            }
-
-            int64_t t_rd_start = esp_timer_get_time();
-            ssize_t jr = read(fd, s_jpeg_buf, chunk_len);
-            if (chunk_len & 1) {
-                uint8_t pad;
-                read(fd, &pad, 1);
-            }
-            int64_t t_rd_end = esp_timer_get_time();
-            perf_mark_read((uint32_t)(t_rd_end - t_rd_start));
-
-            if (jr < (ssize_t)chunk_len) {
-                if (jr < 0) {
-                    ESP_LOGE(TAG, "Error de E/S leyendo JPEG: %d", errno);
-                    return ESP_ERR_INVALID_RESPONSE;
-                }
-                s_info.is_eof = true;
-                return ESP_ERR_NOT_FOUND;
-            }
-
-            // Decodificación acelerada SIMD con esp_new_jpeg
-            jpeg_dec_handle_t dec = (scale == 1) ? s_dec_studio : s_dec_full;
-            if (!dec) dec = s_dec_full;
-
-            jpeg_dec_io_t io = {
-                .inbuf = s_jpeg_buf,
-                .inbuf_len = (int)chunk_len,
-                .outbuf = (uint8_t *)out_rgb565,
-            };
-
-            int64_t t_dec_start = esp_timer_get_time();
-            jpeg_dec_header_info_t hdr_info;
-            jpeg_error_t jerr = jpeg_dec_parse_header(dec, &io, &hdr_info);
-            if (jerr != JPEG_ERR_OK) {
-                ESP_LOGW(TAG, "Fallo al parsear cabecera JPEG: %d", jerr);
-                return ESP_FAIL;
-            }
-
-            jerr = jpeg_dec_process(dec, &io);
-            int64_t t_dec_end = esp_timer_get_time();
-            uint32_t dec_us = (uint32_t)(t_dec_end - t_dec_start);
-            perf_mark_decode(dec_us);
-            perf_mark_frame_decode(dec_us);
-
-            if (jerr != JPEG_ERR_OK) {
-                ESP_LOGW(TAG, "Fallo al decodificar JPEG SIMD: %d", jerr);
-                return ESP_FAIL;
-            }
-
-            s_info.current_frame++;
-            s_info.elapsed_sec = (s_info.fps > 0) ? (s_info.current_frame / s_info.fps) : 0;
-            return ESP_OK;
-        } else if (memcmp(chunk_hdr, "idx1", 4) == 0) {
-            s_info.is_eof = true;
-            return ESP_ERR_NOT_FOUND;
-        } else {
-            // Saltar chunk no relevante (JUNK, audio, etc.)
-            lseek(fd, chunk_len + (chunk_len & 1), SEEK_CUR);
-        }
+    int64_t t_dec_start = esp_timer_get_time();
+    jpeg_dec_header_info_t hdr_info;
+    jpeg_error_t jerr = jpeg_dec_parse_header(dec, &io, &hdr_info);
+    if (jerr != JPEG_ERR_OK) {
+        ESP_LOGW(TAG, "Fallo al parsear cabecera JPEG: %d", jerr);
+        xQueueSend(s_q_free, &slot, 0);
+        return ESP_FAIL;
     }
+
+    jerr = jpeg_dec_process(dec, &io);
+    int64_t t_dec_end = esp_timer_get_time();
+    uint32_t dec_us = (uint32_t)(t_dec_end - t_dec_start);
+    perf_mark_decode(dec_us);
+    perf_mark_frame_decode(dec_us);
+
+    s_info.current_frame = slot->frame_idx + 1;
+    s_info.elapsed_sec = (s_info.fps > 0) ? (s_info.current_frame / s_info.fps) : 0;
+
+    xQueueSend(s_q_free, &slot, 0);
+
+    if (jerr != JPEG_ERR_OK) {
+        ESP_LOGW(TAG, "Fallo al decodificar JPEG SIMD: %d", jerr);
+        return ESP_FAIL;
+    }
+
+    return ESP_OK;
 }
 
 esp_err_t avi_player_read_and_blit_direct(void) {
@@ -418,184 +557,144 @@ esp_err_t avi_player_read_and_blit_direct(void) {
         return ESP_ERR_INVALID_STATE;
     }
 
-    int fd = fileno(s_file);
+    int64_t t_rd_start = esp_timer_get_time();
+    avi_slot_t *slot = NULL;
+    if (xQueueReceive(s_q_ready, &slot, pdMS_TO_TICKS(150)) != pdTRUE) {
+        return ESP_ERR_TIMEOUT;
+    }
+    int64_t t_rd_end = esp_timer_get_time();
+    perf_mark_read((uint32_t)(t_rd_end - t_rd_start));
 
-    if (s_need_index_seek && s_index_table && s_info.current_frame < s_info.total_frames) {
-        lseek(fd, s_index_table[s_info.current_frame], SEEK_SET);
-        s_need_index_seek = false;
+    if (slot->err != ESP_OK) {
+        esp_err_t err = slot->err;
+        xQueueSend(s_q_free, &slot, 0);
+        return err;
     }
 
-    uint8_t chunk_hdr[8];
-    while (1) {
-        ssize_t r = read(fd, chunk_hdr, 8);
-        if (r < 8) {
-            if (r < 0) {
-                ESP_LOGE(TAG, "Error de E/S leyendo cabecera en direct blit: %d", errno);
-                return ESP_ERR_INVALID_RESPONSE;
-            }
-            s_info.is_eof = true;
-            return ESP_ERR_NOT_FOUND;
-        }
+    jpeg_dec_handle_t dec = s_dec_full;
+    if (!dec) {
+        xQueueSend(s_q_free, &slot, 0);
+        return ESP_FAIL;
+    }
 
-        uint32_t chunk_len = *(uint32_t *)(chunk_hdr + 4);
+    jpeg_dec_io_t io = {
+        .inbuf = slot->buf,
+        .inbuf_len = (int)slot->chunk_len,
+    };
 
-        if (memcmp(chunk_hdr, "00dc", 4) == 0 || memcmp(chunk_hdr, "00db", 4) == 0) {
-            if (chunk_len > JPEG_INBUF_MAX_SIZE) {
-                ESP_LOGE(TAG, "Cuadro JPEG demasiado grande (>128 KB): %u bytes", (unsigned int)chunk_len);
-                lseek(fd, chunk_len + (chunk_len & 1), SEEK_CUR);
-                perf_mark_oversize();
+    jpeg_dec_header_info_t hdr_info;
+    jpeg_error_t jerr = jpeg_dec_parse_header(dec, &io, &hdr_info);
+    if (jerr != JPEG_ERR_OK) {
+        ESP_LOGW(TAG, "Fallo al parsear cabecera JPEG en direct: %d", jerr);
+        xQueueSend(s_q_free, &slot, 0);
+        return ESP_FAIL;
+    }
+
+    int outbuf_len = 0;
+    jpeg_dec_get_outbuf_len(dec, &outbuf_len);
+    int process_count = 0;
+    jpeg_dec_get_process_count(dec, &process_count);
+    if (process_count <= 0 || outbuf_len <= 0) {
+        ESP_LOGW(TAG, "process_count=%d outbuf_len=%d invalido", process_count, outbuf_len);
+        xQueueSend(s_q_free, &slot, 0);
+        return ESP_FAIL;
+    }
+
+    // Asegurar que los búferes DMA internos de franja estén asignados
+    if (!s_strip_bufs[0] || s_strip_buf_len < (size_t)outbuf_len) {
+        for (int i = 0; i < 2; i++) {
+            if (s_strip_bufs[i]) free(s_strip_bufs[i]);
+            s_strip_bufs[i] = (uint16_t *)heap_caps_aligned_alloc(16, outbuf_len, MALLOC_CAP_DMA | MALLOC_CAP_INTERNAL);
+            if (!s_strip_bufs[i]) {
+                ESP_LOGE(TAG, "Fallo al reservar strip_buf[%d] (%d bytes DMA)", i, outbuf_len);
+                xQueueSend(s_q_free, &slot, 0);
                 return ESP_ERR_NO_MEM;
             }
+        }
+        s_strip_buf_len = (size_t)outbuf_len;
+    }
 
-            if (chunk_len > s_jpeg_buf_capacity) {
-                if (!ensure_jpeg_buf_capacity(chunk_len)) {
-                    ESP_LOGE(TAG, "Fallo al redimensionar buffer para chunk: %u bytes", (unsigned int)chunk_len);
-                    lseek(fd, chunk_len + (chunk_len & 1), SEEK_CUR);
-                    perf_mark_oversize();
-                    return ESP_ERR_NO_MEM;
-                }
-            }
+    int16_t vx, vy, vw, vh;
+    lcd_bus_get_video_rect(&vx, &vy, &vw, &vh);
 
-            int64_t t_rd_start = esp_timer_get_time();
-            ssize_t jr = read(fd, s_jpeg_buf, chunk_len);
-            if (chunk_len & 1) {
-                uint8_t pad;
-                read(fd, &pad, 1);
-            }
-            int64_t t_rd_end = esp_timer_get_time();
-            perf_mark_read((uint32_t)(t_rd_end - t_rd_start));
+    int line_y = 0;
+    bool dma_in_flight = false;
+    uint32_t strip_dma_us = 0;
+    uint32_t total_frame_blit_us = 0;
+    uint32_t strips_sent_count = 0;
+    uint32_t total_frame_dec_us = 0;
 
-            if (jr < (ssize_t)chunk_len) {
-                if (jr < 0) {
-                    ESP_LOGE(TAG, "Error de E/S leyendo JPEG en direct blit: %d", errno);
-                    return ESP_ERR_INVALID_RESPONSE;
-                }
-                s_info.is_eof = true;
-                return ESP_ERR_NOT_FOUND;
-            }
+    lcd_bus_lock();
 
-            jpeg_dec_handle_t dec = s_dec_full;
-            if (!dec) return ESP_FAIL;
+    for (int b = 0; b < process_count; b++) {
+        io.outbuf = (uint8_t *)s_strip_bufs[b & 1];
 
-            jpeg_dec_io_t io = {
-                .inbuf = s_jpeg_buf,
-                .inbuf_len = (int)chunk_len,
-            };
+        int64_t t_dec_start = esp_timer_get_time();
+        jerr = jpeg_dec_process(dec, &io);
+        int64_t t_dec_end = esp_timer_get_time();
+        uint32_t s_dec_us = (uint32_t)(t_dec_end - t_dec_start);
+        perf_mark_decode(s_dec_us);
+        total_frame_dec_us += s_dec_us;
 
-            jpeg_dec_header_info_t hdr_info;
-            jpeg_error_t jerr = jpeg_dec_parse_header(dec, &io, &hdr_info);
-            if (jerr != JPEG_ERR_OK) {
-                ESP_LOGW(TAG, "Fallo al parsear cabecera JPEG en direct: %d", jerr);
-                return ESP_FAIL;
-            }
-
-            int outbuf_len = 0;
-            jpeg_dec_get_outbuf_len(dec, &outbuf_len);
-            int process_count = 0;
-            jpeg_dec_get_process_count(dec, &process_count);
-            if (process_count <= 0 || outbuf_len <= 0) {
-                ESP_LOGW(TAG, "process_count=%d outbuf_len=%d invalido", process_count, outbuf_len);
-                return ESP_FAIL;
-            }
-
-            // Asegurar que los búferes DMA internos de franja estén asignados
-            if (!s_strip_bufs[0] || s_strip_buf_len < (size_t)outbuf_len) {
-                for (int i = 0; i < 2; i++) {
-                    if (s_strip_bufs[i]) free(s_strip_bufs[i]);
-                    s_strip_bufs[i] = (uint16_t *)heap_caps_aligned_alloc(16, outbuf_len, MALLOC_CAP_DMA | MALLOC_CAP_INTERNAL);
-                    if (!s_strip_bufs[i]) {
-                        ESP_LOGE(TAG, "Fallo al reservar strip_buf[%d] (%d bytes DMA)", i, outbuf_len);
-                        return ESP_ERR_NO_MEM;
-                    }
-                }
-                s_strip_buf_len = (size_t)outbuf_len;
-            }
-
-            int16_t vx, vy, vw, vh;
-            lcd_bus_get_video_rect(&vx, &vy, &vw, &vh);
-
-            int line_y = 0;
-            bool dma_in_flight = false;
-            uint32_t strip_dma_us = 0;
-            uint32_t total_frame_blit_us = 0;
-            uint32_t strips_sent_count = 0;
-            uint32_t total_frame_dec_us = 0;
-
-            lcd_bus_lock();
-
-            for (int b = 0; b < process_count; b++) {
-                io.outbuf = (uint8_t *)s_strip_bufs[b & 1];
-
-                int64_t t_dec_start = esp_timer_get_time();
-                jerr = jpeg_dec_process(dec, &io);
-                int64_t t_dec_end = esp_timer_get_time();
-                uint32_t s_dec_us = (uint32_t)(t_dec_end - t_dec_start);
-                perf_mark_decode(s_dec_us);
-                total_frame_dec_us += s_dec_us;
-
-                if (jerr != JPEG_ERR_OK) {
-                    ESP_LOGW(TAG, "Fallo en jpeg_dec_process bloque %d/%d: %d", b, process_count, jerr);
-                    if (dma_in_flight) {
-                        lcd_bus_wait_strip_done(NULL);
-                    }
-                    lcd_bus_unlock();
-                    return ESP_FAIL;
-                }
-
-                // Si habia un DMA previo en vuelo, esperar a que termine antes de lanzar el siguiente
-                if (dma_in_flight) {
-                    lcd_bus_wait_strip_done(&strip_dma_us);
-                    dma_in_flight = false;
-                    total_frame_blit_us += strip_dma_us;
-                    perf_mark_strip(strip_dma_us);
-                }
-
-                int cur_lines = (hdr_info.width > 0) ? (io.out_size / (hdr_info.width * 2)) : 0;
-                int cur_y1 = line_y;
-                int cur_y2 = line_y + cur_lines - 1;
-                line_y += cur_lines;
-
-                // Verificar recorte contra video_rect
-                if (vw > 0 && vh > 0) {
-                    int clip_y1 = (cur_y1 > vy) ? cur_y1 : vy;
-                    int clip_y2 = (cur_y2 < (vy + vh - 1)) ? cur_y2 : (vy + vh - 1);
-
-                    if (clip_y1 <= clip_y2) {
-                        size_t offset_bytes = (size_t)(clip_y1 - cur_y1) * (hdr_info.width * 2);
-                        size_t visible_bytes = (size_t)(clip_y2 - clip_y1 + 1) * (hdr_info.width * 2);
-                        const uint16_t *strip_px = (const uint16_t *)((uint8_t *)s_strip_bufs[b & 1] + offset_bytes);
-
-                        lcd_bus_draw_strip_async(0, (uint16_t)clip_y1, hdr_info.width - 1, (uint16_t)clip_y2, strip_px, visible_bytes);
-                        dma_in_flight = true;
-                        strips_sent_count++;
-                    }
-                }
-            }
-
-            // Esperar al ultimo DMA si quedo en vuelo
+        if (jerr != JPEG_ERR_OK) {
+            ESP_LOGW(TAG, "Fallo en jpeg_dec_process bloque %d/%d: %d", b, process_count, jerr);
             if (dma_in_flight) {
-                lcd_bus_wait_strip_done(&strip_dma_us);
-                dma_in_flight = false;
-                total_frame_blit_us += strip_dma_us;
-                perf_mark_strip(strip_dma_us);
+                lcd_bus_wait_strip_done(NULL);
             }
             lcd_bus_unlock();
+            xQueueSend(s_q_free, &slot, 0);
+            return ESP_FAIL;
+        }
 
-            // Registro de frame presentado y metricas direct
-            perf_mark_frame_decode(total_frame_dec_us);
-            perf_mark_direct_frame(strips_sent_count, total_frame_blit_us);
-            perf_mark_presented();
+        // Si habia un DMA previo en vuelo, esperar a que termine antes de lanzar el siguiente
+        if (dma_in_flight) {
+            lcd_bus_wait_strip_done(&strip_dma_us);
+            dma_in_flight = false;
+            total_frame_blit_us += strip_dma_us;
+            perf_mark_strip(strip_dma_us);
+        }
 
-            s_info.current_frame++;
-            s_info.elapsed_sec = (s_info.fps > 0) ? (s_info.current_frame / s_info.fps) : 0;
-            return ESP_OK;
-        } else if (memcmp(chunk_hdr, "idx1", 4) == 0) {
-            s_info.is_eof = true;
-            return ESP_ERR_NOT_FOUND;
-        } else {
-            lseek(fd, chunk_len + (chunk_len & 1), SEEK_CUR);
+        int cur_lines = (hdr_info.width > 0) ? (io.out_size / (hdr_info.width * 2)) : 0;
+        int cur_y1 = line_y;
+        int cur_y2 = line_y + cur_lines - 1;
+        line_y += cur_lines;
+
+        // Verificar recorte contra video_rect
+        if (vw > 0 && vh > 0) {
+            int clip_y1 = (cur_y1 > vy) ? cur_y1 : vy;
+            int clip_y2 = (cur_y2 < (vy + vh - 1)) ? cur_y2 : (vy + vh - 1);
+
+            if (clip_y1 <= clip_y2) {
+                size_t offset_bytes = (size_t)(clip_y1 - cur_y1) * (hdr_info.width * 2);
+                size_t visible_bytes = (size_t)(clip_y2 - clip_y1 + 1) * (hdr_info.width * 2);
+                const uint16_t *strip_px = (const uint16_t *)((uint8_t *)s_strip_bufs[b & 1] + offset_bytes);
+
+                lcd_bus_draw_strip_async(0, (uint16_t)clip_y1, hdr_info.width - 1, (uint16_t)clip_y2, strip_px, visible_bytes);
+                dma_in_flight = true;
+                strips_sent_count++;
+            }
         }
     }
+
+    // Esperar al ultimo DMA si quedo en vuelo
+    if (dma_in_flight) {
+        lcd_bus_wait_strip_done(&strip_dma_us);
+        dma_in_flight = false;
+        total_frame_blit_us += strip_dma_us;
+        perf_mark_strip(strip_dma_us);
+    }
+    lcd_bus_unlock();
+
+    s_info.current_frame = slot->frame_idx + 1;
+    s_info.elapsed_sec = (s_info.fps > 0) ? (s_info.current_frame / s_info.fps) : 0;
+
+    xQueueSend(s_q_free, &slot, 0);
+
+    perf_mark_frame_decode(total_frame_dec_us);
+    perf_mark_direct_frame(strips_sent_count, total_frame_blit_us);
+    perf_mark_presented();
+
+    return ESP_OK;
 }
 
 esp_err_t avi_player_skip_next_frame(void) {
@@ -603,37 +702,47 @@ esp_err_t avi_player_skip_next_frame(void) {
         return ESP_ERR_INVALID_STATE;
     }
 
-    if (s_info.total_frames > 0 && s_info.current_frame >= s_info.total_frames) {
-        s_info.is_eof = true;
+    avi_slot_t *slot = NULL;
+    if (xQueueReceive(s_q_ready, &slot, 0) == pdTRUE) {
+        if (slot->err != ESP_OK) {
+            esp_err_t err = slot->err;
+            xQueueSend(s_q_free, &slot, 0);
+            return err;
+        }
+        s_info.current_frame = slot->frame_idx + 1;
+        s_info.elapsed_sec = (s_info.fps > 0) ? (s_info.current_frame / s_info.fps) : 0;
+        xQueueSend(s_q_free, &slot, 0);
+        return ESP_OK;
+    }
+
+    xSemaphoreTake(s_file_mutex, portMAX_DELAY);
+    if (!s_file || !s_info.is_open || s_info.is_eof) {
+        xSemaphoreGive(s_file_mutex);
         return ESP_ERR_NOT_FOUND;
     }
 
     int fd = fileno(s_file);
-
-    // Si hubo un seek previo, posicionar en la tabla de índice
-    if (s_need_index_seek && s_index_table && s_info.current_frame < s_info.total_frames) {
-        lseek(fd, s_index_table[s_info.current_frame], SEEK_SET);
-        s_need_index_seek = false;
-    }
-
     uint8_t chunk_hdr[8];
     while (1) {
         ssize_t r = read(fd, chunk_hdr, 8);
         if (r < 8) {
             s_info.is_eof = true;
+            xSemaphoreGive(s_file_mutex);
             return ESP_ERR_NOT_FOUND;
         }
 
         uint32_t chunk_len = *(uint32_t *)(chunk_hdr + 4);
 
         if (memcmp(chunk_hdr, "00dc", 4) == 0 || memcmp(chunk_hdr, "00db", 4) == 0) {
-            // Saltar chunk de video sin decodificar
             lseek(fd, chunk_len + (chunk_len & 1), SEEK_CUR);
-            s_info.current_frame++;
+            s_info.current_frame = s_reader_frame_idx + 1;
+            s_reader_frame_idx++;
             s_info.elapsed_sec = (s_info.fps > 0) ? (s_info.current_frame / s_info.fps) : 0;
+            xSemaphoreGive(s_file_mutex);
             return ESP_OK;
         } else if (memcmp(chunk_hdr, "idx1", 4) == 0) {
             s_info.is_eof = true;
+            xSemaphoreGive(s_file_mutex);
             return ESP_ERR_NOT_FOUND;
         } else {
             lseek(fd, chunk_len + (chunk_len & 1), SEEK_CUR);
@@ -647,33 +756,90 @@ void avi_player_seek_percent(int percent) {
     if (percent < 0) percent = 0;
     if (percent > 99) percent = 99;
 
+    s_reader_run = false;
+    if (s_file_mutex) {
+        xSemaphoreTake(s_file_mutex, portMAX_DELAY);
+    }
+
+    if (s_q_ready && s_q_free) {
+        avi_slot_t *s;
+        while (xQueueReceive(s_q_ready, &s, 0) == pdTRUE) {
+            xQueueSend(s_q_free, &s, 0);
+        }
+    }
+
     int fd = fileno(s_file);
     uint32_t target_frame = (percent * s_info.total_frames) / 100;
     if (s_index_table && target_frame < s_info.total_frames) {
         lseek(fd, s_index_table[target_frame], SEEK_SET);
         s_info.current_frame = target_frame;
+        s_reader_frame_idx = target_frame;
         s_info.elapsed_sec = (s_info.fps > 0) ? (target_frame / s_info.fps) : 0;
         s_need_index_seek = false;
     } else {
-        // Búsqueda por aproximación de archivo
         off_t sz = lseek(fd, 0, SEEK_END);
         off_t target_pos = s_movi_start_offset + (off_t)(((sz - s_movi_start_offset) * (int64_t)percent) / 100);
         lseek(fd, target_pos, SEEK_SET);
         s_info.current_frame = target_frame;
+        s_reader_frame_idx = target_frame;
         s_info.elapsed_sec = (s_info.fps > 0) ? (target_frame / s_info.fps) : 0;
         s_need_index_seek = false;
     }
+
+    s_info.is_eof = false;
+    s_reader_run = true;
+
+    if (s_file_mutex) {
+        xSemaphoreGive(s_file_mutex);
+    }
+
+    if (s_reader_task_handle) {
+        xTaskNotifyGive(s_reader_task_handle);
+    }
+
+    for (int w = 0; w < 30; w++) {
+        if (uxQueueMessagesWaiting(s_q_ready) >= 1 || s_info.is_eof) break;
+        vTaskDelay(pdMS_TO_TICKS(5));
+    }
+
     ESP_LOGI(TAG, "Seek completado a %d%% (cuadro %u/%u)",
              percent, (unsigned int)s_info.current_frame, (unsigned int)s_info.total_frames);
 }
 
 void avi_player_restart(void) {
-    if (s_file) {
-        lseek(fileno(s_file), s_movi_start_offset, SEEK_SET);
-        s_info.current_frame = 0;
-        s_info.elapsed_sec = 0;
-        s_info.is_eof = false;
-        s_need_index_seek = false;
+    if (!s_file) return;
+
+    s_reader_run = false;
+    if (s_file_mutex) {
+        xSemaphoreTake(s_file_mutex, portMAX_DELAY);
+    }
+
+    if (s_q_ready && s_q_free) {
+        avi_slot_t *s;
+        while (xQueueReceive(s_q_ready, &s, 0) == pdTRUE) {
+            xQueueSend(s_q_free, &s, 0);
+        }
+    }
+
+    lseek(fileno(s_file), s_movi_start_offset, SEEK_SET);
+    s_info.current_frame = 0;
+    s_reader_frame_idx = 0;
+    s_info.elapsed_sec = 0;
+    s_info.is_eof = false;
+    s_need_index_seek = false;
+    s_reader_run = true;
+
+    if (s_file_mutex) {
+        xSemaphoreGive(s_file_mutex);
+    }
+
+    if (s_reader_task_handle) {
+        xTaskNotifyGive(s_reader_task_handle);
+    }
+
+    for (int w = 0; w < 30; w++) {
+        if (uxQueueMessagesWaiting(s_q_ready) >= 1 || s_info.is_eof) break;
+        vTaskDelay(pdMS_TO_TICKS(5));
     }
 }
 
