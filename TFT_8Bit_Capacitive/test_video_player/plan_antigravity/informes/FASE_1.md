@@ -230,3 +230,18 @@ I (4007) MAIN_APP: Iniciando gui_task en Core 0...
 I (4137) MAIN_APP: Bucle de eventos GUI LVGL iniciado en Core 0.
 PERF,t_ms=3669,...,frame_mismatch=0,...,scn=init,view=studio,hud=0
 ```
+
+---
+
+## Auditoría de Claude de la iteración 3 (15/09/2026) — F1 APROBADA
+
+Verificado contra `95fec07` y `F1_run3.csv`/`.log`:
+- **X1 corregido:** todos los registros hidden/osd/seek llevan `view=full`; osd `hud=1` y hidden/seek `hud=0`. `blit_avg` vuelve a 2,7 ms. `perf_capture.py` valida esa coherencia.
+- **X2 corregido:** `frame_mismatch=0` en toda la prueba; arranque en studio con escala 1.
+- **X3 corregido:** análisis por función de `main.c`: `lv_*` y `spotify_ui_*` solo en `gui_task` y en callbacks que LVGL ejecuta dentro de ella (flush, lectura del táctil, lv_timer). `autotest_task` usa `ui_req_send`.
+- **X4 corregido:** el título comparado sale de `lv_label_get_text` en `gui_task` y se publica bajo portMUX. STRESS: 20 cambios, 50 saltos, `title_mismatch=0`, `title_wait_ms_max=81`.
+
+Observaciones para F2 (no bloquean F1):
+- **O1.** pres_fps baja respecto a F0: hidden 13,8–14,2 (F0: 15,1–15,4) y osd 7,3–7,4 (F0: 8,2–8,3), con dec_fps igual. Causa probable: `ui_refresh_timer_cb` cada 100 ms (antes 250 ms), que redibuja etiquetas y barra en el mismo hilo que compone el video, más `publish_ui_state`. En F2 hay que medirlo con el timer a 250 ms.
+- **O2.** `heap_int` baja de ~99,6 KB a ~74,3 KB (−25 KB) en cuanto empieza la autoprueba, con un mínimo de 66,7 KB. Estable, sin fugas, pero hay que identificar el consumidor (¿cola `ui_req`, pilas de tareas, búfer de título?) antes de F3, que añade búferes DMA internos.
+- **Pendiente de Keneth:** comprobar el táctil a mano con la variante normal ya flasheada.
