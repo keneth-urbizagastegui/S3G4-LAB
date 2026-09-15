@@ -174,3 +174,24 @@ La variante de producción normal interactiva (`idf.py -p COM17 flash`) ha queda
 - Verificación física de Keneth con la variante normal actualmente flasheada en COM17.
 - Auditoría independiente de código por parte de Claude.
 - **Fase 3**: Blit directo con decodificación por bloques DMA (`lcd_bus.c/.h`), eliminación del canvas de LVGL en pantalla completa y objetivo de `pres_fps >= 28.5`.
+
+---
+
+## Auditoría de Claude (15/09/2026) — F2 APROBADA
+
+Verificado contra `cb9c825`, `F2_run2.csv` y `F2_run2.log`, recalculando desde el CSV:
+- **Criterios:** código 0; `view=full` en todos los hidden/osd/seek y `hud` coherente; |drift| máximo 56 ms (< 100); `late_max` entre 58 y 89 ms y estable; TAP `hud_before=0,hud_after=1` leído del estado que publica `gui_task` (`lv_obj_has_flag`), no del lado que lo alimenta; STRESS `title_mismatch=0`.
+- **FREERTOS_HZ=1000** llega a `sdkconfig` y a `sdkconfig.perf`.
+- **Bug T2:** `LV_OBJ_FLAG_CLICKABLE` en el canvas de pantalla completa y en el overlay, que ya no hace scroll. Coincide con la hipótesis.
+- **O2 resuelta:** `heap_int` mínimo 84,5 KB (F1: 74,3) tras reducir las pilas; margen de pila ≥ 2,2 KB medido.
+
+Qué dicen de verdad las cifras:
+- **La cadencia ya es correcta.** dec_fps (17–22) + descartados (8–13/s) ≈ 30 fotogramas/s de línea de tiempo: el video avanza a su velocidad real y no se ralentiza.
+- **Pero en pantalla llegan 13 de 30 fotogramas** (6,7–7,1 con la OSD): cerca del 57 % nunca se ve. **El cuello de botella ya no está en el núcleo 1, está en la presentación por LVGL (núcleo 0).** Esto justifica F3 con cifras.
+- **O3 (nueva):** pres_fps bajó un poco más respecto a F1 it3 (hidden 13,9 → 13,0–13,4; osd 7,3 → 6,7–7,1), aunque el refresco de la UI pasó a 250 ms. O1 no explicaba la pérdida. No se investiga: F3 retira el video de LVGL y la pregunta desaparece.
+
+Observaciones (no bloquean F2):
+- **Criterio de drift:** en parte se cumple por construcción. Descartar cuando `late > us_per_frame` acota el drift a ~1 fotograma más el tiempo de decodificación. Demuestra que el planificador funciona, no la sincronía visual; esa la valida Keneth.
+- **Espera activa:** `taskYIELD` hasta 2 ms en el núcleo 1 con prioridad 5. No saltó el WDT en la prueba, pero la tarea ociosa del CPU1 queda sin tiempo durante ese intervalo. Revisar en F3.
+- **Experimento PSRAM a 80 MHz:** el encargo lo permitía y no se hizo (`sdkconfig`: `SPIRAM_SPEED_40M=y`). El informe no lo menciona. Pendiente para F3 o F7.
+- `title_wait_ms_max` sube de 81 a 206 ms por el refresco a 250 ms. Aceptable.
