@@ -2,9 +2,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <strings.h>
+#include <dirent.h>
 #include "esp_log.h"
+#include "esp_timer.h"
 #include "esp_heap_caps.h"
 #include "esp_jpeg_dec.h"
+#include "perf.h"
 
 static const char *TAG = "AVI_PLAYER_SIMD";
 
@@ -18,6 +22,9 @@ static uint8_t *s_jpeg_buf = NULL;
 
 static jpeg_dec_handle_t s_dec_full = NULL;
 static jpeg_dec_handle_t s_dec_studio = NULL;
+
+static char **s_scanned_avi_files = NULL;
+static int s_scanned_avi_count = 0;
 
 esp_err_t avi_player_init(void) {
     ESP_LOGI(TAG, "Inicializando motor de video SIMD (esp_new_jpeg)...");
@@ -92,7 +99,7 @@ esp_err_t avi_player_open(const char *filepath) {
     int avih_pos = -1;
     for (size_t i = 0; i < r - 56; i++) {
         if (memcmp(hdr + i, "avih", 4) == 0) {
-            avih_pos = i;
+            avih_pos = (int)i;
             break;
         }
     }
@@ -109,7 +116,7 @@ esp_err_t avi_player_open(const char *filepath) {
         s_info.us_per_frame = us_per_frame ? us_per_frame : 33333;
         s_info.fps = 1000000 / s_info.us_per_frame;
         s_info.total_frames = total_frames;
-        s_info.duration_sec = s_info.total_frames / s_info.fps;
+        s_info.duration_sec = (s_info.fps > 0) ? (s_info.total_frames / s_info.fps) : 0;
         s_info.current_frame = 0;
         s_info.elapsed_sec = 0;
         s_info.is_open = true;
@@ -129,7 +136,7 @@ esp_err_t avi_player_open(const char *filepath) {
     int movi_pos = -1;
     for (size_t i = 0; i < r - 12; i++) {
         if (memcmp(hdr + i, "LIST", 4) == 0 && memcmp(hdr + i + 8, "movi", 4) == 0) {
-            movi_pos = i + 12;
+            movi_pos = (int)i + 12;
             break;
         }
     }
@@ -142,26 +149,35 @@ esp_err_t avi_player_open(const char *filepath) {
 
     // Cargar tabla de índices idx1 desde el final del archivo para O(1) Seek
     if (file_size > 1024 && s_info.total_frames > 0) {
-        long scan_bytes = (file_size > 256 * 1024) ? 256 * 1024 : file_size;
+        long scan_bytes = (file_size > 512 * 1024) ? 512 * 1024 : file_size;
         fseek(s_file, file_size - scan_bytes, SEEK_SET);
         uint8_t *tail = (uint8_t *)malloc(scan_bytes);
         if (tail) {
-            fread(tail, 1, scan_bytes, s_file);
-            for (long i = 0; i < scan_bytes - 16; i++) {
+            size_t tr = fread(tail, 1, scan_bytes, s_file);
+            for (long i = 0; i + 8 <= (long)tr; i++) {
                 if (memcmp(tail + i, "idx1", 4) == 0) {
                     uint32_t idx_size = *(uint32_t *)(tail + i + 4);
                     uint32_t num_entries = idx_size / 16;
-                    if (num_entries > 0 && num_entries <= s_info.total_frames + 100) {
+                    long idx_file_pos = (file_size - scan_bytes) + i + 8;
+                    if (num_entries > 0 && num_entries <= s_info.total_frames + 500) {
                         s_index_table = (uint32_t *)heap_caps_malloc(num_entries * sizeof(uint32_t), MALLOC_CAP_SPIRAM);
                         if (s_index_table) {
-                            uint8_t *entry_ptr = tail + i + 8;
+                            fseek(s_file, idx_file_pos, SEEK_SET);
                             uint32_t valid_cnt = 0;
-                            for (uint32_t e = 0; e < num_entries && (entry_ptr + 16 <= tail + scan_bytes); e++) {
-                                if (memcmp(entry_ptr, "00dc", 4) == 0 || memcmp(entry_ptr, "00db", 4) == 0) {
-                                    uint32_t off = *(uint32_t *)(entry_ptr + 8);
-                                    s_index_table[valid_cnt++] = (s_movi_start_offset - 4) + off;
+                            uint8_t ent_buf[2048];
+                            uint32_t bytes_left = idx_size;
+                            while (bytes_left >= 16 && valid_cnt < num_entries) {
+                                size_t to_read = (bytes_left > sizeof(ent_buf)) ? sizeof(ent_buf) : bytes_left;
+                                to_read = (to_read / 16) * 16;
+                                size_t nr = fread(ent_buf, 1, to_read, s_file);
+                                if (nr < 16) break;
+                                for (size_t k = 0; k + 16 <= nr && valid_cnt < num_entries; k += 16) {
+                                    if (memcmp(ent_buf + k, "00dc", 4) == 0 || memcmp(ent_buf + k, "00db", 4) == 0) {
+                                        uint32_t off = *(uint32_t *)(ent_buf + k + 8);
+                                        s_index_table[valid_cnt++] = (s_movi_start_offset - 4) + off;
+                                    }
                                 }
-                                entry_ptr += 16;
+                                bytes_left -= (uint32_t)nr;
                             }
                             ESP_LOGI(TAG, "Tabla idx1 cargada: %u cuadros indexados en PSRAM", (unsigned int)valid_cnt);
                         }
@@ -221,11 +237,15 @@ esp_err_t avi_player_read_next_frame(uint16_t *out_rgb565, uint8_t scale) {
             if (chunk_len > JPEG_INBUF_SIZE) {
                 ESP_LOGE(TAG, "Cuadro JPEG demasiado grande: %u bytes", (unsigned int)chunk_len);
                 fseek(s_file, chunk_len + (chunk_len & 1), SEEK_CUR);
+                perf_mark_oversize();
                 return ESP_ERR_NO_MEM;
             }
 
+            int64_t t_rd_start = esp_timer_get_time();
             size_t jr = fread(s_jpeg_buf, 1, chunk_len, s_file);
             if (chunk_len & 1) fseek(s_file, 1, SEEK_CUR); // Alinear word
+            int64_t t_rd_end = esp_timer_get_time();
+            perf_mark_read((uint32_t)(t_rd_end - t_rd_start));
 
             if (jr < chunk_len) {
                 s_info.is_eof = true;
@@ -242,6 +262,7 @@ esp_err_t avi_player_read_next_frame(uint16_t *out_rgb565, uint8_t scale) {
                 .outbuf = (uint8_t *)out_rgb565,
             };
 
+            int64_t t_dec_start = esp_timer_get_time();
             jpeg_dec_header_info_t hdr_info;
             jpeg_error_t jerr = jpeg_dec_parse_header(dec, &io, &hdr_info);
             if (jerr != JPEG_ERR_OK) {
@@ -250,13 +271,16 @@ esp_err_t avi_player_read_next_frame(uint16_t *out_rgb565, uint8_t scale) {
             }
 
             jerr = jpeg_dec_process(dec, &io);
+            int64_t t_dec_end = esp_timer_get_time();
+            perf_mark_decode((uint32_t)(t_dec_end - t_dec_start));
+
             if (jerr != JPEG_ERR_OK) {
                 ESP_LOGW(TAG, "Fallo al decodificar JPEG SIMD: %d", jerr);
                 return ESP_FAIL;
             }
 
             s_info.current_frame++;
-            s_info.elapsed_sec = s_info.current_frame / s_info.fps;
+            s_info.elapsed_sec = (s_info.fps > 0) ? (s_info.current_frame / s_info.fps) : 0;
             return ESP_OK;
         } else if (memcmp(chunk_hdr, "idx1", 4) == 0) {
             s_info.is_eof = true;
@@ -278,7 +302,7 @@ void avi_player_seek_percent(int percent) {
     if (s_index_table && target_frame < s_info.total_frames) {
         fseek(s_file, s_index_table[target_frame], SEEK_SET);
         s_info.current_frame = target_frame;
-        s_info.elapsed_sec = target_frame / s_info.fps;
+        s_info.elapsed_sec = (s_info.fps > 0) ? (target_frame / s_info.fps) : 0;
     } else {
         // Búsqueda por aproximación de archivo
         fseek(s_file, 0, SEEK_END);
@@ -286,7 +310,7 @@ void avi_player_seek_percent(int percent) {
         long target_pos = s_movi_start_offset + (long)(((sz - s_movi_start_offset) * (int64_t)percent) / 100);
         fseek(s_file, target_pos, SEEK_SET);
         s_info.current_frame = target_frame;
-        s_info.elapsed_sec = target_frame / s_info.fps;
+        s_info.elapsed_sec = (s_info.fps > 0) ? (target_frame / s_info.fps) : 0;
     }
     ESP_LOGI(TAG, "Seek completado a %d%% (cuadro %u/%u)",
              percent, (unsigned int)s_info.current_frame, (unsigned int)s_info.total_frames);
@@ -303,4 +327,234 @@ void avi_player_restart(void) {
 
 const avi_info_t *avi_player_get_info(void) {
     return &s_info;
+}
+
+void avi_player_log_media(const char *filepath) {
+    if (!filepath) return;
+    FILE *f = fopen(filepath, "rb");
+    if (!f) {
+        ESP_LOGE(TAG, "No se pudo abrir %s para MEDIA", filepath);
+        return;
+    }
+
+    fseek(f, 0, SEEK_END);
+    long file_size = ftell(f);
+    fseek(f, 0, SEEK_SET);
+
+    uint8_t hdr[4096];
+    size_t r = fread(hdr, 1, sizeof(hdr), f);
+    if (r < 128 || memcmp(hdr, "RIFF", 4) != 0 || memcmp(hdr + 8, "AVI ", 4) != 0) {
+        ESP_LOGE(TAG, "Cabecera AVI no valida en %s", filepath);
+        fclose(f);
+        return;
+    }
+
+    uint32_t w = 480;
+    uint32_t h = 320;
+    uint32_t us_per_frame = 33333;
+    uint32_t frames = 0;
+
+    int avih_pos = -1;
+    for (size_t i = 0; i + 48 <= r; i++) {
+        if (memcmp(hdr + i, "avih", 4) == 0) {
+            avih_pos = (int)i;
+            break;
+        }
+    }
+
+    if (avih_pos >= 0) {
+        uint8_t *p = hdr + avih_pos + 8;
+        us_per_frame = *(uint32_t *)(p);
+        frames = *(uint32_t *)(p + 16);
+        w = *(uint32_t *)(p + 32);
+        h = *(uint32_t *)(p + 36);
+    }
+    if (us_per_frame == 0) us_per_frame = 33333;
+    if (w == 0) w = 480;
+    if (h == 0) h = 320;
+
+    uint64_t fps_milli = (us_per_frame > 0) ? (1000000000ULL / (uint64_t)us_per_frame) : 0;
+
+    // Subsampling: buscar FF C0 en el primer chunk de video (00dc o 00db)
+    const char *subsampling = "unknown";
+    fseek(f, 0, SEEK_SET);
+    uint8_t chunk_search_buf[4096];
+    long vchunk_data_pos = -1;
+    uint32_t vchunk_data_len = 0;
+
+    long cur_pos = 0;
+    while (cur_pos < file_size && cur_pos < 128 * 1024) {
+        fseek(f, cur_pos, SEEK_SET);
+        size_t nr = fread(chunk_search_buf, 1, sizeof(chunk_search_buf), f);
+        if (nr < 8) break;
+        bool found = false;
+        for (size_t i = 0; i + 8 <= nr; i++) {
+            if (memcmp(chunk_search_buf + i, "00dc", 4) == 0 || memcmp(chunk_search_buf + i, "00db", 4) == 0) {
+                vchunk_data_len = *(uint32_t *)(chunk_search_buf + i + 4);
+                vchunk_data_pos = cur_pos + (long)i + 8;
+                found = true;
+                break;
+            }
+        }
+        if (found) break;
+        if (nr <= 8) break;
+        cur_pos += (long)(nr - 8);
+    }
+
+    if (vchunk_data_pos > 0 && vchunk_data_len > 0) {
+        fseek(f, vchunk_data_pos, SEEK_SET);
+        uint32_t read_len = (vchunk_data_len > 4096) ? 4096 : vchunk_data_len;
+        uint8_t *jbuf = (uint8_t *)malloc(read_len);
+        if (jbuf) {
+            size_t jread = fread(jbuf, 1, read_len, f);
+            for (size_t i = 0; i + 12 <= jread; i++) {
+                if (jbuf[i] == 0xFF && jbuf[i + 1] == 0xC0) {
+                    uint8_t sample_byte = jbuf[i + 11];
+                    if (sample_byte == 0x22) {
+                        subsampling = "420";
+                    } else if (sample_byte == 0x21) {
+                        subsampling = "422";
+                    } else if (sample_byte == 0x11) {
+                        subsampling = "444";
+                    }
+                    break;
+                }
+            }
+            free(jbuf);
+        }
+    }
+
+    // chunk_avg/max: recorrer TODAS las entradas 00dc/00db de idx1
+    int has_idx1 = 0;
+    uint32_t chunk_avg = 0;
+    uint32_t chunk_max = 0;
+
+    if (file_size > 1024) {
+        long scan_bytes = (file_size > 512 * 1024) ? 512 * 1024 : file_size;
+        fseek(f, file_size - scan_bytes, SEEK_SET);
+        uint8_t *tail = (uint8_t *)malloc(scan_bytes);
+        long idx1_file_pos = -1;
+        uint32_t idx_size = 0;
+
+        if (tail) {
+            size_t tr = fread(tail, 1, scan_bytes, f);
+            for (long i = 0; i + 8 <= (long)tr; i++) {
+                if (memcmp(tail + i, "idx1", 4) == 0) {
+                    idx1_file_pos = (file_size - scan_bytes) + i;
+                    idx_size = *(uint32_t *)(tail + i + 4);
+                    has_idx1 = 1;
+                    break;
+                }
+            }
+            free(tail);
+        }
+
+        if (has_idx1 && idx_size > 0 && idx1_file_pos >= 0) {
+            fseek(f, idx1_file_pos + 8, SEEK_SET);
+            uint32_t bytes_left = idx_size;
+            uint64_t total_chunk_bytes = 0;
+            uint32_t count_chunks = 0;
+            uint8_t ent_buf[2048]; // 128 entradas de 16 bytes
+            while (bytes_left >= 16) {
+                size_t to_read = (bytes_left > sizeof(ent_buf)) ? sizeof(ent_buf) : bytes_left;
+                to_read = (to_read / 16) * 16;
+                size_t nr = fread(ent_buf, 1, to_read, f);
+                if (nr < 16) break;
+                for (size_t k = 0; k + 16 <= nr; k += 16) {
+                    if (memcmp(ent_buf + k, "00dc", 4) == 0 || memcmp(ent_buf + k, "00db", 4) == 0) {
+                        uint32_t clen = *(uint32_t *)(ent_buf + k + 12);
+                        total_chunk_bytes += clen;
+                        count_chunks++;
+                        if (clen > chunk_max) {
+                            chunk_max = clen;
+                        }
+                    }
+                }
+                bytes_left -= (uint32_t)nr;
+            }
+            if (count_chunks > 0) {
+                chunk_avg = (uint32_t)(total_chunk_bytes / count_chunks);
+            }
+        }
+    }
+
+    fclose(f);
+
+    printf("MEDIA,file=%s,size=%ld,w=%u,h=%u,us_per_frame=%u,fps_milli=%llu,frames=%u,idx1=%d,chunk_avg=%u,chunk_max=%u,subsampling=%s\n",
+           filepath, file_size, (unsigned int)w, (unsigned int)h,
+           (unsigned int)us_per_frame, (unsigned long long)fps_milli,
+           (unsigned int)frames, has_idx1,
+           (unsigned int)chunk_avg, (unsigned int)chunk_max,
+           subsampling);
+    fflush(stdout);
+}
+
+static bool is_avi_filename(const char *name) {
+    if (!name) return false;
+    size_t len = strlen(name);
+    if (len < 4) return false;
+    return (strcasecmp(name + len - 4, ".avi") == 0);
+}
+
+int media_scan_sdcard(void) {
+    DIR *dir = opendir("/sdcard");
+    if (!dir) {
+        ESP_LOGE(TAG, "No se pudo abrir /sdcard para escanear");
+        return 0;
+    }
+
+    if (s_scanned_avi_files) {
+        for (int i = 0; i < s_scanned_avi_count; i++) {
+            free(s_scanned_avi_files[i]);
+        }
+        free(s_scanned_avi_files);
+        s_scanned_avi_files = NULL;
+    }
+    s_scanned_avi_count = 0;
+    int cap = 0;
+
+    struct dirent *de;
+    while ((de = readdir(dir)) != NULL) {
+        if (de->d_name[0] == '.') continue;
+        if (is_avi_filename(de->d_name)) {
+            char path[256];
+            snprintf(path, sizeof(path), "/sdcard/%s", de->d_name);
+            if (s_scanned_avi_count >= cap) {
+                cap = (cap == 0) ? 8 : cap * 2;
+                s_scanned_avi_files = (char **)realloc(s_scanned_avi_files, cap * sizeof(char *));
+            }
+            s_scanned_avi_files[s_scanned_avi_count++] = strdup(path);
+        }
+    }
+    closedir(dir);
+
+    // Ordenar alfabeticamente para orden determinista
+    for (int i = 0; i < s_scanned_avi_count - 1; i++) {
+        for (int j = i + 1; j < s_scanned_avi_count; j++) {
+            if (strcmp(s_scanned_avi_files[i], s_scanned_avi_files[j]) > 0) {
+                char *tmp = s_scanned_avi_files[i];
+                s_scanned_avi_files[i] = s_scanned_avi_files[j];
+                s_scanned_avi_files[j] = tmp;
+            }
+        }
+    }
+
+    ESP_LOGI(TAG, "MicroSD escaneada: %d archivos AVI encontrados.", s_scanned_avi_count);
+
+    for (int i = 0; i < s_scanned_avi_count; i++) {
+        avi_player_log_media(s_scanned_avi_files[i]);
+    }
+
+    return s_scanned_avi_count;
+}
+
+int media_get_avi_count(void) {
+    return s_scanned_avi_count;
+}
+
+const char *media_get_avi_path(int index) {
+    if (index >= 0 && index < s_scanned_avi_count) {
+        return s_scanned_avi_files[index];
+    }
+    return NULL;
 }

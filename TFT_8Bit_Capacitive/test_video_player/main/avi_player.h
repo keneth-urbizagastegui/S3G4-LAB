@@ -35,6 +35,14 @@ void avi_player_restart(void);
 
 const avi_info_t *avi_player_get_info(void);
 
+// Registro de informacion de medio (formato MEDIA)
+void avi_player_log_media(const char *filepath);
+
+// Escaneo dinamico de MicroSD
+int media_scan_sdcard(void);
+int media_get_avi_count(void);
+const char *media_get_avi_path(int index);
+
 #ifdef __cplusplus
 }
 #endif

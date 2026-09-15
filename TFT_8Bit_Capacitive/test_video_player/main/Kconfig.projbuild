@@ -1,0 +1,15 @@
+menu "App perf"
+
+    config APP_PERF_AUTOTEST
+        bool "Habilitar modo autotest de rendimiento"
+        default n
+        help
+            Habilita la ejecucion automatica de pruebas de rendimiento sobre los archivos AVI en la MicroSD.
+
+    config APP_PERF_SECONDS_PER_TRACK
+        int "Segundos por pista en autotest"
+        default 60
+        help
+            Tiempo total en segundos para probar cada video AVI, dividido en 3 escenarios iguales (hidden, osd, seek).
+
+endmenu

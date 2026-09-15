@@ -7,6 +7,8 @@
 #include "esp_timer.h"
 #include "esp_log.h"
 #include "esp_heap_caps.h"
+#include "esp_random.h"
+#include "sdkconfig.h"
 
 #include "lvgl.h"
 #include "ili9488_8080.h"
@@ -14,8 +16,17 @@
 #include "sdcard_spi.h"
 #include "avi_player.h"
 #include "spotify_ui.h"
+#include "perf.h"
 
 static const char *TAG = "MAIN_APP";
+
+#ifndef CONFIG_APP_PERF_AUTOTEST
+#define CONFIG_APP_PERF_AUTOTEST 0
+#endif
+
+#ifndef CONFIG_APP_PERF_SECONDS_PER_TRACK
+#define CONFIG_APP_PERF_SECONDS_PER_TRACK 60
+#endif
 
 #define DRAW_BUF_LINES 40
 static uint16_t s_disp_buf1[LCD_WIDTH * DRAW_BUF_LINES];
@@ -29,6 +40,9 @@ static int s_pending_track_idx = 0;
 static bool s_need_seek = false;
 static int s_pending_seek_percent = 0;
 
+static volatile bool s_req_set_view_mode = false;
+static volatile view_mode_t s_target_view_mode = VIEW_MODE_FULLSCREEN;
+
 static volatile float s_latest_fps = 30.0f;
 
 static uint32_t my_tick_get_cb(void) {
@@ -37,7 +51,23 @@ static uint32_t my_tick_get_cb(void) {
 
 static void lvgl_disp_flush_cb(lv_display_t *disp, const lv_area_t *area, uint8_t *px_map) {
     uint16_t *pixels = (uint16_t *)px_map;
+
+    int64_t t0 = esp_timer_get_time();
     ili9488_8080_draw_bitmap(area->x1, area->y1, area->x2, area->y2, pixels);
+    int64_t blit_us = esp_timer_get_time() - t0;
+    perf_mark_blit((uint32_t)blit_us);
+
+    view_mode_t vmode = spotify_ui_get_view_mode();
+    if (vmode == VIEW_MODE_FULLSCREEN) {
+        if (area->y2 >= 319) {
+            perf_mark_presented();
+        }
+    } else {
+        if (area->y2 >= (34 + 160 - 1) && area->y1 <= (34 + 160 - 1)) {
+            perf_mark_presented();
+        }
+    }
+
     lv_display_flush_ready(disp);
 }
 
@@ -72,22 +102,121 @@ static void on_seek_requested_cb(int percent) {
 // -------------------------------------------------------------
 // Tarea de Reproducción de Video (CPU Core 1)
 // -------------------------------------------------------------
+#if CONFIG_APP_PERF_AUTOTEST
+
+static void video_engine_task(void *arg) {
+    ESP_LOGI(TAG, "Tarea de autotest de rendimiento iniciada en CPU 1.");
+
+    vTaskDelay(pdMS_TO_TICKS(500));
+
+    int total_tracks = media_get_avi_count();
+    int sec_per_track = CONFIG_APP_PERF_SECONDS_PER_TRACK;
+    if (sec_per_track < 3) sec_per_track = 3;
+    int sec_per_scenario = sec_per_track / 3;
+    int64_t scenario_duration_us = (int64_t)sec_per_scenario * 1000000LL;
+
+    const char *scenarios[3] = {"hidden", "osd", "seek"};
+
+    for (int track_idx = 0; track_idx < total_tracks; track_idx++) {
+        const char *avi_path = media_get_avi_path(track_idx);
+        if (!avi_path) continue;
+
+        ESP_LOGI(TAG, "Autotest: Abriendo Track %d: %s", track_idx, avi_path);
+        if (avi_player_open(avi_path) != ESP_OK) {
+            ESP_LOGE(TAG, "Fallo al abrir %s en autotest", avi_path);
+            continue;
+        }
+
+        for (int s = 0; s < 3; s++) {
+            const char *scn_name = scenarios[s];
+            perf_set_scenario(track_idx, scn_name);
+            ESP_LOGI(TAG, "Track %d -> Escenario '%s' (%d s)", track_idx, scn_name, sec_per_scenario);
+
+            // Solicitar fullscreen al bucle GUI
+            s_target_view_mode = VIEW_MODE_FULLSCREEN;
+            s_req_set_view_mode = true;
+
+            int64_t scn_start_time = esp_timer_get_time();
+            int64_t last_seek_time = scn_start_time;
+            int seek_count = 0;
+            int64_t seek_interval_us = scenario_duration_us / 10;
+
+            while (esp_timer_get_time() - scn_start_time < scenario_duration_us) {
+                perf_report_if_due();
+
+                // Escenario seek: 10 seeks aleatorios
+                if (s == 2 && seek_count < 10) {
+                    int64_t now_t = esp_timer_get_time();
+                    if (now_t - last_seek_time >= seek_interval_us) {
+                        last_seek_time = now_t;
+                        int pct = (int)(esp_random() % 95);
+                        avi_player_seek_percent(pct);
+                        seek_count++;
+                    }
+                }
+
+                uint16_t *target_buf = spotify_ui_get_fullscreen_buffer();
+                int64_t t_start = esp_timer_get_time();
+                esp_err_t ret = avi_player_read_next_frame(target_buf, 0);
+
+                if (ret == ESP_OK) {
+                    perf_mark_decoded();
+                    spotify_ui_commit_frame();
+                    s_video_frame_ready = true;
+
+                    int64_t elapsed_us = esp_timer_get_time() - t_start;
+                    const avi_info_t *info = avi_player_get_info();
+
+                    int32_t delay_us = (int32_t)info->us_per_frame - (int32_t)elapsed_us;
+                    if (delay_us > 1000) {
+                        vTaskDelay(pdMS_TO_TICKS(delay_us / 1000));
+                    } else {
+                        vTaskDelay(1);
+                    }
+                } else if (ret == ESP_ERR_NOT_FOUND) {
+                    // Reiniciar video para completar el tiempo del escenario
+                    avi_player_restart();
+                } else {
+                    vTaskDelay(pdMS_TO_TICKS(5));
+                }
+            }
+        }
+
+        avi_player_close();
+    }
+
+    printf("AUTOTEST_DONE,tracks=%d\n", total_tracks);
+    fflush(stdout);
+
+    // Quedar en reposo
+    while (1) {
+        perf_report_if_due();
+        vTaskDelay(pdMS_TO_TICKS(1000));
+    }
+}
+
+#else
+
 static void video_engine_task(void *arg) {
     ESP_LOGI(TAG, "Tarea de motor de video SIMD (esp_new_jpeg) iniciada en CPU 1.");
 
     // Abrir primer video
     avi_player_open(g_playlist[s_active_track_idx].filepath);
+    perf_set_scenario(s_active_track_idx, "normal");
 
     int frame_counter = 0;
     int64_t fps_window_start = esp_timer_get_time();
 
     while (1) {
+        perf_report_if_due();
+
         // 1. Cambio de canción solicitado
         if (s_need_track_switch) {
             s_need_track_switch = false;
             s_active_track_idx = s_pending_track_idx;
             ESP_LOGI(TAG, "Cambiando a pista %d: %s", s_active_track_idx, g_playlist[s_active_track_idx].filepath);
             avi_player_open(g_playlist[s_active_track_idx].filepath);
+            perf_set_scenario(s_active_track_idx, "normal");
             spotify_ui_set_play_state(PLAYBACK_STATE_PLAYING);
             frame_counter = 0;
             fps_window_start = esp_timer_get_time();
@@ -109,6 +238,7 @@ static void video_engine_task(void *arg) {
                     last_open_retry = esp_timer_get_time();
                     if (sdcard_is_mounted()) {
                         avi_player_open(g_playlist[s_active_track_idx].filepath);
+                        perf_set_scenario(s_active_track_idx, "normal");
                     } else {
                         sdcard_spi_init();
                     }
@@ -127,6 +257,7 @@ static void video_engine_task(void *arg) {
             esp_err_t ret = avi_player_read_next_frame(target_buf, scale);
 
             if (ret == ESP_OK) {
+                perf_mark_decoded();
                 spotify_ui_commit_frame();
                 s_video_frame_ready = true;
 
@@ -157,6 +288,7 @@ static void video_engine_task(void *arg) {
                 ESP_LOGI(TAG, "Video finalizado. Avanzando a siguiente pista...");
                 s_active_track_idx = (s_active_track_idx + 1) % PLAYLIST_SIZE;
                 avi_player_open(g_playlist[s_active_track_idx].filepath);
+                perf_set_scenario(s_active_track_idx, "normal");
                 if (xSemaphoreTake(s_lvgl_mutex, pdMS_TO_TICKS(20)) == pdTRUE) {
                     spotify_ui_set_track(s_active_track_idx);
                     xSemaphoreGive(s_lvgl_mutex);
@@ -169,6 +301,8 @@ static void video_engine_task(void *arg) {
         }
     }
 }
+
+#endif
 
 // -------------------------------------------------------------
 // Función Principal app_main
@@ -195,6 +329,8 @@ void app_main(void) {
     esp_err_t sd_err = sdcard_spi_init();
     if (sd_err != ESP_OK) {
         ESP_LOGE(TAG, "Fallo al inicializar MicroSD. Verifique tarjeta y cableado.");
+    } else {
+        media_scan_sdcard();
     }
 
     // 3. Inicializar Decodificador AVI con esp_new_jpeg
@@ -232,6 +368,11 @@ void app_main(void) {
 
     while (1) {
         if (xSemaphoreTake(s_lvgl_mutex, pdMS_TO_TICKS(20)) == pdTRUE) {
+            if (s_req_set_view_mode) {
+                s_req_set_view_mode = false;
+                spotify_ui_set_view_mode(s_target_view_mode);
+            }
+
             if (s_video_frame_ready) {
                 s_video_frame_ready = false;
                 spotify_ui_invalidate_video();
