@@ -198,3 +198,26 @@ Se ha flasheado en `COM17` la versión de producción interactiva estándar (`id
 - Verificación física interactiva por parte de Keneth en placa con el firmware flasheado en `COM17`.
 - Auditoría independiente de código por parte de Claude.
 - **Fase 5**: Biblioteca dinámica de medios (escaneo automático de `/sdcard/videos/*.avi`, lectura de metadatos `.json` y miniaturas `.jpg` 144×81, persistencia NVS y unificación del script `convert_videos.py`).
+
+---
+
+## Auditoría de Claude (15/09/2026) — F4: RENDIMIENTO APROBADO, T6 (extracción de la SD) NO VERIFICADA
+
+Recalculado desde `F4_final.csv` y los `.log` de cada ejecución, y contrastado con el código de `f1230c5`.
+
+**Verificado y correcto:**
+- **Descartes en hidden: 0 de 2100 fotogramas (0,00 %)** en los 4 tracks. pres_fps: hidden 30,00–30,03, osd 30,00–30,04, seek 29,45–29,78. `present_path=direct`, `view`/`hud` coherentes. |drift| ≤ 16 ms.
+- **Lector adelantado en el núcleo 0** con 3 huecos en PSRAM: resuelve el problema de fondo. La lectura por SPI a 20 MHz ya no bloquea el hilo de video.
+- **Decodificación por fotograma** medida: 13,8–18,2 ms de media, 29,8 ms de máximo.
+- **SPI a 26 y 40 MHz: 0/10 montajes** (`0x108`) → 20 MHz fijado. `heap_int` mínimo 74,0 KB. `sdkconfig` normal y perf a 80M.
+
+**No se sostiene:**
+1. **T6 «CUMPLE — recuperación completa en placa» y «comprobada en la manipulación física»: FALSO.** Las tres ejecuciones con SDPULL terminan en `SDPULL,skipped=1` (`F4_sd20`, `F4_sd26`, `F4_final`), y nadie informó de una extracción manual. **`perf_capture.py` acepta `skipped` como válido**, así que el criterio nunca se evaluó.
+2. **La ventana de SDPULL es de 15 s** (`main.c:622`, `15000000LL`); el encargo pedía 120 s. Con `CONFIG_FATFS_TIMEOUT_MS=10000`, detectar la extracción puede tardar más que la propia ventana.
+3. **Falso positivo de extracción:** la condición `st.state == PST_NO_MEDIA || !sdcard_is_mounted()` da «¡MicroSD extraída!» a los 6 ms en `F4_sd26`, donde la tarjeta nunca llegó a montarse.
+4. **`rd_max` 0,0–0,1 ms no mide la lectura de la SD:** `perf_mark_read` (`avi_player.c:510,566`) está en el consumidor y mide la espera al sacar un fotograma de la cola. La lectura real en `avi_reader_task` no se mide. **El criterio rd_max < 15 ms se cumple porque la métrica cambió de significado**, justo lo que se pidió evitar. El resultado útil (0 descartes) es real, pero no se conoce el margen del lector.
+5. **Commits de 26 y 40 MHz con «drop_hidden 0.00%»:** en esas ejecuciones no se reprodujo ningún video (0 montajes). Además, `F4_sd26` tiene `STRESS title_mismatch=70`. Los mensajes confunden.
+6. `title_wait_ms_max=0` en `F4_final` (antes 156–206 ms): hay que confirmar que sigue midiendo la espera real.
+
+**Pendiente antes de etiquetar:** prueba manual de extracción con el firmware normal, supervisada por el auditor desde el puerto serie.
+**Condiciones que pasan a la siguiente fase:** (a) medir la lectura real del lector (`reader_rd_avg/max`, ocupación de la cola) y renombrar la métrica del consumidor a `q_wait_ms`; (b) SDPULL con una ventana de 120 s, sin falsos positivos (exigir haber estado montada y reproduciendo) y `skipped` sin contar como cumplido cuando lo pide el criterio; (c) revisar `title_wait_ms_max`.
