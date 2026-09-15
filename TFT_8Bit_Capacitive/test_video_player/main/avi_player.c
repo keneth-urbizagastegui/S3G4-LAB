@@ -293,7 +293,9 @@ esp_err_t avi_player_read_next_frame(uint16_t *out_rgb565, uint8_t scale) {
 
             jerr = jpeg_dec_process(dec, &io);
             int64_t t_dec_end = esp_timer_get_time();
-            perf_mark_decode((uint32_t)(t_dec_end - t_dec_start));
+            uint32_t dec_us = (uint32_t)(t_dec_end - t_dec_start);
+            perf_mark_decode(dec_us);
+            perf_mark_frame_decode(dec_us);
 
             if (jerr != JPEG_ERR_OK) {
                 ESP_LOGW(TAG, "Fallo al decodificar JPEG SIMD: %d", jerr);
@@ -397,6 +399,7 @@ esp_err_t avi_player_read_and_blit_direct(void) {
             uint32_t strip_dma_us = 0;
             uint32_t total_frame_blit_us = 0;
             uint32_t strips_sent_count = 0;
+            uint32_t total_frame_dec_us = 0;
 
             lcd_bus_lock();
 
@@ -406,7 +409,9 @@ esp_err_t avi_player_read_and_blit_direct(void) {
                 int64_t t_dec_start = esp_timer_get_time();
                 jerr = jpeg_dec_process(dec, &io);
                 int64_t t_dec_end = esp_timer_get_time();
-                perf_mark_decode((uint32_t)(t_dec_end - t_dec_start));
+                uint32_t s_dec_us = (uint32_t)(t_dec_end - t_dec_start);
+                perf_mark_decode(s_dec_us);
+                total_frame_dec_us += s_dec_us;
 
                 if (jerr != JPEG_ERR_OK) {
                     ESP_LOGW(TAG, "Fallo en jpeg_dec_process bloque %d/%d: %d", b, process_count, jerr);
@@ -457,6 +462,7 @@ esp_err_t avi_player_read_and_blit_direct(void) {
             lcd_bus_unlock();
 
             // Registro de frame presentado y metricas direct
+            perf_mark_frame_decode(total_frame_dec_us);
             perf_mark_direct_frame(strips_sent_count, total_frame_blit_us);
             perf_mark_presented();
 

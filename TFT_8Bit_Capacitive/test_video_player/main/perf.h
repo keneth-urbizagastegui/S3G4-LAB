@@ -12,6 +12,7 @@ extern "C" {
 void perf_init(void);
 void perf_mark_read(uint32_t us);
 void perf_mark_decode(uint32_t us);
+void perf_mark_frame_decode(uint32_t frame_dec_us);
 void perf_mark_decoded(void);
 void perf_mark_presented(void);
 void perf_mark_blit(uint32_t us);

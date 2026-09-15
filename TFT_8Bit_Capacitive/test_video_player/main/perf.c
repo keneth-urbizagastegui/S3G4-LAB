@@ -19,10 +19,17 @@ static uint32_t s_frame_mismatch = 0;
 static uint64_t s_read_sum_us = 0;
 static uint32_t s_read_count = 0;
 static uint32_t s_read_max_us = 0;
+#define RD_SAMPLES_MAX 128
+static uint32_t s_rd_samples[RD_SAMPLES_MAX];
+static uint32_t s_rd_samples_cnt = 0;
+static uint32_t s_rd_slow_count = 0;
 
 static uint64_t s_decode_sum_us = 0;
 static uint32_t s_decode_count = 0;
 static uint32_t s_decode_max_us = 0;
+static uint64_t s_frame_dec_sum_us = 0;
+static uint32_t s_frame_dec_count = 0;
+static uint32_t s_frame_dec_max_us = 0;
 
 static uint64_t s_blit_sum_us = 0;
 static uint32_t s_blit_count = 0;
@@ -106,9 +113,14 @@ void perf_init(void) {
     s_read_sum_us = 0;
     s_read_count = 0;
     s_read_max_us = 0;
+    s_rd_samples_cnt = 0;
+    s_rd_slow_count = 0;
     s_decode_sum_us = 0;
     s_decode_count = 0;
     s_decode_max_us = 0;
+    s_frame_dec_sum_us = 0;
+    s_frame_dec_count = 0;
+    s_frame_dec_max_us = 0;
     s_blit_sum_us = 0;
     s_blit_count = 0;
     s_blit_max_us = 0;
@@ -140,6 +152,12 @@ void perf_mark_read(uint32_t us) {
     if (us > s_read_max_us) {
         s_read_max_us = us;
     }
+    if (s_rd_samples_cnt < RD_SAMPLES_MAX) {
+        s_rd_samples[s_rd_samples_cnt++] = us;
+    }
+    if (us > 20000) {
+        s_rd_slow_count++;
+    }
     portEXIT_CRITICAL(&s_perf_mux);
 }
 
@@ -149,6 +167,16 @@ void perf_mark_decode(uint32_t us) {
     s_decode_count++;
     if (us > s_decode_max_us) {
         s_decode_max_us = us;
+    }
+    portEXIT_CRITICAL(&s_perf_mux);
+}
+
+void perf_mark_frame_decode(uint32_t frame_dec_us) {
+    portENTER_CRITICAL(&s_perf_mux);
+    s_frame_dec_sum_us += frame_dec_us;
+    s_frame_dec_count++;
+    if (frame_dec_us > s_frame_dec_max_us) {
+        s_frame_dec_max_us = frame_dec_us;
     }
     portEXIT_CRITICAL(&s_perf_mux);
 }
@@ -281,6 +309,22 @@ void perf_report_if_due(void) {
     uint32_t touch_rd_max_us = s_touch_rd_max_us;
     uint32_t touch_age_max_us = s_touch_age_max_us;
 
+    uint32_t rd_slow = s_rd_slow_count;
+    uint32_t rd_cnt_samples = s_rd_samples_cnt;
+    uint32_t rd_samples_copy[RD_SAMPLES_MAX];
+    if (rd_cnt_samples > 0) {
+        memcpy(rd_samples_copy, s_rd_samples, rd_cnt_samples * sizeof(uint32_t));
+    }
+    s_rd_samples_cnt = 0;
+    s_rd_slow_count = 0;
+
+    uint64_t frame_dec_sum = s_frame_dec_sum_us;
+    uint32_t frame_dec_cnt = s_frame_dec_count;
+    uint32_t frame_dec_max_us = s_frame_dec_max_us;
+    s_frame_dec_sum_us = 0;
+    s_frame_dec_count = 0;
+    s_frame_dec_max_us = 0;
+
     int track = s_track;
     char scn[32];
     strncpy(scn, s_scn, sizeof(scn));
@@ -328,6 +372,31 @@ void perf_report_if_due(void) {
 
     s_last_report_us = now;
     portEXIT_CRITICAL(&s_perf_mux);
+
+    // Calcular percentiles rd_p50 y rd_p95
+    for (uint32_t i = 1; i < rd_cnt_samples; i++) {
+        uint32_t key = rd_samples_copy[i];
+        int j = (int)i - 1;
+        while (j >= 0 && rd_samples_copy[j] > key) {
+            rd_samples_copy[j + 1] = rd_samples_copy[j];
+            j--;
+        }
+        rd_samples_copy[j + 1] = key;
+    }
+    double rd_p50 = 0.0;
+    double rd_p95 = 0.0;
+    if (rd_cnt_samples > 0) {
+        uint32_t idx50 = (rd_cnt_samples * 50) / 100;
+        if (idx50 >= rd_cnt_samples) idx50 = rd_cnt_samples - 1;
+        rd_p50 = (double)rd_samples_copy[idx50] / 1000.0;
+
+        uint32_t idx95 = (rd_cnt_samples * 95) / 100;
+        if (idx95 >= rd_cnt_samples) idx95 = rd_cnt_samples - 1;
+        rd_p95 = (double)rd_samples_copy[idx95] / 1000.0;
+    }
+
+    double dec_frame_ms_avg = (frame_dec_cnt > 0) ? (((double)frame_dec_sum / (double)frame_dec_cnt) / 1000.0) : 0.0;
+    double dec_frame_ms_max = (double)frame_dec_max_us / 1000.0;
 
     double dec_fps = (window_us > 0) ? ((double)dec * 1000000.0 / (double)window_us) : 0.0;
     double pres_fps = (window_us > 0) ? ((double)pres * 1000000.0 / (double)window_us) : 0.0;
@@ -393,11 +462,13 @@ void perf_report_if_due(void) {
     uint32_t heap_psram = (uint32_t)heap_caps_get_free_size(MALLOC_CAP_SPIRAM);
     uint32_t t_ms = (uint32_t)(now / 1000);
 
-    printf("PERF,t_ms=%lu,dec_fps=%.1f,pres_fps=%.1f,drop=%lu,over=%lu,frame_mismatch=%lu,rd_avg=%.1f,rd_max=%.1f,dec_avg=%.1f,dec_max=%.1f,blit_avg=%.1f,blit_max=%.1f,late_max=%.1f,drift_ms=%ld,touch_read_ms_avg=%.1f,touch_read_ms_max=%.1f,touch_age_ms_max=%.1f,heap_int=%lu,heap_psram=%lu,track=%d,scn=%s,view=%s,hud=%d,present_path=%s,vrect=%d-%d,strips_per_frame=%lu,strip_ms_avg=%.2f,frame_blit_ms_avg=%.1f,lvgl_rows_clipped=%lu\n",
+    printf("PERF,t_ms=%lu,dec_fps=%.1f,pres_fps=%.1f,drop=%lu,over=%lu,frame_mismatch=%lu,rd_avg=%.1f,rd_max=%.1f,rd_p50=%.1f,rd_p95=%.1f,rd_slow=%lu,dec_avg=%.1f,dec_max=%.1f,dec_frame_ms_avg=%.1f,dec_frame_ms_max=%.1f,blit_avg=%.1f,blit_max=%.1f,late_max=%.1f,drift_ms=%ld,touch_read_ms_avg=%.1f,touch_read_ms_max=%.1f,touch_age_ms_max=%.1f,heap_int=%lu,heap_psram=%lu,track=%d,scn=%s,view=%s,hud=%d,present_path=%s,vrect=%d-%d,strips_per_frame=%lu,strip_ms_avg=%.2f,frame_blit_ms_avg=%.1f,lvgl_rows_clipped=%lu,dec_frames=%lu\n",
            (unsigned long)t_ms, dec_fps, pres_fps, (unsigned long)drop, (unsigned long)over,
            (unsigned long)mismatch,
            rd_avg, rd_max,
+           rd_p50, rd_p95, (unsigned long)rd_slow,
            dec_avg, dec_max,
+           dec_frame_ms_avg, dec_frame_ms_max,
            blit_avg, blit_max,
            late_max,
            (long)drift_ms,
@@ -410,6 +481,7 @@ void perf_report_if_due(void) {
            (unsigned long)strips_per_frame,
            strip_ms_avg,
            frame_blit_ms_avg,
-           (unsigned long)lvgl_clipped);
+           (unsigned long)lvgl_clipped,
+           (unsigned long)dec);
     fflush(stdout);
 }
