@@ -27,7 +27,8 @@ static uint64_t s_blit_sum_us = 0;
 static uint32_t s_blit_count = 0;
 static uint32_t s_blit_max_us = 0;
 
-static uint32_t s_late_max_us = 0;       // Siempre 0 en F0/F1
+static uint32_t s_late_max_us = 0;
+static int32_t s_last_drift_ms = 0;
 
 // Latencia táctil (T1)
 static uint64_t s_touch_rd_sum_us = 0;
@@ -61,6 +62,7 @@ void perf_init(void) {
     s_blit_count = 0;
     s_blit_max_us = 0;
     s_late_max_us = 0;
+    s_last_drift_ms = 0;
     s_touch_rd_sum_us = 0;
     s_touch_rd_count = 0;
     s_touch_rd_max_us = 0;
@@ -122,6 +124,26 @@ void perf_mark_oversize(void) {
 void perf_mark_frame_mismatch(void) {
     portENTER_CRITICAL(&s_perf_mux);
     s_frame_mismatch++;
+    portEXIT_CRITICAL(&s_perf_mux);
+}
+
+void perf_mark_late(uint32_t us) {
+    portENTER_CRITICAL(&s_perf_mux);
+    if (us > s_late_max_us) {
+        s_late_max_us = us;
+    }
+    portEXIT_CRITICAL(&s_perf_mux);
+}
+
+void perf_mark_dropped(void) {
+    portENTER_CRITICAL(&s_perf_mux);
+    s_frames_dropped++;
+    portEXIT_CRITICAL(&s_perf_mux);
+}
+
+void perf_mark_drift(int32_t drift_ms) {
+    portENTER_CRITICAL(&s_perf_mux);
+    s_last_drift_ms = drift_ms;
     portEXIT_CRITICAL(&s_perf_mux);
 }
 
@@ -192,6 +214,7 @@ void perf_report_if_due(void) {
     uint32_t blit_max_us = s_blit_max_us;
 
     uint32_t late_max_us = s_late_max_us;
+    int32_t drift_ms = s_last_drift_ms;
 
     uint64_t touch_rd_sum = s_touch_rd_sum_us;
     uint32_t touch_rd_cnt = s_touch_rd_count;
@@ -259,13 +282,14 @@ void perf_report_if_due(void) {
     uint32_t heap_psram = (uint32_t)heap_caps_get_free_size(MALLOC_CAP_SPIRAM);
     uint32_t t_ms = (uint32_t)(now / 1000);
 
-    printf("PERF,t_ms=%lu,dec_fps=%.1f,pres_fps=%.1f,drop=%lu,over=%lu,frame_mismatch=%lu,rd_avg=%.1f,rd_max=%.1f,dec_avg=%.1f,dec_max=%.1f,blit_avg=%.1f,blit_max=%.1f,late_max=%.1f,touch_read_ms_avg=%.1f,touch_read_ms_max=%.1f,touch_age_ms_max=%.1f,heap_int=%lu,heap_psram=%lu,track=%d,scn=%s,view=%s,hud=%d\n",
+    printf("PERF,t_ms=%lu,dec_fps=%.1f,pres_fps=%.1f,drop=%lu,over=%lu,frame_mismatch=%lu,rd_avg=%.1f,rd_max=%.1f,dec_avg=%.1f,dec_max=%.1f,blit_avg=%.1f,blit_max=%.1f,late_max=%.1f,drift_ms=%ld,touch_read_ms_avg=%.1f,touch_read_ms_max=%.1f,touch_age_ms_max=%.1f,heap_int=%lu,heap_psram=%lu,track=%d,scn=%s,view=%s,hud=%d\n",
            (unsigned long)t_ms, dec_fps, pres_fps, (unsigned long)drop, (unsigned long)over,
            (unsigned long)mismatch,
            rd_avg, rd_max,
            dec_avg, dec_max,
            blit_avg, blit_max,
            late_max,
+           (long)drift_ms,
            touch_read_ms_avg, touch_read_ms_max, touch_age_ms_max,
            (unsigned long)heap_int, (unsigned long)heap_psram,
            track, scn,

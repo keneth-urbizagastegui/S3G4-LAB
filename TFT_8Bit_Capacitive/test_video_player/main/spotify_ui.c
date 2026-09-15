@@ -161,11 +161,16 @@ static void on_brightness_slider_event(lv_event_t *e) {
 static void on_fullscreen_tap(lv_event_t *e) {
     if (!s_hud_overlay) return;
     if (s_hud_forced_mode == 1 || s_hud_forced_mode == 2) return;
+    lv_obj_t *target = lv_event_get_target(e);
+    if (target != s_canvas_fullscreen && target != s_hud_overlay) return;
+
     if (lv_obj_has_flag(s_hud_overlay, LV_OBJ_FLAG_HIDDEN)) {
         lv_obj_remove_flag(s_hud_overlay, LV_OBJ_FLAG_HIDDEN);
         s_last_touch_hud_time = esp_timer_get_time();
+        ESP_LOGI("SPOTIFY_UI", "[TOUCH] Fullscreen tap -> HUD mostrado");
     } else {
         lv_obj_add_flag(s_hud_overlay, LV_OBJ_FLAG_HIDDEN);
+        ESP_LOGI("SPOTIFY_UI", "[TOUCH] Fullscreen tap -> HUD ocultado");
     }
 }
 
@@ -410,6 +415,7 @@ static void build_fullscreen_screen(void) {
     lv_canvas_set_buffer(s_canvas_fullscreen, s_buf_fullscreen[0], FULL_W, FULL_H, LV_COLOR_FORMAT_RGB565);
     lv_obj_set_size(s_canvas_fullscreen, FULL_W, FULL_H);
     lv_obj_set_pos(s_canvas_fullscreen, 0, 0);
+    lv_obj_add_flag(s_canvas_fullscreen, LV_OBJ_FLAG_CLICKABLE);
     lv_obj_add_event_cb(s_canvas_fullscreen, on_fullscreen_tap, LV_EVENT_CLICKED, NULL);
 
     // OSD HUD Overlay Flotante
@@ -419,6 +425,9 @@ static void build_fullscreen_screen(void) {
     lv_obj_set_style_bg_opa(s_hud_overlay, LV_OPA_TRANSP, 0);
     lv_obj_set_style_border_width(s_hud_overlay, 0, 0);
     lv_obj_set_style_pad_all(s_hud_overlay, 0, 0);
+    lv_obj_remove_flag(s_hud_overlay, LV_OBJ_FLAG_SCROLLABLE);
+    lv_obj_add_flag(s_hud_overlay, LV_OBJ_FLAG_CLICKABLE);
+    lv_obj_add_event_cb(s_hud_overlay, on_fullscreen_tap, LV_EVENT_CLICKED, NULL);
     lv_obj_add_flag(s_hud_overlay, LV_OBJ_FLAG_HIDDEN);
 
     // Barra superior flotante OSD (Título + FPS)

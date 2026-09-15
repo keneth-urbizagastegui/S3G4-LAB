@@ -47,6 +47,20 @@ typedef struct {
 static touch_sample_t s_shared_touch = {0};
 static portMUX_TYPE s_touch_mux = portMUX_INITIALIZER_UNLOCKED;
 
+static bool s_synthetic_touch_active = false;
+static touch_sample_t s_synthetic_touch = {0};
+
+void touch_inject_synthetic(uint16_t x, uint16_t y, bool pressed) {
+    portENTER_CRITICAL(&s_touch_mux);
+    s_synthetic_touch_active = pressed;
+    s_synthetic_touch.x = x;
+    s_synthetic_touch.y = y;
+    s_synthetic_touch.pressed = pressed;
+    s_synthetic_touch.timestamp_us = esp_timer_get_time();
+    s_shared_touch = s_synthetic_touch;
+    portEXIT_CRITICAL(&s_touch_mux);
+}
+
 static uint32_t my_tick_get_cb(void) {
     return (uint32_t)(esp_timer_get_time() / 1000);
 }
@@ -103,7 +117,9 @@ static void touch_task(void *arg) {
         perf_mark_touch_read(rd_us);
 
         portENTER_CRITICAL(&s_touch_mux);
-        if (ret == ESP_OK && touch.touched) {
+        if (s_synthetic_touch_active) {
+            s_shared_touch = s_synthetic_touch;
+        } else if (ret == ESP_OK && touch.touched) {
             s_shared_touch.x = touch.x1;
             s_shared_touch.y = touch.y1;
             s_shared_touch.pressed = true;
@@ -234,10 +250,13 @@ static void gui_task(void *arg) {
     // Publicar estado inicial
     publish_ui_state();
 
-    // Timer de refresco periódico desde player_get_status (100 ms)
-    lv_timer_create(ui_refresh_timer_cb, 100, NULL);
+#ifndef CONFIG_APP_UI_REFRESH_MS
+#define CONFIG_APP_UI_REFRESH_MS 250
+#endif
+    // Timer de refresco periódico desde player_get_status (Obs O1: CONFIG_APP_UI_REFRESH_MS)
+    lv_timer_create(ui_refresh_timer_cb, CONFIG_APP_UI_REFRESH_MS, NULL);
 
-    ESP_LOGI(TAG, "Bucle de eventos GUI LVGL iniciado en Core 0.");
+    ESP_LOGI(TAG, "Bucle de eventos GUI LVGL iniciado en Core 0 (refresh: %d ms).", CONFIG_APP_UI_REFRESH_MS);
     while (1) {
         // 1. Consumir peticiones UI antes de lv_timer_handler (X3)
         ui_req_t req;
@@ -271,15 +290,34 @@ static void gui_task(void *arg) {
     }
 }
 
+static TaskHandle_t s_touch_task_handle = NULL;
+static TaskHandle_t s_gui_task_handle = NULL;
+static TaskHandle_t s_autotest_task_handle = NULL;
+
+static void log_stack_and_heap_diag(const char *phase_tag) {
+    UBaseType_t touch_free = s_touch_task_handle ? uxTaskGetStackHighWaterMark(s_touch_task_handle) : 0;
+    UBaseType_t gui_free = s_gui_task_handle ? uxTaskGetStackHighWaterMark(s_gui_task_handle) : 0;
+    uint32_t player_free = player_get_task_stack_high_water_mark();
+    UBaseType_t auto_free = s_autotest_task_handle ? uxTaskGetStackHighWaterMark(s_autotest_task_handle) : 0;
+    uint32_t heap_int = (uint32_t)heap_caps_get_free_size(MALLOC_CAP_INTERNAL);
+    uint32_t heap_psram = (uint32_t)heap_caps_get_free_size(MALLOC_CAP_SPIRAM);
+
+    ESP_LOGI(TAG, "DIAG_HEAP [%s]: int=%lu, psram=%lu | STACK_FREE: touch=%u, gui=%u, player=%lu, auto=%u",
+             phase_tag, (unsigned long)heap_int, (unsigned long)heap_psram,
+             (unsigned int)touch_free, (unsigned int)gui_free, (unsigned long)player_free, (unsigned int)auto_free);
+    heap_caps_print_heap_info(MALLOC_CAP_INTERNAL);
+}
+
 // -------------------------------------------------------------
-// Autotest F1 (si CONFIG_APP_PERF_AUTOTEST=1)
+// Autotest F2 (si CONFIG_APP_PERF_AUTOTEST=1)
 // -------------------------------------------------------------
 #if CONFIG_APP_PERF_AUTOTEST
 
 static void autotest_task(void *arg) {
-    ESP_LOGI(TAG, "Tarea de autotest F1 iniciada (usa cola de comandos y peticiones UI).");
+    ESP_LOGI(TAG, "Tarea de autotest F2 iniciada (usa cola de comandos y peticiones UI).");
 
     vTaskDelay(pdMS_TO_TICKS(1000));
+    log_stack_and_heap_diag("AUTOTEST_START");
 
     int total_tracks = media_get_avi_count();
     int sec_per_track = CONFIG_APP_PERF_SECONDS_PER_TRACK;
@@ -358,6 +396,37 @@ static void autotest_task(void *arg) {
             }
         }
     }
+
+    // Escenario TAP de verificacion Bug T2
+    ESP_LOGI(TAG, "Iniciando escenario TAP (Bug T2)...");
+    perf_set_scenario(0, "tap");
+    ui_req_send(UI_REQ_SET_VIEW, VIEW_MODE_FULLSCREEN);
+    ui_req_send(UI_REQ_SET_HUD, 1); // forzar oculto
+    vTaskDelay(pdMS_TO_TICKS(300));
+
+    // Cambiar HUD a modo AUTO (0)
+    ui_req_send(UI_REQ_SET_HUD, 0);
+    vTaskDelay(pdMS_TO_TICKS(150));
+
+    int hud_before = -1;
+    ui_get_published_state(NULL, 0, NULL, NULL, &hud_before);
+
+    // Inyectar toque sintético en el centro (240, 160) durante 80 ms
+    touch_inject_synthetic(240, 160, true);
+    vTaskDelay(pdMS_TO_TICKS(80));
+    touch_inject_synthetic(240, 160, false);
+
+    // Esperar a que gui_task procese el toque y actualice hud a 1 (hasta 600 ms)
+    int hud_after = -1;
+    int64_t tap_t0 = esp_timer_get_time();
+    while (esp_timer_get_time() - tap_t0 < 600000LL) {
+        vTaskDelay(pdMS_TO_TICKS(20));
+        ui_get_published_state(NULL, 0, NULL, NULL, &hud_after);
+        if (hud_after == 1) break;
+    }
+
+    printf("TAP,hud_before=%d,hud_after=%d\n", hud_before, hud_after);
+    fflush(stdout);
 
     // Escenario STRESS final: 20 cambios de pista y 50 saltos SEEK simulando arrastre
     ESP_LOGI(TAG, "Iniciando escenario final de STRESS...");
@@ -461,6 +530,8 @@ static void autotest_task(void *arg) {
            changes_count, seeks_count, title_mismatch_count, (long long)title_wait_ms_max);
     fflush(stdout);
 
+    log_stack_and_heap_diag("AUTOTEST_END");
+
     printf("AUTOTEST_DONE,tracks=%d\n", total_tracks);
     fflush(stdout);
 
@@ -479,11 +550,11 @@ void app_main(void) {
     board_turn_off_rgb_led();
 
     ESP_LOGI(TAG, "==========================================================");
-    ESP_LOGI(TAG, "   S3G4 LAB — REPRODUCTOR DE VIDEO FASE 1 (CONCURRENCIA)");
+    ESP_LOGI(TAG, "   S3G4 LAB — REPRODUCTOR DE VIDEO FASE 2 (PTS / CADENCIA)");
     ESP_LOGI(TAG, "   Display: ILI9488 (8080 8-bit @ 16.0 MHz)");
     ESP_LOGI(TAG, "   Touch:   FT6236 Capacitivo (Desacoplado, sondeo 10 ms)");
     ESP_LOGI(TAG, "   Storage: MicroSD SPI @ 20 MHz (32 KB Buffer)");
-    ESP_LOGI(TAG, "   Core 1:  player_task (Motor video + cola comandos)");
+    ESP_LOGI(TAG, "   Core 1:  player_task (Motor video + cola comandos + PTS)");
     ESP_LOGI(TAG, "   Core 0:  gui_task (LVGL) + touch_task");
     ESP_LOGI(TAG, "==========================================================");
 
@@ -507,19 +578,20 @@ void app_main(void) {
     // 4. Lanzar motor de reproducción en Core 1
     ESP_ERROR_CHECK(player_start());
 
-    // 5. Lanzar tarea táctil en Core 0 (prioridad 6)
-    BaseType_t t_touch = xTaskCreatePinnedToCore(touch_task, "touch_task", 4096, NULL, 6, NULL, 0);
+    // 5. Lanzar tarea táctil en Core 0 (prioridad 6, ajustada a 3584 tras medir uso de 1288 B)
+    BaseType_t t_touch = xTaskCreatePinnedToCore(touch_task, "touch_task", 3584, NULL, 6, &s_touch_task_handle, 0);
     assert(t_touch == pdPASS);
 
     // 6. Lanzar tarea GUI en Core 0 (prioridad 4)
-    BaseType_t t_gui = xTaskCreatePinnedToCore(gui_task, "gui_task", 8192, NULL, 4, NULL, 0);
+    BaseType_t t_gui = xTaskCreatePinnedToCore(gui_task, "gui_task", 8192, NULL, 4, &s_gui_task_handle, 0);
     assert(t_gui == pdPASS);
 
 #if CONFIG_APP_PERF_AUTOTEST
-    // 7. Lanzar tarea de autotest (prioridad 3)
-    BaseType_t t_auto = xTaskCreatePinnedToCore(autotest_task, "autotest_task", 6144, NULL, 3, NULL, 0);
+    // 7. Lanzar tarea de autotest (prioridad 3, ajustada a 4608 tras medir uso de 2400 B)
+    BaseType_t t_auto = xTaskCreatePinnedToCore(autotest_task, "autotest_task", 4608, NULL, 3, &s_autotest_task_handle, 0);
     assert(t_auto == pdPASS);
 #endif
 
+    log_stack_and_heap_diag("POST_INIT");
     ESP_LOGI(TAG, "app_main inicializacion completada.");
 }

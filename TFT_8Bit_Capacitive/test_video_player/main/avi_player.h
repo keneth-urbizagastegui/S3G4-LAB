@@ -30,6 +30,9 @@ void avi_player_close(void);
 // scale: 0 = 1:1 (480x320 Fullscreen), 1 = 1/2 (240x160 Studio)
 esp_err_t avi_player_read_next_frame(uint16_t *out_rgb565, uint8_t scale);
 
+// Salta el siguiente cuadro sin decodificar (lectura de cabecera de chunk + fseek)
+esp_err_t avi_player_skip_next_frame(void);
+
 void avi_player_seek_percent(int percent);
 void avi_player_restart(void);
 

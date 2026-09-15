@@ -24,6 +24,7 @@ CRASH_REGEX = re.compile(r"Guru Meditation|abort\(\)|Backtrace:")
 REBOOT_REGEX = re.compile(r"rst:0x")
 AUTOTEST_REGEX = re.compile(r"AUTOTEST_DONE,tracks=(\d+)")
 STRESS_REGEX = re.compile(r"STRESS,changes=(\d+),seeks=(\d+),title_mismatch=(\d+)(?:,title_wait_ms_max=(\d+))?")
+TAP_REGEX = re.compile(r"TAP,hud_before=(\d+),hud_after=(\d+)")
 
 
 def parse_kv_line(line_str, prefix):
@@ -104,6 +105,7 @@ def main():
     autotest_done = False
     autotest_tracks = -1
     stress_data = None
+    tap_data = None
     crashed = False
     crash_reason = ""
 
@@ -133,8 +135,17 @@ def main():
             if (line_str.startswith("PERF,") or
                 line_str.startswith("MEDIA,") or
                 line_str.startswith("STRESS,") or
+                line_str.startswith("TAP,") or
                 "AUTOTEST_DONE" in line_str):
                 print(f"  {line_str}")
+
+            # Deteccion de TAP
+            m_tap = TAP_REGEX.search(line_str)
+            if m_tap:
+                tap_data = {
+                    "hud_before": int(m_tap.group(1)),
+                    "hud_after": int(m_tap.group(2))
+                }
 
             # Deteccion de STRESS
             m_stress = STRESS_REGEX.search(line_str)
@@ -214,17 +225,19 @@ def main():
             groups[key] = []
         groups[key].append(r)
 
-    print("\n" + "=" * 136)
+    print("\n" + "=" * 148)
     print(f"RESUMEN DE RENDIMIENTO ({args.phase}) - (Primeros 2s descartados por escenario)")
-    print("=" * 136)
-    print(f"{'Track':<8}{'Escenario':<14}{'View':<8}{'HUD':<6}{'Muestras':<10}{'Dec FPS':<10}{'Pres FPS':<10}{'rd_avg(ms)':<12}{'dec_avg(ms)':<12}{'blit_avg(ms)':<12}{'tch_rd(ms)':<12}{'tch_age(ms)':<12}")
-    print("-" * 136)
+    print("=" * 148)
+    print(f"{'Track':<8}{'Escenario':<12}{'View':<8}{'HUD':<6}{'Muestras':<10}{'Dec FPS':<10}{'Pres FPS':<10}{'drop':<8}{'late(ms)':<10}{'drift(ms)':<11}{'rd(ms)':<10}{'dec(ms)':<10}{'blit(ms)':<10}")
+    print("-" * 148)
 
     def sort_key(item):
         trk, scn = item[0]
         trk_str = str(trk)
         trk_num = int(trk_str) if trk_str.isdigit() else 9999
         return (trk_num, trk_str, str(scn))
+
+    f2_summary_data = {}
 
     for (trk, scn), recs in sorted(groups.items(), key=sort_key):
         # Descartar primeros 2s de cada escenario (el primer reporte de 2s)
@@ -233,20 +246,63 @@ def main():
         if n > 0:
             avg_dec = sum(float(x.get("dec_fps", 0.0)) for x in filtered) / n
             avg_pres = sum(float(x.get("pres_fps", 0.0)) for x in filtered) / n
+            tot_drop = sum(int(x.get("drop", 0)) for x in filtered)
+            max_late = max((float(x.get("late_max", 0.0)) for x in filtered), default=0.0)
+            avg_drift = sum(float(x.get("drift_ms", 0.0)) for x in filtered) / n
             avg_rd = sum(float(x.get("rd_avg", 0.0)) for x in filtered) / n
             avg_dec_t = sum(float(x.get("dec_avg", 0.0)) for x in filtered) / n
             avg_blit = sum(float(x.get("blit_avg", 0.0)) for x in filtered) / n
-            avg_tch_rd = sum(float(x.get("touch_read_ms_avg", 0.0)) for x in filtered) / n
-            max_tch_age = max((float(x.get("touch_age_ms_max", 0.0)) for x in filtered), default=0.0)
             v_mode = filtered[0].get("view", "?")
             hud_mode = filtered[0].get("hud", "?")
         else:
-            avg_dec = avg_pres = avg_rd = avg_dec_t = avg_blit = avg_tch_rd = max_tch_age = 0.0
+            avg_dec = avg_pres = avg_drift = avg_rd = avg_dec_t = avg_blit = max_late = 0.0
+            tot_drop = 0
             v_mode = hud_mode = "?"
 
-        print(f"{trk:<8}{scn:<14}{v_mode:<8}{hud_mode:<6}{n:<10}{avg_dec:<10.1f}{avg_pres:<10.1f}{avg_rd:<12.1f}{avg_dec_t:<12.1f}{avg_blit:<12.1f}{avg_tch_rd:<12.1f}{max_tch_age:<12.1f}")
+        f2_summary_data[(str(trk), str(scn))] = {
+            "dec": avg_dec,
+            "pres": avg_pres,
+            "drop": tot_drop,
+            "late": max_late,
+            "drift": avg_drift,
+            "view": v_mode,
+            "hud": hud_mode,
+        }
 
-    print("=" * 136)
+        print(f"{trk:<8}{scn:<12}{v_mode:<8}{hud_mode:<6}{n:<10}{avg_dec:<10.1f}{avg_pres:<10.1f}{tot_drop:<8}{max_late:<10.1f}{avg_drift:<11.1f}{avg_rd:<10.1f}{avg_dec_t:<10.1f}{avg_blit:<10.1f}")
+
+    print("=" * 148)
+
+    # Tabla comparativa con F1 it3
+    F1_IT3_BASE = {
+        ("0", "hidden"): {"dec": 17.5, "pres": 13.9, "blit": 2.7},
+        ("0", "osd"):    {"dec": 18.0, "pres": 7.3,  "blit": 2.7},
+        ("0", "seek"):   {"dec": 18.4, "pres": 13.8, "blit": 2.7},
+        ("1", "hidden"): {"dec": 17.9, "pres": 14.0, "blit": 2.7},
+        ("1", "osd"):    {"dec": 15.9, "pres": 7.4,  "blit": 2.7},
+        ("1", "seek"):   {"dec": 16.7, "pres": 14.1, "blit": 2.7},
+        ("2", "hidden"): {"dec": 18.8, "pres": 13.8, "blit": 2.7},
+        ("2", "osd"):    {"dec": 16.5, "pres": 7.4,  "blit": 2.7},
+        ("2", "seek"):   {"dec": 17.2, "pres": 13.8, "blit": 2.7},
+        ("3", "hidden"): {"dec": 16.8, "pres": 14.1, "blit": 2.7},
+        ("3", "osd"):    {"dec": 16.2, "pres": 7.4,  "blit": 2.7},
+        ("3", "seek"):   {"dec": 16.8, "pres": 14.2, "blit": 2.7},
+    }
+
+    print("\n" + "=" * 110)
+    print("COMPARATIVA DE RENDIMIENTO: F1 it3 vs F2")
+    print("=" * 110)
+    print(f"{'Track':<8}{'Escenario':<12}{'F1 Dec':<10}{'F2 Dec':<10}{'F1 Pres':<10}{'F2 Pres':<10}{'Delta Pres':<12}{'F2 Drop':<10}{'F2 Drift(ms)':<14}")
+    print("-" * 110)
+    for (trk, scn), f1_vals in sorted(F1_IT3_BASE.items(), key=lambda x: (int(x[0][0]), x[0][1])):
+        cur = f2_summary_data.get((trk, scn), {})
+        f2_dec = cur.get("dec", 0.0)
+        f2_pres = cur.get("pres", 0.0)
+        f2_drop = cur.get("drop", 0)
+        f2_drift = cur.get("drift", 0.0)
+        delta_pres = f2_pres - f1_vals["pres"]
+        print(f"{trk:<8}{scn:<12}{f1_vals['dec']:<10.1f}{f2_dec:<10.1f}{f1_vals['pres']:<10.1f}{f2_pres:<10.1f}{delta_pres:+12.1f}{f2_drop:<10}{f2_drift:<14.1f}")
+    print("=" * 110)
 
     if media_records:
         print("\n" + "=" * 94)
@@ -270,7 +326,136 @@ def main():
         print("=" * 94)
 
     # Evaluacion de criterios segun la fase
-    if args.phase.upper() == "F1":
+    if args.phase.upper() == "F2":
+        f2_passed = True
+        print("\n" + "=" * 80)
+        print("EVALUACION DE CRITERIOS FASE F2")
+        print("=" * 80)
+
+        # 1. Autotest completado
+        if not autotest_done:
+            print("[CRITERIO F2 FALLIDO]: No se recibio AUTOTEST_DONE.", file=sys.stderr)
+            f2_passed = False
+        else:
+            print(f"[CRITERIO F2 OK]: AUTOTEST_DONE recibido con {autotest_tracks} pistas.")
+
+        # 2. Toque sintetico TAP (Bug T2)
+        if not tap_data:
+            print("[CRITERIO F2 FALLIDO]: No se recibio la linea TAP.", file=sys.stderr)
+            f2_passed = False
+        else:
+            print(f"[EVALUACION TAP]: hud_before={tap_data['hud_before']}, hud_after={tap_data['hud_after']}")
+            if tap_data['hud_before'] != 0 or tap_data['hud_after'] != 1:
+                print(f"[CRITERIO F2 FALLIDO]: TAP requiere hud_before=0 y hud_after=1 (obtenido: {tap_data['hud_before']}, {tap_data['hud_after']}).", file=sys.stderr)
+                f2_passed = False
+            else:
+                print("[CRITERIO F2 OK]: TAP paso de 0 a 1 correctamente.")
+
+        # 3. STRESS con title_mismatch == 0
+        if not stress_data:
+            print("[CRITERIO F2 FALLIDO]: No se recibio linea STRESS.", file=sys.stderr)
+            f2_passed = False
+        else:
+            print(f"[EVALUACION STRESS]: changes={stress_data['changes']}, seeks={stress_data['seeks']}, title_mismatch={stress_data['title_mismatch']}")
+            if stress_data['title_mismatch'] != 0:
+                print(f"[CRITERIO F2 FALLIDO]: title_mismatch={stress_data['title_mismatch']} (debe ser 0).", file=sys.stderr)
+                f2_passed = False
+            if stress_data['changes'] < 20:
+                print(f"[CRITERIO F2 FALLIDO]: changes={stress_data['changes']} < 20.", file=sys.stderr)
+                f2_passed = False
+            if stress_data['seeks'] < 50:
+                print(f"[CRITERIO F2 FALLIDO]: seeks={stress_data['seeks']} < 50.", file=sys.stderr)
+                f2_passed = False
+            if stress_data['title_mismatch'] == 0 and stress_data['changes'] >= 20 and stress_data['seeks'] >= 50:
+                print("[CRITERIO F2 OK]: STRESS sin fallos de sincronizacion.")
+
+        # 4. View y HUD coherentes en todos los registros hidden/osd/seek
+        view_hud_ok = True
+        for r in perf_records:
+            scn = r.get("scn", "")
+            if scn in ("hidden", "osd", "seek"):
+                v = r.get("view", "")
+                h = r.get("hud", "")
+                if v != "full":
+                    print(f"[CRITERIO F2 FALLIDO]: Registro con scn='{scn}' tiene view='{v}' (debe ser 'full').", file=sys.stderr)
+                    view_hud_ok = False
+                    f2_passed = False
+                    break
+                if scn == "osd" and h != "1":
+                    print(f"[CRITERIO F2 FALLIDO]: Registro con scn='osd' tiene hud='{h}' (debe ser '1').", file=sys.stderr)
+                    view_hud_ok = False
+                    f2_passed = False
+                    break
+                if scn in ("hidden", "seek") and h != "0":
+                    print(f"[CRITERIO F2 FALLIDO]: Registro con scn='{scn}' tiene hud='{h}' (debe ser '0').", file=sys.stderr)
+                    view_hud_ok = False
+                    f2_passed = False
+                    break
+        if view_hud_ok:
+            print("[CRITERIO F2 OK]: view=full y hud coherente en todos los escenarios.")
+
+        # 5. |drift_ms| < 100 en todos los registros hidden/osd/seek pasados los primeros 2 s de cada escenario
+        drift_ok = True
+        max_drift_observed = 0.0
+        for (trk, scn), recs in groups.items():
+            if scn in ("hidden", "osd", "seek"):
+                filtered = recs[1:] if len(recs) > 1 else recs
+                for r in filtered:
+                    try:
+                        d_val = float(r.get("drift_ms", 0))
+                    except ValueError:
+                        d_val = 0.0
+                    if abs(d_val) > max_drift_observed:
+                        max_drift_observed = abs(d_val)
+                    if abs(d_val) >= 100.0:
+                        print(f"[CRITERIO F2 FALLIDO]: drift_ms={d_val} >= 100 ms en track={trk}, scn={scn}, t_ms={r.get('t_ms')}", file=sys.stderr)
+                        drift_ok = False
+                        f2_passed = False
+        if drift_ok:
+            print(f"[CRITERIO F2 OK]: |drift_ms| < 100 ms en todos los registros (max observado: {max_drift_observed:.1f} ms).")
+
+        # 6. late_max no crece: pendiente de regresion lineal de late_max frente a t_ms en registros hidden < 1 ms por minuto
+        hidden_points = []
+        for (trk, scn), recs in groups.items():
+            if scn == "hidden":
+                filtered = recs[1:] if len(recs) > 1 else recs
+                for r in filtered:
+                    try:
+                        t_m = float(r.get("t_ms", 0)) / 60000.0 # minutos
+                        l_m = float(r.get("late_max", 0))       # ms
+                        hidden_points.append((t_m, l_m))
+                    except ValueError:
+                        pass
+
+        if len(hidden_points) >= 2:
+            n_pts = len(hidden_points)
+            sum_t = sum(p[0] for p in hidden_points)
+            sum_y = sum(p[1] for p in hidden_points)
+            mean_t = sum_t / n_pts
+            mean_y = sum_y / n_pts
+
+            num = sum((p[0] - mean_t) * (p[1] - mean_y) for p in hidden_points)
+            den = sum((p[0] - mean_t) ** 2 for p in hidden_points)
+            slope = (num / den) if den != 0 else 0.0
+
+            print(f"[REGRESION LINEAL late_max HIDDEN]: pendiente = {slope:.4f} ms/min (umbral: < 1.0 ms/min, muestras: {n_pts})")
+            if slope >= 1.0:
+                print(f"[CRITERIO F2 FALLIDO]: Pendiente de regresion {slope:.4f} ms/min >= 1.0 ms/min.", file=sys.stderr)
+                f2_passed = False
+            else:
+                print(f"[CRITERIO F2 OK]: Pendiente de late_max estable ({slope:.4f} ms/min < 1.0 ms/min).")
+        else:
+            print("[ADVERTENCIA]: Muestras insuficientes para regresion lineal de late_max.")
+
+        print("=" * 80)
+        if f2_passed:
+            print("\n[RESULTADO F2]: EXITO - Todos los criterios cumplidos satisfactoriamente.")
+            sys.exit(0)
+        else:
+            print("\n[RESULTADO F2]: FALLO - Criterios no cumplidos.", file=sys.stderr)
+            sys.exit(1)
+
+    elif args.phase.upper() == "F1":
         f1_passed = True
         if not autotest_done:
             print("\n[CRITERIO F1 FALLIDO]: No se recibio AUTOTEST_DONE.", file=sys.stderr)

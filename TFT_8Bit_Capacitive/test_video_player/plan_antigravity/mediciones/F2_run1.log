@@ -1,0 +1,481 @@
+ESP-ROM:esp32s3-20210327
+Build:Mar 27 2021
+rst:0x1 (POWERON),boot:0x8 (SPI_FAST_FLASH_BOOT)
+SPIWP:0xee
+mode:DIO, clock div:1
+load:0x3fce2820,len:0x14f0
+load:0x403c8700,len:0xda0
+load:0x403cb700,len:0x2f58
+entry 0x403c8908
+I (24) boot: ESP-IDF v6.0.1 2nd stage bootloader
+I (25) boot: compile time Sep 15 2026 14:05:47
+I (25) boot: Multicore bootloader
+I (25) boot: chip revision: v0.2
+I (28) boot: efuse block revision: v1.4
+I (31) boot.esp32s3: Boot SPI Speed : 80MHz
+I (35) boot.esp32s3: SPI Mode       : DIO
+I (39) boot.esp32s3: SPI Flash Size : 16MB
+I (43) boot: Enabling RNG early entropy source...
+I (47) boot: Partition Table:
+I (50) boot: ## Label            Usage          Type ST Offset   Length
+I (56) boot:  0 nvs              WiFi data        01 02 00009000 00006000
+I (63) boot:  1 phy_init         RF data          01 01 0000f000 00001000
+I (69) boot:  2 factory          factory app      00 00 00010000 00100000
+I (76) boot: End of partition table
+I (79) esp_image: segment 0: paddr=00010020 vaddr=3c090020 size=17b54h ( 97108) map
+I (104) esp_image: segment 1: paddr=00027b7c vaddr=3fc95400 size=03780h ( 14208) load
+I (107) esp_image: segment 2: paddr=0002b304 vaddr=40374000 size=04d14h ( 19732) load
+I (112) esp_image: segment 3: paddr=00030020 vaddr=42000020 size=8767ch (554620) map
+I (215) esp_image: segment 4: paddr=000b76a4 vaddr=40378d14 size=0c640h ( 50752) load
+I (226) esp_image: segment 5: paddr=000c3cec vaddr=50000000 size=00024h (    36) load
+I (234) boot: Loaded app from partition at offset 0x10000
+I (234) boot: Disabling RNG early entropy source...
+I (245) octal_psram: vendor id    : 0x0d (AP)
+I (245) octal_psram: dev id       : 0x02 (generation 3)
+I (245) octal_psram: density      : 0x03 (64 Mbit)
+I (247) octal_psram: good-die     : 0x01 (Pass)
+I (251) octal_psram: Latency      : 0x01 (Fixed)
+I (255) octal_psram: VCC          : 0x01 (3V)
+I (260) octal_psram: SRF          : 0x01 (Fast Refresh)
+I (265) octal_psram: BurstType    : 0x01 (Hybrid Wrap)
+I (269) octal_psram: BurstLen     : 0x01 (32 Byte)
+I (274) octal_psram: Readlatency  : 0x02 (10 cycles@Fixed)
+I (279) octal_psram: DriveStrength: 0x00 (1/1)
+I (283) esp_psram: Found 8MB PSRAM device
+I (287) esp_psram: Speed: 40MHz
+I (290) cpu_start: Multicore app
+I (1024) esp_psram: SPI SRAM memory test OK
+I (1032) cpu_start: GPIO 44 and 43 are used as console UART I/O pins
+I (1033) cpu_start: Pro cpu start user code
+I (1033) cpu_start: cpu freq: 240000000 Hz
+I (1035) app_init: Application information:
+I (1039) app_init: Project name:     tft_video_player
+I (1043) app_init: App version:      vp-v0.1-dirty
+I (1048) app_init: Compile time:     Sep 15 2026 14:05:54
+I (1053) app_init: ELF file SHA256:  0a2c49c3e...
+I (1057) app_init: ESP-IDF:          v6.0.1
+I (1061) efuse_init: Min chip rev:     v0.0
+I (1065) efuse_init: Max chip rev:     v0.99 
+I (1069) efuse_init: Chip rev:         v0.2
+I (1073) heap_init: Initializing. RAM available for dynamic allocation:
+I (1080) heap_init: At 3FCBC7B0 len 0002CF60 (179 KiB): RAM
+I (1085) heap_init: At 3FCE9710 len 00005724 (21 KiB): RAM
+I (1090) heap_init: At 3FCF0000 len 00008000 (32 KiB): DRAM
+I (1095) heap_init: At 600FE000 len 00001FE8 (7 KiB): RTCRAM
+I (1101) esp_psram: Adding pool of 8192K of PSRAM memory to heap allocator
+I (1108) spi_flash: detected chip: generic
+I (1111) spi_flash: flash io: dio
+I (1115) sleep_gpio: Configure to isolate all GPIO pins in sleep state
+I (1121) sleep_gpio: Enable automatic switching of GPIO sleep configuration
+I (1128) main_task: Started on CPU0
+I (1152) esp_psram: Reserving pool of 32K of internal memory for DMA/internal allocations
+I (1152) main_task: Calling app_main()
+I (1153) MAIN_APP: ==========================================================
+I (1159) MAIN_APP:    S3G4 LAB — REPRODUCTOR DE VIDEO FASE 2 (PTS / CADENCIA)
+I (1166) MAIN_APP:    Display: ILI9488 (8080 8-bit @ 16.0 MHz)
+I (1172) MAIN_APP:    Touch:   FT6236 Capacitivo (Desacoplado, sondeo 10 ms)
+I (1179) MAIN_APP:    Storage: MicroSD SPI @ 20 MHz (32 KB Buffer)
+I (1184) MAIN_APP:    Core 1:  player_task (Motor video + cola comandos + PTS)
+I (1191) MAIN_APP:    Core 0:  gui_task (LVGL) + touch_task
+I (1197) MAIN_APP: ==========================================================
+I (1204) ili9488_8080: Iniciando hardware reset...
+I (1358) ili9488_8080: Configurando bus LCD 8080 de 8 bits a 16 MHz...
+I (1358) ili9488_8080: Enviando registros de inicialización ILI9488 IPS...
+I (1500) ili9488_8080: Inicialización completada.
+I (1500) ft6236_i2c: Configurando bus I2C maestro (SDA: 6, SCL: 5)...
+I (1501) ft6236_i2c: Escaneando bus I2C (0x08 a 0x77)...
+I (1511) ft6236_i2c:   -> Dispositivo I2C detectado en direccion: 0x38
+I (1521) ft6236_i2c:   -> Chip ID verificado: 0x36
+I (1521) ft6236_i2c:   -> Panel/Vendor ID: 0x11
+I (1521) ft6236_i2c: Panel táctil inicializado con éxito.
+I (1525) SDCARD_SPI: Iniciando montaje MicroSD SPI (CS:21, MOSI:11, CLK:13, MISO:15)...
+I (1598) SDCARD_SPI: MicroSD montada con éxito en /sdcard
+Name: SD32G
+Type: SDHC
+Speed: 20.00 MHz (limit: 20.00 MHz)
+Size: 29664MB
+CSD: ver=2, sector_size=512, capacity=60751872 read_bl_len=9
+SSR: bus_width=1
+I (1606) SDCARD_SPI: --- Contenido del directorio /sdcard ---
+I (1614) SDCARD_SPI:   [D] System Volume Information (0 bytes)
+I (1618) SDCARD_SPI:   [F] harry.avi (77294026 bytes)
+I (1622) SDCARD_SPI:   [F] ariana.avi (69687956 bytes)
+I (1627) SDCARD_SPI:   [F] lesserafim.avi (70497374 bytes)
+I (1632) SDCARD_SPI:   [F] meovv.avi (59188494 bytes)
+I (1636) SDCARD_SPI: ---------------------------------------------
+I (1645) AVI_PLAYER_SIMD: MicroSD escaneada: 4 archivos AVI encontrados.
+MEDIA,file=/sdcard/ariana.avi,size=69687956,w=480,h=320,us_per_frame=33333,fps_milli=30000,frames=9003,idx1=1,chunk_avg=7715,chunk_max=22505,subsampling=420
+MEDIA,file=/sdcard/harry.avi,size=77294026,w=480,h=320,us_per_frame=33333,fps_milli=30000,frames=6029,idx1=1,chunk_avg=12794,chunk_max=28864,subsampling=420
+MEDIA,file=/sdcard/lesserafim.avi,size=70497374,w=480,h=320,us_per_frame=33333,fps_milli=30000,frames=5988,idx1=1,chunk_avg=11747,chunk_max=35098,subsampling=420
+MEDIA,file=/sdcard/meovv.avi,size=59188494,w=480,h=320,us_per_frame=33333,fps_milli=30000,frames=6136,idx1=1,chunk_avg=9620,chunk_max=19425,subsampling=420
+I (3954) AVI_PLAYER_SIMD: Inicializando motor de video SIMD (esp_new_jpeg)...
+I (3961) AVI_PLAYER_SIMD: Decodificadores SIMD Fullscreen y Studio inicializados con éxito.
+I (3969) PLAYER: Iniciando subsistema player...
+I (4014) PLAYER: player_task iniciada con exito en CPU 1.
+I (4014) PLAYER: Tarea player_task ejecutandose en CPU 1.
+I (4014) MAIN_APP: Tarea touch_task iniciada en Core 0 (prioridad 6, intervalo 10 ms).
+I (4014) PLAYER: Abriendo pista 0: /sdcard/ariana.avi
+I (4021) MAIN_APP: Iniciando gui_task en Core 0...
+I (4026) AVI_PLAYER_SIMD: Abriendo archivo AVI MJPEG: /sdcard/ariana.avi
+I (4156) MAIN_APP: Bucle de eventos GUI LVGL iniciado en Core 0 (refresh: 250 ms).
+I (4021) MAIN_APP: Tarea de autotest F2 iniciada (usa cola de comandos y peticiones UI).
+I (4023) MAIN_APP: DIAG_HEAP [POST_INIT]: int=74291, psram=7610984 | STACK_FREE: touch=2920, gui=7068, player=14852, auto=4320
+Heap summary for capabilities 0x00000800:
+  At 0x3fcc5158 len 32767 free 23835 allocated 8192 min_free 23835
+    largest_free_block 23552 alloc_blocks 1 free_blocks 1 total_blocks 2
+  At 0x600fe000 len 8168 free 7788 allocated 0 min_free 7788
+    largest_free_block 7680 alloc_blocks 0 free_blocks 1 total_blocks 1
+  At 0x3fce9710 len 22308 free 4 allocated 21408 min_free 4
+    largest_free_block 0 alloc_blocks 40 free_blocks 0 total_blocks 40
+  At 0x3fcf0000 len 32768 free 32032 allocated 0 min_free 32032
+    largest_free_block 31744 alloc_blocks 0 free_blocks 1 total_blocks 1
+  At 0x3fcbc7b0 len 184160 free 1980 allocated 180932 min_free 1464
+    largest_free_block 1792 alloc_blocks 77 free_blocks 8 total_blocks 85
+  Totals:
+    free 65639 allocated 210532 min_free 65123 largest_free_block 31744
+I (4336) MAIN_APP: app_main inicializacion completada.
+I (4355) main_task: Returned from app_main()
+I (4751) AVI_PLAYER_SIMD: Tabla idx1 cargada: 9003 cuadros indexados en PSRAM
+I (4752) AVI_PLAYER_SIMD: AVI Abierto: 480x320 @ 30 FPS, 9003 cuadros (5:00)
+PERF,t_ms=3652,dec_fps=0.0,pres_fps=0.0,drop=0,over=0,frame_mismatch=0,rd_avg=0.0,rd_max=0.0,dec_avg=0.0,dec_max=0.0,blit_avg=1.6,blit_max=2.7,late_max=0.0,drift_ms=0,touch_read_ms_avg=0.7,touch_read_ms_max=1.1,touch_age_ms_max=9.9,heap_int=99543,heap_psram=6805584,track=0,scn=init,view=studio,hud=0
+I (5239) MAIN_APP: DIAG_HEAP [AUTOTEST_START]: int=74479, psram=6805584 | STACK_FREE: touch=2872, gui=2988, player=11892, auto=4304
+Heap summary for capabilities 0x00000800:
+  At 0x3fcc5158 len 32767 free 32031 allocated 0 min_free 23835
+    largest_free_block 31744 alloc_blocks 0 free_blocks 1 total_blocks 1
+  At 0x600fe000 len 8168 free 7788 allocated 0 min_free 7788
+    largest_free_block 7680 alloc_blocks 0 free_blocks 1 total_blocks 1
+  At 0x3fce9710 len 22308 free 4 allocated 21408 min_free 4
+    largest_free_block 0 alloc_blocks 40 free_blocks 0 total_blocks 40
+  At 0x3fcf0000 len 32768 free 32032 allocated 0 min_free 32032
+    largest_free_block 31744 alloc_blocks 0 free_blocks 1 total_blocks 1
+  At 0x3fcbc7b0 len 184160 free 2624 allocated 180264 min_free 1464
+    largest_free_block 1984 alloc_blocks 83 free_blocks 6 total_blocks 89
+  Totals:
+    free 74479 allocated 201672 min_free 65123 largest_free_block 31744
+I (5324) MAIN_APP: Autotest: Abriendo Track 0 via PCMD_OPEN
+I (5340) PLAYER: Abriendo pista 0: /sdcard/ariana.avi
+I (5341) AVI_PLAYER_SIMD: Abriendo archivo AVI MJPEG: /sdcard/ariana.avi
+I (5799) MAIN_APP: Track 0 -> Escenario 'hidden' (20 s, view=full, hud=0)
+I (6036) AVI_PLAYER_SIMD: Tabla idx1 cargada: 9003 cuadros indexados en PSRAM
+I (6037) AVI_PLAYER_SIMD: AVI Abierto: 480x320 @ 30 FPS, 9003 cuadros (5:00)
+PERF,t_ms=5653,dec_fps=18.0,pres_fps=11.0,drop=2,over=0,frame_mismatch=1,rd_avg=3.2,rd_max=4.6,dec_avg=28.1,dec_max=35.1,blit_avg=2.4,blit_max=3.5,late_max=34.7,drift_ms=-16,touch_read_ms_avg=0.8,touch_read_ms_max=1.1,touch_age_ms_max=9.8,heap_int=74371,heap_psram=6805584,track=0,scn=hidden,view=full,hud=0
+PERF,t_ms=7667,dec_fps=20.8,pres_fps=13.4,drop=18,over=0,frame_mismatch=0,rd_avg=8.0,rd_max=13.1,dec_avg=37.0,dec_max=41.8,blit_avg=2.8,blit_max=3.4,late_max=53.2,drift_ms=-31,touch_read_ms_avg=0.9,touch_read_ms_max=1.2,touch_age_ms_max=9.0,heap_int=74235,heap_psram=6805584,track=0,scn=hidden,view=full,hud=0
+PERF,t_ms=9689,dec_fps=18.3,pres_fps=13.4,drop=24,over=0,frame_mismatch=0,rd_avg=11.7,rd_max=13.2,dec_avg=39.5,dec_max=41.7,blit_avg=2.7,blit_max=3.4,late_max=51.0,drift_ms=-18,touch_read_ms_avg=0.9,touch_read_ms_max=1.1,touch_age_ms_max=9.7,heap_int=74235,heap_psram=6805584,track=0,scn=hidden,view=full,hud=0
+PERF,t_ms=11711,dec_fps=18.3,pres_fps=13.8,drop=23,over=0,frame_mismatch=0,rd_avg=11.5,rd_max=13.8,dec_avg=39.5,dec_max=41.1,blit_avg=2.7,blit_max=3.4,late_max=53.9,drift_ms=-41,touch_read_ms_avg=0.9,touch_read_ms_max=1.2,touch_age_ms_max=8.7,heap_int=74243,heap_psram=6805584,track=0,scn=hidden,view=full,hud=0
+PERF,t_ms=13713,dec_fps=21.0,pres_fps=13.0,drop=19,over=0,frame_mismatch=0,rd_avg=7.8,rd_max=11.8,dec_avg=36.7,dec_max=41.1,blit_avg=2.8,blit_max=3.4,late_max=58.4,drift_ms=-10,touch_read_ms_avg=0.9,touch_read_ms_max=1.1,touch_age_ms_max=9.8,heap_int=74355,heap_psram=6805584,track=0,scn=hidden,view=full,hud=0
+PERF,t_ms=15716,dec_fps=24.5,pres_fps=13.0,drop=11,over=0,frame_mismatch=0,rd_avg=4.5,rd_max=6.0,dec_avg=34.1,dec_max=36.3,blit_avg=2.8,blit_max=3.4,late_max=41.6,drift_ms=-12,touch_read_ms_avg=1.0,touch_read_ms_max=1.1,touch_age_ms_max=10.7,heap_int=74311,heap_psram=6805584,track=0,scn=hidden,view=full,hud=0
+PERF,t_ms=17757,dec_fps=24.0,pres_fps=12.7,drop=12,over=0,frame_mismatch=0,rd_avg=4.7,rd_max=6.6,dec_avg=34.5,dec_max=37.2,blit_avg=2.8,blit_max=3.4,late_max=41.4,drift_ms=-20,touch_read_ms_avg=1.0,touch_read_ms_max=1.1,touch_age_ms_max=9.9,heap_int=74323,heap_psram=6805584,track=0,scn=hidden,view=full,hud=0
+PERF,t_ms=19773,dec_fps=23.8,pres_fps=12.9,drop=12,over=0,frame_mismatch=0,rd_avg=5.2,rd_max=6.8,dec_avg=34.8,dec_max=37.2,blit_avg=2.8,blit_max=3.4,late_max=41.9,drift_ms=-37,touch_read_ms_avg=1.0,touch_read_ms_max=1.1,touch_age_ms_max=9.9,heap_int=74315,heap_psram=6805584,track=0,scn=hidden,view=full,hud=0
+PERF,t_ms=21801,dec_fps=24.2,pres_fps=12.8,drop=12,over=0,frame_mismatch=0,rd_avg=4.9,rd_max=6.6,dec_avg=34.5,dec_max=36.6,blit_avg=2.8,blit_max=3.4,late_max=53.3,drift_ms=-31,touch_read_ms_avg=1.0,touch_read_ms_max=1.2,touch_age_ms_max=9.8,heap_int=74371,heap_psram=6805584,track=0,scn=hidden,view=full,hud=0
+PERF,t_ms=23804,dec_fps=24.0,pres_fps=13.0,drop=12,over=0,frame_mismatch=0,rd_avg=5.0,rd_max=6.7,dec_avg=34.5,dec_max=37.0,blit_avg=2.8,blit_max=3.5,late_max=48.1,drift_ms=-33,touch_read_ms_avg=1.0,touch_read_ms_max=1.1,touch_age_ms_max=8.8,heap_int=74307,heap_psram=6805584,track=0,scn=hidden,view=full,hud=0
+I (25847) MAIN_APP: Track 0 -> Escenario 'osd' (20 s, view=full, hud=1)
+PERF,t_ms=25809,dec_fps=22.4,pres_fps=9.5,drop=15,over=0,frame_mismatch=0,rd_avg=5.3,rd_max=7.3,dec_avg=36.4,dec_max=41.9,blit_avg=2.8,blit_max=3.5,late_max=51.0,drift_ms=-38,touch_read_ms_avg=1.0,touch_read_ms_max=1.2,touch_age_ms_max=9.8,heap_int=74303,heap_psram=6805584,track=0,scn=osd,view=full,hud=1
+PERF,t_ms=27857,dec_fps=21.0,pres_fps=6.8,drop=18,over=0,frame_mismatch=0,rd_avg=5.9,rd_max=8.8,dec_avg=39.0,dec_max=43.0,blit_avg=2.8,blit_max=3.4,late_max=55.6,drift_ms=-53,touch_read_ms_avg=1.0,touch_read_ms_max=1.1,touch_age_ms_max=11.0,heap_int=74331,heap_psram=6805584,track=0,scn=osd,view=full,hud=1
+PERF,t_ms=29902,dec_fps=20.5,pres_fps=6.8,drop=20,over=0,frame_mismatch=0,rd_avg=6.3,rd_max=9.3,dec_avg=39.4,dec_max=43.9,blit_avg=2.8,blit_max=3.5,late_max=70.7,drift_ms=-31,touch_read_ms_avg=1.0,touch_read_ms_max=1.1,touch_age_ms_max=10.5,heap_int=74343,heap_psram=6805584,track=0,scn=osd,view=full,hud=1
+PERF,t_ms=31920,dec_fps=21.3,pres_fps=6.4,drop=18,over=0,frame_mismatch=0,rd_avg=5.6,rd_max=6.9,dec_avg=38.3,dec_max=42.5,blit_avg=2.8,blit_max=3.4,late_max=48.7,drift_ms=-17,touch_read_ms_avg=1.0,touch_read_ms_max=1.1,touch_age_ms_max=9.8,heap_int=74311,heap_psram=6805584,track=0,scn=osd,view=full,hud=1
+PERF,t_ms=33935,dec_fps=21.3,pres_fps=6.9,drop=16,over=0,frame_mismatch=0,rd_avg=5.3,rd_max=7.2,dec_avg=38.0,dec_max=41.9,blit_avg=2.8,blit_max=3.6,late_max=47.6,drift_ms=-31,touch_read_ms_avg=1.0,touch_read_ms_max=1.2,touch_age_ms_max=11.0,heap_int=74311,heap_psram=6805584,track=0,scn=osd,view=full,hud=1
+PERF,t_ms=35952,dec_fps=21.8,pres_fps=6.4,drop=17,over=0,frame_mismatch=0,rd_avg=5.1,rd_max=7.1,dec_avg=38.1,dec_max=41.8,blit_avg=2.8,blit_max=3.5,late_max=47.8,drift_ms=-9,touch_read_ms_avg=1.0,touch_read_ms_max=1.2,touch_age_ms_max=9.1,heap_int=74307,heap_psram=6805584,track=0,scn=osd,view=full,hud=1
+PERF,t_ms=37961,dec_fps=22.4,pres_fps=7.0,drop=16,over=0,frame_mismatch=0,rd_avg=5.4,rd_max=6.7,dec_avg=38.1,dec_max=42.4,blit_avg=2.8,blit_max=3.5,late_max=47.8,drift_ms=-25,touch_read_ms_avg=1.0,touch_read_ms_max=1.1,touch_age_ms_max=9.8,heap_int=74299,heap_psram=6805584,track=0,scn=osd,view=full,hud=1
+PERF,t_ms=39975,dec_fps=20.9,pres_fps=7.0,drop=18,over=0,frame_mismatch=0,rd_avg=5.8,rd_max=7.3,dec_avg=38.7,dec_max=42.5,blit_avg=2.8,blit_max=3.6,late_max=46.3,drift_ms=-19,touch_read_ms_avg=1.0,touch_read_ms_max=1.1,touch_age_ms_max=10.8,heap_int=74323,heap_psram=6805584,track=0,scn=osd,view=full,hud=1
+PERF,t_ms=41977,dec_fps=22.0,pres_fps=6.5,drop=17,over=0,frame_mismatch=0,rd_avg=5.5,rd_max=7.6,dec_avg=38.1,dec_max=42.5,blit_avg=2.8,blit_max=3.5,late_max=46.4,drift_ms=-8,touch_read_ms_avg=1.0,touch_read_ms_max=1.1,touch_age_ms_max=11.0,heap_int=74371,heap_psram=6805584,track=0,scn=osd,view=full,hud=1
+PERF,t_ms=44005,dec_fps=22.2,pres_fps=6.9,drop=15,over=0,frame_mismatch=0,rd_avg=4.7,rd_max=6.2,dec_avg=37.8,dec_max=41.7,blit_avg=2.8,blit_max=3.5,late_max=43.5,drift_ms=-35,touch_read_ms_avg=1.0,touch_read_ms_max=1.2,touch_age_ms_max=9.7,heap_int=74311,heap_psram=6805584,track=0,scn=osd,view=full,hud=1
+I (45958) MAIN_APP: Track 0 -> Escenario 'seek' (20 s, view=full, hud=0)
+PERF,t_ms=46031,dec_fps=23.2,pres_fps=9.9,drop=14,over=0,frame_mismatch=0,rd_avg=4.9,rd_max=6.8,dec_avg=35.7,dec_max=43.2,blit_avg=2.8,blit_max=3.4,late_max=51.7,drift_ms=-28,touch_read_ms_avg=1.0,touch_read_ms_max=1.1,touch_age_ms_max=9.9,heap_int=74323,heap_psram=6805584,track=0,scn=seek,view=full,hud=0
+I (48024) AVI_PLAYER_SIMD: Seek completado a 46% (cuadro 4141/9003)
+PERF,t_ms=48038,dec_fps=22.4,pres_fps=13.0,drop=14,over=0,frame_mismatch=0,rd_avg=6.1,rd_max=10.8,dec_avg=35.3,dec_max=39.5,blit_avg=2.8,blit_max=3.4,late_max=44.7,drift_ms=-20,touch_read_ms_avg=0.9,touch_read_ms_max=1.1,touch_age_ms_max=9.8,heap_int=74299,heap_psram=6805584,track=0,scn=seek,view=full,hud=0
+I (50136) AVI_PLAYER_SIMD: Seek completado a 77% (cuadro 6932/9003)
+PERF,t_ms=50042,dec_fps=21.5,pres_fps=13.5,drop=16,over=0,frame_mismatch=0,rd_avg=8.0,rd_max=11.0,dec_avg=36.7,dec_max=39.3,blit_avg=2.8,blit_max=3.4,late_max=49.4,drift_ms=-40,touch_read_ms_avg=0.9,touch_read_ms_max=1.1,touch_age_ms_max=9.8,heap_int=74279,heap_psram=6805584,track=0,scn=seek,view=full,hud=0
+I (52148) AVI_PLAYER_SIMD: Seek completado a 25% (cuadro 2250/9003)
+PERF,t_ms=52065,dec_fps=20.8,pres_fps=13.3,drop=18,over=0,frame_mismatch=0,rd_avg=8.1,rd_max=11.2,dec_avg=36.9,dec_max=40.8,blit_avg=2.7,blit_max=3.4,late_max=57.7,drift_ms=-18,touch_read_ms_avg=0.9,touch_read_ms_max=1.1,touch_age_ms_max=10.0,heap_int=74291,heap_psram=6805584,track=0,scn=seek,view=full,hud=0
+I (54178) AVI_PLAYER_SIMD: Seek completado a 42% (cuadro 3781/9003)
+PERF,t_ms=54075,dec_fps=20.9,pres_fps=12.9,drop=17,over=0,frame_mismatch=0,rd_avg=7.8,rd_max=10.2,dec_avg=36.7,dec_max=39.2,blit_avg=2.7,blit_max=3.4,late_max=47.8,drift_ms=-6,touch_read_ms_avg=0.9,touch_read_ms_max=1.1,touch_age_ms_max=9.8,heap_int=74275,heap_psram=6805584,track=0,scn=seek,view=full,hud=0
+I (56266) AVI_PLAYER_SIMD: Seek completado a 37% (cuadro 3331/9003)
+PERF,t_ms=56080,dec_fps=22.0,pres_fps=13.0,drop=15,over=0,frame_mismatch=0,rd_avg=7.2,rd_max=9.4,dec_avg=36.3,dec_max=38.8,blit_avg=2.8,blit_max=3.4,late_max=47.0,drift_ms=-14,touch_read_ms_avg=0.9,touch_read_ms_max=1.1,touch_age_ms_max=9.8,heap_int=74335,heap_psram=6805584,track=0,scn=seek,view=full,hud=0
+I (58311) AVI_PLAYER_SIMD: Seek completado a 70% (cuadro 6302/9003)
+PERF,t_ms=58095,dec_fps=21.8,pres_fps=12.9,drop=14,over=0,frame_mismatch=0,rd_avg=6.5,rd_max=11.1,dec_avg=35.6,dec_max=38.9,blit_avg=2.8,blit_max=3.5,late_max=48.3,drift_ms=-15,touch_read_ms_avg=1.0,touch_read_ms_max=1.1,touch_age_ms_max=9.8,heap_int=74279,heap_psram=6805584,track=0,scn=seek,view=full,hud=0
+I (60357) AVI_PLAYER_SIMD: Seek completado a 13% (cuadro 1170/9003)
+PERF,t_ms=60114,dec_fps=22.3,pres_fps=13.4,drop=15,over=0,frame_mismatch=0,rd_avg=7.2,rd_max=11.2,dec_avg=36.2,dec_max=39.8,blit_avg=2.8,blit_max=3.4,late_max=47.8,drift_ms=-25,touch_read_ms_avg=0.9,touch_read_ms_max=1.1,touch_age_ms_max=9.8,heap_int=74311,heap_psram=6805584,track=0,scn=seek,view=full,hud=0
+I (62454) AVI_PLAYER_SIMD: Seek completado a 83% (cuadro 7472/9003)
+PERF,t_ms=62124,dec_fps=22.9,pres_fps=12.9,drop=12,over=0,frame_mismatch=0,rd_avg=5.7,rd_max=8.8,dec_avg=34.9,dec_max=38.5,blit_avg=2.8,blit_max=3.4,late_max=43.5,drift_ms=-37,touch_read_ms_avg=1.0,touch_read_ms_max=1.1,touch_age_ms_max=9.8,heap_int=74299,heap_psram=6805584,track=0,scn=seek,view=full,hud=0
+I (64527) AVI_PLAYER_SIMD: Seek completado a 68% (cuadro 6122/9003)
+PERF,t_ms=64149,dec_fps=21.2,pres_fps=12.8,drop=17,over=0,frame_mismatch=0,rd_avg=7.5,rd_max=10.0,dec_avg=36.3,dec_max=38.1,blit_avg=2.7,blit_max=3.7,late_max=53.7,drift_ms=-23,touch_read_ms_avg=0.9,touch_read_ms_max=1.1,touch_age_ms_max=10.8,heap_int=74291,heap_psram=6805584,track=0,scn=seek,view=full,hud=0
+I (66000) MAIN_APP: Autotest: Abriendo Track 1 via PCMD_OPEN
+I (66040) PLAYER: Abriendo pista 1: /sdcard/harry.avi
+I (66041) AVI_PLAYER_SIMD: Abriendo archivo AVI MJPEG: /sdcard/harry.avi
+I (66400) MAIN_APP: Track 1 -> Escenario 'hidden' (20 s, view=full, hud=0)
+I (66653) AVI_PLAYER_SIMD: Tabla idx1 cargada: 6029 cuadros indexados en PSRAM
+I (66654) AVI_PLAYER_SIMD: AVI Abierto: 480x320 @ 30 FPS, 6029 cuadros (3:20)
+PERF,t_ms=66192,dec_fps=15.2,pres_fps=9.8,drop=10,over=0,frame_mismatch=0,rd_avg=7.3,rd_max=10.2,dec_avg=36.0,dec_max=39.8,blit_avg=2.8,blit_max=3.4,late_max=46.1,drift_ms=-38,touch_read_ms_avg=0.9,touch_read_ms_max=1.2,touch_age_ms_max=9.8,heap_int=74291,heap_psram=6817872,track=1,scn=hidden,view=full,hud=0
+PERF,t_ms=68222,dec_fps=21.7,pres_fps=13.3,drop=17,over=0,frame_mismatch=0,rd_avg=7.4,rd_max=9.2,dec_avg=36.3,dec_max=38.6,blit_avg=2.8,blit_max=3.5,late_max=55.3,drift_ms=-34,touch_read_ms_avg=0.9,touch_read_ms_max=1.2,touch_age_ms_max=10.8,heap_int=74295,heap_psram=6817872,track=1,scn=hidden,view=full,hud=0
+PERF,t_ms=70237,dec_fps=21.8,pres_fps=12.9,drop=17,over=0,frame_mismatch=0,rd_avg=6.9,rd_max=9.0,dec_avg=36.0,dec_max=38.5,blit_avg=2.8,blit_max=3.5,late_max=51.9,drift_ms=-16,touch_read_ms_avg=0.9,touch_read_ms_max=1.1,touch_age_ms_max=9.9,heap_int=74311,heap_psram=6817872,track=1,scn=hidden,view=full,hud=0
+PERF,t_ms=72257,dec_fps=22.8,pres_fps=13.4,drop=14,over=0,frame_mismatch=0,rd_avg=6.3,rd_max=8.5,dec_avg=35.5,dec_max=38.3,blit_avg=2.8,blit_max=3.4,late_max=43.4,drift_ms=-36,touch_read_ms_avg=1.0,touch_read_ms_max=1.1,touch_age_ms_max=9.8,heap_int=74311,heap_psram=6817872,track=1,scn=hidden,view=full,hud=0
+PERF,t_ms=74295,dec_fps=22.1,pres_fps=12.8,drop=16,over=0,frame_mismatch=0,rd_avg=7.1,rd_max=9.0,dec_avg=35.9,dec_max=38.6,blit_avg=2.8,blit_max=3.4,late_max=53.2,drift_ms=-41,touch_read_ms_avg=0.9,touch_read_ms_max=1.1,touch_age_ms_max=9.8,heap_int=74295,heap_psram=6817872,track=1,scn=hidden,view=full,hud=0
+PERF,t_ms=76341,dec_fps=19.5,pres_fps=13.2,drop=21,over=0,frame_mismatch=0,rd_avg=10.0,rd_max=15.8,dec_avg=38.1,dec_max=43.8,blit_avg=2.7,blit_max=3.4,late_max=57.4,drift_ms=-54,touch_read_ms_avg=0.9,touch_read_ms_max=1.1,touch_age_ms_max=8.9,heap_int=74263,heap_psram=6817872,track=1,scn=hidden,view=full,hud=0
+PERF,t_ms=78345,dec_fps=16.5,pres_fps=14.0,drop=27,over=0,frame_mismatch=0,rd_avg=14.5,rd_max=16.3,dec_avg=42.1,dec_max=44.0,blit_avg=2.7,blit_max=3.3,late_max=71.6,drift_ms=-58,touch_read_ms_avg=0.9,touch_read_ms_max=1.1,touch_age_ms_max=9.8,heap_int=74259,heap_psram=6817872,track=1,scn=hidden,view=full,hud=0
+PERF,t_ms=80359,dec_fps=18.4,pres_fps=13.4,drop=23,over=0,frame_mismatch=0,rd_avg=10.9,rd_max=16.1,dec_avg=38.9,dec_max=43.6,blit_avg=2.7,blit_max=3.4,late_max=75.3,drift_ms=-29,touch_read_ms_avg=0.9,touch_read_ms_max=1.1,touch_age_ms_max=8.9,heap_int=74275,heap_psram=6817872,track=1,scn=hidden,view=full,hud=0
+PERF,t_ms=82396,dec_fps=19.6,pres_fps=13.3,drop=22,over=0,frame_mismatch=0,rd_avg=10.4,rd_max=12.9,dec_avg=38.6,dec_max=41.0,blit_avg=2.7,blit_max=3.6,late_max=51.1,drift_ms=-42,touch_read_ms_avg=0.9,touch_read_ms_max=1.1,touch_age_ms_max=9.8,heap_int=74263,heap_psram=6817872,track=1,scn=hidden,view=full,hud=0
+PERF,t_ms=84422,dec_fps=20.7,pres_fps=13.3,drop=19,over=0,frame_mismatch=0,rd_avg=8.3,rd_max=10.0,dec_avg=37.0,dec_max=39.4,blit_avg=2.8,blit_max=3.4,late_max=59.3,drift_ms=-34,touch_read_ms_avg=0.9,touch_read_ms_max=1.1,touch_age_ms_max=10.0,heap_int=74279,heap_psram=6817872,track=1,scn=hidden,view=full,hud=0
+I (86504) MAIN_APP: Track 1 -> Escenario 'osd' (20 s, view=full, hud=1)
+PERF,t_ms=86429,dec_fps=19.9,pres_fps=10.0,drop=20,over=0,frame_mismatch=0,rd_avg=8.3,rd_max=9.7,dec_avg=38.7,dec_max=43.8,blit_avg=2.7,blit_max=3.3,late_max=51.9,drift_ms=-41,touch_read_ms_avg=0.9,touch_read_ms_max=1.2,touch_age_ms_max=9.8,heap_int=74287,heap_psram=6817872,track=1,scn=osd,view=full,hud=1
+PERF,t_ms=88456,dec_fps=19.7,pres_fps=6.9,drop=21,over=0,frame_mismatch=0,rd_avg=7.5,rd_max=10.9,dec_avg=40.0,dec_max=45.4,blit_avg=2.8,blit_max=3.6,late_max=58.2,drift_ms=-36,touch_read_ms_avg=1.0,touch_read_ms_max=1.1,touch_age_ms_max=9.7,heap_int=74283,heap_psram=6817872,track=1,scn=osd,view=full,hud=1
+PERF,t_ms=90496,dec_fps=17.2,pres_fps=6.9,drop=25,over=0,frame_mismatch=0,rd_avg=10.5,rd_max=14.7,dec_avg=42.5,dec_max=47.4,blit_avg=2.8,blit_max=3.4,late_max=55.1,drift_ms=-20,touch_read_ms_avg=0.9,touch_read_ms_max=1.2,touch_age_ms_max=8.7,heap_int=74267,heap_psram=6817872,track=1,scn=osd,view=full,hud=1
+PERF,t_ms=92510,dec_fps=17.4,pres_fps=7.0,drop=26,over=0,frame_mismatch=0,rd_avg=11.7,rd_max=15.8,dec_avg=43.7,dec_max=50.2,blit_avg=2.7,blit_max=3.3,late_max=66.7,drift_ms=-56,touch_read_ms_avg=0.9,touch_read_ms_max=1.2,touch_age_ms_max=9.7,heap_int=74275,heap_psram=6817872,track=1,scn=osd,view=full,hud=1
+PERF,t_ms=94533,dec_fps=17.3,pres_fps=7.4,drop=26,over=0,frame_mismatch=0,rd_avg=10.7,rd_max=14.7,dec_avg=42.7,dec_max=48.5,blit_avg=2.8,blit_max=3.5,late_max=73.1,drift_ms=-46,touch_read_ms_avg=1.0,touch_read_ms_max=1.1,touch_age_ms_max=9.0,heap_int=74267,heap_psram=6817872,track=1,scn=osd,view=full,hud=1
+PERF,t_ms=96542,dec_fps=16.9,pres_fps=7.0,drop=27,over=0,frame_mismatch=0,rd_avg=11.7,rd_max=15.5,dec_avg=43.4,dec_max=49.6,blit_avg=2.8,blit_max=3.4,late_max=63.3,drift_ms=-21,touch_read_ms_avg=0.9,touch_read_ms_max=1.1,touch_age_ms_max=9.4,heap_int=74311,heap_psram=6817872,track=1,scn=osd,view=full,hud=1
+PERF,t_ms=98549,dec_fps=17.9,pres_fps=7.0,drop=24,over=0,frame_mismatch=0,rd_avg=10.1,rd_max=14.4,dec_avg=42.1,dec_max=48.4,blit_avg=2.8,blit_max=3.5,late_max=63.1,drift_ms=-29,touch_read_ms_avg=1.0,touch_read_ms_max=1.2,touch_age_ms_max=9.7,heap_int=74287,heap_psram=6817872,track=1,scn=osd,view=full,hud=1
+PERF,t_ms=100590,dec_fps=14.7,pres_fps=7.4,drop=31,over=0,frame_mismatch=0,rd_avg=16.1,rd_max=17.9,dec_avg=47.3,dec_max=51.4,blit_avg=2.8,blit_max=3.5,late_max=67.1,drift_ms=-36,touch_read_ms_avg=0.9,touch_read_ms_max=1.1,touch_age_ms_max=9.2,heap_int=74259,heap_psram=6817872,track=1,scn=osd,view=full,hud=1
+PERF,t_ms=102607,dec_fps=15.4,pres_fps=6.9,drop=30,over=0,frame_mismatch=0,rd_avg=14.5,rd_max=16.7,dec_avg=45.9,dec_max=51.4,blit_avg=2.7,blit_max=3.4,late_max=53.8,drift_ms=-20,touch_read_ms_avg=0.9,touch_read_ms_max=1.1,touch_age_ms_max=8.9,heap_int=74287,heap_psram=6817872,track=1,scn=osd,view=full,hud=1
+PERF,t_ms=104616,dec_fps=17.4,pres_fps=7.0,drop=25,over=0,frame_mismatch=0,rd_avg=10.6,rd_max=12.6,dec_avg=43.0,dec_max=47.8,blit_avg=2.7,blit_max=3.0,late_max=58.5,drift_ms=-30,touch_read_ms_avg=0.9,touch_read_ms_max=1.1,touch_age_ms_max=9.7,heap_int=74283,heap_psram=6817872,track=1,scn=osd,view=full,hud=1
+I (106599) MAIN_APP: Track 1 -> Escenario 'seek' (20 s, view=full, hud=0)
+PERF,t_ms=106659,dec_fps=17.6,pres_fps=10.8,drop=25,over=0,frame_mismatch=0,rd_avg=11.9,rd_max=13.8,dec_avg=41.1,dec_max=46.9,blit_avg=2.7,blit_max=3.5,late_max=59.6,drift_ms=-38,touch_read_ms_avg=0.9,touch_read_ms_max=1.1,touch_age_ms_max=9.7,heap_int=74271,heap_psram=6817872,track=1,scn=seek,view=full,hud=0
+I (108646) AVI_PLAYER_SIMD: Seek completado a 40% (cuadro 2411/6029)
+PERF,t_ms=108660,dec_fps=17.5,pres_fps=14.0,drop=23,over=0,frame_mismatch=0,rd_avg=12.2,rd_max=14.3,dec_avg=39.9,dec_max=42.7,blit_avg=2.7,blit_max=3.3,late_max=55.9,drift_ms=-4,touch_read_ms_avg=0.9,touch_read_ms_max=1.2,touch_age_ms_max=9.7,heap_int=74271,heap_psram=6817872,track=1,scn=seek,view=full,hud=0
+I (110726) AVI_PLAYER_SIMD: Seek completado a 11% (cuadro 663/6029)
+PERF,t_ms=110662,dec_fps=21.0,pres_fps=13.0,drop=18,over=0,frame_mismatch=0,rd_avg=8.7,rd_max=12.3,dec_avg=37.3,dec_max=41.3,blit_avg=2.7,blit_max=3.4,late_max=52.4,drift_ms=-3,touch_read_ms_avg=0.9,touch_read_ms_max=1.1,touch_age_ms_max=9.8,heap_int=74283,heap_psram=6817872,track=1,scn=seek,view=full,hud=0
+I (112823) AVI_PLAYER_SIMD: Seek completado a 91% (cuadro 5486/6029)
+PERF,t_ms=112663,dec_fps=19.5,pres_fps=13.5,drop=18,over=0,frame_mismatch=0,rd_avg=9.2,rd_max=11.9,dec_avg=37.6,dec_max=39.4,blit_avg=2.7,blit_max=3.4,late_max=47.0,drift_ms=-13,touch_read_ms_avg=0.9,touch_read_ms_max=1.1,touch_age_ms_max=9.8,heap_int=74295,heap_psram=6817872,track=1,scn=seek,view=full,hud=0
+I (114866) AVI_PLAYER_SIMD: Seek completado a 22% (cuadro 1326/6029)
+PERF,t_ms=114695,dec_fps=20.2,pres_fps=13.3,drop=19,over=0,frame_mismatch=0,rd_avg=9.4,rd_max=13.5,dec_avg=38.0,dec_max=42.0,blit_avg=2.7,blit_max=3.4,late_max=51.4,drift_ms=-30,touch_read_ms_avg=0.9,touch_read_ms_max=1.1,touch_age_ms_max=9.0,heap_int=74283,heap_psram=6817872,track=1,scn=seek,view=full,hud=0
+I (116906) AVI_PLAYER_SIMD: Seek completado a 29% (cuadro 1748/6029)
+PERF,t_ms=116698,dec_fps=18.0,pres_fps=13.5,drop=23,over=0,frame_mismatch=0,rd_avg=11.9,rd_max=14.2,dec_avg=40.0,dec_max=42.9,blit_avg=2.7,blit_max=3.4,late_max=53.8,drift_ms=-26,touch_read_ms_avg=0.9,touch_read_ms_max=1.1,touch_age_ms_max=7.1,heap_int=74283,heap_psram=6817872,track=1,scn=seek,view=full,hud=0
+I (118933) AVI_PLAYER_SIMD: Seek completado a 84% (cuadro 5064/6029)
+PERF,t_ms=118714,dec_fps=19.3,pres_fps=13.4,drop=19,over=0,frame_mismatch=0,rd_avg=9.3,rd_max=14.3,dec_avg=37.9,dec_max=41.7,blit_avg=2.7,blit_max=3.4,late_max=55.7,drift_ms=-24,touch_read_ms_avg=0.9,touch_read_ms_max=1.1,touch_age_ms_max=9.8,heap_int=74303,heap_psram=6817872,track=1,scn=seek,view=full,hud=0
+I (121028) AVI_PLAYER_SIMD: Seek completado a 46% (cuadro 2773/6029)
+PERF,t_ms=120729,dec_fps=19.9,pres_fps=13.4,drop=19,over=0,frame_mismatch=0,rd_avg=9.9,rd_max=12.6,dec_avg=38.2,dec_max=41.3,blit_avg=2.7,blit_max=3.5,late_max=51.1,drift_ms=-34,touch_read_ms_avg=0.9,touch_read_ms_max=1.1,touch_age_ms_max=9.5,heap_int=74291,heap_psram=6817872,track=1,scn=seek,view=full,hud=0
+I (123026) AVI_PLAYER_SIMD: Seek completado a 61% (cuadro 3677/6029)
+PERF,t_ms=122740,dec_fps=18.4,pres_fps=13.4,drop=21,over=0,frame_mismatch=0,rd_avg=11.4,rd_max=19.5,dec_avg=39.5,dec_max=46.6,blit_avg=2.7,blit_max=3.5,late_max=52.5,drift_ms=-48,touch_read_ms_avg=0.9,touch_read_ms_max=1.1,touch_age_ms_max=8.8,heap_int=74271,heap_psram=6817872,track=1,scn=seek,view=full,hud=0
+I (125078) AVI_PLAYER_SIMD: Seek completado a 59% (cuadro 3557/6029)
+PERF,t_ms=124746,dec_fps=18.9,pres_fps=13.5,drop=21,over=0,frame_mismatch=0,rd_avg=10.3,rd_max=14.7,dec_avg=38.5,dec_max=42.6,blit_avg=2.7,blit_max=3.4,late_max=65.4,drift_ms=-36,touch_read_ms_avg=0.9,touch_read_ms_max=1.2,touch_age_ms_max=8.7,heap_int=74307,heap_psram=6817872,track=1,scn=seek,view=full,hud=0
+I (126658) MAIN_APP: Autotest: Abriendo Track 2 via PCMD_OPEN
+I (126683) PLAYER: Abriendo pista 2: /sdcard/lesserafim.avi
+I (126684) AVI_PLAYER_SIMD: Abriendo archivo AVI MJPEG: /sdcard/lesserafim.avi
+I (127058) MAIN_APP: Track 2 -> Escenario 'hidden' (20 s, view=full, hud=0)
+I (127286) AVI_PLAYER_SIMD: Tabla idx1 cargada: 5988 cuadros indexados en PSRAM
+I (127287) AVI_PLAYER_SIMD: AVI Abierto: 480x320 @ 30 FPS, 5988 cuadros (3:19)
+PERF,t_ms=126765,dec_fps=15.4,pres_fps=9.4,drop=10,over=0,frame_mismatch=0,rd_avg=6.7,rd_max=14.1,dec_avg=35.4,dec_max=41.6,blit_avg=2.7,blit_max=3.4,late_max=52.3,drift_ms=-24,touch_read_ms_avg=0.8,touch_read_ms_max=1.1,touch_age_ms_max=9.8,heap_int=74355,heap_psram=6818384,track=2,scn=hidden,view=full,hud=0
+PERF,t_ms=128765,dec_fps=24.0,pres_fps=13.0,drop=13,over=0,frame_mismatch=0,rd_avg=5.4,rd_max=6.8,dec_avg=34.9,dec_max=37.6,blit_avg=2.8,blit_max=3.4,late_max=41.1,drift_ms=-11,touch_read_ms_avg=1.0,touch_read_ms_max=1.1,touch_age_ms_max=9.8,heap_int=74323,heap_psram=6818384,track=2,scn=hidden,view=full,hud=0
+PERF,t_ms=130786,dec_fps=22.3,pres_fps=12.9,drop=14,over=0,frame_mismatch=0,rd_avg=6.2,rd_max=7.7,dec_avg=35.5,dec_max=38.3,blit_avg=2.8,blit_max=3.4,late_max=42.7,drift_ms=-31,touch_read_ms_avg=1.0,touch_read_ms_max=1.2,touch_age_ms_max=9.8,heap_int=74319,heap_psram=6818384,track=2,scn=hidden,view=full,hud=0
+PERF,t_ms=132801,dec_fps=22.8,pres_fps=12.9,drop=16,over=0,frame_mismatch=0,rd_avg=6.5,rd_max=9.4,dec_avg=35.7,dec_max=38.5,blit_avg=2.8,blit_max=3.4,late_max=43.9,drift_ms=-13,touch_read_ms_avg=0.9,touch_read_ms_max=1.2,touch_age_ms_max=9.8,heap_int=74315,heap_psram=6818384,track=2,scn=hidden,view=full,hud=0
+PERF,t_ms=134801,dec_fps=22.0,pres_fps=13.0,drop=16,over=0,frame_mismatch=0,rd_avg=7.0,rd_max=9.0,dec_avg=36.1,dec_max=38.6,blit_avg=2.7,blit_max=3.6,late_max=43.5,drift_ms=-14,touch_read_ms_avg=0.9,touch_read_ms_max=1.1,touch_age_ms_max=9.9,heap_int=74307,heap_psram=6818384,track=2,scn=hidden,view=full,hud=0
+PERF,t_ms=136822,dec_fps=21.8,pres_fps=13.4,drop=16,over=0,frame_mismatch=0,rd_avg=7.2,rd_max=10.0,dec_avg=36.2,dec_max=38.1,blit_avg=2.7,blit_max=3.5,late_max=44.0,drift_ms=-35,touch_read_ms_avg=1.0,touch_read_ms_max=1.2,touch_age_ms_max=9.8,heap_int=74295,heap_psram=6818384,track=2,scn=hidden,view=full,hud=0
+PERF,t_ms=138859,dec_fps=22.1,pres_fps=12.8,drop=16,over=0,frame_mismatch=0,rd_avg=7.0,rd_max=9.3,dec_avg=35.9,dec_max=38.8,blit_avg=2.8,blit_max=3.4,late_max=51.6,drift_ms=-37,touch_read_ms_avg=0.9,touch_read_ms_max=1.1,touch_age_ms_max=9.7,heap_int=74319,heap_psram=6818384,track=2,scn=hidden,view=full,hud=0
+PERF,t_ms=140897,dec_fps=22.6,pres_fps=13.2,drop=15,over=0,frame_mismatch=0,rd_avg=6.3,rd_max=8.7,dec_avg=35.5,dec_max=38.1,blit_avg=2.8,blit_max=3.4,late_max=55.3,drift_ms=-43,touch_read_ms_avg=0.9,touch_read_ms_max=1.1,touch_age_ms_max=9.8,heap_int=74319,heap_psram=6818384,track=2,scn=hidden,view=full,hud=0
+PERF,t_ms=142904,dec_fps=22.4,pres_fps=13.0,drop=16,over=0,frame_mismatch=0,rd_avg=6.5,rd_max=7.8,dec_avg=35.7,dec_max=38.2,blit_avg=2.8,blit_max=3.4,late_max=59.5,drift_ms=-17,touch_read_ms_avg=0.9,touch_read_ms_max=1.1,touch_age_ms_max=9.9,heap_int=74287,heap_psram=6818384,track=2,scn=hidden,view=full,hud=0
+PERF,t_ms=144918,dec_fps=19.4,pres_fps=13.4,drop=21,over=0,frame_mismatch=0,rd_avg=10.0,rd_max=15.4,dec_avg=38.5,dec_max=42.6,blit_avg=2.7,blit_max=3.4,late_max=54.1,drift_ms=-30,touch_read_ms_avg=0.9,touch_read_ms_max=1.1,touch_age_ms_max=9.8,heap_int=74283,heap_psram=6818384,track=2,scn=hidden,view=full,hud=0
+I (147189) MAIN_APP: Track 2 -> Escenario 'osd' (20 s, view=full, hud=1)
+PERF,t_ms=146970,dec_fps=19.5,pres_fps=10.7,drop=21,over=0,frame_mismatch=0,rd_avg=9.0,rd_max=14.9,dec_avg=39.3,dec_max=43.0,blit_avg=2.7,blit_max=3.4,late_max=54.3,drift_ms=-49,touch_read_ms_avg=0.9,touch_read_ms_max=1.1,touch_age_ms_max=9.7,heap_int=74303,heap_psram=6818384,track=2,scn=osd,view=full,hud=1
+PERF,t_ms=148993,dec_fps=20.3,pres_fps=6.9,drop=20,over=0,frame_mismatch=0,rd_avg=6.9,rd_max=9.2,dec_avg=39.7,dec_max=44.8,blit_avg=2.8,blit_max=3.4,late_max=66.3,drift_ms=-39,touch_read_ms_avg=1.0,touch_read_ms_max=1.1,touch_age_ms_max=9.9,heap_int=74287,heap_psram=6818384,track=2,scn=osd,view=full,hud=1
+PERF,t_ms=151014,dec_fps=21.3,pres_fps=6.4,drop=18,over=0,frame_mismatch=0,rd_avg=5.7,rd_max=10.2,dec_avg=38.5,dec_max=43.8,blit_avg=2.8,blit_max=3.5,late_max=56.2,drift_ms=-27,touch_read_ms_avg=1.0,touch_read_ms_max=1.1,touch_age_ms_max=10.9,heap_int=74371,heap_psram=6818384,track=2,scn=osd,view=full,hud=1
+PERF,t_ms=153019,dec_fps=22.4,pres_fps=7.0,drop=15,over=0,frame_mismatch=0,rd_avg=4.2,rd_max=11.7,dec_avg=37.4,dec_max=44.3,blit_avg=2.8,blit_max=3.5,late_max=52.6,drift_ms=-32,touch_read_ms_avg=1.0,touch_read_ms_max=1.2,touch_age_ms_max=9.7,heap_int=74363,heap_psram=6818384,track=2,scn=osd,view=full,hud=1
+PERF,t_ms=155058,dec_fps=21.1,pres_fps=6.4,drop=17,over=0,frame_mismatch=0,rd_avg=5.3,rd_max=7.3,dec_avg=38.2,dec_max=43.2,blit_avg=2.8,blit_max=3.5,late_max=49.1,drift_ms=-31,touch_read_ms_avg=1.0,touch_read_ms_max=1.2,touch_age_ms_max=11.1,heap_int=74343,heap_psram=6818384,track=2,scn=osd,view=full,hud=1
+PERF,t_ms=157066,dec_fps=21.9,pres_fps=7.0,drop=18,over=0,frame_mismatch=0,rd_avg=5.7,rd_max=8.7,dec_avg=38.6,dec_max=42.6,blit_avg=2.8,blit_max=3.5,late_max=46.9,drift_ms=-12,touch_read_ms_avg=1.0,touch_read_ms_max=1.1,touch_age_ms_max=9.7,heap_int=74323,heap_psram=6818384,track=2,scn=osd,view=full,hud=1
+PERF,t_ms=159106,dec_fps=20.1,pres_fps=6.9,drop=20,over=0,frame_mismatch=0,rd_avg=7.1,rd_max=9.3,dec_avg=39.7,dec_max=44.4,blit_avg=2.8,blit_max=3.5,late_max=51.3,drift_ms=-18,touch_read_ms_avg=1.0,touch_read_ms_max=1.1,touch_age_ms_max=8.7,heap_int=74315,heap_psram=6818384,track=2,scn=osd,view=full,hud=1
+PERF,t_ms=161119,dec_fps=18.9,pres_fps=7.0,drop=22,over=0,frame_mismatch=0,rd_avg=8.3,rd_max=9.8,dec_avg=40.8,dec_max=45.0,blit_avg=2.8,blit_max=3.5,late_max=52.0,drift_ms=-15,touch_read_ms_avg=1.0,touch_read_ms_max=1.1,touch_age_ms_max=8.7,heap_int=74295,heap_psram=6818384,track=2,scn=osd,view=full,hud=1
+PERF,t_ms=163129,dec_fps=18.4,pres_fps=7.0,drop=23,over=0,frame_mismatch=0,rd_avg=9.7,rd_max=27.3,dec_avg=42.2,dec_max=57.7,blit_avg=2.7,blit_max=3.5,late_max=68.8,drift_ms=-42,touch_read_ms_avg=1.0,touch_read_ms_max=1.1,touch_age_ms_max=10.2,heap_int=74311,heap_psram=6818384,track=2,scn=osd,view=full,hud=1
+PERF,t_ms=165155,dec_fps=17.8,pres_fps=6.9,drop=25,over=0,frame_mismatch=0,rd_avg=10.0,rd_max=12.3,dec_avg=42.5,dec_max=46.7,blit_avg=2.7,blit_max=3.4,late_max=58.8,drift_ms=-35,touch_read_ms_avg=1.0,touch_read_ms_max=1.2,touch_age_ms_max=8.9,heap_int=74307,heap_psram=6818384,track=2,scn=osd,view=full,hud=1
+I (167218) MAIN_APP: Track 2 -> Escenario 'seek' (20 s, view=full, hud=0)
+PERF,t_ms=167195,dec_fps=20.1,pres_fps=10.3,drop=20,over=0,frame_mismatch=0,rd_avg=8.0,rd_max=11.0,dec_avg=38.7,dec_max=44.3,blit_avg=2.8,blit_max=3.4,late_max=52.0,drift_ms=-41,touch_read_ms_avg=1.0,touch_read_ms_max=1.2,touch_age_ms_max=10.9,heap_int=74315,heap_psram=6818384,track=2,scn=seek,view=full,hud=0
+I (169328) AVI_PLAYER_SIMD: Seek completado a 46% (cuadro 2754/5988)
+PERF,t_ms=169196,dec_fps=21.5,pres_fps=13.0,drop=16,over=0,frame_mismatch=0,rd_avg=7.5,rd_max=11.8,dec_avg=36.4,dec_max=40.9,blit_avg=2.8,blit_max=3.5,late_max=58.4,drift_ms=-36,touch_read_ms_avg=0.9,touch_read_ms_max=1.1,touch_age_ms_max=9.9,heap_int=74291,heap_psram=6818384,track=2,scn=seek,view=full,hud=0
+I (171359) AVI_PLAYER_SIMD: Seek completado a 30% (cuadro 1796/5988)
+PERF,t_ms=171207,dec_fps=20.4,pres_fps=13.4,drop=19,over=0,frame_mismatch=0,rd_avg=8.2,rd_max=12.0,dec_avg=37.5,dec_max=41.4,blit_avg=2.7,blit_max=3.4,late_max=52.7,drift_ms=-15,touch_read_ms_avg=0.9,touch_read_ms_max=1.1,touch_age_ms_max=9.8,heap_int=74327,heap_psram=6818384,track=2,scn=seek,view=full,hud=0
+I (173385) AVI_PLAYER_SIMD: Seek completado a 31% (cuadro 1856/5988)
+PERF,t_ms=173235,dec_fps=21.2,pres_fps=13.3,drop=17,over=0,frame_mismatch=0,rd_avg=7.8,rd_max=9.9,dec_avg=36.7,dec_max=39.2,blit_avg=2.7,blit_max=3.4,late_max=47.0,drift_ms=-18,touch_read_ms_avg=0.9,touch_read_ms_max=1.1,touch_age_ms_max=10.0,heap_int=74283,heap_psram=6818384,track=2,scn=seek,view=full,hud=0
+I (175435) AVI_PLAYER_SIMD: Seek completado a 19% (cuadro 1137/5988)
+PERF,t_ms=175260,dec_fps=19.3,pres_fps=13.3,drop=20,over=0,frame_mismatch=0,rd_avg=10.1,rd_max=12.4,dec_avg=38.6,dec_max=41.3,blit_avg=2.7,blit_max=3.4,late_max=49.1,drift_ms=-26,touch_read_ms_avg=0.9,touch_read_ms_max=1.1,touch_age_ms_max=9.8,heap_int=74295,heap_psram=6818384,track=2,scn=seek,view=full,hud=0
+I (177496) AVI_PLAYER_SIMD: Seek completado a 45% (cuadro 2694/5988)
+PERF,t_ms=177278,dec_fps=21.3,pres_fps=12.9,drop=16,over=0,frame_mismatch=0,rd_avg=7.1,rd_max=10.0,dec_avg=36.1,dec_max=39.7,blit_avg=2.8,blit_max=3.5,late_max=44.6,drift_ms=-12,touch_read_ms_avg=0.9,touch_read_ms_max=1.1,touch_age_ms_max=8.9,heap_int=74291,heap_psram=6818384,track=2,scn=seek,view=full,hud=0
+I (179542) AVI_PLAYER_SIMD: Seek completado a 66% (cuadro 3952/5988)
+PERF,t_ms=179294,dec_fps=19.8,pres_fps=13.4,drop=19,over=0,frame_mismatch=0,rd_avg=10.0,rd_max=13.6,dec_avg=38.4,dec_max=40.7,blit_avg=2.7,blit_max=3.6,late_max=52.8,drift_ms=-53,touch_read_ms_avg=0.9,touch_read_ms_max=1.1,touch_age_ms_max=9.8,heap_int=74227,heap_psram=6818384,track=2,scn=seek,view=full,hud=0
+I (181576) AVI_PLAYER_SIMD: Seek completado a 70% (cuadro 4191/5988)
+PERF,t_ms=181342,dec_fps=18.1,pres_fps=13.7,drop=24,over=0,frame_mismatch=0,rd_avg=12.0,rd_max=14.4,dec_avg=39.9,dec_max=41.9,blit_avg=2.7,blit_max=3.4,late_max=70.8,drift_ms=-35,touch_read_ms_avg=0.9,touch_read_ms_max=1.2,touch_age_ms_max=9.8,heap_int=74295,heap_psram=6818384,track=2,scn=seek,view=full,hud=0
+I (183650) AVI_PLAYER_SIMD: Seek completado a 93% (cuadro 5568/5988)
+PERF,t_ms=183365,dec_fps=19.8,pres_fps=13.4,drop=20,over=0,frame_mismatch=0,rd_avg=9.0,rd_max=13.3,dec_avg=38.0,dec_max=41.5,blit_avg=2.7,blit_max=3.4,late_max=51.6,drift_ms=-15,touch_read_ms_avg=0.9,touch_read_ms_max=1.1,touch_age_ms_max=10.8,heap_int=74291,heap_psram=6818384,track=2,scn=seek,view=full,hud=0
+I (185638) AVI_PLAYER_SIMD: Seek completado a 74% (cuadro 4431/5988)
+PERF,t_ms=185391,dec_fps=20.2,pres_fps=13.3,drop=18,over=0,frame_mismatch=0,rd_avg=8.9,rd_max=17.5,dec_avg=37.3,dec_max=44.3,blit_avg=2.7,blit_max=3.4,late_max=50.3,drift_ms=-21,touch_read_ms_avg=0.9,touch_read_ms_max=1.1,touch_age_ms_max=9.8,heap_int=74335,heap_psram=6818384,track=2,scn=seek,view=full,hud=0
+I (187248) MAIN_APP: Autotest: Abriendo Track 3 via PCMD_OPEN
+I (187285) PLAYER: Abriendo pista 3: /sdcard/meovv.avi
+I (187286) AVI_PLAYER_SIMD: Abriendo archivo AVI MJPEG: /sdcard/meovv.avi
+I (187648) MAIN_APP: Track 3 -> Escenario 'hidden' (20 s, view=full, hud=0)
+I (187884) AVI_PLAYER_SIMD: Tabla idx1 cargada: 6136 cuadros indexados en PSRAM
+I (187885) AVI_PLAYER_SIMD: AVI Abierto: 480x320 @ 30 FPS, 6136 cuadros (3:24)
+PERF,t_ms=187431,dec_fps=14.7,pres_fps=9.3,drop=13,over=0,frame_mismatch=0,rd_avg=7.6,rd_max=12.2,dec_avg=36.7,dec_max=41.2,blit_avg=2.7,blit_max=3.4,late_max=47.4,drift_ms=-12,touch_read_ms_avg=0.9,touch_read_ms_max=1.1,touch_age_ms_max=9.8,heap_int=74279,heap_psram=6817872,track=3,scn=hidden,view=full,hud=0
+PERF,t_ms=189435,dec_fps=20.0,pres_fps=13.5,drop=19,over=0,frame_mismatch=0,rd_avg=9.4,rd_max=12.8,dec_avg=37.6,dec_max=40.0,blit_avg=2.7,blit_max=3.4,late_max=48.5,drift_ms=-50,touch_read_ms_avg=0.9,touch_read_ms_max=1.1,touch_age_ms_max=9.8,heap_int=74263,heap_psram=6817872,track=3,scn=hidden,view=full,hud=0
+PERF,t_ms=191438,dec_fps=17.0,pres_fps=13.5,drop=26,over=0,frame_mismatch=0,rd_avg=13.1,rd_max=15.6,dec_avg=40.8,dec_max=44.5,blit_avg=2.7,blit_max=3.4,late_max=67.6,drift_ms=-27,touch_read_ms_avg=0.9,touch_read_ms_max=1.1,touch_age_ms_max=9.8,heap_int=74275,heap_psram=6817872,track=3,scn=hidden,view=full,hud=0
+PERF,t_ms=193442,dec_fps=21.5,pres_fps=13.5,drop=18,over=0,frame_mismatch=0,rd_avg=7.7,rd_max=15.5,dec_avg=36.9,dec_max=43.3,blit_avg=2.7,blit_max=3.4,late_max=58.1,drift_ms=-23,touch_read_ms_avg=1.0,touch_read_ms_max=1.1,touch_age_ms_max=9.7,heap_int=74331,heap_psram=6817872,track=3,scn=hidden,view=full,hud=0
+PERF,t_ms=195455,dec_fps=21.4,pres_fps=12.9,drop=17,over=0,frame_mismatch=0,rd_avg=7.8,rd_max=11.1,dec_avg=36.3,dec_max=39.2,blit_avg=2.8,blit_max=3.4,late_max=44.0,drift_ms=-36,touch_read_ms_avg=0.9,touch_read_ms_max=1.1,touch_age_ms_max=8.8,heap_int=74255,heap_psram=6817872,track=3,scn=hidden,view=full,hud=0
+PERF,t_ms=197490,dec_fps=18.7,pres_fps=13.8,drop=23,over=0,frame_mismatch=0,rd_avg=11.1,rd_max=13.8,dec_avg=39.1,dec_max=41.4,blit_avg=2.7,blit_max=3.5,late_max=54.3,drift_ms=-38,touch_read_ms_avg=0.9,touch_read_ms_max=1.1,touch_age_ms_max=9.8,heap_int=74263,heap_psram=6817872,track=3,scn=hidden,view=full,hud=0
+PERF,t_ms=199519,dec_fps=19.2,pres_fps=13.3,drop=21,over=0,frame_mismatch=0,rd_avg=9.6,rd_max=12.6,dec_avg=38.2,dec_max=41.0,blit_avg=2.7,blit_max=3.4,late_max=55.0,drift_ms=-28,touch_read_ms_avg=0.9,touch_read_ms_max=1.1,touch_age_ms_max=9.8,heap_int=74327,heap_psram=6817872,track=3,scn=hidden,view=full,hud=0
+PERF,t_ms=201537,dec_fps=20.3,pres_fps=13.4,drop=21,over=0,frame_mismatch=0,rd_avg=9.5,rd_max=13.2,dec_avg=37.8,dec_max=41.9,blit_avg=2.7,blit_max=3.4,late_max=55.4,drift_ms=-18,touch_read_ms_avg=0.9,touch_read_ms_max=1.1,touch_age_ms_max=9.8,heap_int=74239,heap_psram=6817872,track=3,scn=hidden,view=full,hud=0
+PERF,t_ms=203577,dec_fps=19.6,pres_fps=13.7,drop=21,over=0,frame_mismatch=0,rd_avg=9.8,rd_max=12.0,dec_avg=38.1,dec_max=41.0,blit_avg=2.7,blit_max=3.4,late_max=49.9,drift_ms=-25,touch_read_ms_avg=0.9,touch_read_ms_max=1.1,touch_age_ms_max=9.8,heap_int=74287,heap_psram=6817872,track=3,scn=hidden,view=full,hud=0
+PERF,t_ms=205615,dec_fps=21.1,pres_fps=13.2,drop=18,over=0,frame_mismatch=0,rd_avg=8.1,rd_max=10.1,dec_avg=36.6,dec_max=39.1,blit_avg=2.8,blit_max=3.4,late_max=45.2,drift_ms=-30,touch_read_ms_avg=0.9,touch_read_ms_max=1.1,touch_age_ms_max=9.8,heap_int=74315,heap_psram=6817872,track=3,scn=hidden,view=full,hud=0
+I (207722) MAIN_APP: Track 3 -> Escenario 'osd' (20 s, view=full, hud=1)
+PERF,t_ms=207620,dec_fps=20.9,pres_fps=10.0,drop=18,over=0,frame_mismatch=0,rd_avg=7.1,rd_max=10.2,dec_avg=37.8,dec_max=45.3,blit_avg=2.8,blit_max=3.5,late_max=51.7,drift_ms=-36,touch_read_ms_avg=1.0,touch_read_ms_max=1.1,touch_age_ms_max=9.0,heap_int=74283,heap_psram=6817872,track=3,scn=osd,view=full,hud=1
+PERF,t_ms=209645,dec_fps=18.8,pres_fps=6.9,drop=22,over=0,frame_mismatch=0,rd_avg=9.0,rd_max=12.9,dec_avg=41.1,dec_max=47.1,blit_avg=2.7,blit_max=3.5,late_max=55.7,drift_ms=-60,touch_read_ms_avg=1.0,touch_read_ms_max=1.1,touch_age_ms_max=10.7,heap_int=74275,heap_psram=6817872,track=3,scn=osd,view=full,hud=1
+PERF,t_ms=211667,dec_fps=17.8,pres_fps=6.9,drop=25,over=0,frame_mismatch=0,rd_avg=10.0,rd_max=13.3,dec_avg=41.8,dec_max=45.4,blit_avg=2.8,blit_max=3.5,late_max=77.0,drift_ms=-13,touch_read_ms_avg=1.0,touch_read_ms_max=1.1,touch_age_ms_max=10.9,heap_int=74291,heap_psram=6817872,track=3,scn=osd,view=full,hud=1
+PERF,t_ms=213668,dec_fps=19.5,pres_fps=7.0,drop=22,over=0,frame_mismatch=0,rd_avg=8.8,rd_max=13.0,dec_avg=40.6,dec_max=46.8,blit_avg=2.8,blit_max=3.4,late_max=52.0,drift_ms=-16,touch_read_ms_avg=1.0,touch_read_ms_max=1.1,touch_age_ms_max=9.7,heap_int=74283,heap_psram=6817872,track=3,scn=osd,view=full,hud=1
+PERF,t_ms=215677,dec_fps=18.9,pres_fps=7.0,drop=22,over=0,frame_mismatch=0,rd_avg=8.2,rd_max=12.5,dec_avg=41.0,dec_max=47.3,blit_avg=2.8,blit_max=3.4,late_max=57.6,drift_ms=-25,touch_read_ms_avg=1.0,touch_read_ms_max=1.1,touch_age_ms_max=10.8,heap_int=74303,heap_psram=6817872,track=3,scn=osd,view=full,hud=1
+PERF,t_ms=217683,dec_fps=18.9,pres_fps=7.0,drop=22,over=0,frame_mismatch=0,rd_avg=8.6,rd_max=11.0,dec_avg=40.6,dec_max=44.9,blit_avg=2.8,blit_max=3.5,late_max=51.3,drift_ms=-31,touch_read_ms_avg=1.0,touch_read_ms_max=1.1,touch_age_ms_max=9.7,heap_int=74275,heap_psram=6817872,track=3,scn=osd,view=full,hud=1
+PERF,t_ms=219715,dec_fps=18.2,pres_fps=6.9,drop=24,over=0,frame_mismatch=0,rd_avg=9.8,rd_max=12.3,dec_avg=41.4,dec_max=46.3,blit_avg=2.8,blit_max=3.4,late_max=56.4,drift_ms=-30,touch_read_ms_avg=1.0,touch_read_ms_max=1.1,touch_age_ms_max=9.7,heap_int=74299,heap_psram=6817872,track=3,scn=osd,view=full,hud=1
+PERF,t_ms=221754,dec_fps=19.1,pres_fps=6.9,drop=22,over=0,frame_mismatch=0,rd_avg=8.4,rd_max=11.4,dec_avg=40.6,dec_max=47.2,blit_avg=2.8,blit_max=3.5,late_max=54.5,drift_ms=-36,touch_read_ms_avg=1.0,touch_read_ms_max=1.2,touch_age_ms_max=11.0,heap_int=74323,heap_psram=6817872,track=3,scn=osd,view=full,hud=1
+PERF,t_ms=223795,dec_fps=20.6,pres_fps=6.9,drop=19,over=0,frame_mismatch=0,rd_avg=6.3,rd_max=8.8,dec_avg=39.2,dec_max=44.2,blit_avg=2.8,blit_max=3.5,late_max=52.8,drift_ms=-43,touch_read_ms_avg=1.0,touch_read_ms_max=1.2,touch_age_ms_max=9.1,heap_int=74307,heap_psram=6817872,track=3,scn=osd,view=full,hud=1
+PERF,t_ms=225823,dec_fps=20.2,pres_fps=6.9,drop=20,over=0,frame_mismatch=0,rd_avg=6.9,rd_max=11.2,dec_avg=39.2,dec_max=44.1,blit_avg=2.8,blit_max=3.5,late_max=60.8,drift_ms=-39,touch_read_ms_avg=1.0,touch_read_ms_max=1.1,touch_age_ms_max=9.7,heap_int=74283,heap_psram=6817872,track=3,scn=osd,view=full,hud=1
+I (227846) MAIN_APP: Track 3 -> Escenario 'seek' (20 s, view=full, hud=0)
+PERF,t_ms=227852,dec_fps=20.2,pres_fps=10.4,drop=20,over=0,frame_mismatch=0,rd_avg=8.1,rd_max=10.3,dec_avg=38.4,dec_max=45.9,blit_avg=2.8,blit_max=3.4,late_max=55.9,drift_ms=-34,touch_read_ms_avg=0.9,touch_read_ms_max=1.1,touch_age_ms_max=10.8,heap_int=74291,heap_psram=6817872,track=3,scn=seek,view=full,hud=0
+I (229920) AVI_PLAYER_SIMD: Seek completado a 2% (cuadro 122/6136)
+PERF,t_ms=229898,dec_fps=18.1,pres_fps=13.7,drop=23,over=0,frame_mismatch=0,rd_avg=11.6,rd_max=15.6,dec_avg=40.1,dec_max=44.5,blit_avg=2.7,blit_max=3.4,late_max=56.2,drift_ms=-46,touch_read_ms_avg=0.9,touch_read_ms_max=1.1,touch_age_ms_max=9.7,heap_int=74271,heap_psram=6817872,track=3,scn=seek,view=full,hud=0
+I (231971) AVI_PLAYER_SIMD: Seek completado a 65% (cuadro 3988/6136)
+PERF,t_ms=231944,dec_fps=20.0,pres_fps=13.2,drop=19,over=0,frame_mismatch=0,rd_avg=9.1,rd_max=15.1,dec_avg=37.4,dec_max=43.2,blit_avg=2.8,blit_max=3.5,late_max=63.0,drift_ms=-40,touch_read_ms_avg=0.9,touch_read_ms_max=1.2,touch_age_ms_max=9.8,heap_int=74283,heap_psram=6817872,track=3,scn=seek,view=full,hud=0
+I (234035) AVI_PLAYER_SIMD: Seek completado a 17% (cuadro 1043/6136)
+PERF,t_ms=233986,dec_fps=22.0,pres_fps=13.2,drop=16,over=0,frame_mismatch=0,rd_avg=6.8,rd_max=10.8,dec_avg=35.9,dec_max=40.0,blit_avg=2.8,blit_max=3.4,late_max=58.2,drift_ms=-18,touch_read_ms_avg=0.9,touch_read_ms_max=1.1,touch_age_ms_max=9.8,heap_int=74295,heap_psram=6817872,track=3,scn=seek,view=full,hud=0
+I (236075) AVI_PLAYER_SIMD: Seek completado a 8% (cuadro 490/6136)
+PERF,t_ms=235992,dec_fps=21.4,pres_fps=13.0,drop=16,over=0,frame_mismatch=0,rd_avg=7.4,rd_max=10.4,dec_avg=36.4,dec_max=40.0,blit_avg=2.7,blit_max=3.4,late_max=49.8,drift_ms=-18,touch_read_ms_avg=0.9,touch_read_ms_max=1.1,touch_age_ms_max=9.8,heap_int=74291,heap_psram=6817872,track=3,scn=seek,view=full,hud=0
+I (238122) AVI_PLAYER_SIMD: Seek completado a 68% (cuadro 4172/6136)
+PERF,t_ms=238004,dec_fps=19.9,pres_fps=13.4,drop=18,over=0,frame_mismatch=0,rd_avg=9.0,rd_max=12.0,dec_avg=37.3,dec_max=41.0,blit_avg=2.8,blit_max=3.4,late_max=49.4,drift_ms=-22,touch_read_ms_avg=0.9,touch_read_ms_max=1.2,touch_age_ms_max=9.0,heap_int=74291,heap_psram=6817872,track=3,scn=seek,view=full,hud=0
+I (240171) AVI_PLAYER_SIMD: Seek completado a 31% (cuadro 1902/6136)
+PERF,t_ms=240040,dec_fps=20.6,pres_fps=13.3,drop=18,over=0,frame_mismatch=0,rd_avg=8.7,rd_max=12.6,dec_avg=37.4,dec_max=40.3,blit_avg=2.7,blit_max=3.4,late_max=51.5,drift_ms=-37,touch_read_ms_avg=0.9,touch_read_ms_max=1.1,touch_age_ms_max=9.8,heap_int=74255,heap_psram=6817872,track=3,scn=seek,view=full,hud=0
+I (242252) AVI_PLAYER_SIMD: Seek completado a 92% (cuadro 5645/6136)
+PERF,t_ms=242048,dec_fps=20.9,pres_fps=12.9,drop=17,over=0,frame_mismatch=0,rd_avg=8.1,rd_max=11.1,dec_avg=36.8,dec_max=39.2,blit_avg=2.7,blit_max=3.4,late_max=54.0,drift_ms=-30,touch_read_ms_avg=0.9,touch_read_ms_max=1.1,touch_age_ms_max=9.8,heap_int=74299,heap_psram=6817872,track=3,scn=seek,view=full,hud=0
+I (244265) AVI_PLAYER_SIMD: Seek completado a 19% (cuadro 1165/6136)
+PERF,t_ms=244055,dec_fps=19.9,pres_fps=13.5,drop=20,over=0,frame_mismatch=0,rd_avg=9.1,rd_max=11.8,dec_avg=37.6,dec_max=39.8,blit_avg=2.7,blit_max=3.4,late_max=49.5,drift_ms=-25,touch_read_ms_avg=0.9,touch_read_ms_max=1.1,touch_age_ms_max=9.8,heap_int=74291,heap_psram=6817872,track=3,scn=seek,view=full,hud=0
+I (246344) AVI_PLAYER_SIMD: Seek completado a 76% (cuadro 4663/6136)
+PERF,t_ms=246061,dec_fps=20.9,pres_fps=13.5,drop=17,over=0,frame_mismatch=0,rd_avg=8.0,rd_max=10.0,dec_avg=36.7,dec_max=39.7,blit_avg=2.8,blit_max=3.6,late_max=47.5,drift_ms=-18,touch_read_ms_avg=0.9,touch_read_ms_max=1.1,touch_age_ms_max=9.8,heap_int=74283,heap_psram=6817872,track=3,scn=seek,view=full,hud=0
+I (247921) MAIN_APP: Iniciando escenario TAP (Bug T2)...
+I (248515) SPOTIFY_UI: [TOUCH] Fullscreen tap -> HUD mostrado
+TAP,hud_before=0,hud_after=1
+I (248683) MAIN_APP: Iniciando escenario final de STRESS...
+I (248706) PLAYER: Abriendo pista 0: /sdcard/ariana.avi
+I (248707) AVI_PLAYER_SIMD: Abriendo archivo AVI MJPEG: /sdcard/ariana.avi
+PERF,t_ms=248081,dec_fps=15.3,pres_fps=10.4,drop=15,over=0,frame_mismatch=0,rd_avg=8.9,rd_max=11.2,dec_avg=37.8,dec_max=43.5,blit_avg=2.7,blit_max=3.4,late_max=46.0,drift_ms=-28,touch_read_ms_avg=0.9,touch_read_ms_max=1.1,touch_age_ms_max=10.0,heap_int=66087,heap_psram=6318160,track=0,scn=stress,view=full,hud=1
+I (249412) AVI_PLAYER_SIMD: Tabla idx1 cargada: 9003 cuadros indexados en PSRAM
+I (249413) AVI_PLAYER_SIMD: AVI Abierto: 480x320 @ 30 FPS, 9003 cuadros (5:00)
+I (249415) PLAYER: Abriendo pista 3: /sdcard/meovv.avi
+I (249420) AVI_PLAYER_SIMD: Abriendo archivo AVI MJPEG: /sdcard/meovv.avi
+I (250032) AVI_PLAYER_SIMD: Tabla idx1 cargada: 6136 cuadros indexados en PSRAM
+I (250033) AVI_PLAYER_SIMD: AVI Abierto: 480x320 @ 30 FPS, 6136 cuadros (3:24)
+I (250035) PLAYER: Abriendo pista 0: /sdcard/ariana.avi
+I (250041) AVI_PLAYER_SIMD: Abriendo archivo AVI MJPEG: /sdcard/ariana.avi
+I (250749) AVI_PLAYER_SIMD: Tabla idx1 cargada: 9003 cuadros indexados en PSRAM
+I (250751) AVI_PLAYER_SIMD: AVI Abierto: 480x320 @ 30 FPS, 9003 cuadros (5:00)
+I (250752) PLAYER: Abriendo pista 3: /sdcard/meovv.avi
+I (250757) AVI_PLAYER_SIMD: Abriendo archivo AVI MJPEG: /sdcard/meovv.avi
+PERF,t_ms=250098,dec_fps=0.0,pres_fps=0.0,drop=0,over=0,frame_mismatch=0,rd_avg=0.0,rd_max=0.0,dec_avg=0.0,dec_max=0.0,blit_avg=0.5,blit_max=1.0,late_max=0.0,drift_ms=-28,touch_read_ms_avg=0.7,touch_read_ms_max=1.0,touch_age_ms_max=9.8,heap_int=66087,heap_psram=6318160,track=0,scn=stress,view=full,hud=1
+I (251395) AVI_PLAYER_SIMD: Tabla idx1 cargada: 6136 cuadros indexados en PSRAM
+I (251396) AVI_PLAYER_SIMD: AVI Abierto: 480x320 @ 30 FPS, 6136 cuadros (3:24)
+I (251398) PLAYER: Abriendo pista 0: /sdcard/ariana.avi
+I (251403) AVI_PLAYER_SIMD: Abriendo archivo AVI MJPEG: /sdcard/ariana.avi
+I (252079) AVI_PLAYER_SIMD: Tabla idx1 cargada: 9003 cuadros indexados en PSRAM
+I (252081) AVI_PLAYER_SIMD: AVI Abierto: 480x320 @ 30 FPS, 9003 cuadros (5:00)
+I (252082) PLAYER: Abriendo pista 3: /sdcard/meovv.avi
+I (252088) AVI_PLAYER_SIMD: Abriendo archivo AVI MJPEG: /sdcard/meovv.avi
+I (252681) AVI_PLAYER_SIMD: Tabla idx1 cargada: 6136 cuadros indexados en PSRAM
+I (252682) AVI_PLAYER_SIMD: AVI Abierto: 480x320 @ 30 FPS, 6136 cuadros (3:24)
+I (252684) PLAYER: Abriendo pista 0: /sdcard/ariana.avi
+I (252689) AVI_PLAYER_SIMD: Abriendo archivo AVI MJPEG: /sdcard/ariana.avi
+PERF,t_ms=252213,dec_fps=0.0,pres_fps=0.0,drop=0,over=0,frame_mismatch=0,rd_avg=0.0,rd_max=0.0,dec_avg=0.0,dec_max=0.0,blit_avg=1.2,blit_max=3.0,late_max=0.0,drift_ms=-28,touch_read_ms_avg=0.7,touch_read_ms_max=1.0,touch_age_ms_max=9.8,heap_int=73767,heap_psram=6281292,track=0,scn=stress,view=full,hud=0
+I (253337) AVI_PLAYER_SIMD: Tabla idx1 cargada: 9003 cuadros indexados en PSRAM
+I (253339) AVI_PLAYER_SIMD: AVI Abierto: 480x320 @ 30 FPS, 9003 cuadros (5:00)
+I (253344) PLAYER: Abriendo pista 3: /sdcard/meovv.avi
+I (253349) AVI_PLAYER_SIMD: Abriendo archivo AVI MJPEG: /sdcard/meovv.avi
+I (253936) AVI_PLAYER_SIMD: Tabla idx1 cargada: 6136 cuadros indexados en PSRAM
+I (253937) AVI_PLAYER_SIMD: AVI Abierto: 480x320 @ 30 FPS, 6136 cuadros (3:24)
+I (253939) PLAYER: Abriendo pista 0: /sdcard/ariana.avi
+I (253944) AVI_PLAYER_SIMD: Abriendo archivo AVI MJPEG: /sdcard/ariana.avi
+I (254591) AVI_PLAYER_SIMD: Tabla idx1 cargada: 9003 cuadros indexados en PSRAM
+I (254592) AVI_PLAYER_SIMD: AVI Abierto: 480x320 @ 30 FPS, 9003 cuadros (5:00)
+I (254594) PLAYER: Abriendo pista 3: /sdcard/meovv.avi
+I (254599) AVI_PLAYER_SIMD: Abriendo archivo AVI MJPEG: /sdcard/meovv.avi
+I (255185) AVI_PLAYER_SIMD: Tabla idx1 cargada: 6136 cuadros indexados en PSRAM
+I (255187) AVI_PLAYER_SIMD: AVI Abierto: 480x320 @ 30 FPS, 6136 cuadros (3:24)
+I (255188) PLAYER: Abriendo pista 0: /sdcard/ariana.avi
+I (255193) AVI_PLAYER_SIMD: Abriendo archivo AVI MJPEG: /sdcard/ariana.avi
+PERF,t_ms=254229,dec_fps=0.0,pres_fps=0.0,drop=0,over=0,frame_mismatch=0,rd_avg=0.0,rd_max=0.0,dec_avg=0.0,dec_max=0.0,blit_avg=0.0,blit_max=0.0,late_max=0.0,drift_ms=-28,touch_read_ms_avg=0.6,touch_read_ms_max=1.0,touch_age_ms_max=9.8,heap_int=66087,heap_psram=6318160,track=0,scn=stress,view=full,hud=0
+I (255842) AVI_PLAYER_SIMD: Tabla idx1 cargada: 9003 cuadros indexados en PSRAM
+I (255843) AVI_PLAYER_SIMD: AVI Abierto: 480x320 @ 30 FPS, 9003 cuadros (5:00)
+I (255845) PLAYER: Abriendo pista 3: /sdcard/meovv.avi
+I (255850) AVI_PLAYER_SIMD: Abriendo archivo AVI MJPEG: /sdcard/meovv.avi
+I (256436) AVI_PLAYER_SIMD: Tabla idx1 cargada: 6136 cuadros indexados en PSRAM
+I (256437) AVI_PLAYER_SIMD: AVI Abierto: 480x320 @ 30 FPS, 6136 cuadros (3:24)
+I (256439) PLAYER: Abriendo pista 0: /sdcard/ariana.avi
+I (256444) AVI_PLAYER_SIMD: Abriendo archivo AVI MJPEG: /sdcard/ariana.avi
+I (257092) AVI_PLAYER_SIMD: Tabla idx1 cargada: 9003 cuadros indexados en PSRAM
+I (257093) AVI_PLAYER_SIMD: AVI Abierto: 480x320 @ 30 FPS, 9003 cuadros (5:00)
+I (257095) PLAYER: Abriendo pista 3: /sdcard/meovv.avi
+I (257100) AVI_PLAYER_SIMD: Abriendo archivo AVI MJPEG: /sdcard/meovv.avi
+PERF,t_ms=256462,dec_fps=0.0,pres_fps=0.0,drop=0,over=0,frame_mismatch=0,rd_avg=0.0,rd_max=0.0,dec_avg=0.0,dec_max=0.0,blit_avg=0.0,blit_max=0.0,late_max=0.0,drift_ms=-28,touch_read_ms_avg=0.6,touch_read_ms_max=1.0,touch_age_ms_max=9.8,heap_int=73767,heap_psram=6293580,track=0,scn=stress,view=full,hud=0
+I (257688) AVI_PLAYER_SIMD: Tabla idx1 cargada: 6136 cuadros indexados en PSRAM
+I (257689) AVI_PLAYER_SIMD: AVI Abierto: 480x320 @ 30 FPS, 6136 cuadros (3:24)
+I (257691) PLAYER: Abriendo pista 0: /sdcard/ariana.avi
+I (257696) AVI_PLAYER_SIMD: Abriendo archivo AVI MJPEG: /sdcard/ariana.avi
+I (258343) AVI_PLAYER_SIMD: Tabla idx1 cargada: 9003 cuadros indexados en PSRAM
+I (258344) AVI_PLAYER_SIMD: AVI Abierto: 480x320 @ 30 FPS, 9003 cuadros (5:00)
+I (258346) PLAYER: Abriendo pista 3: /sdcard/meovv.avi
+I (258351) AVI_PLAYER_SIMD: Abriendo archivo AVI MJPEG: /sdcard/meovv.avi
+I (258937) AVI_PLAYER_SIMD: Tabla idx1 cargada: 6136 cuadros indexados en PSRAM
+I (258938) AVI_PLAYER_SIMD: AVI Abierto: 480x320 @ 30 FPS, 6136 cuadros (3:24)
+I (258940) PLAYER: Abriendo pista 0: /sdcard/ariana.avi
+I (258945) AVI_PLAYER_SIMD: Abriendo archivo AVI MJPEG: /sdcard/ariana.avi
+PERF,t_ms=258478,dec_fps=0.0,pres_fps=0.0,drop=0,over=0,frame_mismatch=0,rd_avg=0.0,rd_max=0.0,dec_avg=0.0,dec_max=0.0,blit_avg=0.0,blit_max=0.0,late_max=0.0,drift_ms=-28,touch_read_ms_avg=0.6,touch_read_ms_max=1.0,touch_age_ms_max=9.9,heap_int=74283,heap_psram=6281292,track=0,scn=stress,view=full,hud=0
+I (259593) AVI_PLAYER_SIMD: Tabla idx1 cargada: 9003 cuadros indexados en PSRAM
+I (259605) AVI_PLAYER_SIMD: AVI Abierto: 480x320 @ 30 FPS, 9003 cuadros (5:00)
+I (259610) PLAYER: Abriendo pista 3: /sdcard/meovv.avi
+I (259615) AVI_PLAYER_SIMD: Abriendo archivo AVI MJPEG: /sdcard/meovv.avi
+I (260202) AVI_PLAYER_SIMD: Tabla idx1 cargada: 6136 cuadros indexados en PSRAM
+I (260203) AVI_PLAYER_SIMD: AVI Abierto: 480x320 @ 30 FPS, 6136 cuadros (3:24)
+I (260205) PLAYER: Abriendo pista 0: /sdcard/ariana.avi
+I (260210) AVI_PLAYER_SIMD: Abriendo archivo AVI MJPEG: /sdcard/ariana.avi
+I (260857) AVI_PLAYER_SIMD: Tabla idx1 cargada: 9003 cuadros indexados en PSRAM
+I (260858) AVI_PLAYER_SIMD: AVI Abierto: 480x320 @ 30 FPS, 9003 cuadros (5:00)
+I (260860) PLAYER: Abriendo pista 3: /sdcard/meovv.avi
+I (260865) AVI_PLAYER_SIMD: Abriendo archivo AVI MJPEG: /sdcard/meovv.avi
+I (261453) AVI_PLAYER_SIMD: Tabla idx1 cargada: 6136 cuadros indexados en PSRAM
+I (261454) AVI_PLAYER_SIMD: AVI Abierto: 480x320 @ 30 FPS, 6136 cuadros (3:24)
+I (261475) AVI_PLAYER_SIMD: Seek completado a 77% (cuadro 4724/6136)
+PERF,t_ms=260510,dec_fps=1.5,pres_fps=0.5,drop=0,over=0,frame_mismatch=0,rd_avg=7.2,rd_max=7.8,dec_avg=35.9,dec_max=41.3,blit_avg=2.7,blit_max=2.8,late_max=17.2,drift_ms=-36,touch_read_ms_avg=0.7,touch_read_ms_max=1.0,touch_age_ms_max=9.8,heap_int=74283,heap_psram=6817872,track=0,scn=stress,view=full,hud=0
+I (261651) AVI_PLAYER_SIMD: Seek completado a 64% (cuadro 3927/6136)
+I (261757) AVI_PLAYER_SIMD: Seek completado a 67% (cuadro 4111/6136)
+I (261843) AVI_PLAYER_SIMD: Seek completado a 70% (cuadro 4295/6136)
+I (261953) AVI_PLAYER_SIMD: Seek completado a 73% (cuadro 4479/6136)
+I (262043) AVI_PLAYER_SIMD: Seek completado a 76% (cuadro 4663/6136)
+I (262146) AVI_PLAYER_SIMD: Seek completado a 79% (cuadro 4847/6136)
+I (262234) AVI_PLAYER_SIMD: Seek completado a 82% (cuadro 5031/6136)
+I (262331) AVI_PLAYER_SIMD: Seek completado a 85% (cuadro 5215/6136)
+I (262477) AVI_PLAYER_SIMD: Seek completado a 88% (cuadro 5399/6136)
+I (262564) AVI_PLAYER_SIMD: Seek completado a 91% (cuadro 5583/6136)
+I (262681) AVI_PLAYER_SIMD: Seek completado a 4% (cuadro 245/6136)
+I (262782) AVI_PLAYER_SIMD: Seek completado a 7% (cuadro 429/6136)
+I (262838) AVI_PLAYER_SIMD: Seek completado a 10% (cuadro 613/6136)
+I (262981) AVI_PLAYER_SIMD: Seek completado a 13% (cuadro 797/6136)
+I (263089) AVI_PLAYER_SIMD: Seek completado a 16% (cuadro 981/6136)
+I (263187) AVI_PLAYER_SIMD: Seek completado a 19% (cuadro 1165/6136)
+I (263286) AVI_PLAYER_SIMD: Seek completado a 22% (cuadro 1349/6136)
+I (263375) AVI_PLAYER_SIMD: Seek completado a 25% (cuadro 1534/6136)
+I (263488) AVI_PLAYER_SIMD: Seek completado a 28% (cuadro 1718/6136)
+I (263599) AVI_PLAYER_SIMD: Seek completado a 31% (cuadro 1902/6136)
+PERF,t_ms=262546,dec_fps=19.6,pres_fps=13.3,drop=0,over=0,frame_mismatch=0,rd_avg=9.1,rd_max=13.6,dec_avg=37.8,dec_max=42.3,blit_avg=2.7,blit_max=3.4,late_max=27.1,drift_ms=-15,touch_read_ms_avg=0.9,touch_read_ms_max=1.1,touch_age_ms_max=9.9,heap_int=74247,heap_psram=6817872,track=0,scn=stress,view=full,hud=0
+I (263669) AVI_PLAYER_SIMD: Seek completado a 34% (cuadro 2086/6136)
+I (263782) AVI_PLAYER_SIMD: Seek completado a 37% (cuadro 2270/6136)
+I (263889) AVI_PLAYER_SIMD: Seek completado a 40% (cuadro 2454/6136)
+I (263982) AVI_PLAYER_SIMD: Seek completado a 43% (cuadro 2638/6136)
+I (264080) AVI_PLAYER_SIMD: Seek completado a 46% (cuadro 2822/6136)
+I (264174) AVI_PLAYER_SIMD: Seek completado a 49% (cuadro 3006/6136)
+I (264273) AVI_PLAYER_SIMD: Seek completado a 52% (cuadro 3190/6136)
+I (264381) AVI_PLAYER_SIMD: Seek completado a 55% (cuadro 3374/6136)
+I (264481) AVI_PLAYER_SIMD: Seek completado a 58% (cuadro 3558/6136)
+I (264580) AVI_PLAYER_SIMD: Seek completado a 61% (cuadro 3742/6136)
+STRESS,changes=20,seeks=50,title_mismatch=0,title_wait_ms_max=213
+I (264676) MAIN_APP: DIAG_HEAP [AUTOTEST_END]: int=74279, psram=6817872 | STACK_FREE: touch=2808, gui=2348, player=11764, auto=3744
+Heap summary for capabilities 0x00000800:
+  At 0x3fcc5158 len 32767 free 32031 allocated 0 min_free 23835
+    largest_free_block 31744 alloc_blocks 0 free_blocks 1 total_blocks 1
+  At 0x600fe000 len 8168 free 7788 allocated 0 min_free 7788
+    largest_free_block 7680 alloc_blocks 0 free_blocks 1 total_blocks 1
+  At 0x3fce9710 len 22308 free 4 allocated 21408 min_free 4
+    largest_free_block 0 alloc_blocks 40 free_blocks 0 total_blocks 40
+  At 0x3fcf0000 len 32768 free 32032 allocated 0 min_free 32032
+    largest_free_block 31744 alloc_blocks 0 free_blocks 1 total_blocks 1
+  At 0x3fcbc7b0 len 184160 free 2416 allocated 180456 min_free 836
+    largest_free_block 1984 alloc_blocks 87 free_blocks 4 total_blocks 91
+  Totals:
+    free 74271 allocated 201864 min_free 64495 largest_free_block 31744
+AUTOTEST_DONE,tracks=4

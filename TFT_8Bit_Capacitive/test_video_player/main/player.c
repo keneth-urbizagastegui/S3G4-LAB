@@ -9,6 +9,7 @@
 #include "esp_log.h"
 #include "esp_timer.h"
 #include "esp_heap_caps.h"
+#include "esp_random.h"
 
 #include "avi_player.h"
 #include "perf.h"
@@ -35,6 +36,10 @@ static volatile uint8_t s_std_read_idx = 1;
 
 static volatile bool s_new_frame_ready = false;
 static volatile uint8_t s_current_scale = 1; // 0 = fullscreen 480x320, 1 = studio 240x160 (UI arranca en STUDIO)
+
+static TaskHandle_t s_player_task_handle = NULL;
+static int64_t s_pts_t0_us = 0;
+static bool s_pts_started = false;
 
 static void player_open_track(int index);
 
@@ -125,6 +130,8 @@ static void player_open_track(int index) {
 
     player_get_track_title(index, s_status.title, sizeof(s_status.title));
     player_get_track_subtitle(index, s_status.subtitle, sizeof(s_status.subtitle));
+    s_pts_started = false;
+    s_pts_t0_us = 0;
     portEXIT_CRITICAL(&s_player_mux);
 }
 
@@ -171,6 +178,7 @@ static void player_handle_cmd(const player_cmd_t *cmd) {
             portENTER_CRITICAL(&s_player_mux);
             s_status.state = PST_PLAYING;
             portEXIT_CRITICAL(&s_player_mux);
+            s_pts_started = false;
             break;
         }
 
@@ -178,6 +186,7 @@ static void player_handle_cmd(const player_cmd_t *cmd) {
             portENTER_CRITICAL(&s_player_mux);
             s_status.state = PST_PAUSED;
             portEXIT_CRITICAL(&s_player_mux);
+            s_pts_started = false;
             break;
         }
 
@@ -189,11 +198,14 @@ static void player_handle_cmd(const player_cmd_t *cmd) {
                 s_status.state = PST_PLAYING;
             }
             portEXIT_CRITICAL(&s_player_mux);
+            s_pts_started = false;
             break;
         }
 
         case PCMD_STOP: {
             avi_player_restart();
+            s_pts_started = false;
+            s_pts_t0_us = 0;
             portENTER_CRITICAL(&s_player_mux);
             s_status.state = PST_IDLE;
             s_status.pos_ms = 0;
@@ -208,8 +220,10 @@ static void player_handle_cmd(const player_cmd_t *cmd) {
             if (pct < 0) pct = 0;
             if (pct > 99) pct = 99;
             avi_player_seek_percent(pct);
+            const avi_info_t *info = avi_player_get_info();
+            s_pts_started = false;
             portENTER_CRITICAL(&s_player_mux);
-            s_status.pos_ms = (uint64_t)cmd->arg;
+            s_status.pos_ms = ((uint64_t)info->current_frame * (uint64_t)info->us_per_frame) / 1000ULL;
             portEXIT_CRITICAL(&s_player_mux);
             break;
         }
@@ -221,8 +235,10 @@ static void player_handle_cmd(const player_cmd_t *cmd) {
             if (target_ms > dur_ms) target_ms = dur_ms;
             int pct = (dur_ms > 0) ? (int)((target_ms * 100) / dur_ms) : 0;
             avi_player_seek_percent(pct);
+            const avi_info_t *info = avi_player_get_info();
+            s_pts_started = false;
             portENTER_CRITICAL(&s_player_mux);
-            s_status.pos_ms = (uint64_t)target_ms;
+            s_status.pos_ms = ((uint64_t)info->current_frame * (uint64_t)info->us_per_frame) / 1000ULL;
             portEXIT_CRITICAL(&s_player_mux);
             break;
         }
@@ -275,6 +291,31 @@ static void player_handle_cmd(const player_cmd_t *cmd) {
     }
 }
 
+static void player_handle_eof(void) {
+    ESP_LOGI(TAG, "Fin de video alcanzado. Aplicando politica de repeticion.");
+    if (s_status.repeat == REPEAT_ONE) {
+        avi_player_restart();
+        s_pts_started = false;
+        s_pts_t0_us = 0;
+    } else {
+        int total = s_status.track_count;
+        int next = (s_status.track_index + 1) % total;
+        if (s_status.shuffle && total > 1) {
+            next = (int)(esp_random() % total);
+        }
+        if (s_status.repeat == REPEAT_OFF && next == 0) {
+            portENTER_CRITICAL(&s_player_mux);
+            s_status.state = PST_ENDED;
+            portEXIT_CRITICAL(&s_player_mux);
+            avi_player_restart();
+            s_pts_started = false;
+            s_pts_t0_us = 0;
+        } else {
+            player_open_track(next);
+        }
+    }
+}
+
 static void player_task(void *arg) {
     ESP_LOGI(TAG, "Tarea player_task ejecutandose en CPU 1.");
 
@@ -315,8 +356,60 @@ static void player_task(void *arg) {
                 continue;
             }
 
+            // Inicializar reloj PTS (t0 = now - pos_us)
+            if (!s_pts_started) {
+                int64_t pos_us = (int64_t)cur_info->current_frame * (int64_t)cur_info->us_per_frame;
+                s_pts_t0_us = esp_timer_get_time() - pos_us;
+                s_pts_started = true;
+            }
+
+            int64_t now_us = esp_timer_get_time();
+            int64_t due_us = s_pts_t0_us + (int64_t)cur_info->current_frame * (int64_t)cur_info->us_per_frame;
+            int64_t late = now_us - due_us;
+
+            if (late > 0) {
+                perf_mark_late((uint32_t)late);
+            }
+
+            // Si late > us_per_frame: saltar el chunk SIN decodificar
+            if (late > (int64_t)cur_info->us_per_frame) {
+                esp_err_t ret_skip = avi_player_skip_next_frame();
+                if (ret_skip == ESP_OK) {
+                    perf_mark_dropped();
+                    portENTER_CRITICAL(&s_player_mux);
+                    s_status.dropped++;
+                    s_status.pos_ms = ((uint64_t)cur_info->current_frame * (uint64_t)cur_info->us_per_frame) / 1000ULL;
+                    s_status.dur_ms = ((uint64_t)cur_info->total_frames * (uint64_t)cur_info->us_per_frame) / 1000ULL;
+                    perf_get_fps(&s_status.dec_fps, &s_status.pres_fps);
+                    portEXIT_CRITICAL(&s_player_mux);
+
+                    // drift_ms = pos_ms del reproductor - tiempo de pared transcurrido desde t0 (con signo)
+                    int64_t wall_ms = (esp_timer_get_time() - s_pts_t0_us) / 1000;
+                    int32_t drift_ms = (int32_t)((int64_t)s_status.pos_ms - wall_ms);
+                    perf_mark_drift(drift_ms);
+                    continue;
+                } else if (ret_skip == ESP_ERR_NOT_FOUND) {
+                    player_handle_eof();
+                    continue;
+                }
+            }
+
+            // Si llega adelantado: esperar con precisión
+            if (late < -2000) {
+                int64_t wait = -late;
+                if (wait > 3000) {
+                    vTaskDelay(pdMS_TO_TICKS((wait - 2000) / 1000));
+                }
+                while (esp_timer_get_time() < due_us) {
+                    taskYIELD();
+                }
+            } else if (late < 0) {
+                while (esp_timer_get_time() < due_us) {
+                    taskYIELD();
+                }
+            }
+
             uint16_t *target_buf = (scale == 1) ? s_buf_studio[s_std_write_idx] : s_buf_fullscreen[s_fs_write_idx];
-            int64_t t_start = esp_timer_get_time();
             esp_err_t ret = avi_player_read_next_frame(target_buf, scale);
 
             if (ret == ESP_OK) {
@@ -339,30 +432,12 @@ static void player_task(void *arg) {
                 perf_get_fps(&s_status.dec_fps, &s_status.pres_fps);
                 portEXIT_CRITICAL(&s_player_mux);
 
-                // Cadencia de reproduccion
-                int64_t elapsed_us = esp_timer_get_time() - t_start;
-                int32_t delay_us = (int32_t)info->us_per_frame - (int32_t)elapsed_us;
-                if (delay_us > 1000) {
-                    vTaskDelay(pdMS_TO_TICKS(delay_us / 1000));
-                } else {
-                    vTaskDelay(1);
-                }
+                // drift_ms = pos_ms del reproductor - tiempo de pared transcurrido desde t0 (con signo)
+                int64_t wall_ms = (esp_timer_get_time() - s_pts_t0_us) / 1000;
+                int32_t drift_ms = (int32_t)((int64_t)s_status.pos_ms - wall_ms);
+                perf_mark_drift(drift_ms);
             } else if (ret == ESP_ERR_NOT_FOUND) {
-                // Fin de video (EOF)
-                ESP_LOGI(TAG, "Fin de video alcanzado. Aplicando politica de repeticion.");
-                if (s_status.repeat == REPEAT_ONE) {
-                    avi_player_restart();
-                } else {
-                    int next = (s_status.track_index + 1) % s_status.track_count;
-                    if (s_status.repeat == REPEAT_OFF && next == 0) {
-                        portENTER_CRITICAL(&s_player_mux);
-                        s_status.state = PST_ENDED;
-                        portEXIT_CRITICAL(&s_player_mux);
-                        avi_player_restart();
-                    } else {
-                        player_open_track(next);
-                    }
-                }
+                player_handle_eof();
             } else {
                 vTaskDelay(pdMS_TO_TICKS(10));
             }
@@ -415,7 +490,8 @@ esp_err_t player_start(void) {
         }
     }
 
-    BaseType_t ret = xTaskCreatePinnedToCore(player_task, "player_task", 16 * 1024, NULL, 5, NULL, 1);
+    // Stack ajustado de 16 KB a 8 KB tras medir HighWaterMark (Obs O2: max uso 4620 B, margen >= 3.5 KB)
+    BaseType_t ret = xTaskCreatePinnedToCore(player_task, "player_task", 8 * 1024, NULL, 5, &s_player_task_handle, 1);
     if (ret != pdPASS) {
         ESP_LOGE(TAG, "Fallo al crear player_task en CPU 1");
         return ESP_FAIL;
@@ -455,4 +531,9 @@ bool player_check_and_clear_new_frame(uint16_t **out_frame_buf, int *out_w, int 
     }
     portEXIT_CRITICAL(&s_player_mux);
     return has_new;
+}
+
+uint32_t player_get_task_stack_high_water_mark(void) {
+    if (!s_player_task_handle) return 0;
+    return (uint32_t)uxTaskGetStackHighWaterMark(s_player_task_handle);
 }

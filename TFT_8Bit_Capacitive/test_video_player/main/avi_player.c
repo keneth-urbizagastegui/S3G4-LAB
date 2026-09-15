@@ -292,6 +292,46 @@ esp_err_t avi_player_read_next_frame(uint16_t *out_rgb565, uint8_t scale) {
     }
 }
 
+esp_err_t avi_player_skip_next_frame(void) {
+    if (!s_file || !s_info.is_open) {
+        return ESP_ERR_INVALID_STATE;
+    }
+
+    if (s_info.total_frames > 0 && s_info.current_frame >= s_info.total_frames) {
+        s_info.is_eof = true;
+        return ESP_ERR_NOT_FOUND;
+    }
+
+    // Si tenemos tabla de índice y estamos dentro de rango, posicionar directamente
+    if (s_index_table && s_info.current_frame < s_info.total_frames) {
+        fseek(s_file, s_index_table[s_info.current_frame], SEEK_SET);
+    }
+
+    uint8_t chunk_hdr[8];
+    while (1) {
+        size_t r = fread(chunk_hdr, 1, 8, s_file);
+        if (r < 8) {
+            s_info.is_eof = true;
+            return ESP_ERR_NOT_FOUND;
+        }
+
+        uint32_t chunk_len = *(uint32_t *)(chunk_hdr + 4);
+
+        if (memcmp(chunk_hdr, "00dc", 4) == 0 || memcmp(chunk_hdr, "00db", 4) == 0) {
+            // Saltar chunk de video sin decodificar
+            fseek(s_file, chunk_len + (chunk_len & 1), SEEK_CUR);
+            s_info.current_frame++;
+            s_info.elapsed_sec = (s_info.fps > 0) ? (s_info.current_frame / s_info.fps) : 0;
+            return ESP_OK;
+        } else if (memcmp(chunk_hdr, "idx1", 4) == 0) {
+            s_info.is_eof = true;
+            return ESP_ERR_NOT_FOUND;
+        } else {
+            fseek(s_file, chunk_len + (chunk_len & 1), SEEK_CUR);
+        }
+    }
+}
+
 void avi_player_seek_percent(int percent) {
     if (!s_file) return;
 

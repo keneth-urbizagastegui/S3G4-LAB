@@ -76,6 +76,9 @@ void player_get_track_subtitle(int track_index, char *out_sub, size_t max_len);
 // Devuelve true si hay fotograma nuevo disponible y entrega puntero y dimensiones
 bool player_check_and_clear_new_frame(uint16_t **out_frame_buf, int *out_w, int *out_h);
 
+// Diagnóstico de memoria para Observación O2
+uint32_t player_get_task_stack_high_water_mark(void);
+
 #ifdef __cplusplus
 }
 #endif

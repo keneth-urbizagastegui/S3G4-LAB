@@ -12,4 +12,11 @@ menu "App perf"
         help
             Tiempo total en segundos para probar cada video AVI, dividido en 3 escenarios iguales (hidden, osd, seek).
 
+    config APP_UI_REFRESH_MS
+        int "Periodo de refresco de UI en milisegundos"
+        default 250
+        help
+            Intervalo en milisegundos del timer periodico de LVGL para refrescar estado de UI (Obs O1).
+
 endmenu
+

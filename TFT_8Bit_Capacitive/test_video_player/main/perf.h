@@ -17,6 +17,9 @@ void perf_mark_presented(void);
 void perf_mark_blit(uint32_t us);
 void perf_mark_oversize(void);
 void perf_mark_frame_mismatch(void);
+void perf_mark_late(uint32_t us);
+void perf_mark_dropped(void);
+void perf_mark_drift(int32_t drift_ms);
 void perf_set_scenario(int track, const char *scn);
 void perf_report_if_due(void);
 
