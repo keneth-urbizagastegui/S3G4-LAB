@@ -2,7 +2,7 @@
 """
 tools/perf_capture.py
 Capturador y validador automatizado de rendimiento para ESP32-S3 Video Player.
-Fase F0: Instrumentacion y Autotest.
+Fases soportadas: F0 (Instrumentacion/Autotest base), F1 (Concurrencia, cola, tactil, stress).
 """
 
 import sys
@@ -23,6 +23,7 @@ except ImportError:
 CRASH_REGEX = re.compile(r"Guru Meditation|abort\(\)|Backtrace:")
 REBOOT_REGEX = re.compile(r"rst:0x")
 AUTOTEST_REGEX = re.compile(r"AUTOTEST_DONE,tracks=(\d+)")
+STRESS_REGEX = re.compile(r"STRESS,changes=(\d+),seeks=(\d+),title_mismatch=(\d+)")
 
 
 def parse_kv_line(line_str, prefix):
@@ -56,10 +57,10 @@ def write_csv(filepath, records):
 
 def main():
     parser = argparse.ArgumentParser(description="Captura de metricas de rendimiento ESP32-S3")
-    parser.add_argument("--port", required=True, help="Puerto serial (ej. COM3 o /dev/ttyUSB0)")
+    parser.add_argument("--port", required=True, help="Puerto serial (ej. COM17)")
     parser.add_argument("--baud", type=int, default=115200, help="Baudrate (default: 115200)")
     parser.add_argument("--out", required=True, help="Ruta base de salida para CSV y logs")
-    parser.add_argument("--phase", default="F0", help="Fase de prueba (default: F0)")
+    parser.add_argument("--phase", default="F0", help="Fase de prueba (F0, F1, etc.)")
     parser.add_argument("--timeout", type=float, default=420.0, help="Timeout total en segundos (default: 420)")
 
     args = parser.parse_args()
@@ -86,7 +87,7 @@ def main():
         print(f"Error al abrir puerto serial {args.port}: {e}", file=sys.stderr)
         sys.exit(3)
 
-    print(f"Iniciando captura en {args.port} a {args.baud} baud...")
+    print(f"Iniciando captura en {args.port} a {args.baud} baud (Fase: {args.phase})...")
     print(f"Archivos de salida: {log_path}, {perf_csv_path}, {media_csv_path}")
 
     # Reset con RTS/DTR (DTR=False, RTS=True, 0.1 s, RTS=False)
@@ -102,6 +103,7 @@ def main():
 
     autotest_done = False
     autotest_tracks = -1
+    stress_data = None
     crashed = False
     crash_reason = ""
 
@@ -128,8 +130,20 @@ def main():
             log_file.flush()
 
             # Imprimir en consola para visibilidad
-            if line_str.startswith("PERF,") or line_str.startswith("MEDIA,") or "AUTOTEST_DONE" in line_str:
+            if (line_str.startswith("PERF,") or
+                line_str.startswith("MEDIA,") or
+                line_str.startswith("STRESS,") or
+                "AUTOTEST_DONE" in line_str):
                 print(f"  {line_str}")
+
+            # Deteccion de STRESS
+            m_stress = STRESS_REGEX.search(line_str)
+            if m_stress:
+                stress_data = {
+                    "changes": int(m_stress.group(1)),
+                    "seeks": int(m_stress.group(2)),
+                    "title_mismatch": int(m_stress.group(3))
+                }
 
             # Deteccion de AUTOTEST_DONE
             m_done = AUTOTEST_REGEX.search(line_str)
@@ -190,7 +204,6 @@ def main():
         sys.exit(3)
 
     # Procesar resumen descartando los primeros 2 segundos de cada escenario
-    # Agrupar registros por (track, scn)
     groups = {}
     for r in perf_records:
         trk = r.get("track", "?")
@@ -200,11 +213,11 @@ def main():
             groups[key] = []
         groups[key].append(r)
 
-    print("\n" + "=" * 94)
+    print("\n" + "=" * 122)
     print(f"RESUMEN DE RENDIMIENTO ({args.phase}) - (Primeros 2s descartados por escenario)")
-    print("=" * 94)
-    print(f"{'Track':<8}{'Escenario':<14}{'Muestras':<10}{'Dec FPS':<12}{'Pres FPS':<12}{'rd_avg(ms)':<14}{'dec_avg(ms)':<14}{'blit_avg(ms)':<14}")
-    print("-" * 94)
+    print("=" * 122)
+    print(f"{'Track':<8}{'Escenario':<14}{'Muestras':<10}{'Dec FPS':<10}{'Pres FPS':<10}{'rd_avg(ms)':<12}{'dec_avg(ms)':<12}{'blit_avg(ms)':<12}{'tch_rd(ms)':<12}{'tch_age(ms)':<12}")
+    print("-" * 122)
 
     for (trk, scn), recs in sorted(groups.items(), key=lambda x: (int(x[0][0]) if str(x[0][0]).isdigit() else str(x[0][0]), str(x[0][1]))):
         # Descartar primeros 2s de cada escenario (el primer reporte de 2s)
@@ -216,16 +229,14 @@ def main():
             avg_rd = sum(float(x.get("rd_avg", 0.0)) for x in filtered) / n
             avg_dec_t = sum(float(x.get("dec_avg", 0.0)) for x in filtered) / n
             avg_blit = sum(float(x.get("blit_avg", 0.0)) for x in filtered) / n
+            avg_tch_rd = sum(float(x.get("touch_read_ms_avg", 0.0)) for x in filtered) / n
+            max_tch_age = max((float(x.get("touch_age_ms_max", 0.0)) for x in filtered), default=0.0)
         else:
-            avg_dec = 0.0
-            avg_pres = 0.0
-            avg_rd = 0.0
-            avg_dec_t = 0.0
-            avg_blit = 0.0
+            avg_dec = avg_pres = avg_rd = avg_dec_t = avg_blit = avg_tch_rd = max_tch_age = 0.0
 
-        print(f"{trk:<8}{scn:<14}{n:<10}{avg_dec:<12.1f}{avg_pres:<12.1f}{avg_rd:<14.1f}{avg_dec_t:<14.1f}{avg_blit:<14.1f}")
+        print(f"{trk:<8}{scn:<14}{n:<10}{avg_dec:<10.1f}{avg_pres:<10.1f}{avg_rd:<12.1f}{avg_dec_t:<12.1f}{avg_blit:<12.1f}{avg_tch_rd:<12.1f}{max_tch_age:<12.1f}")
 
-    print("=" * 94)
+    print("=" * 122)
 
     if media_records:
         print("\n" + "=" * 94)
@@ -248,43 +259,71 @@ def main():
             print(f"{f:<26}{dim:<10}{fps_m:<12.3f}{frames:<10}{dur_str:<10}{c_avg_kb:<15.1f}{c_max_kb:<15.1f}{sub:<12}")
         print("=" * 94)
 
-    # Criterio F0: todos los tracks de MEDIA tienen PERF y tracks == AUTOTEST_DONE.tracks
-    # Obtener lista unica de pistas en MEDIA
-    media_files = []
-    for m in media_records:
-        f = m.get("file", "")
-        if f and f not in media_files:
-            media_files.append(f)
-    num_media_tracks = len(media_files)
+    # Evaluacion de criterios segun la fase
+    if args.phase.upper() == "F1":
+        f1_passed = True
+        if not autotest_done:
+            print("\n[CRITERIO F1 FALLIDO]: No se recibio AUTOTEST_DONE.", file=sys.stderr)
+            f1_passed = False
+        if not stress_data:
+            print("\n[CRITERIO F1 FALLIDO]: No se recibio linea STRESS.", file=sys.stderr)
+            f1_passed = False
+        else:
+            print(f"\n[EVALUACION STRESS F1]: changes={stress_data['changes']}, seeks={stress_data['seeks']}, title_mismatch={stress_data['title_mismatch']}")
+            if stress_data['title_mismatch'] != 0:
+                print(f"[CRITERIO F1 FALLIDO]: title_mismatch={stress_data['title_mismatch']} (debe ser 0).", file=sys.stderr)
+                f1_passed = False
+            if stress_data['changes'] < 20:
+                print(f"[CRITERIO F1 FALLIDO]: changes={stress_data['changes']} < 20.", file=sys.stderr)
+                f1_passed = False
+            if stress_data['seeks'] < 50:
+                print(f"[CRITERIO F1 FALLIDO]: seeks={stress_data['seeks']} < 50.", file=sys.stderr)
+                f1_passed = False
 
-    perf_tracks = set()
-    for r in perf_records:
-        try:
-            perf_tracks.add(int(r.get("track", -1)))
-        except ValueError:
-            pass
+        if f1_passed:
+            print("\n[RESULTADO F1]: EXITO - Todos los criterios cumplidos satisfactoriamente.")
+            sys.exit(0)
+        else:
+            print("\n[RESULTADO F1]: FALLO - Criterios no cumplidos.", file=sys.stderr)
+            sys.exit(1)
 
-    criterion_passed = True
-
-    if not autotest_done:
-        print("[CRITERIO F0 FALLIDO]: No se recibio AUTOTEST_DONE.", file=sys.stderr)
-        criterion_passed = False
-    elif num_media_tracks != autotest_tracks:
-        print(f"[CRITERIO F0 FALLIDO]: tracks de MEDIA ({num_media_tracks}) != AUTOTEST_DONE.tracks ({autotest_tracks}).", file=sys.stderr)
-        criterion_passed = False
-
-    expected_tracks = set(range(num_media_tracks))
-    if not expected_tracks.issubset(perf_tracks):
-        missing = expected_tracks - perf_tracks
-        print(f"[CRITERIO F0 FALLIDO]: Pistas de MEDIA sin registros PERF: {missing}", file=sys.stderr)
-        criterion_passed = False
-
-    if criterion_passed:
-        print("\n[RESULTADO F0]: EXITO - Todos los criterios cumplidos satisfactoriamente.")
-        sys.exit(0)
     else:
-        print("\n[RESULTADO F0]: FALLO - Criterios no cumplidos.", file=sys.stderr)
-        sys.exit(1)
+        # Criterio F0 (default)
+        media_files = []
+        for m in media_records:
+            f = m.get("file", "")
+            if f and f not in media_files:
+                media_files.append(f)
+        num_media_tracks = len(media_files)
+
+        perf_tracks = set()
+        for r in perf_records:
+            try:
+                perf_tracks.add(int(r.get("track", -1)))
+            except ValueError:
+                pass
+
+        criterion_passed = True
+
+        if not autotest_done:
+            print("[CRITERIO F0 FALLIDO]: No se recibio AUTOTEST_DONE.", file=sys.stderr)
+            criterion_passed = False
+        elif num_media_tracks != autotest_tracks:
+            print(f"[CRITERIO F0 FALLIDO]: tracks de MEDIA ({num_media_tracks}) != AUTOTEST_DONE.tracks ({autotest_tracks}).", file=sys.stderr)
+            criterion_passed = False
+
+        expected_tracks = set(range(num_media_tracks))
+        if not expected_tracks.issubset(perf_tracks):
+            missing = expected_tracks - perf_tracks
+            print(f"[CRITERIO F0 FALLIDO]: Pistas de MEDIA sin registros PERF: {missing}", file=sys.stderr)
+            criterion_passed = False
+
+        if criterion_passed:
+            print("\n[RESULTADO F0]: EXITO - Todos los criterios cumplidos satisfactoriamente.")
+            sys.exit(0)
+        else:
+            print("\n[RESULTADO F0]: FALLO - Criterios no cumplidos.", file=sys.stderr)
+            sys.exit(1)
 
 
 if __name__ == "__main__":

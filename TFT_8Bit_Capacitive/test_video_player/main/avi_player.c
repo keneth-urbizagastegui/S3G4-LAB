@@ -375,15 +375,26 @@ void avi_player_log_media(const char *filepath) {
 
     uint64_t fps_milli = (us_per_frame > 0) ? (1000000000ULL / (uint64_t)us_per_frame) : 0;
 
-    // Subsampling: buscar FF C0 en el primer chunk de video (00dc o 00db)
+    // Subsampling: buscar el primer chunk de video (00dc o 00db) DESPUES de LIST movi
     const char *subsampling = "unknown";
-    fseek(f, 0, SEEK_SET);
+    long movi_pos = -1;
+    for (size_t i = 0; i + 12 <= r; i++) {
+        if (memcmp(hdr + i, "LIST", 4) == 0 && memcmp(hdr + i + 8, "movi", 4) == 0) {
+            movi_pos = (long)i + 12;
+            break;
+        }
+    }
+    if (movi_pos < 0) {
+        movi_pos = 2048;
+    }
+
+    fseek(f, movi_pos, SEEK_SET);
     uint8_t chunk_search_buf[4096];
     long vchunk_data_pos = -1;
     uint32_t vchunk_data_len = 0;
 
-    long cur_pos = 0;
-    while (cur_pos < file_size && cur_pos < 128 * 1024) {
+    long cur_pos = movi_pos;
+    while (cur_pos < file_size && cur_pos < movi_pos + 256 * 1024) {
         fseek(f, cur_pos, SEEK_SET);
         size_t nr = fread(chunk_search_buf, 1, sizeof(chunk_search_buf), f);
         if (nr < 8) break;
@@ -407,17 +418,40 @@ void avi_player_log_media(const char *filepath) {
         uint8_t *jbuf = (uint8_t *)malloc(read_len);
         if (jbuf) {
             size_t jread = fread(jbuf, 1, read_len, f);
-            for (size_t i = 0; i + 12 <= jread; i++) {
-                if (jbuf[i] == 0xFF && jbuf[i + 1] == 0xC0) {
-                    uint8_t sample_byte = jbuf[i + 11];
-                    if (sample_byte == 0x22) {
-                        subsampling = "420";
-                    } else if (sample_byte == 0x21) {
-                        subsampling = "422";
-                    } else if (sample_byte == 0x11) {
-                        subsampling = "444";
+            if (jread >= 4 && jbuf[0] == 0xFF && jbuf[1] == 0xD8) {
+                size_t p = 2;
+                while (p + 4 < jread) {
+                    if (jbuf[p] != 0xFF) {
+                        p++;
+                        continue;
                     }
-                    break;
+                    while (p < jread && jbuf[p] == 0xFF) p++;
+                    if (p >= jread) break;
+                    uint8_t marker = jbuf[p++];
+                    if (marker == 0xD9 || marker == 0xDA) break;
+                    if (p + 2 > jread) break;
+                    uint16_t seg_len = ((uint16_t)jbuf[p] << 8) | jbuf[p + 1];
+                    if (marker == 0xC0 || marker == 0xC2) {
+                        if (p + 8 <= jread) {
+                            uint8_t num_components = jbuf[p + 7];
+                            if (num_components >= 1 && p + 10 <= jread) {
+                                uint8_t sample_byte = jbuf[p + 9];
+                                uint8_t h_sample = (sample_byte >> 4) & 0x0F;
+                                uint8_t v_sample = sample_byte & 0x0F;
+                                if (h_sample == 2 && v_sample == 2) {
+                                    subsampling = "420";
+                                } else if (h_sample == 2 && v_sample == 1) {
+                                    subsampling = "422";
+                                } else if (h_sample == 1 && v_sample == 1) {
+                                    subsampling = "444";
+                                } else if (h_sample == 4 && v_sample == 1) {
+                                    subsampling = "411";
+                                }
+                            }
+                        }
+                        break;
+                    }
+                    p += seg_len;
                 }
             }
             free(jbuf);

@@ -11,7 +11,7 @@ static portMUX_TYPE s_perf_mux = portMUX_INITIALIZER_UNLOCKED;
 // Contadores en ventana de reporte
 static uint32_t s_frames_decoded = 0;
 static uint32_t s_frames_presented = 0;
-static uint32_t s_frames_dropped = 0;    // Siempre 0 en F0
+static uint32_t s_frames_dropped = 0;    // Siempre 0 en F0/F1
 static uint32_t s_oversize_frames = 0;
 
 static uint64_t s_read_sum_us = 0;
@@ -26,7 +26,17 @@ static uint64_t s_blit_sum_us = 0;
 static uint32_t s_blit_count = 0;
 static uint32_t s_blit_max_us = 0;
 
-static uint32_t s_late_max_us = 0;       // Siempre 0 en F0
+static uint32_t s_late_max_us = 0;       // Siempre 0 en F0/F1
+
+// Latencia táctil (T1)
+static uint64_t s_touch_rd_sum_us = 0;
+static uint32_t s_touch_rd_count = 0;
+static uint32_t s_touch_rd_max_us = 0;
+
+static uint32_t s_touch_age_max_us = 0;
+
+static float s_last_dec_fps = 0.0f;
+static float s_last_pres_fps = 0.0f;
 
 static int s_track = 0;
 static char s_scn[32] = "init";
@@ -49,6 +59,12 @@ void perf_init(void) {
     s_blit_count = 0;
     s_blit_max_us = 0;
     s_late_max_us = 0;
+    s_touch_rd_sum_us = 0;
+    s_touch_rd_count = 0;
+    s_touch_rd_max_us = 0;
+    s_touch_age_max_us = 0;
+    s_last_dec_fps = 0.0f;
+    s_last_pres_fps = 0.0f;
     s_last_report_us = esp_timer_get_time();
     portEXIT_CRITICAL(&s_perf_mux);
 }
@@ -101,6 +117,31 @@ void perf_mark_oversize(void) {
     portEXIT_CRITICAL(&s_perf_mux);
 }
 
+void perf_mark_touch_read(uint32_t us) {
+    portENTER_CRITICAL(&s_perf_mux);
+    s_touch_rd_sum_us += us;
+    s_touch_rd_count++;
+    if (us > s_touch_rd_max_us) {
+        s_touch_rd_max_us = us;
+    }
+    portEXIT_CRITICAL(&s_perf_mux);
+}
+
+void perf_mark_touch_age(uint32_t us) {
+    portENTER_CRITICAL(&s_perf_mux);
+    if (us > s_touch_age_max_us) {
+        s_touch_age_max_us = us;
+    }
+    portEXIT_CRITICAL(&s_perf_mux);
+}
+
+void perf_get_fps(float *dec_fps, float *pres_fps) {
+    portENTER_CRITICAL(&s_perf_mux);
+    if (dec_fps) *dec_fps = s_last_dec_fps;
+    if (pres_fps) *pres_fps = s_last_pres_fps;
+    portEXIT_CRITICAL(&s_perf_mux);
+}
+
 void perf_set_scenario(int track, const char *scn) {
     portENTER_CRITICAL(&s_perf_mux);
     s_track = track;
@@ -142,6 +183,12 @@ void perf_report_if_due(void) {
     uint32_t blit_max_us = s_blit_max_us;
 
     uint32_t late_max_us = s_late_max_us;
+
+    uint64_t touch_rd_sum = s_touch_rd_sum_us;
+    uint32_t touch_rd_cnt = s_touch_rd_count;
+    uint32_t touch_rd_max_us = s_touch_rd_max_us;
+    uint32_t touch_age_max_us = s_touch_age_max_us;
+
     int track = s_track;
     char scn[32];
     strncpy(scn, s_scn, sizeof(scn));
@@ -167,6 +214,11 @@ void perf_report_if_due(void) {
 
     s_late_max_us = 0;
 
+    s_touch_rd_sum_us = 0;
+    s_touch_rd_count = 0;
+    s_touch_rd_max_us = 0;
+    s_touch_age_max_us = 0;
+
     s_last_report_us = now;
     portEXIT_CRITICAL(&s_perf_mux);
 
@@ -180,16 +232,26 @@ void perf_report_if_due(void) {
     double blit_max = (double)blit_max_us / 1000.0;
     double late_max = (double)late_max_us / 1000.0;
 
+    double touch_read_ms_avg = (touch_rd_cnt > 0) ? (((double)touch_rd_sum / (double)touch_rd_cnt) / 1000.0) : 0.0;
+    double touch_read_ms_max = (double)touch_rd_max_us / 1000.0;
+    double touch_age_ms_max = (double)touch_age_max_us / 1000.0;
+
+    portENTER_CRITICAL(&s_perf_mux);
+    s_last_dec_fps = (float)dec_fps;
+    s_last_pres_fps = (float)pres_fps;
+    portEXIT_CRITICAL(&s_perf_mux);
+
     uint32_t heap_int = (uint32_t)heap_caps_get_free_size(MALLOC_CAP_INTERNAL);
     uint32_t heap_psram = (uint32_t)heap_caps_get_free_size(MALLOC_CAP_SPIRAM);
     uint32_t t_ms = (uint32_t)(now / 1000);
 
-    printf("PERF,t_ms=%lu,dec_fps=%.1f,pres_fps=%.1f,drop=%lu,over=%lu,rd_avg=%.1f,rd_max=%.1f,dec_avg=%.1f,dec_max=%.1f,blit_avg=%.1f,blit_max=%.1f,late_max=%.1f,heap_int=%lu,heap_psram=%lu,track=%d,scn=%s\n",
+    printf("PERF,t_ms=%lu,dec_fps=%.1f,pres_fps=%.1f,drop=%lu,over=%lu,rd_avg=%.1f,rd_max=%.1f,dec_avg=%.1f,dec_max=%.1f,blit_avg=%.1f,blit_max=%.1f,late_max=%.1f,touch_read_ms_avg=%.1f,touch_read_ms_max=%.1f,touch_age_ms_max=%.1f,heap_int=%lu,heap_psram=%lu,track=%d,scn=%s\n",
            (unsigned long)t_ms, dec_fps, pres_fps, (unsigned long)drop, (unsigned long)over,
            rd_avg, rd_max,
            dec_avg, dec_max,
            blit_avg, blit_max,
            late_max,
+           touch_read_ms_avg, touch_read_ms_max, touch_age_ms_max,
            (unsigned long)heap_int, (unsigned long)heap_psram,
            track, scn);
     fflush(stdout);

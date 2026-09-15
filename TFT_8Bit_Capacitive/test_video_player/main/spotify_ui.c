@@ -87,43 +87,40 @@ static int s_hud_forced_mode = 0; // 0=auto, 1=siempre oculto, 2=siempre visible
 // Callbacks de Eventos
 // -------------------------------------------------------------
 static void on_btn_play_pause_click(lv_event_t *e) {
-    if (s_play_state == PLAYBACK_STATE_PLAYING) {
-        spotify_ui_set_play_state(PLAYBACK_STATE_PAUSED);
-        ESP_LOGI("SPOTIFY_UI", "[TOUCH] Boton PLAY/PAUSE -> PAUSA");
-    } else {
-        spotify_ui_set_play_state(PLAYBACK_STATE_PLAYING);
-        ESP_LOGI("SPOTIFY_UI", "[TOUCH] Boton PLAY/PAUSE -> REPRODUCIENDO");
-    }
-    if (s_play_cb) s_play_cb(s_play_state);
+    player_cmd_t cmd = {.type = PCMD_TOGGLE};
+    player_cmd_send(&cmd);
+    ESP_LOGI("SPOTIFY_UI", "[TOUCH] Boton PLAY/PAUSE -> PCMD_TOGGLE");
 }
 
 static void on_btn_stop_click(lv_event_t *e) {
-    spotify_ui_set_play_state(PLAYBACK_STATE_STOPPED);
-    ESP_LOGI("SPOTIFY_UI", "[TOUCH] Boton STOP -> DETENIDO");
-    if (s_play_cb) s_play_cb(s_play_state);
+    player_cmd_t cmd = {.type = PCMD_STOP};
+    player_cmd_send(&cmd);
+    ESP_LOGI("SPOTIFY_UI", "[TOUCH] Boton STOP -> PCMD_STOP");
 }
 
 static void on_btn_prev_click(lv_event_t *e) {
-    int next_idx = (s_current_track_idx - 1 + PLAYLIST_SIZE) % PLAYLIST_SIZE;
-    ESP_LOGI("SPOTIFY_UI", "[TOUCH] Pista Anterior: %d (%s)", next_idx, g_playlist[next_idx].title);
-    spotify_ui_set_track(next_idx);
-    if (s_track_cb) s_track_cb(next_idx);
+    player_cmd_t cmd = {.type = PCMD_PREV};
+    player_cmd_send(&cmd);
+    ESP_LOGI("SPOTIFY_UI", "[TOUCH] Boton PREV -> PCMD_PREV");
 }
 
 static void on_btn_next_click(lv_event_t *e) {
-    int next_idx = (s_current_track_idx + 1) % PLAYLIST_SIZE;
-    ESP_LOGI("SPOTIFY_UI", "[TOUCH] Siguiente Pista: %d (%s)", next_idx, g_playlist[next_idx].title);
-    spotify_ui_set_track(next_idx);
-    if (s_track_cb) s_track_cb(next_idx);
+    player_cmd_t cmd = {.type = PCMD_NEXT};
+    player_cmd_send(&cmd);
+    ESP_LOGI("SPOTIFY_UI", "[TOUCH] Boton NEXT -> PCMD_NEXT");
 }
 
 static void on_btn_fullscreen_toggle(lv_event_t *e) {
     if (s_view_mode == VIEW_MODE_STUDIO) {
         ESP_LOGI("SPOTIFY_UI", "[TOUCH] Cambiando a modo FULLSCREEN (480x320)");
         spotify_ui_set_view_mode(VIEW_MODE_FULLSCREEN);
+        player_cmd_t cmd = {.type = PCMD_SET_VIDEO_RECT, .rect = {0, 0, FULL_W, FULL_H}};
+        player_cmd_send(&cmd);
     } else {
         ESP_LOGI("SPOTIFY_UI", "[TOUCH] Saliendo a modo STUDIO (240x160)");
         spotify_ui_set_view_mode(VIEW_MODE_STUDIO);
+        player_cmd_t cmd = {.type = PCMD_SET_VIDEO_RECT, .rect = {10, 34, STUDIO_W, STUDIO_H}};
+        player_cmd_send(&cmd);
     }
 }
 
@@ -131,8 +128,8 @@ static void on_dropdown_change(lv_event_t *e) {
     lv_obj_t *dropdown = lv_event_get_target(e);
     uint32_t selected = lv_dropdown_get_selected(dropdown);
     if (selected < PLAYLIST_SIZE) {
-        spotify_ui_set_track((int)selected);
-        if (s_track_cb) s_track_cb((int)selected);
+        player_cmd_t cmd = {.type = PCMD_OPEN, .arg = (int32_t)selected};
+        player_cmd_send(&cmd);
     }
 }
 
@@ -145,7 +142,12 @@ static void on_slider_event(lv_event_t *e) {
     } else if (code == LV_EVENT_RELEASED) {
         s_slider_user_dragging = false;
         int val = lv_slider_get_value(slider);
-        if (s_seek_cb) s_seek_cb(val);
+        player_status_t st;
+        player_get_status(&st);
+        int64_t dur = (int64_t)st.dur_ms;
+        int32_t seek_ms = (int32_t)((dur * val) / 100);
+        player_cmd_t cmd = {.type = PCMD_SEEK_MS, .arg = seek_ms};
+        player_cmd_send(&cmd);
     }
 }
 
@@ -702,5 +704,60 @@ void spotify_ui_invalidate_video(void) {
     } else if (s_view_mode == VIEW_MODE_FULLSCREEN && s_canvas_fullscreen) {
         lv_canvas_set_buffer(s_canvas_fullscreen, s_buf_fullscreen[s_fs_read_idx], FULL_W, FULL_H, LV_COLOR_FORMAT_RGB565);
         lv_obj_invalidate(s_canvas_fullscreen);
+    }
+}
+
+void spotify_ui_display_frame(uint16_t *buf, int width, int height) {
+    if (!buf) return;
+    if (s_view_mode == VIEW_MODE_STUDIO && s_canvas_studio) {
+        lv_canvas_set_buffer(s_canvas_studio, buf, width, height, LV_COLOR_FORMAT_RGB565);
+        lv_obj_invalidate(s_canvas_studio);
+    } else if (s_view_mode == VIEW_MODE_FULLSCREEN && s_canvas_fullscreen) {
+        lv_canvas_set_buffer(s_canvas_fullscreen, buf, width, height, LV_COLOR_FORMAT_RGB565);
+        lv_obj_invalidate(s_canvas_fullscreen);
+    }
+}
+
+void spotify_ui_update_from_status(const player_status_t *status) {
+    if (!status) return;
+
+    // 1. Titulo y artista
+    if (s_lbl_title && status->title[0] != '\0') {
+        lv_label_set_text(s_lbl_title, status->title);
+    }
+    if (s_hud_lbl_title && status->title[0] != '\0') {
+        lv_label_set_text(s_hud_lbl_title, status->title);
+    }
+    if (s_lbl_artist && status->subtitle[0] != '\0') {
+        lv_label_set_text(s_lbl_artist, status->subtitle);
+    }
+
+    // 2. Dropdown
+    if (s_dropdown_tracks && status->track_index >= 0 && status->track_index < PLAYLIST_SIZE) {
+        if (lv_dropdown_get_selected(s_dropdown_tracks) != (uint32_t)status->track_index) {
+            lv_dropdown_set_selected(s_dropdown_tracks, (uint32_t)status->track_index);
+        }
+    }
+
+    // 3. Play / Pause estado e icono
+    playback_state_t new_st = (status->state == PST_PLAYING) ? PLAYBACK_STATE_PLAYING :
+                              ((status->state == PST_PAUSED) ? PLAYBACK_STATE_PAUSED : PLAYBACK_STATE_STOPPED);
+    s_play_state = new_st;
+    const char *sym = (new_st == PLAYBACK_STATE_PLAYING) ? LV_SYMBOL_PAUSE : LV_SYMBOL_PLAY;
+    if (s_lbl_play_pause) lv_label_set_text(s_lbl_play_pause, sym);
+    if (s_hud_lbl_play) lv_label_set_text(s_hud_lbl_play, sym);
+
+    // 4. Progreso y tiempo
+    uint32_t elapsed_sec = (uint32_t)(status->pos_ms / 1000);
+    uint32_t duration_sec = (uint32_t)(status->dur_ms / 1000);
+    int percent = (status->dur_ms > 0) ? (int)((status->pos_ms * 100) / status->dur_ms) : 0;
+    spotify_ui_update_progress(elapsed_sec, duration_sec, percent);
+
+    // 5. FPS
+    spotify_ui_update_fps(status->pres_fps);
+
+    // 6. Animacion de ecualizador si esta en PLAYING
+    if (status->state == PST_PLAYING) {
+        spotify_ui_tick();
     }
 }

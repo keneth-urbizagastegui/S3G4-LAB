@@ -979,6 +979,15 @@ CONFIG_PARTITION_TABLE_MD5=y
 # end of Partition Table
 
 #
+# App perf
+#
+# default:
+# CONFIG_APP_PERF_AUTOTEST is not set
+# default:
+CONFIG_APP_PERF_SECONDS_PER_TRACK=60
+# end of App perf
+
+#
 # Compiler options
 #
 # CONFIG_COMPILER_OPTIMIZATION_DEBUG is not set
