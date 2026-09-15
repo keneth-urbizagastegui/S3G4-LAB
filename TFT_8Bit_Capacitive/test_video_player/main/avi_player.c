@@ -89,12 +89,15 @@ esp_err_t avi_player_open(const char *filepath) {
         return ESP_FAIL;
     }
 
+    // Variante A: Sin setvbuf, buffer por defecto de stdio/FatFS
+    /*
     if (!s_file_vbuf) {
         s_file_vbuf = (char *)heap_caps_malloc(32 * 1024, MALLOC_CAP_SPIRAM);
     }
     if (s_file_vbuf) {
         setvbuf(s_file, s_file_vbuf, _IOFBF, 32 * 1024);
     }
+    */
 
     fseek(s_file, 0, SEEK_END);
     long file_size = ftell(s_file);
@@ -264,7 +267,10 @@ esp_err_t avi_player_read_next_frame(uint16_t *out_rgb565, uint8_t scale) {
 
             int64_t t_rd_start = esp_timer_get_time();
             size_t jr = fread(s_jpeg_buf, 1, chunk_len, s_file);
-            if (chunk_len & 1) fseek(s_file, 1, SEEK_CUR); // Alinear word
+            if (chunk_len & 1) {
+                uint8_t pad;
+                fread(&pad, 1, 1, s_file);
+            }
             int64_t t_rd_end = esp_timer_get_time();
             perf_mark_read((uint32_t)(t_rd_end - t_rd_start));
 
@@ -345,7 +351,10 @@ esp_err_t avi_player_read_and_blit_direct(void) {
 
             int64_t t_rd_start = esp_timer_get_time();
             size_t jr = fread(s_jpeg_buf, 1, chunk_len, s_file);
-            if (chunk_len & 1) fseek(s_file, 1, SEEK_CUR);
+            if (chunk_len & 1) {
+                uint8_t pad;
+                fread(&pad, 1, 1, s_file);
+            }
             int64_t t_rd_end = esp_timer_get_time();
             perf_mark_read((uint32_t)(t_rd_end - t_rd_start));
 
