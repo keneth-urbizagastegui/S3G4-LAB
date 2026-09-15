@@ -195,3 +195,8 @@ Observaciones (no bloquean F2):
 - **Espera activa:** `taskYIELD` hasta 2 ms en el núcleo 1 con prioridad 5. No saltó el WDT en la prueba, pero la tarea ociosa del CPU1 queda sin tiempo durante ese intervalo. Revisar en F3.
 - **Experimento PSRAM a 80 MHz:** el encargo lo permitía y no se hizo (`sdkconfig`: `SPIRAM_SPEED_40M=y`). El informe no lo menciona. Pendiente para F3 o F7.
 - `title_wait_ms_max` sube de 81 a 206 ms por el refresco a 250 ms. Aceptable.
+
+## Verificación visual de Keneth sobre F2 (15/09/2026)
+- Pantalla completa: tocar muestra y oculta los controles, y SALIR funciona. **T2 confirmado en placa.**
+- «Ahora sí está en velocidad normal o natural». **Cadencia confirmada.**
+- «Solo en pantalla completa se ve entrecortado» → coincide con los 13 de 30 fotogramas presentados. Objetivo de F3.
