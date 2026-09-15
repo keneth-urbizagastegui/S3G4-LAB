@@ -254,10 +254,13 @@ def main():
             avg_blit = sum(float(x.get("blit_avg", 0.0)) for x in filtered) / n
             v_mode = filtered[0].get("view", "?")
             hud_mode = filtered[0].get("hud", "?")
+            pres_path = filtered[0].get("present_path", "?")
+            v_rect = filtered[0].get("vrect", "?")
+            avg_strip_t = sum(float(x.get("strip_ms_avg", 0.0)) for x in filtered) / n
         else:
-            avg_dec = avg_pres = avg_drift = avg_rd = avg_dec_t = avg_blit = max_late = 0.0
+            avg_dec = avg_pres = avg_drift = avg_rd = avg_dec_t = avg_blit = max_late = avg_strip_t = 0.0
             tot_drop = 0
-            v_mode = hud_mode = "?"
+            v_mode = hud_mode = pres_path = v_rect = "?"
 
         f2_summary_data[(str(trk), str(scn))] = {
             "dec": avg_dec,
@@ -267,42 +270,79 @@ def main():
             "drift": avg_drift,
             "view": v_mode,
             "hud": hud_mode,
+            "path": pres_path,
+            "vrect": v_rect,
+            "strip_ms": avg_strip_t,
         }
 
         print(f"{trk:<8}{scn:<12}{v_mode:<8}{hud_mode:<6}{n:<10}{avg_dec:<10.1f}{avg_pres:<10.1f}{tot_drop:<8}{max_late:<10.1f}{avg_drift:<11.1f}{avg_rd:<10.1f}{avg_dec_t:<10.1f}{avg_blit:<10.1f}")
 
     print("=" * 148)
 
-    # Tabla comparativa con F1 it3
-    F1_IT3_BASE = {
-        ("0", "hidden"): {"dec": 17.5, "pres": 13.9, "blit": 2.7},
-        ("0", "osd"):    {"dec": 18.0, "pres": 7.3,  "blit": 2.7},
-        ("0", "seek"):   {"dec": 18.4, "pres": 13.8, "blit": 2.7},
-        ("1", "hidden"): {"dec": 17.9, "pres": 14.0, "blit": 2.7},
-        ("1", "osd"):    {"dec": 15.9, "pres": 7.4,  "blit": 2.7},
-        ("1", "seek"):   {"dec": 16.7, "pres": 14.1, "blit": 2.7},
-        ("2", "hidden"): {"dec": 18.8, "pres": 13.8, "blit": 2.7},
-        ("2", "osd"):    {"dec": 16.5, "pres": 7.4,  "blit": 2.7},
-        ("2", "seek"):   {"dec": 17.2, "pres": 13.8, "blit": 2.7},
-        ("3", "hidden"): {"dec": 16.8, "pres": 14.1, "blit": 2.7},
-        ("3", "osd"):    {"dec": 16.2, "pres": 7.4,  "blit": 2.7},
-        ("3", "seek"):   {"dec": 16.8, "pres": 14.2, "blit": 2.7},
-    }
+    if args.phase.upper() == "F3":
+        # Tabla comparativa con F2 (Run 2 baseline)
+        F2_RUN2_BASE = {
+            ("0", "hidden"): {"dec": 22.1, "pres": 13.0, "drop": 145, "drift": -27.3},
+            ("0", "osd"):    {"dec": 21.3, "pres": 6.7,  "drop": 157, "drift": -31.1},
+            ("0", "seek"):   {"dec": 21.3, "pres": 13.1, "drop": 146, "drift": -30.8},
+            ("1", "hidden"): {"dec": 20.3, "pres": 13.2, "drop": 177, "drift": -31.7},
+            ("1", "osd"):    {"dec": 17.0, "pres": 7.1,  "drop": 237, "drift": -35.1},
+            ("1", "seek"):   {"dec": 19.8, "pres": 13.3, "drop": 175, "drift": -32.9},
+            ("2", "hidden"): {"dec": 22.0, "pres": 13.0, "drop": 145, "drift": -29.7},
+            ("2", "osd"):    {"dec": 20.1, "pres": 6.8,  "drop": 180, "drift": -28.9},
+            ("2", "seek"):   {"dec": 18.8, "pres": 13.4, "drop": 190, "drift": -22.8},
+            ("3", "hidden"): {"dec": 19.8, "pres": 13.3, "drop": 186, "drift": -29.4},
+            ("3", "osd"):    {"dec": 19.0, "pres": 6.9,  "drop": 200, "drift": -32.2},
+            ("3", "seek"):   {"dec": 20.7, "pres": 13.2, "drop": 155, "drift": -27.9},
+        }
 
-    print("\n" + "=" * 110)
-    print("COMPARATIVA DE RENDIMIENTO: F1 it3 vs F2")
-    print("=" * 110)
-    print(f"{'Track':<8}{'Escenario':<12}{'F1 Dec':<10}{'F2 Dec':<10}{'F1 Pres':<10}{'F2 Pres':<10}{'Delta Pres':<12}{'F2 Drop':<10}{'F2 Drift(ms)':<14}")
-    print("-" * 110)
-    for (trk, scn), f1_vals in sorted(F1_IT3_BASE.items(), key=lambda x: (int(x[0][0]), x[0][1])):
-        cur = f2_summary_data.get((trk, scn), {})
-        f2_dec = cur.get("dec", 0.0)
-        f2_pres = cur.get("pres", 0.0)
-        f2_drop = cur.get("drop", 0)
-        f2_drift = cur.get("drift", 0.0)
-        delta_pres = f2_pres - f1_vals["pres"]
-        print(f"{trk:<8}{scn:<12}{f1_vals['dec']:<10.1f}{f2_dec:<10.1f}{f1_vals['pres']:<10.1f}{f2_pres:<10.1f}{delta_pres:+12.1f}{f2_drop:<10}{f2_drift:<14.1f}")
-    print("=" * 110)
+        print("\n" + "=" * 132)
+        print("COMPARATIVA DE RENDIMIENTO: F2 (Canvas LVGL) vs F3 (Direct Blit DMA)")
+        print("=" * 132)
+        print(f"{'Track':<8}{'Escenario':<12}{'F2 Pres':<10}{'F3 Pres':<10}{'Delta Pres':<12}{'F2 Drop':<10}{'F3 Drop':<10}{'F3 Path':<10}{'F3 VRect':<12}{'Strip(ms)':<10}")
+        print("-" * 132)
+        for (trk, scn), f2_vals in sorted(F2_RUN2_BASE.items(), key=lambda x: (int(x[0][0]), x[0][1])):
+            cur = f2_summary_data.get((trk, scn), {})
+            f3_pres = cur.get("pres", 0.0)
+            f3_drop = cur.get("drop", 0)
+            f3_path = cur.get("path", "?")
+            f3_vrect = cur.get("vrect", "?")
+            f3_strip = cur.get("strip_ms", 0.0)
+            delta_pres = f3_pres - f2_vals["pres"]
+            print(f"{trk:<8}{scn:<12}{f2_vals['pres']:<10.1f}{f3_pres:<10.1f}{delta_pres:+12.1f}{f2_vals['drop']:<10}{f3_drop:<10}{f3_path:<10}{f3_vrect:<12}{f3_strip:<10.2f}")
+        print("=" * 132)
+
+    else:
+        # Tabla comparativa con F1 it3
+        F1_IT3_BASE = {
+            ("0", "hidden"): {"dec": 17.5, "pres": 13.9, "blit": 2.7},
+            ("0", "osd"):    {"dec": 18.0, "pres": 7.3,  "blit": 2.7},
+            ("0", "seek"):   {"dec": 18.4, "pres": 13.8, "blit": 2.7},
+            ("1", "hidden"): {"dec": 17.9, "pres": 14.0, "blit": 2.7},
+            ("1", "osd"):    {"dec": 15.9, "pres": 7.4,  "blit": 2.7},
+            ("1", "seek"):   {"dec": 16.7, "pres": 14.1, "blit": 2.7},
+            ("2", "hidden"): {"dec": 18.8, "pres": 13.8, "blit": 2.7},
+            ("2", "osd"):    {"dec": 16.5, "pres": 7.4,  "blit": 2.7},
+            ("2", "seek"):   {"dec": 17.2, "pres": 13.8, "blit": 2.7},
+            ("3", "hidden"): {"dec": 16.8, "pres": 14.1, "blit": 2.7},
+            ("3", "osd"):    {"dec": 16.2, "pres": 7.4,  "blit": 2.7},
+            ("3", "seek"):   {"dec": 16.8, "pres": 14.2, "blit": 2.7},
+        }
+
+        print("\n" + "=" * 110)
+        print("COMPARATIVA DE RENDIMIENTO: F1 it3 vs F2")
+        print("=" * 110)
+        print(f"{'Track':<8}{'Escenario':<12}{'F1 Dec':<10}{'F2 Dec':<10}{'F1 Pres':<10}{'F2 Pres':<10}{'Delta Pres':<12}{'F2 Drop':<10}{'F2 Drift(ms)':<14}")
+        print("-" * 110)
+        for (trk, scn), f1_vals in sorted(F1_IT3_BASE.items(), key=lambda x: (int(x[0][0]), x[0][1])):
+            cur = f2_summary_data.get((trk, scn), {})
+            f2_dec = cur.get("dec", 0.0)
+            f2_pres = cur.get("pres", 0.0)
+            f2_drop = cur.get("drop", 0)
+            f2_drift = cur.get("drift", 0.0)
+            delta_pres = f2_pres - f1_vals["pres"]
+            print(f"{trk:<8}{scn:<12}{f1_vals['dec']:<10.1f}{f2_dec:<10.1f}{f1_vals['pres']:<10.1f}{f2_pres:<10.1f}{delta_pres:+12.1f}{f2_drop:<10}{f2_drift:<14.1f}")
+        print("=" * 110)
 
     if media_records:
         print("\n" + "=" * 94)
@@ -326,7 +366,174 @@ def main():
         print("=" * 94)
 
     # Evaluacion de criterios segun la fase
-    if args.phase.upper() == "F2":
+    if args.phase.upper() == "F3":
+        f3_passed = True
+        print("\n" + "=" * 80)
+        print("EVALUACION DE CRITERIOS FASE F3")
+        print("=" * 80)
+
+        # 1. Autotest completado
+        if not autotest_done:
+            print("[CRITERIO F3 FALLIDO]: No se recibio AUTOTEST_DONE.", file=sys.stderr)
+            f3_passed = False
+        else:
+            print(f"[CRITERIO F3 OK]: AUTOTEST_DONE recibido con {autotest_tracks} pistas.")
+
+        # 2. Toque sintetico TAP (Bug T2)
+        if not tap_data:
+            print("[CRITERIO F3 FALLIDO]: No se recibio la linea TAP.", file=sys.stderr)
+            f3_passed = False
+        else:
+            print(f"[EVALUACION TAP]: hud_before={tap_data['hud_before']}, hud_after={tap_data['hud_after']}")
+            if tap_data['hud_before'] != 0 or tap_data['hud_after'] != 1:
+                print(f"[CRITERIO F3 FALLIDO]: TAP requiere hud_before=0 y hud_after=1 (obtenido: {tap_data['hud_before']}, {tap_data['hud_after']}).", file=sys.stderr)
+                f3_passed = False
+            else:
+                print("[CRITERIO F3 OK]: TAP paso de 0 a 1 correctamente.")
+
+        # 3. STRESS con title_mismatch == 0
+        if not stress_data:
+            print("[CRITERIO F3 FALLIDO]: No se recibio linea STRESS.", file=sys.stderr)
+            f3_passed = False
+        else:
+            print(f"[EVALUACION STRESS]: changes={stress_data['changes']}, seeks={stress_data['seeks']}, title_mismatch={stress_data['title_mismatch']}")
+            if stress_data['title_mismatch'] != 0:
+                print(f"[CRITERIO F3 FALLIDO]: title_mismatch={stress_data['title_mismatch']} (debe ser 0).", file=sys.stderr)
+                f3_passed = False
+            if stress_data['changes'] < 20:
+                print(f"[CRITERIO F3 FALLIDO]: changes={stress_data['changes']} < 20.", file=sys.stderr)
+                f3_passed = False
+            if stress_data['seeks'] < 50:
+                print(f"[CRITERIO F3 FALLIDO]: seeks={stress_data['seeks']} < 50.", file=sys.stderr)
+                f3_passed = False
+            if stress_data['title_mismatch'] == 0 and stress_data['changes'] >= 20 and stress_data['seeks'] >= 50:
+                print("[CRITERIO F3 OK]: STRESS sin fallos de sincronizacion.")
+
+        # 4. View y HUD coherentes en todos los registros hidden/osd/seek
+        view_hud_ok = True
+        for r in perf_records:
+            scn = r.get("scn", "")
+            if scn in ("hidden", "osd", "seek"):
+                v = r.get("view", "")
+                h = r.get("hud", "")
+                if v != "full":
+                    print(f"[CRITERIO F3 FALLIDO]: Registro con scn='{scn}' tiene view='{v}' (debe ser 'full').", file=sys.stderr)
+                    view_hud_ok = False
+                    f3_passed = False
+                    break
+                if scn == "osd" and h != "1":
+                    print(f"[CRITERIO F3 FALLIDO]: Registro con scn='osd' tiene hud='{h}' (debe ser '1').", file=sys.stderr)
+                    view_hud_ok = False
+                    f3_passed = False
+                    break
+                if scn in ("hidden", "seek") and h != "0":
+                    print(f"[CRITERIO F3 FALLIDO]: Registro con scn='{scn}' tiene hud='{h}' (debe ser '0').", file=sys.stderr)
+                    view_hud_ok = False
+                    f3_passed = False
+                    break
+        if view_hud_ok:
+            print("[CRITERIO F3 OK]: view=full y hud coherente en todos los escenarios.")
+
+        # 5. Present path == direct en todos los registros de fullscreen
+        path_ok = True
+        for r in perf_records:
+            scn = r.get("scn", "")
+            if scn in ("hidden", "osd", "seek", "toggle"):
+                p = r.get("present_path", "")
+                if p != "direct":
+                    print(f"[CRITERIO F3 FALLIDO]: Registro con scn='{scn}' tiene present_path='{p}' (debe ser 'direct').", file=sys.stderr)
+                    path_ok = False
+                    f3_passed = False
+                    break
+        if path_ok:
+            print("[CRITERIO F3 OK]: present_path=direct en todos los escenarios a pantalla completa.")
+
+        # 6. |drift_ms| < 100 en todos los registros hidden/osd/seek tras descartar primeros 2 s
+        drift_ok = True
+        max_drift_observed = 0.0
+        for (trk, scn), recs in groups.items():
+            if scn in ("hidden", "osd", "seek"):
+                filtered = recs[1:] if len(recs) > 1 else recs
+                for r in filtered:
+                    try:
+                        d_val = float(r.get("drift_ms", 0))
+                    except ValueError:
+                        d_val = 0.0
+                    if abs(d_val) > max_drift_observed:
+                        max_drift_observed = abs(d_val)
+                    if abs(d_val) >= 100.0:
+                        print(f"[CRITERIO F3 FALLIDO]: drift_ms={d_val} >= 100 ms en track={trk}, scn={scn}, t_ms={r.get('t_ms')}", file=sys.stderr)
+                        drift_ok = False
+                        f3_passed = False
+        if drift_ok:
+            print(f"[CRITERIO F3 OK]: |drift_ms| < 100 ms en todos los registros (max observado: {max_drift_observed:.1f} ms).")
+
+        # 7. pres_fps medio en hidden >= 28.5 y en osd >= 28.0
+        hidden_pres_list = []
+        osd_pres_list = []
+        for (trk, scn), recs in groups.items():
+            filtered = recs[1:] if len(recs) > 1 else recs
+            if scn == "hidden":
+                for r in filtered:
+                    hidden_pres_list.append(float(r.get("pres_fps", 0.0)))
+            elif scn == "osd":
+                for r in filtered:
+                    osd_pres_list.append(float(r.get("pres_fps", 0.0)))
+
+        avg_pres_hidden = sum(hidden_pres_list) / len(hidden_pres_list) if hidden_pres_list else 0.0
+        avg_pres_osd = sum(osd_pres_list) / len(osd_pres_list) if osd_pres_list else 0.0
+
+        print(f"[EVALUACION pres_fps HIDDEN]: media = {avg_pres_hidden:.2f} FPS (umbral: >= 28.5 FPS)")
+        if avg_pres_hidden < 28.5:
+            print(f"[CRITERIO F3 FALLIDO]: pres_fps en hidden = {avg_pres_hidden:.2f} < 28.5 FPS.", file=sys.stderr)
+            f3_passed = False
+        else:
+            print(f"[CRITERIO F3 OK]: pres_fps en hidden = {avg_pres_hidden:.2f} >= 28.5 FPS.")
+
+        print(f"[EVALUACION pres_fps OSD]: media = {avg_pres_osd:.2f} FPS (umbral: >= 28.0 FPS)")
+        if avg_pres_osd < 28.0:
+            print(f"[CRITERIO F3 FALLIDO]: pres_fps en osd = {avg_pres_osd:.2f} < 28.0 FPS.", file=sys.stderr)
+            f3_passed = False
+        else:
+            print(f"[CRITERIO F3 OK]: pres_fps en osd = {avg_pres_osd:.2f} >= 28.0 FPS.")
+
+        # 8. drop / (dec + drop) en hidden <= 1% (0.01)
+        total_hidden_drop = 0
+        total_hidden_pres = 0
+        for (trk, scn), recs in groups.items():
+            if scn == "hidden":
+                filtered = recs[1:] if len(recs) > 1 else recs
+                for r in filtered:
+                    total_hidden_drop += int(r.get("drop", 0))
+                    total_hidden_pres += int(float(r.get("pres_fps", 0.0)) * 2.0)
+
+        total_frames = total_hidden_pres + total_hidden_drop
+        drop_pct = (total_hidden_drop / total_frames * 100.0) if total_frames > 0 else 0.0
+        print(f"[EVALUACION DROP HIDDEN]: drop = {total_hidden_drop}, pres = {total_hidden_pres}, tasa = {drop_pct:.2f}% (umbral: <= 1.0%)")
+        if drop_pct > 1.0:
+            print(f"[CRITERIO F3 FALLIDO]: tasa de drop en hidden = {drop_pct:.2f}% > 1.0%.", file=sys.stderr)
+            f3_passed = False
+        else:
+            print(f"[CRITERIO F3 OK]: tasa de drop en hidden = {drop_pct:.2f}% <= 1.0%.")
+
+        # 9. Memoria interna heap_int >= 30000 B
+        min_heap_int = min((int(r.get("heap_int", 0)) for r in perf_records if "heap_int" in r), default=0)
+        print(f"[EVALUACION HEAP_INT]: minimo observado = {min_heap_int} B (umbral: >= 30000 B)")
+        if min_heap_int < 30000:
+            print(f"[CRITERIO F3 FALLIDO]: heap_int minimo = {min_heap_int} < 30000 B.", file=sys.stderr)
+            f3_passed = False
+        else:
+            print(f"[CRITERIO F3 OK]: heap_int minimo = {min_heap_int} >= 30000 B.")
+
+        print("=" * 80)
+        if f3_passed:
+            print("\n[RESULTADO F3]: EXITO - Todos los criterios cumplidos satisfactoriamente.")
+            sys.exit(0)
+        else:
+            print("\n[RESULTADO F3]: FALLO - Criterios no cumplidos.", file=sys.stderr)
+            sys.exit(1)
+
+    elif args.phase.upper() == "F2":
         f2_passed = True
         print("\n" + "=" * 80)
         print("EVALUACION DE CRITERIOS FASE F2")

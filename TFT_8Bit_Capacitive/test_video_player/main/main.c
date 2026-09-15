@@ -19,6 +19,7 @@
 #include "player.h"
 #include "spotify_ui.h"
 #include "perf.h"
+#include "lcd_bus.h"
 
 static const char *TAG = "MAIN_APP";
 
@@ -49,6 +50,9 @@ static portMUX_TYPE s_touch_mux = portMUX_INITIALIZER_UNLOCKED;
 
 static bool s_synthetic_touch_active = false;
 static touch_sample_t s_synthetic_touch = {0};
+#if CONFIG_APP_PERF_AUTOTEST
+static volatile bool s_autotest_active = true;
+#endif
 
 void touch_inject_synthetic(uint16_t x, uint16_t y, bool pressed) {
     portENTER_CRITICAL(&s_touch_mux);
@@ -67,17 +71,64 @@ static uint32_t my_tick_get_cb(void) {
 
 static void lvgl_disp_flush_cb(lv_display_t *disp, const lv_area_t *area, uint8_t *px_map) {
     uint16_t *pixels = (uint16_t *)px_map;
+    view_mode_t vmode = spotify_ui_get_view_mode();
+
+    if (vmode == VIEW_MODE_FULLSCREEN) {
+        // En pantalla completa el video se blittea directo al panel.
+        // Recortar cualquier fila que coincida con la región de video activa.
+        int16_t vx, vy, vw, vh;
+        lcd_bus_get_video_rect(&vx, &vy, &vw, &vh);
+
+        int vy1 = vy;
+        int vy2 = (vh > 0) ? (vy + vh - 1) : vy;
+
+        if (vh > 0 && area->y1 <= vy2 && area->y2 >= vy1) {
+            int clip_y1 = (area->y1 > vy1) ? area->y1 : vy1;
+            int clip_y2 = (area->y2 < vy2) ? area->y2 : vy2;
+            int rows_clipped = clip_y2 - clip_y1 + 1;
+            perf_mark_lvgl_clipped((uint32_t)rows_clipped);
+
+            // Si el área completa está dentro de la región de video, no dibujar nada
+            if (area->y1 >= vy1 && area->y2 <= vy2) {
+                lv_display_flush_ready(disp);
+                return;
+            }
+
+            int w_span = area->x2 - area->x1 + 1;
+
+            // Franja superior que queda fuera del video
+            if (area->y1 < vy1) {
+                int64_t t0 = esp_timer_get_time();
+                ili9488_8080_draw_bitmap(area->x1, area->y1, area->x2, vy1 - 1, pixels);
+                int64_t blit_us = esp_timer_get_time() - t0;
+                perf_mark_blit((uint32_t)blit_us);
+            }
+
+            // Franja inferior que queda fuera del video
+            if (area->y2 > vy2) {
+                int64_t t0 = esp_timer_get_time();
+                size_t offset_pixels = (size_t)(vy2 + 1 - area->y1) * w_span;
+                ili9488_8080_draw_bitmap(area->x1, vy2 + 1, area->x2, area->y2, pixels + offset_pixels);
+                int64_t blit_us = esp_timer_get_time() - t0;
+                perf_mark_blit((uint32_t)blit_us);
+            }
+
+            lv_display_flush_ready(disp);
+            return;
+        }
+    }
 
     int64_t t0 = esp_timer_get_time();
     ili9488_8080_draw_bitmap(area->x1, area->y1, area->x2, area->y2, pixels);
     int64_t blit_us = esp_timer_get_time() - t0;
     perf_mark_blit((uint32_t)blit_us);
 
-    view_mode_t vmode = spotify_ui_get_view_mode();
-    int last_canvas_row = (vmode == VIEW_MODE_FULLSCREEN) ? 319 : (34 + 160 - 1);
-    if (s_present_pending && area->y2 >= last_canvas_row) {
-        perf_mark_presented();
-        s_present_pending = false;
+    if (vmode == VIEW_MODE_STUDIO) {
+        int last_canvas_row = 34 + 160 - 1;
+        if (s_present_pending && area->y2 >= last_canvas_row) {
+            perf_mark_presented();
+            s_present_pending = false;
+        }
     }
 
     lv_display_flush_ready(disp);
@@ -119,6 +170,11 @@ static void touch_task(void *arg) {
         portENTER_CRITICAL(&s_touch_mux);
         if (s_synthetic_touch_active) {
             s_shared_touch = s_synthetic_touch;
+#if CONFIG_APP_PERF_AUTOTEST
+        } else if (s_autotest_active) {
+            // Durante la ejecución del autotest, ignorar toques físicos accidentales o ruido
+            s_shared_touch.pressed = false;
+#endif
         } else if (ret == ESP_OK && touch.touched) {
             s_shared_touch.x = touch.x1;
             s_shared_touch.y = touch.y1;
@@ -349,6 +405,7 @@ static void autotest_task(void *arg) {
         for (int s = 0; s < 3; s++) {
             const char *scn_name = scenarios[s];
 
+            ui_req_send(UI_REQ_SET_VIEW, VIEW_MODE_FULLSCREEN);
             // X1 & X3: hidden = HUD forzado oculto (1); osd = HUD forzado visible (2); seek = oculto (1)
             int hud_req = (s == 1) ? 2 : 1;
             ui_req_send(UI_REQ_SET_HUD, hud_req);
@@ -427,6 +484,27 @@ static void autotest_task(void *arg) {
 
     printf("TAP,hud_before=%d,hud_after=%d\n", hud_before, hud_after);
     fflush(stdout);
+
+    // Escenario TOGGLE (Fase 3): alternar HUD cada 500 ms durante 10 s para verificar estabilidad de direct blit
+    ESP_LOGI(TAG, "Iniciando escenario TOGGLE (10 s, alterna cada 500 ms)...");
+    perf_set_scenario(0, "toggle");
+    ui_req_send(UI_REQ_SET_VIEW, VIEW_MODE_FULLSCREEN);
+    vTaskDelay(pdMS_TO_TICKS(200));
+    for (int t = 0; t < 20; t++) {
+        int hud_m = (t % 2 == 0) ? 2 : 1;
+        ui_req_send(UI_REQ_SET_HUD, hud_m);
+        if (hud_m == 2) {
+            player_cmd_t cmd_rect = {.type = PCMD_SET_VIDEO_RECT, .rect = {0, 40, 480, 196}};
+            player_cmd_send(&cmd_rect);
+            lcd_bus_set_video_rect(0, 40, 480, 196);
+        } else {
+            player_cmd_t cmd_rect = {.type = PCMD_SET_VIDEO_RECT, .rect = {0, 0, 480, 320}};
+            player_cmd_send(&cmd_rect);
+            lcd_bus_set_video_rect(0, 0, 480, 320);
+        }
+        vTaskDelay(pdMS_TO_TICKS(500));
+        perf_report_if_due();
+    }
 
     // Escenario STRESS final: 20 cambios de pista y 50 saltos SEEK simulando arrastre
     ESP_LOGI(TAG, "Iniciando escenario final de STRESS...");
@@ -535,6 +613,8 @@ static void autotest_task(void *arg) {
     printf("AUTOTEST_DONE,tracks=%d\n", total_tracks);
     fflush(stdout);
 
+    s_autotest_active = false;
+
     while (1) {
         perf_report_if_due();
         vTaskDelay(pdMS_TO_TICKS(1000));
@@ -550,7 +630,7 @@ void app_main(void) {
     board_turn_off_rgb_led();
 
     ESP_LOGI(TAG, "==========================================================");
-    ESP_LOGI(TAG, "   S3G4 LAB — REPRODUCTOR DE VIDEO FASE 2 (PTS / CADENCIA)");
+    ESP_LOGI(TAG, "   S3G4 LAB — REPRODUCTOR DE VIDEO FASE 3 (DIRECT BLIT / DMA)");
     ESP_LOGI(TAG, "   Display: ILI9488 (8080 8-bit @ 16.0 MHz)");
     ESP_LOGI(TAG, "   Touch:   FT6236 Capacitivo (Desacoplado, sondeo 10 ms)");
     ESP_LOGI(TAG, "   Storage: MicroSD SPI @ 20 MHz (32 KB Buffer)");
@@ -559,6 +639,7 @@ void app_main(void) {
     ESP_LOGI(TAG, "==========================================================");
 
     perf_init();
+    lcd_bus_init();
 
     // 1. Inicializar Hardware
     ESP_ERROR_CHECK(ili9488_8080_init_clock(16 * 1000 * 1000));

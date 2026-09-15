@@ -1,5 +1,6 @@
 
 #include "ili9488_8080.h"
+#include "lcd_bus.h"
 #include <string.h>
 #include <stdlib.h>
 #include "font5x7.h"
@@ -251,12 +252,27 @@ static void set_window(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2) {
     esp_lcd_panel_io_tx_param(s_panel_io, 0x2B, paset, sizeof(paset));
 }
 
+esp_lcd_panel_io_handle_t ili9488_8080_get_panel_io(void) {
+    return s_panel_io;
+}
+
+SemaphoreHandle_t ili9488_8080_get_trans_sem(void) {
+    return s_trans_done_sem;
+}
+
+void ili9488_8080_set_window(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2) {
+    set_window(x1, y1, x2, y2);
+}
+
 esp_err_t ili9488_8080_draw_bitmap(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, const uint16_t *data) {
     if (s_panel_io == NULL) return ESP_ERR_INVALID_STATE;
+    lcd_bus_lock();
+    if (s_trans_done_sem) xSemaphoreTake(s_trans_done_sem, 0);
     set_window(x1, y1, x2, y2);
-    size_t pixel_count = (x2 - x1 + 1) * (y2 - y1 + 1);
+    size_t pixel_count = (size_t)(x2 - x1 + 1) * (y2 - y1 + 1);
     esp_err_t ret = esp_lcd_panel_io_tx_color(s_panel_io, 0x2C, data, pixel_count * sizeof(uint16_t));
     xSemaphoreTake(s_trans_done_sem, portMAX_DELAY);
+    lcd_bus_unlock();
     return ret;
 }
 

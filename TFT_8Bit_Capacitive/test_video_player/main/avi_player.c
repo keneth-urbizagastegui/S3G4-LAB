@@ -9,19 +9,26 @@
 #include "esp_heap_caps.h"
 #include "esp_jpeg_dec.h"
 #include "perf.h"
+#include "lcd_bus.h"
 
 static const char *TAG = "AVI_PLAYER_SIMD";
 
 static FILE *s_file = NULL;
+static char *s_file_vbuf = NULL;
 static avi_info_t s_info;
 static long s_movi_start_offset = 0;
 static uint32_t *s_index_table = NULL;
+static bool s_need_index_seek = true;
 
 #define JPEG_INBUF_SIZE (36 * 1024)
 static uint8_t *s_jpeg_buf = NULL;
 
 static jpeg_dec_handle_t s_dec_full = NULL;
 static jpeg_dec_handle_t s_dec_studio = NULL;
+
+// Búferes DMA internos alineados a 16 B para decodificación por franjas (P2)
+static uint16_t *s_strip_bufs[2] = {NULL, NULL};
+static size_t s_strip_buf_len = 0;
 
 static char **s_scanned_avi_files = NULL;
 static int s_scanned_avi_count = 0;
@@ -45,7 +52,7 @@ esp_err_t avi_player_init(void) {
         jpeg_dec_config_t cfg_full = DEFAULT_JPEG_DEC_CONFIG();
         cfg_full.output_type = JPEG_PIXEL_FORMAT_RGB565_LE;
         cfg_full.rotate = JPEG_ROTATE_0D;
-        cfg_full.block_enable = false;
+        cfg_full.block_enable = true;
         jpeg_error_t err = jpeg_dec_open(&cfg_full, &s_dec_full);
         if (err != JPEG_ERR_OK) {
             ESP_LOGE(TAG, "Fallo al crear decoder Fullscreen: %d", err);
@@ -80,6 +87,13 @@ esp_err_t avi_player_open(const char *filepath) {
     if (!s_file) {
         ESP_LOGE(TAG, "No se pudo abrir el archivo %s", filepath);
         return ESP_FAIL;
+    }
+
+    if (!s_file_vbuf) {
+        s_file_vbuf = (char *)heap_caps_malloc(32 * 1024, MALLOC_CAP_SPIRAM);
+    }
+    if (s_file_vbuf) {
+        setvbuf(s_file, s_file_vbuf, _IOFBF, 32 * 1024);
     }
 
     fseek(s_file, 0, SEEK_END);
@@ -190,6 +204,7 @@ esp_err_t avi_player_open(const char *filepath) {
     }
 
     fseek(s_file, s_movi_start_offset, SEEK_SET);
+    s_need_index_seek = false;
 
     ESP_LOGI(TAG, "AVI Abierto: %ux%u @ %u FPS, %u cuadros (%u:%02u)",
              (unsigned int)s_info.width, (unsigned int)s_info.height,
@@ -204,12 +219,17 @@ void avi_player_close(void) {
         fclose(s_file);
         s_file = NULL;
     }
+    if (s_file_vbuf) {
+        free(s_file_vbuf);
+        s_file_vbuf = NULL;
+    }
     if (s_index_table) {
         free(s_index_table);
         s_index_table = NULL;
     }
     s_info.is_open = false;
     s_info.is_eof = true;
+    s_need_index_seek = true;
 }
 
 esp_err_t avi_player_read_next_frame(uint16_t *out_rgb565, uint8_t scale) {
@@ -217,9 +237,10 @@ esp_err_t avi_player_read_next_frame(uint16_t *out_rgb565, uint8_t scale) {
         return ESP_ERR_INVALID_STATE;
     }
 
-    // Si tenemos tabla de índice y estamos dentro de rango, posicionar directamente
-    if (s_index_table && s_info.current_frame < s_info.total_frames) {
+    // Si hubo un seek previo, posicionar en la tabla de índice
+    if (s_need_index_seek && s_index_table && s_info.current_frame < s_info.total_frames) {
         fseek(s_file, s_index_table[s_info.current_frame], SEEK_SET);
+        s_need_index_seek = false;
     }
 
     // Buscar siguiente chunk 00dc o 00db
@@ -292,6 +313,165 @@ esp_err_t avi_player_read_next_frame(uint16_t *out_rgb565, uint8_t scale) {
     }
 }
 
+esp_err_t avi_player_read_and_blit_direct(void) {
+    if (!s_file || !s_info.is_open) {
+        return ESP_ERR_INVALID_STATE;
+    }
+
+    if (s_need_index_seek && s_index_table && s_info.current_frame < s_info.total_frames) {
+        fseek(s_file, s_index_table[s_info.current_frame], SEEK_SET);
+        s_need_index_seek = false;
+    }
+
+    uint8_t chunk_hdr[8];
+    while (1) {
+        size_t r = fread(chunk_hdr, 1, 8, s_file);
+        if (r < 8) {
+            s_info.is_eof = true;
+            return ESP_ERR_NOT_FOUND;
+        }
+
+        uint32_t chunk_len = *(uint32_t *)(chunk_hdr + 4);
+
+        if (memcmp(chunk_hdr, "00dc", 4) == 0 || memcmp(chunk_hdr, "00db", 4) == 0) {
+            if (chunk_len > JPEG_INBUF_SIZE) {
+                ESP_LOGE(TAG, "Cuadro JPEG demasiado grande: %u bytes", (unsigned int)chunk_len);
+                fseek(s_file, chunk_len + (chunk_len & 1), SEEK_CUR);
+                perf_mark_oversize();
+                return ESP_ERR_NO_MEM;
+            }
+
+            int64_t t_rd_start = esp_timer_get_time();
+            size_t jr = fread(s_jpeg_buf, 1, chunk_len, s_file);
+            if (chunk_len & 1) fseek(s_file, 1, SEEK_CUR);
+            int64_t t_rd_end = esp_timer_get_time();
+            perf_mark_read((uint32_t)(t_rd_end - t_rd_start));
+
+            if (jr < chunk_len) {
+                s_info.is_eof = true;
+                return ESP_ERR_NOT_FOUND;
+            }
+
+            jpeg_dec_handle_t dec = s_dec_full;
+            if (!dec) return ESP_FAIL;
+
+            jpeg_dec_io_t io = {
+                .inbuf = s_jpeg_buf,
+                .inbuf_len = (int)chunk_len,
+            };
+
+            jpeg_dec_header_info_t hdr_info;
+            jpeg_error_t jerr = jpeg_dec_parse_header(dec, &io, &hdr_info);
+            if (jerr != JPEG_ERR_OK) {
+                ESP_LOGW(TAG, "Fallo al parsear cabecera JPEG en direct: %d", jerr);
+                return ESP_FAIL;
+            }
+
+            int outbuf_len = 0;
+            jpeg_dec_get_outbuf_len(dec, &outbuf_len);
+            int process_count = 0;
+            jpeg_dec_get_process_count(dec, &process_count);
+            if (process_count <= 0 || outbuf_len <= 0) {
+                ESP_LOGW(TAG, "process_count=%d outbuf_len=%d invalido", process_count, outbuf_len);
+                return ESP_FAIL;
+            }
+
+            // Asegurar que los búferes DMA internos de franja estén asignados
+            if (!s_strip_bufs[0] || s_strip_buf_len < (size_t)outbuf_len) {
+                for (int i = 0; i < 2; i++) {
+                    if (s_strip_bufs[i]) free(s_strip_bufs[i]);
+                    s_strip_bufs[i] = (uint16_t *)heap_caps_aligned_alloc(16, outbuf_len, MALLOC_CAP_DMA | MALLOC_CAP_INTERNAL);
+                    if (!s_strip_bufs[i]) {
+                        ESP_LOGE(TAG, "Fallo al reservar strip_buf[%d] (%d bytes DMA)", i, outbuf_len);
+                        return ESP_ERR_NO_MEM;
+                    }
+                }
+                s_strip_buf_len = (size_t)outbuf_len;
+            }
+
+            int16_t vx, vy, vw, vh;
+            lcd_bus_get_video_rect(&vx, &vy, &vw, &vh);
+
+            int line_y = 0;
+            bool dma_in_flight = false;
+            uint32_t strip_dma_us = 0;
+            uint32_t total_frame_blit_us = 0;
+            uint32_t strips_sent_count = 0;
+
+            lcd_bus_lock();
+
+            for (int b = 0; b < process_count; b++) {
+                io.outbuf = (uint8_t *)s_strip_bufs[b & 1];
+
+                int64_t t_dec_start = esp_timer_get_time();
+                jerr = jpeg_dec_process(dec, &io);
+                int64_t t_dec_end = esp_timer_get_time();
+                perf_mark_decode((uint32_t)(t_dec_end - t_dec_start));
+
+                if (jerr != JPEG_ERR_OK) {
+                    ESP_LOGW(TAG, "Fallo en jpeg_dec_process bloque %d/%d: %d", b, process_count, jerr);
+                    if (dma_in_flight) {
+                        lcd_bus_wait_strip_done(NULL);
+                    }
+                    lcd_bus_unlock();
+                    return ESP_FAIL;
+                }
+
+                // Si habia un DMA previo en vuelo, esperar a que termine antes de lanzar el siguiente
+                if (dma_in_flight) {
+                    lcd_bus_wait_strip_done(&strip_dma_us);
+                    dma_in_flight = false;
+                    total_frame_blit_us += strip_dma_us;
+                    perf_mark_strip(strip_dma_us);
+                }
+
+                int cur_lines = (hdr_info.width > 0) ? (io.out_size / (hdr_info.width * 2)) : 0;
+                int cur_y1 = line_y;
+                int cur_y2 = line_y + cur_lines - 1;
+                line_y += cur_lines;
+
+                // Verificar recorte contra video_rect
+                if (vw > 0 && vh > 0) {
+                    int clip_y1 = (cur_y1 > vy) ? cur_y1 : vy;
+                    int clip_y2 = (cur_y2 < (vy + vh - 1)) ? cur_y2 : (vy + vh - 1);
+
+                    if (clip_y1 <= clip_y2) {
+                        size_t offset_bytes = (size_t)(clip_y1 - cur_y1) * (hdr_info.width * 2);
+                        size_t visible_bytes = (size_t)(clip_y2 - clip_y1 + 1) * (hdr_info.width * 2);
+                        const uint16_t *strip_px = (const uint16_t *)((uint8_t *)s_strip_bufs[b & 1] + offset_bytes);
+
+                        lcd_bus_draw_strip_async(0, (uint16_t)clip_y1, hdr_info.width - 1, (uint16_t)clip_y2, strip_px, visible_bytes);
+                        dma_in_flight = true;
+                        strips_sent_count++;
+                    }
+                }
+            }
+
+            // Esperar al ultimo DMA si quedo en vuelo
+            if (dma_in_flight) {
+                lcd_bus_wait_strip_done(&strip_dma_us);
+                dma_in_flight = false;
+                total_frame_blit_us += strip_dma_us;
+                perf_mark_strip(strip_dma_us);
+            }
+            lcd_bus_unlock();
+
+            // Registro de frame presentado y metricas direct
+            perf_mark_direct_frame(strips_sent_count, total_frame_blit_us);
+            perf_mark_presented();
+
+            s_info.current_frame++;
+            s_info.elapsed_sec = (s_info.fps > 0) ? (s_info.current_frame / s_info.fps) : 0;
+            return ESP_OK;
+        } else if (memcmp(chunk_hdr, "idx1", 4) == 0) {
+            s_info.is_eof = true;
+            return ESP_ERR_NOT_FOUND;
+        } else {
+            fseek(s_file, chunk_len + (chunk_len & 1), SEEK_CUR);
+        }
+    }
+}
+
 esp_err_t avi_player_skip_next_frame(void) {
     if (!s_file || !s_info.is_open) {
         return ESP_ERR_INVALID_STATE;
@@ -302,9 +482,10 @@ esp_err_t avi_player_skip_next_frame(void) {
         return ESP_ERR_NOT_FOUND;
     }
 
-    // Si tenemos tabla de índice y estamos dentro de rango, posicionar directamente
-    if (s_index_table && s_info.current_frame < s_info.total_frames) {
+    // Si hubo un seek previo, posicionar en la tabla de índice
+    if (s_need_index_seek && s_index_table && s_info.current_frame < s_info.total_frames) {
         fseek(s_file, s_index_table[s_info.current_frame], SEEK_SET);
+        s_need_index_seek = false;
     }
 
     uint8_t chunk_hdr[8];
@@ -343,6 +524,7 @@ void avi_player_seek_percent(int percent) {
         fseek(s_file, s_index_table[target_frame], SEEK_SET);
         s_info.current_frame = target_frame;
         s_info.elapsed_sec = (s_info.fps > 0) ? (target_frame / s_info.fps) : 0;
+        s_need_index_seek = false;
     } else {
         // Búsqueda por aproximación de archivo
         fseek(s_file, 0, SEEK_END);
@@ -351,6 +533,7 @@ void avi_player_seek_percent(int percent) {
         fseek(s_file, target_pos, SEEK_SET);
         s_info.current_frame = target_frame;
         s_info.elapsed_sec = (s_info.fps > 0) ? (target_frame / s_info.fps) : 0;
+        s_need_index_seek = false;
     }
     ESP_LOGI(TAG, "Seek completado a %d%% (cuadro %u/%u)",
              percent, (unsigned int)s_info.current_frame, (unsigned int)s_info.total_frames);
@@ -362,6 +545,7 @@ void avi_player_restart(void) {
         s_info.current_frame = 0;
         s_info.elapsed_sec = 0;
         s_info.is_eof = false;
+        s_need_index_seek = false;
     }
 }
 

@@ -50,6 +50,16 @@ esp_err_t ili9488_8080_draw_bitmap(uint16_t x1, uint16_t y1, uint16_t x2, uint16
 void ili9488_8080_set_backlight(uint8_t brightness_pct);
 void board_turn_off_rgb_led(void);
 
+// Funciones expuestas para el subsistema lcd_bus
+struct esp_lcd_panel_io_t;
+typedef struct esp_lcd_panel_io_t *esp_lcd_panel_io_handle_t;
+struct QueueDefinition;
+typedef struct QueueDefinition *SemaphoreHandle_t;
+
+esp_lcd_panel_io_handle_t ili9488_8080_get_panel_io(void);
+SemaphoreHandle_t ili9488_8080_get_trans_sem(void);
+void ili9488_8080_set_window(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2);
+
 #ifdef __cplusplus
 }
 #endif

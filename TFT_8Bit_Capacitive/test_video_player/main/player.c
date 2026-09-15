@@ -26,10 +26,6 @@ static portMUX_TYPE s_player_mux = portMUX_INITIALIZER_UNLOCKED;
 static QueueHandle_t s_cmd_queue = NULL;
 static player_status_t s_status;
 
-static uint16_t *s_buf_fullscreen[2] = {NULL, NULL};
-static volatile uint8_t s_fs_write_idx = 0;
-static volatile uint8_t s_fs_read_idx = 1;
-
 static uint16_t *s_buf_studio[2] = {NULL, NULL};
 static volatile uint8_t s_std_write_idx = 0;
 static volatile uint8_t s_std_read_idx = 1;
@@ -409,37 +405,54 @@ static void player_task(void *arg) {
                 }
             }
 
-            uint16_t *target_buf = (scale == 1) ? s_buf_studio[s_std_write_idx] : s_buf_fullscreen[s_fs_write_idx];
-            esp_err_t ret = avi_player_read_next_frame(target_buf, scale);
+            esp_err_t ret;
+            if (scale == 1) {
+                uint16_t *target_buf = s_buf_studio[s_std_write_idx];
+                ret = avi_player_read_next_frame(target_buf, 1);
+                if (ret == ESP_OK) {
+                    perf_mark_decoded();
 
-            if (ret == ESP_OK) {
-                perf_mark_decoded();
-
-                // Traspaso atomico de frame
-                portENTER_CRITICAL(&s_player_mux);
-                if (scale == 1) {
+                    // Traspaso atomico de frame a LVGL (solo modo Studio)
+                    portENTER_CRITICAL(&s_player_mux);
                     s_std_read_idx = s_std_write_idx;
                     s_std_write_idx = (s_std_write_idx + 1) % 2;
+                    s_new_frame_ready = true;
+
+                    const avi_info_t *info = avi_player_get_info();
+                    s_status.pos_ms = ((uint64_t)info->current_frame * (uint64_t)info->us_per_frame) / 1000ULL;
+                    s_status.dur_ms = ((uint64_t)info->total_frames * (uint64_t)info->us_per_frame) / 1000ULL;
+                    perf_get_fps(&s_status.dec_fps, &s_status.pres_fps);
+                    portEXIT_CRITICAL(&s_player_mux);
+
+                    int64_t wall_ms = (esp_timer_get_time() - s_pts_t0_us) / 1000;
+                    int32_t drift_ms = (int32_t)((int64_t)s_status.pos_ms - wall_ms);
+                    perf_mark_drift(drift_ms);
+                } else if (ret == ESP_ERR_NOT_FOUND) {
+                    player_handle_eof();
                 } else {
-                    s_fs_read_idx = s_fs_write_idx;
-                    s_fs_write_idx = (s_fs_write_idx + 1) % 2;
+                    vTaskDelay(pdMS_TO_TICKS(10));
                 }
-                s_new_frame_ready = true;
-
-                const avi_info_t *info = avi_player_get_info();
-                s_status.pos_ms = ((uint64_t)info->current_frame * (uint64_t)info->us_per_frame) / 1000ULL;
-                s_status.dur_ms = ((uint64_t)info->total_frames * (uint64_t)info->us_per_frame) / 1000ULL;
-                perf_get_fps(&s_status.dec_fps, &s_status.pres_fps);
-                portEXIT_CRITICAL(&s_player_mux);
-
-                // drift_ms = pos_ms del reproductor - tiempo de pared transcurrido desde t0 (con signo)
-                int64_t wall_ms = (esp_timer_get_time() - s_pts_t0_us) / 1000;
-                int32_t drift_ms = (int32_t)((int64_t)s_status.pos_ms - wall_ms);
-                perf_mark_drift(drift_ms);
-            } else if (ret == ESP_ERR_NOT_FOUND) {
-                player_handle_eof();
             } else {
-                vTaskDelay(pdMS_TO_TICKS(10));
+                // Modo Direct Fullscreen por franjas DMA (P2)
+                ret = avi_player_read_and_blit_direct();
+                if (ret == ESP_OK) {
+                    perf_mark_decoded();
+
+                    portENTER_CRITICAL(&s_player_mux);
+                    const avi_info_t *info = avi_player_get_info();
+                    s_status.pos_ms = ((uint64_t)info->current_frame * (uint64_t)info->us_per_frame) / 1000ULL;
+                    s_status.dur_ms = ((uint64_t)info->total_frames * (uint64_t)info->us_per_frame) / 1000ULL;
+                    perf_get_fps(&s_status.dec_fps, &s_status.pres_fps);
+                    portEXIT_CRITICAL(&s_player_mux);
+
+                    int64_t wall_ms = (esp_timer_get_time() - s_pts_t0_us) / 1000;
+                    int32_t drift_ms = (int32_t)((int64_t)s_status.pos_ms - wall_ms);
+                    perf_mark_drift(drift_ms);
+                } else if (ret == ESP_ERR_NOT_FOUND) {
+                    player_handle_eof();
+                } else {
+                    vTaskDelay(pdMS_TO_TICKS(10));
+                }
             }
         } else {
             vTaskDelay(pdMS_TO_TICKS(20));
@@ -463,18 +476,6 @@ esp_err_t player_start(void) {
         if (!s_cmd_queue) {
             ESP_LOGE(TAG, "Fallo al crear cola de comandos");
             return ESP_ERR_NO_MEM;
-        }
-    }
-
-    // Reservar doble búfer Fullscreen en PSRAM (480x320 RGB565)
-    for (int i = 0; i < 2; i++) {
-        if (!s_buf_fullscreen[i]) {
-            s_buf_fullscreen[i] = (uint16_t *)heap_caps_aligned_alloc(64, FULL_W * FULL_H * 2, MALLOC_CAP_SPIRAM);
-            if (!s_buf_fullscreen[i]) {
-                ESP_LOGE(TAG, "Fallo al reservar s_buf_fullscreen[%d] en PSRAM", i);
-                return ESP_ERR_NO_MEM;
-            }
-            memset(s_buf_fullscreen[i], 0, FULL_W * FULL_H * 2);
         }
     }
 
@@ -523,10 +524,6 @@ bool player_check_and_clear_new_frame(uint16_t **out_frame_buf, int *out_w, int 
             if (out_frame_buf) *out_frame_buf = s_buf_studio[s_std_read_idx];
             if (out_w) *out_w = STUDIO_W;
             if (out_h) *out_h = STUDIO_H;
-        } else {
-            if (out_frame_buf) *out_frame_buf = s_buf_fullscreen[s_fs_read_idx];
-            if (out_w) *out_w = FULL_W;
-            if (out_h) *out_h = FULL_H;
         }
     }
     portEXIT_CRITICAL(&s_player_mux);

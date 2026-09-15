@@ -5,13 +5,14 @@
 #include "freertos/portmacro.h"
 #include "esp_timer.h"
 #include "esp_heap_caps.h"
+#include "lcd_bus.h"
 
 static portMUX_TYPE s_perf_mux = portMUX_INITIALIZER_UNLOCKED;
 
 // Contadores en ventana de reporte
 static uint32_t s_frames_decoded = 0;
 static uint32_t s_frames_presented = 0;
-static uint32_t s_frames_dropped = 0;    // Siempre 0 en F0/F1
+static uint32_t s_frames_dropped = 0;
 static uint32_t s_oversize_frames = 0;
 static uint32_t s_frame_mismatch = 0;
 
@@ -30,6 +31,20 @@ static uint32_t s_blit_max_us = 0;
 static uint32_t s_late_max_us = 0;
 static int32_t s_last_drift_ms = 0;
 
+// Métricas de franjas y recorte direct F3
+static char s_present_path_override[16] = "";
+static int s_vrect_override_y1 = -1;
+static int s_vrect_override_y2 = -1;
+
+static uint32_t s_strip_count = 0;
+static uint64_t s_strip_sum_us = 0;
+
+static uint32_t s_direct_frames_count = 0;
+static uint32_t s_total_strips_sent = 0;
+static uint64_t s_frame_blit_sum_us = 0;
+
+static uint32_t s_lvgl_rows_clipped = 0;
+
 // Latencia táctil (T1)
 static uint64_t s_touch_rd_sum_us = 0;
 static uint32_t s_touch_rd_count = 0;
@@ -44,6 +59,42 @@ static int s_track = 0;
 static char s_scn[32] = "init";
 
 static int64_t s_last_report_us = 0;
+
+void perf_set_present_path(const char *path) {
+    if (!path) return;
+    portENTER_CRITICAL(&s_perf_mux);
+    strncpy(s_present_path_override, path, sizeof(s_present_path_override) - 1);
+    s_present_path_override[sizeof(s_present_path_override) - 1] = '\0';
+    portEXIT_CRITICAL(&s_perf_mux);
+}
+
+void perf_set_vrect(int y1, int y2) {
+    portENTER_CRITICAL(&s_perf_mux);
+    s_vrect_override_y1 = y1;
+    s_vrect_override_y2 = y2;
+    portEXIT_CRITICAL(&s_perf_mux);
+}
+
+void perf_mark_strip(uint32_t strip_us) {
+    portENTER_CRITICAL(&s_perf_mux);
+    s_strip_count++;
+    s_strip_sum_us += strip_us;
+    portEXIT_CRITICAL(&s_perf_mux);
+}
+
+void perf_mark_direct_frame(uint32_t strips_count, uint32_t frame_blit_us) {
+    portENTER_CRITICAL(&s_perf_mux);
+    s_direct_frames_count++;
+    s_total_strips_sent += strips_count;
+    s_frame_blit_sum_us += frame_blit_us;
+    portEXIT_CRITICAL(&s_perf_mux);
+}
+
+void perf_mark_lvgl_clipped(uint32_t rows) {
+    portENTER_CRITICAL(&s_perf_mux);
+    s_lvgl_rows_clipped += rows;
+    portEXIT_CRITICAL(&s_perf_mux);
+}
 
 void perf_init(void) {
     portENTER_CRITICAL(&s_perf_mux);
@@ -63,6 +114,15 @@ void perf_init(void) {
     s_blit_max_us = 0;
     s_late_max_us = 0;
     s_last_drift_ms = 0;
+    s_strip_count = 0;
+    s_strip_sum_us = 0;
+    s_direct_frames_count = 0;
+    s_total_strips_sent = 0;
+    s_frame_blit_sum_us = 0;
+    s_lvgl_rows_clipped = 0;
+    s_present_path_override[0] = '\0';
+    s_vrect_override_y1 = -1;
+    s_vrect_override_y2 = -1;
     s_touch_rd_sum_us = 0;
     s_touch_rd_count = 0;
     s_touch_rd_max_us = 0;
@@ -226,6 +286,13 @@ void perf_report_if_due(void) {
     strncpy(scn, s_scn, sizeof(scn));
     scn[sizeof(scn) - 1] = '\0';
 
+    uint32_t strip_cnt = s_strip_count;
+    uint64_t strip_sum = s_strip_sum_us;
+    uint32_t dir_frames = s_direct_frames_count;
+    uint32_t tot_strips = s_total_strips_sent;
+    uint64_t frame_blit_sum = s_frame_blit_sum_us;
+    uint32_t lvgl_clipped = s_lvgl_rows_clipped;
+
     // Reiniciar contadores para la siguiente ventana
     s_frames_decoded = 0;
     s_frames_presented = 0;
@@ -246,6 +313,13 @@ void perf_report_if_due(void) {
     s_blit_max_us = 0;
 
     s_late_max_us = 0;
+
+    s_strip_count = 0;
+    s_strip_sum_us = 0;
+    s_direct_frames_count = 0;
+    s_total_strips_sent = 0;
+    s_frame_blit_sum_us = 0;
+    s_lvgl_rows_clipped = 0;
 
     s_touch_rd_sum_us = 0;
     s_touch_rd_count = 0;
@@ -269,6 +343,10 @@ void perf_report_if_due(void) {
     double touch_read_ms_max = (double)touch_rd_max_us / 1000.0;
     double touch_age_ms_max = (double)touch_age_max_us / 1000.0;
 
+    double strip_ms_avg = (strip_cnt > 0) ? (((double)strip_sum / (double)strip_cnt) / 1000.0) : 0.0;
+    double frame_blit_ms_avg = (dir_frames > 0) ? (((double)frame_blit_sum / (double)dir_frames) / 1000.0) : 0.0;
+    uint32_t strips_per_frame = (dir_frames > 0) ? (tot_strips / dir_frames) : 0;
+
     portENTER_CRITICAL(&s_perf_mux);
     s_last_dec_fps = (float)dec_fps;
     s_last_pres_fps = (float)pres_fps;
@@ -278,11 +356,44 @@ void perf_report_if_due(void) {
     int hud_val = 0;
     perf_get_ui_state(view_str, sizeof(view_str), &hud_val);
 
+    char path_str[16] = "lvgl";
+    int v_y1 = 0, v_y2 = 319;
+
+    portENTER_CRITICAL(&s_perf_mux);
+    if (s_present_path_override[0] != '\0') {
+        strncpy(path_str, s_present_path_override, sizeof(path_str) - 1);
+        path_str[sizeof(path_str) - 1] = '\0';
+    } else if (strcmp(view_str, "full") == 0) {
+        strncpy(path_str, "direct", sizeof(path_str) - 1);
+        path_str[sizeof(path_str) - 1] = '\0';
+    } else {
+        strncpy(path_str, "lvgl", sizeof(path_str) - 1);
+        path_str[sizeof(path_str) - 1] = '\0';
+    }
+
+    int ovr_y1 = s_vrect_override_y1;
+    int ovr_y2 = s_vrect_override_y2;
+    portEXIT_CRITICAL(&s_perf_mux);
+
+    int16_t vx, vy, vw, vh;
+    lcd_bus_get_video_rect(&vx, &vy, &vw, &vh);
+
+    if (ovr_y1 >= 0 && ovr_y2 >= 0) {
+        v_y1 = ovr_y1;
+        v_y2 = ovr_y2;
+    } else if (strcmp(path_str, "direct") == 0) {
+        v_y1 = vy;
+        v_y2 = (vh > 0) ? (vy + vh - 1) : vy;
+    } else {
+        v_y1 = 34;
+        v_y2 = 193;
+    }
+
     uint32_t heap_int = (uint32_t)heap_caps_get_free_size(MALLOC_CAP_INTERNAL);
     uint32_t heap_psram = (uint32_t)heap_caps_get_free_size(MALLOC_CAP_SPIRAM);
     uint32_t t_ms = (uint32_t)(now / 1000);
 
-    printf("PERF,t_ms=%lu,dec_fps=%.1f,pres_fps=%.1f,drop=%lu,over=%lu,frame_mismatch=%lu,rd_avg=%.1f,rd_max=%.1f,dec_avg=%.1f,dec_max=%.1f,blit_avg=%.1f,blit_max=%.1f,late_max=%.1f,drift_ms=%ld,touch_read_ms_avg=%.1f,touch_read_ms_max=%.1f,touch_age_ms_max=%.1f,heap_int=%lu,heap_psram=%lu,track=%d,scn=%s,view=%s,hud=%d\n",
+    printf("PERF,t_ms=%lu,dec_fps=%.1f,pres_fps=%.1f,drop=%lu,over=%lu,frame_mismatch=%lu,rd_avg=%.1f,rd_max=%.1f,dec_avg=%.1f,dec_max=%.1f,blit_avg=%.1f,blit_max=%.1f,late_max=%.1f,drift_ms=%ld,touch_read_ms_avg=%.1f,touch_read_ms_max=%.1f,touch_age_ms_max=%.1f,heap_int=%lu,heap_psram=%lu,track=%d,scn=%s,view=%s,hud=%d,present_path=%s,vrect=%d-%d,strips_per_frame=%lu,strip_ms_avg=%.2f,frame_blit_ms_avg=%.1f,lvgl_rows_clipped=%lu\n",
            (unsigned long)t_ms, dec_fps, pres_fps, (unsigned long)drop, (unsigned long)over,
            (unsigned long)mismatch,
            rd_avg, rd_max,
@@ -293,6 +404,12 @@ void perf_report_if_due(void) {
            touch_read_ms_avg, touch_read_ms_max, touch_age_ms_max,
            (unsigned long)heap_int, (unsigned long)heap_psram,
            track, scn,
-           view_str, hud_val);
+           view_str, hud_val,
+           path_str,
+           v_y1, v_y2,
+           (unsigned long)strips_per_frame,
+           strip_ms_avg,
+           frame_blit_ms_avg,
+           (unsigned long)lvgl_clipped);
     fflush(stdout);
 }

@@ -6,6 +6,7 @@
 #include "esp_heap_caps.h"
 #include "ili9488_8080.h"
 #include "perf.h"
+#include "lcd_bus.h"
 
 __attribute__((unused)) static const char *TAG = "SPOTIFY_UI";
 
@@ -23,14 +24,10 @@ const track_meta_t g_playlist[PLAYLIST_SIZE] = {
 #define FULL_W   480
 #define FULL_H   320
 
-// Búferes dobles de cuadros RGB565 en PSRAM para eliminación de tearing
+// Búferes dobles de cuadros RGB565 en PSRAM para modo Studio
 static uint16_t *s_buf_studio[2] = {NULL, NULL};
 static volatile uint8_t s_studio_write_idx = 0;
 static volatile uint8_t s_studio_read_idx = 1;
-
-static uint16_t *s_buf_fullscreen[2] = {NULL, NULL};
-static volatile uint8_t s_fs_write_idx = 0;
-static volatile uint8_t s_fs_read_idx = 1;
 
 static int s_current_track_idx = 0;
 static playback_state_t s_play_state = PLAYBACK_STATE_PLAYING;
@@ -112,6 +109,10 @@ static void on_btn_next_click(lv_event_t *e) {
 }
 
 static void on_btn_fullscreen_toggle(lv_event_t *e) {
+#if CONFIG_APP_PERF_AUTOTEST
+    ESP_LOGI("SPOTIFY_UI", "[AUTOTEST] Pulsacion de toggle de pantalla ignorada durante autoprueba");
+    return;
+#endif
     if (s_view_mode == VIEW_MODE_STUDIO) {
         ESP_LOGI("SPOTIFY_UI", "[TOUCH] Cambiando a modo FULLSCREEN (480x320)");
         spotify_ui_set_view_mode(VIEW_MODE_FULLSCREEN);
@@ -165,11 +166,17 @@ static void on_fullscreen_tap(lv_event_t *e) {
     if (target != s_canvas_fullscreen && target != s_hud_overlay) return;
 
     if (lv_obj_has_flag(s_hud_overlay, LV_OBJ_FLAG_HIDDEN)) {
+        player_cmd_t cmd = {.type = PCMD_SET_VIDEO_RECT, .rect = {0, 40, 480, 196}};
+        player_cmd_send(&cmd);
+        lcd_bus_set_video_rect(0, 40, 480, 196);
         lv_obj_remove_flag(s_hud_overlay, LV_OBJ_FLAG_HIDDEN);
         s_last_touch_hud_time = esp_timer_get_time();
         ESP_LOGI("SPOTIFY_UI", "[TOUCH] Fullscreen tap -> HUD mostrado");
     } else {
         lv_obj_add_flag(s_hud_overlay, LV_OBJ_FLAG_HIDDEN);
+        player_cmd_t cmd = {.type = PCMD_SET_VIDEO_RECT, .rect = {0, 0, 480, 320}};
+        player_cmd_send(&cmd);
+        lcd_bus_set_video_rect(0, 0, 480, 320);
         ESP_LOGI("SPOTIFY_UI", "[TOUCH] Fullscreen tap -> HUD ocultado");
     }
 }
@@ -410,11 +417,14 @@ static void build_fullscreen_screen(void) {
     s_scr_fullscreen = lv_obj_create(NULL);
     lv_obj_set_style_bg_color(s_scr_fullscreen, lv_color_black(), 0);
 
-    // Canvas de Video Fullscreen
-    s_canvas_fullscreen = lv_canvas_create(s_scr_fullscreen);
-    lv_canvas_set_buffer(s_canvas_fullscreen, s_buf_fullscreen[0], FULL_W, FULL_H, LV_COLOR_FORMAT_RGB565);
+    // Fondo táctil Fullscreen (reemplaza el antiguo canvas sin reservar 300 KB de PSRAM)
+    s_canvas_fullscreen = lv_obj_create(s_scr_fullscreen);
     lv_obj_set_size(s_canvas_fullscreen, FULL_W, FULL_H);
     lv_obj_set_pos(s_canvas_fullscreen, 0, 0);
+    lv_obj_set_style_bg_opa(s_canvas_fullscreen, LV_OPA_TRANSP, 0);
+    lv_obj_set_style_border_width(s_canvas_fullscreen, 0, 0);
+    lv_obj_set_style_pad_all(s_canvas_fullscreen, 0, 0);
+    lv_obj_remove_flag(s_canvas_fullscreen, LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_add_flag(s_canvas_fullscreen, LV_OBJ_FLAG_CLICKABLE);
     lv_obj_add_event_cb(s_canvas_fullscreen, on_fullscreen_tap, LV_EVENT_CLICKED, NULL);
 
@@ -430,40 +440,42 @@ static void build_fullscreen_screen(void) {
     lv_obj_add_event_cb(s_hud_overlay, on_fullscreen_tap, LV_EVENT_CLICKED, NULL);
     lv_obj_add_flag(s_hud_overlay, LV_OBJ_FLAG_HIDDEN);
 
-    // Barra superior flotante OSD (Título + FPS)
+    // Barra superior opaca OSD (filas 0 a 39, P4)
     lv_obj_t *top_bar = lv_obj_create(s_hud_overlay);
-    lv_obj_set_size(top_bar, 460, 36);
-    lv_obj_set_pos(top_bar, 10, 10);
+    lv_obj_set_size(top_bar, 480, 40);
+    lv_obj_set_pos(top_bar, 0, 0);
     lv_obj_set_style_bg_color(top_bar, COLOR_SPOTIFY_CARD, 0);
-    lv_obj_set_style_bg_opa(top_bar, LV_OPA_80, 0);
-    lv_obj_set_style_radius(top_bar, 18, 0);
-    lv_obj_set_style_border_width(top_bar, 1, 0);
+    lv_obj_set_style_bg_opa(top_bar, LV_OPA_COVER, 0);
+    lv_obj_set_style_radius(top_bar, 0, 0);
+    lv_obj_set_style_border_side(top_bar, LV_BORDER_SIDE_BOTTOM, 0);
     lv_obj_set_style_border_color(top_bar, COLOR_SPOTIFY_SURFACE, 0);
+    lv_obj_set_style_border_width(top_bar, 1, 0);
 
     s_hud_lbl_title = lv_label_create(top_bar);
     lv_label_set_text(s_hud_lbl_title, g_playlist[0].title);
     lv_obj_set_style_text_color(s_hud_lbl_title, COLOR_SPOTIFY_WHITE, 0);
-    lv_obj_set_pos(s_hud_lbl_title, 16, 8);
+    lv_obj_set_pos(s_hud_lbl_title, 16, 10);
 
     s_hud_lbl_fps = lv_label_create(top_bar);
     lv_label_set_text(s_hud_lbl_fps, "30.0 FPS");
     lv_obj_set_style_text_color(s_hud_lbl_fps, COLOR_SPOTIFY_GREEN_GLOW, 0);
-    lv_obj_set_pos(s_hud_lbl_fps, 390, 8);
+    lv_obj_set_pos(s_hud_lbl_fps, 390, 10);
 
-    // Barra inferior flotante OSD (Controles + Seek + Salir)
+    // Barra inferior opaca OSD (filas 236 a 319, P4)
     lv_obj_t *bot_bar = lv_obj_create(s_hud_overlay);
-    lv_obj_set_size(bot_bar, 460, 58);
-    lv_obj_set_pos(bot_bar, 10, 252);
+    lv_obj_set_size(bot_bar, 480, 84);
+    lv_obj_set_pos(bot_bar, 0, 236);
     lv_obj_set_style_bg_color(bot_bar, COLOR_SPOTIFY_CARD, 0);
-    lv_obj_set_style_bg_opa(bot_bar, LV_OPA_90, 0);
-    lv_obj_set_style_radius(bot_bar, 20, 0);
-    lv_obj_set_style_border_width(bot_bar, 1, 0);
+    lv_obj_set_style_bg_opa(bot_bar, LV_OPA_COVER, 0);
+    lv_obj_set_style_radius(bot_bar, 0, 0);
+    lv_obj_set_style_border_side(bot_bar, LV_BORDER_SIDE_TOP, 0);
     lv_obj_set_style_border_color(bot_bar, COLOR_SPOTIFY_SURFACE, 0);
+    lv_obj_set_style_border_width(bot_bar, 1, 0);
 
     // Botón Prev OSD
     lv_obj_t *hud_prev = lv_button_create(bot_bar);
     lv_obj_set_size(hud_prev, 36, 36);
-    lv_obj_set_pos(hud_prev, 10, 10);
+    lv_obj_set_pos(hud_prev, 10, 36);
     lv_obj_set_style_bg_color(hud_prev, COLOR_SPOTIFY_SURFACE, 0);
     lv_obj_set_style_radius(hud_prev, LV_RADIUS_CIRCLE, 0);
     lv_obj_add_event_cb(hud_prev, on_btn_prev_click, LV_EVENT_CLICKED, NULL);
@@ -475,7 +487,7 @@ static void build_fullscreen_screen(void) {
     // Botón Play/Pause OSD
     s_hud_btn_play = lv_button_create(bot_bar);
     lv_obj_set_size(s_hud_btn_play, 42, 42);
-    lv_obj_set_pos(s_hud_btn_play, 56, 7);
+    lv_obj_set_pos(s_hud_btn_play, 56, 33);
     lv_obj_set_style_bg_color(s_hud_btn_play, COLOR_SPOTIFY_GREEN, 0);
     lv_obj_set_style_radius(s_hud_btn_play, LV_RADIUS_CIRCLE, 0);
     lv_obj_add_event_cb(s_hud_btn_play, on_btn_play_pause_click, LV_EVENT_CLICKED, NULL);
@@ -488,7 +500,7 @@ static void build_fullscreen_screen(void) {
     // Botón Next OSD
     lv_obj_t *hud_next = lv_button_create(bot_bar);
     lv_obj_set_size(hud_next, 36, 36);
-    lv_obj_set_pos(hud_next, 108, 10);
+    lv_obj_set_pos(hud_next, 108, 36);
     lv_obj_set_style_bg_color(hud_next, COLOR_SPOTIFY_SURFACE, 0);
     lv_obj_set_style_radius(hud_next, LV_RADIUS_CIRCLE, 0);
     lv_obj_add_event_cb(hud_next, on_btn_next_click, LV_EVENT_CLICKED, NULL);
@@ -500,7 +512,7 @@ static void build_fullscreen_screen(void) {
     // Slider OSD Fullscreen
     s_hud_slider = lv_slider_create(bot_bar);
     lv_obj_set_size(s_hud_slider, 175, 6);
-    lv_obj_set_pos(s_hud_slider, 156, 25);
+    lv_obj_set_pos(s_hud_slider, 156, 45);
     lv_slider_set_range(s_hud_slider, 0, 100);
     lv_obj_set_style_bg_color(s_hud_slider, COLOR_SPOTIFY_DARKGRAY, LV_PART_MAIN);
     lv_obj_set_style_bg_color(s_hud_slider, COLOR_SPOTIFY_GREEN, LV_PART_INDICATOR);
@@ -511,12 +523,12 @@ static void build_fullscreen_screen(void) {
     s_hud_lbl_time = lv_label_create(bot_bar);
     lv_label_set_text(s_hud_lbl_time, "00:00");
     lv_obj_set_style_text_color(s_hud_lbl_time, COLOR_SPOTIFY_GRAY, 0);
-    lv_obj_set_pos(s_hud_lbl_time, 156, 8);
+    lv_obj_set_pos(s_hud_lbl_time, 156, 18);
 
     // Botón Salir de Fullscreen [✖ SALIR]
     lv_obj_t *btn_exit = lv_button_create(bot_bar);
     lv_obj_set_size(btn_exit, 95, 34);
-    lv_obj_set_pos(btn_exit, 345, 11);
+    lv_obj_set_pos(btn_exit, 360, 36);
     lv_obj_set_style_bg_color(btn_exit, lv_color_hex(0xE91429), 0);
     lv_obj_set_style_radius(btn_exit, 17, 0);
     lv_obj_add_event_cb(btn_exit, on_btn_fullscreen_toggle, LV_EVENT_CLICKED, NULL);
@@ -541,15 +553,6 @@ void spotify_ui_init(track_change_cb_t track_cb, playback_ctrl_cb_t play_cb, see
             s_buf_studio[i] = (uint16_t *)heap_caps_aligned_alloc(64, STUDIO_W * STUDIO_H * 2, MALLOC_CAP_SPIRAM);
             assert(s_buf_studio[i] != NULL);
             memset(s_buf_studio[i], 0, STUDIO_W * STUDIO_H * 2);
-        }
-    }
-
-    // Asignar doble búfer en PSRAM para Fullscreen (480x320 RGB565)
-    for (int i = 0; i < 2; i++) {
-        if (!s_buf_fullscreen[i]) {
-            s_buf_fullscreen[i] = (uint16_t *)heap_caps_aligned_alloc(64, FULL_W * FULL_H * 2, MALLOC_CAP_SPIRAM);
-            assert(s_buf_fullscreen[i] != NULL);
-            memset(s_buf_fullscreen[i], 0, FULL_W * FULL_H * 2);
         }
     }
 
@@ -591,15 +594,24 @@ void spotify_ui_update_progress(uint32_t elapsed_sec, uint32_t duration_sec, int
         if (s_hud_forced_mode == 1) {
             if (!lv_obj_has_flag(s_hud_overlay, LV_OBJ_FLAG_HIDDEN)) {
                 lv_obj_add_flag(s_hud_overlay, LV_OBJ_FLAG_HIDDEN);
+                player_cmd_t cmd = {.type = PCMD_SET_VIDEO_RECT, .rect = {0, 0, 480, 320}};
+                player_cmd_send(&cmd);
+                lcd_bus_set_video_rect(0, 0, 480, 320);
             }
         } else if (s_hud_forced_mode == 2) {
             if (lv_obj_has_flag(s_hud_overlay, LV_OBJ_FLAG_HIDDEN)) {
+                player_cmd_t cmd = {.type = PCMD_SET_VIDEO_RECT, .rect = {0, 40, 480, 196}};
+                player_cmd_send(&cmd);
+                lcd_bus_set_video_rect(0, 40, 480, 196);
                 lv_obj_remove_flag(s_hud_overlay, LV_OBJ_FLAG_HIDDEN);
             }
         } else {
             if (!lv_obj_has_flag(s_hud_overlay, LV_OBJ_FLAG_HIDDEN)) {
                 if (esp_timer_get_time() - s_last_touch_hud_time > 3500000) {
                     lv_obj_add_flag(s_hud_overlay, LV_OBJ_FLAG_HIDDEN);
+                    player_cmd_t cmd = {.type = PCMD_SET_VIDEO_RECT, .rect = {0, 0, 480, 320}};
+                    player_cmd_send(&cmd);
+                    lcd_bus_set_video_rect(0, 0, 480, 320);
                 }
             }
         }
@@ -666,18 +678,20 @@ void spotify_ui_set_view_mode(view_mode_t mode) {
         lv_screen_load(s_scr_studio);
         player_cmd_t cmd = {.type = PCMD_SET_VIDEO_RECT, .rect = {10, 34, STUDIO_W, STUDIO_H}};
         player_cmd_send(&cmd);
+        lcd_bus_set_video_rect(10, 34, STUDIO_W, STUDIO_H);
     } else {
         lv_screen_load(s_scr_fullscreen);
-        if (s_hud_overlay) {
-            if (s_hud_forced_mode == 1) {
-                lv_obj_add_flag(s_hud_overlay, LV_OBJ_FLAG_HIDDEN);
-            } else {
-                lv_obj_remove_flag(s_hud_overlay, LV_OBJ_FLAG_HIDDEN);
-                s_last_touch_hud_time = esp_timer_get_time();
-            }
+        if (s_hud_forced_mode == 2) {
+            player_cmd_t cmd = {.type = PCMD_SET_VIDEO_RECT, .rect = {0, 40, 480, 196}};
+            player_cmd_send(&cmd);
+            lcd_bus_set_video_rect(0, 40, 480, 196);
+            if (s_hud_overlay) lv_obj_remove_flag(s_hud_overlay, LV_OBJ_FLAG_HIDDEN);
+        } else {
+            if (s_hud_overlay) lv_obj_add_flag(s_hud_overlay, LV_OBJ_FLAG_HIDDEN);
+            player_cmd_t cmd = {.type = PCMD_SET_VIDEO_RECT, .rect = {0, 0, FULL_W, FULL_H}};
+            player_cmd_send(&cmd);
+            lcd_bus_set_video_rect(0, 0, FULL_W, FULL_H);
         }
-        player_cmd_t cmd = {.type = PCMD_SET_VIDEO_RECT, .rect = {0, 0, FULL_W, FULL_H}};
-        player_cmd_send(&cmd);
     }
 }
 
@@ -686,7 +700,13 @@ void spotify_ui_set_hud_forced(int mode) {
     if (s_view_mode == VIEW_MODE_FULLSCREEN && s_hud_overlay) {
         if (mode == 1) {
             lv_obj_add_flag(s_hud_overlay, LV_OBJ_FLAG_HIDDEN);
+            player_cmd_t cmd = {.type = PCMD_SET_VIDEO_RECT, .rect = {0, 0, 480, 320}};
+            player_cmd_send(&cmd);
+            lcd_bus_set_video_rect(0, 0, 480, 320);
         } else if (mode == 2) {
+            player_cmd_t cmd = {.type = PCMD_SET_VIDEO_RECT, .rect = {0, 40, 480, 196}};
+            player_cmd_send(&cmd);
+            lcd_bus_set_video_rect(0, 40, 480, 196);
             lv_obj_remove_flag(s_hud_overlay, LV_OBJ_FLAG_HIDDEN);
         }
     }
@@ -705,16 +725,13 @@ uint16_t *spotify_ui_get_studio_buffer(void) {
 }
 
 uint16_t *spotify_ui_get_fullscreen_buffer(void) {
-    return s_buf_fullscreen[s_fs_write_idx];
+    return NULL;
 }
 
 void spotify_ui_commit_frame(void) {
     if (s_view_mode == VIEW_MODE_STUDIO) {
         s_studio_read_idx = s_studio_write_idx;
         s_studio_write_idx = (s_studio_write_idx + 1) % 2;
-    } else {
-        s_fs_read_idx = s_fs_write_idx;
-        s_fs_write_idx = (s_fs_write_idx + 1) % 2;
     }
 }
 
@@ -722,9 +739,6 @@ void spotify_ui_invalidate_video(void) {
     if (s_view_mode == VIEW_MODE_STUDIO && s_canvas_studio) {
         lv_canvas_set_buffer(s_canvas_studio, s_buf_studio[s_studio_read_idx], STUDIO_W, STUDIO_H, LV_COLOR_FORMAT_RGB565);
         lv_obj_invalidate(s_canvas_studio);
-    } else if (s_view_mode == VIEW_MODE_FULLSCREEN && s_canvas_fullscreen) {
-        lv_canvas_set_buffer(s_canvas_fullscreen, s_buf_fullscreen[s_fs_read_idx], FULL_W, FULL_H, LV_COLOR_FORMAT_RGB565);
-        lv_obj_invalidate(s_canvas_fullscreen);
     }
 }
 
@@ -738,16 +752,6 @@ bool spotify_ui_display_frame(uint16_t *buf, int width, int height) {
         if (s_canvas_studio) {
             lv_canvas_set_buffer(s_canvas_studio, buf, STUDIO_W, STUDIO_H, LV_COLOR_FORMAT_RGB565);
             lv_obj_invalidate(s_canvas_studio);
-            return true;
-        }
-    } else if (s_view_mode == VIEW_MODE_FULLSCREEN) {
-        if (width != FULL_W || height != FULL_H) {
-            perf_mark_frame_mismatch();
-            return false;
-        }
-        if (s_canvas_fullscreen) {
-            lv_canvas_set_buffer(s_canvas_fullscreen, buf, FULL_W, FULL_H, LV_COLOR_FORMAT_RGB565);
-            lv_obj_invalidate(s_canvas_fullscreen);
             return true;
         }
     }
