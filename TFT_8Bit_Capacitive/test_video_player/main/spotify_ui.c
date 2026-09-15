@@ -71,6 +71,7 @@ static lv_obj_t *s_hud_lbl_fps = NULL;
 
 static int64_t s_last_touch_hud_time = 0;
 static bool s_slider_user_dragging = false;
+static int s_hud_forced_mode = 0; // 0=auto, 1=siempre oculto, 2=siempre visible
 
 // Paleta Spotify Premium
 #define COLOR_SPOTIFY_BLACK      lv_color_hex(0x121212)
@@ -156,6 +157,7 @@ static void on_brightness_slider_event(lv_event_t *e) {
 
 static void on_fullscreen_tap(lv_event_t *e) {
     if (!s_hud_overlay) return;
+    if (s_hud_forced_mode == 1 || s_hud_forced_mode == 2) return;
     if (lv_obj_has_flag(s_hud_overlay, LV_OBJ_FLAG_HIDDEN)) {
         lv_obj_remove_flag(s_hud_overlay, LV_OBJ_FLAG_HIDDEN);
         s_last_touch_hud_time = esp_timer_get_time();
@@ -565,10 +567,22 @@ void spotify_ui_update_progress(uint32_t elapsed_sec, uint32_t duration_sec, int
         if (s_hud_slider) lv_slider_set_value(s_hud_slider, percent, LV_ANIM_OFF);
     }
 
-    // Auto-ocultar HUD OSD en Fullscreen a los 3.5 segundos
-    if (s_view_mode == VIEW_MODE_FULLSCREEN && s_hud_overlay && !lv_obj_has_flag(s_hud_overlay, LV_OBJ_FLAG_HIDDEN)) {
-        if (esp_timer_get_time() - s_last_touch_hud_time > 3500000) {
-            lv_obj_add_flag(s_hud_overlay, LV_OBJ_FLAG_HIDDEN);
+    // Ocultar / auto-ocultar HUD OSD en Fullscreen segun modo forzado
+    if (s_view_mode == VIEW_MODE_FULLSCREEN && s_hud_overlay) {
+        if (s_hud_forced_mode == 1) {
+            if (!lv_obj_has_flag(s_hud_overlay, LV_OBJ_FLAG_HIDDEN)) {
+                lv_obj_add_flag(s_hud_overlay, LV_OBJ_FLAG_HIDDEN);
+            }
+        } else if (s_hud_forced_mode == 2) {
+            if (lv_obj_has_flag(s_hud_overlay, LV_OBJ_FLAG_HIDDEN)) {
+                lv_obj_remove_flag(s_hud_overlay, LV_OBJ_FLAG_HIDDEN);
+            }
+        } else {
+            if (!lv_obj_has_flag(s_hud_overlay, LV_OBJ_FLAG_HIDDEN)) {
+                if (esp_timer_get_time() - s_last_touch_hud_time > 3500000) {
+                    lv_obj_add_flag(s_hud_overlay, LV_OBJ_FLAG_HIDDEN);
+                }
+            }
         }
     }
 }
@@ -634,8 +648,23 @@ void spotify_ui_set_view_mode(view_mode_t mode) {
     } else {
         lv_screen_load(s_scr_fullscreen);
         if (s_hud_overlay) {
+            if (s_hud_forced_mode == 1) {
+                lv_obj_add_flag(s_hud_overlay, LV_OBJ_FLAG_HIDDEN);
+            } else {
+                lv_obj_remove_flag(s_hud_overlay, LV_OBJ_FLAG_HIDDEN);
+                s_last_touch_hud_time = esp_timer_get_time();
+            }
+        }
+    }
+}
+
+void spotify_ui_set_hud_forced(int mode) {
+    s_hud_forced_mode = mode;
+    if (s_view_mode == VIEW_MODE_FULLSCREEN && s_hud_overlay) {
+        if (mode == 1) {
+            lv_obj_add_flag(s_hud_overlay, LV_OBJ_FLAG_HIDDEN);
+        } else if (mode == 2) {
             lv_obj_remove_flag(s_hud_overlay, LV_OBJ_FLAG_HIDDEN);
-            s_last_touch_hud_time = esp_timer_get_time();
         }
     }
 }

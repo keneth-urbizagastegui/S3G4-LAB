@@ -42,6 +42,10 @@ static int s_pending_seek_percent = 0;
 
 static volatile bool s_req_set_view_mode = false;
 static volatile view_mode_t s_target_view_mode = VIEW_MODE_FULLSCREEN;
+static volatile bool s_req_set_hud_mode = false;
+static volatile int s_target_hud_mode = 0;
+
+static volatile bool s_present_pending = false;
 
 static volatile float s_latest_fps = 30.0f;
 
@@ -58,14 +62,10 @@ static void lvgl_disp_flush_cb(lv_display_t *disp, const lv_area_t *area, uint8_
     perf_mark_blit((uint32_t)blit_us);
 
     view_mode_t vmode = spotify_ui_get_view_mode();
-    if (vmode == VIEW_MODE_FULLSCREEN) {
-        if (area->y2 >= 319) {
-            perf_mark_presented();
-        }
-    } else {
-        if (area->y2 >= (34 + 160 - 1) && area->y1 <= (34 + 160 - 1)) {
-            perf_mark_presented();
-        }
+    int last_canvas_row = (vmode == VIEW_MODE_FULLSCREEN) ? 319 : (34 + 160 - 1);
+    if (s_present_pending && area->y2 >= last_canvas_row) {
+        perf_mark_presented();
+        s_present_pending = false;
     }
 
     lv_display_flush_ready(disp);
@@ -131,6 +131,10 @@ static void video_engine_task(void *arg) {
             const char *scn_name = scenarios[s];
             perf_set_scenario(track_idx, scn_name);
             ESP_LOGI(TAG, "Track %d -> Escenario '%s' (%d s)", track_idx, scn_name, sec_per_scenario);
+
+            // Solicitar modo HUD al bucle GUI: hidden=1, osd=2, seek=1
+            s_target_hud_mode = (s == 1) ? 2 : 1;
+            s_req_set_hud_mode = true;
 
             // Solicitar fullscreen al bucle GUI
             s_target_view_mode = VIEW_MODE_FULLSCREEN;
@@ -368,6 +372,11 @@ void app_main(void) {
 
     while (1) {
         if (xSemaphoreTake(s_lvgl_mutex, pdMS_TO_TICKS(20)) == pdTRUE) {
+            if (s_req_set_hud_mode) {
+                s_req_set_hud_mode = false;
+                spotify_ui_set_hud_forced(s_target_hud_mode);
+            }
+
             if (s_req_set_view_mode) {
                 s_req_set_view_mode = false;
                 spotify_ui_set_view_mode(s_target_view_mode);
@@ -375,6 +384,7 @@ void app_main(void) {
 
             if (s_video_frame_ready) {
                 s_video_frame_ready = false;
+                s_present_pending = true;
                 spotify_ui_invalidate_video();
             }
 

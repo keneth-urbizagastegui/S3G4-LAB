@@ -200,26 +200,53 @@ def main():
             groups[key] = []
         groups[key].append(r)
 
-    print("\n" + "=" * 70)
+    print("\n" + "=" * 94)
     print(f"RESUMEN DE RENDIMIENTO ({args.phase}) - (Primeros 2s descartados por escenario)")
-    print("=" * 70)
-    print(f"{'Track':<8}{'Escenario':<14}{'Muestras':<10}{'Dec FPS (avg)':<18}{'Pres FPS (avg)':<18}")
-    print("-" * 70)
+    print("=" * 94)
+    print(f"{'Track':<8}{'Escenario':<14}{'Muestras':<10}{'Dec FPS':<12}{'Pres FPS':<12}{'rd_avg(ms)':<14}{'dec_avg(ms)':<14}{'blit_avg(ms)':<14}")
+    print("-" * 94)
 
-    for (trk, scn), recs in sorted(groups.items(), key=lambda x: (str(x[0][0]), str(x[0][1]))):
+    for (trk, scn), recs in sorted(groups.items(), key=lambda x: (int(x[0][0]) if str(x[0][0]).isdigit() else str(x[0][0]), str(x[0][1]))):
         # Descartar primeros 2s de cada escenario (el primer reporte de 2s)
         filtered = recs[1:] if len(recs) > 1 else recs
         n = len(filtered)
         if n > 0:
             avg_dec = sum(float(x.get("dec_fps", 0.0)) for x in filtered) / n
             avg_pres = sum(float(x.get("pres_fps", 0.0)) for x in filtered) / n
+            avg_rd = sum(float(x.get("rd_avg", 0.0)) for x in filtered) / n
+            avg_dec_t = sum(float(x.get("dec_avg", 0.0)) for x in filtered) / n
+            avg_blit = sum(float(x.get("blit_avg", 0.0)) for x in filtered) / n
         else:
             avg_dec = 0.0
             avg_pres = 0.0
+            avg_rd = 0.0
+            avg_dec_t = 0.0
+            avg_blit = 0.0
 
-        print(f"{trk:<8}{scn:<14}{n:<10}{avg_dec:<18.2f}{avg_pres:<18.2f}")
+        print(f"{trk:<8}{scn:<14}{n:<10}{avg_dec:<12.1f}{avg_pres:<12.1f}{avg_rd:<14.1f}{avg_dec_t:<14.1f}{avg_blit:<14.1f}")
 
-    print("=" * 70)
+    print("=" * 94)
+
+    if media_records:
+        print("\n" + "=" * 94)
+        print("RESUMEN DE MEDIA (Pistas escaneadas en MicroSD)")
+        print("=" * 94)
+        print(f"{'File':<26}{'Dim':<10}{'FPS Real':<12}{'Frames':<10}{'Duracion':<10}{'Chunk Avg(KB)':<15}{'Chunk Max(KB)':<15}{'Subsampling':<12}")
+        print("-" * 94)
+        for m in media_records:
+            f = m.get("file", "")
+            w = m.get("w", "0")
+            h = m.get("h", "0")
+            dim = f"{w}x{h}"
+            fps_m = float(m.get("fps_milli", 0)) / 1000.0
+            frames = int(m.get("frames", 0))
+            dur_sec = frames / fps_m if fps_m > 0 else 0
+            dur_str = f"{int(dur_sec // 60):02d}:{int(dur_sec % 60):02d}"
+            c_avg_kb = float(m.get("chunk_avg", 0)) / 1024.0
+            c_max_kb = float(m.get("chunk_max", 0)) / 1024.0
+            sub = m.get("subsampling", "?")
+            print(f"{f:<26}{dim:<10}{fps_m:<12.3f}{frames:<10}{dur_str:<10}{c_avg_kb:<15.1f}{c_max_kb:<15.1f}{sub:<12}")
+        print("=" * 94)
 
     # Criterio F0: todos los tracks de MEDIA tienen PERF y tracks == AUTOTEST_DONE.tracks
     # Obtener lista unica de pistas en MEDIA

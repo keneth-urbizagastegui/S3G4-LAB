@@ -1,0 +1,5 @@
+file,size,w,h,us_per_frame,fps_milli,frames,idx1,chunk_avg,chunk_max,subsampling
+/sdcard/ariana.avi,69687956,480,320,33333,30000,9003,1,7715,22505,unknown
+/sdcard/harry.avi,77294026,480,320,33333,30000,6029,1,12794,28864,unknown
+/sdcard/lesserafim.avi,70497374,480,320,33333,30000,5988,1,11747,35098,unknown
+/sdcard/meovv.avi,59188494,480,320,33333,30000,6136,1,9620,19425,unknown

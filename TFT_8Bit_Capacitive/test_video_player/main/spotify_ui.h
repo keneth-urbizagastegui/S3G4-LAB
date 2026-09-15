@@ -41,6 +41,7 @@ void spotify_ui_tick(void);
 void spotify_ui_set_track(int index);
 void spotify_ui_set_play_state(playback_state_t state);
 void spotify_ui_set_view_mode(view_mode_t mode);
+void spotify_ui_set_hud_forced(int mode);
 view_mode_t spotify_ui_get_view_mode(void);
 playback_state_t spotify_ui_get_play_state(void);
 

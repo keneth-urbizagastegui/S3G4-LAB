@@ -131,17 +131,17 @@ void perf_report_if_due(void) {
 
     uint64_t rd_sum = s_read_sum_us;
     uint32_t rd_cnt = s_read_count;
-    uint32_t rd_max = s_read_max_us;
+    uint32_t rd_max_us = s_read_max_us;
 
     uint64_t dec_sum = s_decode_sum_us;
     uint32_t dec_cnt = s_decode_count;
-    uint32_t dec_max = s_decode_max_us;
+    uint32_t dec_max_us = s_decode_max_us;
 
     uint64_t blit_sum = s_blit_sum_us;
     uint32_t blit_cnt = s_blit_count;
-    uint32_t blit_max = s_blit_max_us;
+    uint32_t blit_max_us = s_blit_max_us;
 
-    uint32_t late_max = s_late_max_us;
+    uint32_t late_max_us = s_late_max_us;
     int track = s_track;
     char scn[32];
     strncpy(scn, s_scn, sizeof(scn));
@@ -172,20 +172,24 @@ void perf_report_if_due(void) {
 
     double dec_fps = (window_us > 0) ? ((double)dec * 1000000.0 / (double)window_us) : 0.0;
     double pres_fps = (window_us > 0) ? ((double)pres * 1000000.0 / (double)window_us) : 0.0;
-    uint32_t rd_avg = (rd_cnt > 0) ? (uint32_t)(rd_sum / rd_cnt) : 0;
-    uint32_t dec_avg = (dec_cnt > 0) ? (uint32_t)(dec_sum / dec_cnt) : 0;
-    uint32_t blit_avg = (blit_cnt > 0) ? (uint32_t)(blit_sum / blit_cnt) : 0;
+    double rd_avg = (rd_cnt > 0) ? (((double)rd_sum / (double)rd_cnt) / 1000.0) : 0.0;
+    double dec_avg = (dec_cnt > 0) ? (((double)dec_sum / (double)dec_cnt) / 1000.0) : 0.0;
+    double blit_avg = (blit_cnt > 0) ? (((double)blit_sum / (double)blit_cnt) / 1000.0) : 0.0;
+    double rd_max = (double)rd_max_us / 1000.0;
+    double dec_max = (double)dec_max_us / 1000.0;
+    double blit_max = (double)blit_max_us / 1000.0;
+    double late_max = (double)late_max_us / 1000.0;
 
     uint32_t heap_int = (uint32_t)heap_caps_get_free_size(MALLOC_CAP_INTERNAL);
     uint32_t heap_psram = (uint32_t)heap_caps_get_free_size(MALLOC_CAP_SPIRAM);
     uint32_t t_ms = (uint32_t)(now / 1000);
 
-    printf("PERF,t_ms=%lu,dec_fps=%.2f,pres_fps=%.2f,drop=%lu,over=%lu,rd_avg=%lu,rd_max=%lu,dec_avg=%lu,dec_max=%lu,blit_avg=%lu,blit_max=%lu,late_max=%lu,heap_int=%lu,heap_psram=%lu,track=%d,scn=%s\n",
+    printf("PERF,t_ms=%lu,dec_fps=%.1f,pres_fps=%.1f,drop=%lu,over=%lu,rd_avg=%.1f,rd_max=%.1f,dec_avg=%.1f,dec_max=%.1f,blit_avg=%.1f,blit_max=%.1f,late_max=%.1f,heap_int=%lu,heap_psram=%lu,track=%d,scn=%s\n",
            (unsigned long)t_ms, dec_fps, pres_fps, (unsigned long)drop, (unsigned long)over,
-           (unsigned long)rd_avg, (unsigned long)rd_max,
-           (unsigned long)dec_avg, (unsigned long)dec_max,
-           (unsigned long)blit_avg, (unsigned long)blit_max,
-           (unsigned long)late_max,
+           rd_avg, rd_max,
+           dec_avg, dec_max,
+           blit_avg, blit_max,
+           late_max,
            (unsigned long)heap_int, (unsigned long)heap_psram,
            track, scn);
     fflush(stdout);
