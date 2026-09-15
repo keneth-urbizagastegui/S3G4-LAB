@@ -34,7 +34,7 @@ static volatile uint8_t s_std_write_idx = 0;
 static volatile uint8_t s_std_read_idx = 1;
 
 static volatile bool s_new_frame_ready = false;
-static volatile uint8_t s_current_scale = 0; // 0 = fullscreen 480x320, 1 = studio 240x160
+static volatile uint8_t s_current_scale = 1; // 0 = fullscreen 480x320, 1 = studio 240x160 (UI arranca en STUDIO)
 
 static void player_open_track(int index);
 
@@ -380,6 +380,7 @@ esp_err_t player_start(void) {
     s_status.state = PST_IDLE;
     s_status.repeat = REPEAT_ALL;
     s_status.shuffle = false;
+    s_current_scale = 1;
     portEXIT_CRITICAL(&s_player_mux);
 
     if (!s_cmd_queue) {

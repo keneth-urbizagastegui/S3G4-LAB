@@ -23,7 +23,7 @@ except ImportError:
 CRASH_REGEX = re.compile(r"Guru Meditation|abort\(\)|Backtrace:")
 REBOOT_REGEX = re.compile(r"rst:0x")
 AUTOTEST_REGEX = re.compile(r"AUTOTEST_DONE,tracks=(\d+)")
-STRESS_REGEX = re.compile(r"STRESS,changes=(\d+),seeks=(\d+),title_mismatch=(\d+)")
+STRESS_REGEX = re.compile(r"STRESS,changes=(\d+),seeks=(\d+),title_mismatch=(\d+)(?:,title_wait_ms_max=(\d+))?")
 
 
 def parse_kv_line(line_str, prefix):
@@ -142,7 +142,8 @@ def main():
                 stress_data = {
                     "changes": int(m_stress.group(1)),
                     "seeks": int(m_stress.group(2)),
-                    "title_mismatch": int(m_stress.group(3))
+                    "title_mismatch": int(m_stress.group(3)),
+                    "title_wait_ms_max": int(m_stress.group(4)) if m_stress.group(4) is not None else None
                 }
 
             # Deteccion de AUTOTEST_DONE
@@ -213,13 +214,19 @@ def main():
             groups[key] = []
         groups[key].append(r)
 
-    print("\n" + "=" * 122)
+    print("\n" + "=" * 136)
     print(f"RESUMEN DE RENDIMIENTO ({args.phase}) - (Primeros 2s descartados por escenario)")
-    print("=" * 122)
-    print(f"{'Track':<8}{'Escenario':<14}{'Muestras':<10}{'Dec FPS':<10}{'Pres FPS':<10}{'rd_avg(ms)':<12}{'dec_avg(ms)':<12}{'blit_avg(ms)':<12}{'tch_rd(ms)':<12}{'tch_age(ms)':<12}")
-    print("-" * 122)
+    print("=" * 136)
+    print(f"{'Track':<8}{'Escenario':<14}{'View':<8}{'HUD':<6}{'Muestras':<10}{'Dec FPS':<10}{'Pres FPS':<10}{'rd_avg(ms)':<12}{'dec_avg(ms)':<12}{'blit_avg(ms)':<12}{'tch_rd(ms)':<12}{'tch_age(ms)':<12}")
+    print("-" * 136)
 
-    for (trk, scn), recs in sorted(groups.items(), key=lambda x: (int(x[0][0]) if str(x[0][0]).isdigit() else str(x[0][0]), str(x[0][1]))):
+    def sort_key(item):
+        trk, scn = item[0]
+        trk_str = str(trk)
+        trk_num = int(trk_str) if trk_str.isdigit() else 9999
+        return (trk_num, trk_str, str(scn))
+
+    for (trk, scn), recs in sorted(groups.items(), key=sort_key):
         # Descartar primeros 2s de cada escenario (el primer reporte de 2s)
         filtered = recs[1:] if len(recs) > 1 else recs
         n = len(filtered)
@@ -231,12 +238,15 @@ def main():
             avg_blit = sum(float(x.get("blit_avg", 0.0)) for x in filtered) / n
             avg_tch_rd = sum(float(x.get("touch_read_ms_avg", 0.0)) for x in filtered) / n
             max_tch_age = max((float(x.get("touch_age_ms_max", 0.0)) for x in filtered), default=0.0)
+            v_mode = filtered[0].get("view", "?")
+            hud_mode = filtered[0].get("hud", "?")
         else:
             avg_dec = avg_pres = avg_rd = avg_dec_t = avg_blit = avg_tch_rd = max_tch_age = 0.0
+            v_mode = hud_mode = "?"
 
-        print(f"{trk:<8}{scn:<14}{n:<10}{avg_dec:<10.1f}{avg_pres:<10.1f}{avg_rd:<12.1f}{avg_dec_t:<12.1f}{avg_blit:<12.1f}{avg_tch_rd:<12.1f}{max_tch_age:<12.1f}")
+        print(f"{trk:<8}{scn:<14}{v_mode:<8}{hud_mode:<6}{n:<10}{avg_dec:<10.1f}{avg_pres:<10.1f}{avg_rd:<12.1f}{avg_dec_t:<12.1f}{avg_blit:<12.1f}{avg_tch_rd:<12.1f}{max_tch_age:<12.1f}")
 
-    print("=" * 122)
+    print("=" * 136)
 
     if media_records:
         print("\n" + "=" * 94)
@@ -269,7 +279,11 @@ def main():
             print("\n[CRITERIO F1 FALLIDO]: No se recibio linea STRESS.", file=sys.stderr)
             f1_passed = False
         else:
-            print(f"\n[EVALUACION STRESS F1]: changes={stress_data['changes']}, seeks={stress_data['seeks']}, title_mismatch={stress_data['title_mismatch']}")
+            if stress_data.get('title_wait_ms_max') is not None:
+                print(f"\n[EVALUACION STRESS F1]: changes={stress_data['changes']}, seeks={stress_data['seeks']}, title_mismatch={stress_data['title_mismatch']}, title_wait_ms_max={stress_data['title_wait_ms_max']} ms")
+            else:
+                print(f"\n[EVALUACION STRESS F1]: changes={stress_data['changes']}, seeks={stress_data['seeks']}, title_mismatch={stress_data['title_mismatch']}")
+
             if stress_data['title_mismatch'] != 0:
                 print(f"[CRITERIO F1 FALLIDO]: title_mismatch={stress_data['title_mismatch']} (debe ser 0).", file=sys.stderr)
                 f1_passed = False
@@ -279,6 +293,25 @@ def main():
             if stress_data['seeks'] < 50:
                 print(f"[CRITERIO F1 FALLIDO]: seeks={stress_data['seeks']} < 50.", file=sys.stderr)
                 f1_passed = False
+
+        # Validar consistencia de view y hud en escenarios de autotest (X1)
+        for r in perf_records:
+            scn = r.get("scn", "")
+            if scn in ("hidden", "osd", "seek"):
+                v = r.get("view", "")
+                h = r.get("hud", "")
+                if v != "full":
+                    print(f"[CRITERIO F1 FALLIDO]: Registro con scn='{scn}' tiene view='{v}' (debe ser 'full').", file=sys.stderr)
+                    f1_passed = False
+                    break
+                if scn == "osd" and h != "1":
+                    print(f"[CRITERIO F1 FALLIDO]: Registro con scn='osd' tiene hud='{h}' (debe ser '1').", file=sys.stderr)
+                    f1_passed = False
+                    break
+                if scn in ("hidden", "seek") and h != "0":
+                    print(f"[CRITERIO F1 FALLIDO]: Registro con scn='{scn}' tiene hud='{h}' (debe ser '0').", file=sys.stderr)
+                    f1_passed = False
+                    break
 
         if f1_passed:
             print("\n[RESULTADO F1]: EXITO - Todos los criterios cumplidos satisfactoriamente.")

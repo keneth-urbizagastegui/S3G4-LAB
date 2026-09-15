@@ -118,12 +118,93 @@ static void touch_task(void *arg) {
 }
 
 // -------------------------------------------------------------
-// Timer periódico de LVGL (Núcleo 0, cada 200 ms)
+// Peticiones asíncronas a UI (X3: SOLO gui_task llama lv_* y spotify_ui_*)
+// -------------------------------------------------------------
+typedef enum {
+    UI_REQ_SET_VIEW,
+    UI_REQ_SET_HUD,
+} ui_req_type_t;
+
+typedef struct {
+    ui_req_type_t type;
+    int arg;
+} ui_req_t;
+
+static QueueHandle_t s_ui_req_queue = NULL;
+
+__attribute__((unused)) static bool ui_req_send(ui_req_type_t type, int arg) {
+    if (!s_ui_req_queue) return false;
+    ui_req_t req = {.type = type, .arg = arg};
+    return (xQueueSend(s_ui_req_queue, &req, pdMS_TO_TICKS(50)) == pdPASS);
+}
+
+// -------------------------------------------------------------
+// Estado real de UI publicado atómicamente por gui_task (X1, X4)
+// -------------------------------------------------------------
+typedef struct {
+    char title[64];
+    int track_index;
+    view_mode_t view_mode;
+    int hud_visible; // 0 = hidden, 1 = visible
+    uint32_t version;
+} ui_published_state_t;
+
+static ui_published_state_t s_published_ui = {
+    .title = "",
+    .track_index = 0,
+    .view_mode = VIEW_MODE_STUDIO,
+    .hud_visible = 0,
+    .version = 0,
+};
+static portMUX_TYPE s_ui_pub_mux = portMUX_INITIALIZER_UNLOCKED;
+
+static void publish_ui_state(void) {
+    char title[64] = {0};
+    int trk = 0;
+    view_mode_t vm = VIEW_MODE_STUDIO;
+    int hud = 0;
+    spotify_ui_get_published_info(title, sizeof(title), &trk, &vm, &hud);
+
+    portENTER_CRITICAL(&s_ui_pub_mux);
+    snprintf(s_published_ui.title, sizeof(s_published_ui.title), "%s", title);
+    s_published_ui.track_index = trk;
+    s_published_ui.view_mode = vm;
+    s_published_ui.hud_visible = hud;
+    s_published_ui.version++;
+    portEXIT_CRITICAL(&s_ui_pub_mux);
+}
+
+void ui_get_published_state(char *title_buf, size_t max_len, int *track_idx, view_mode_t *vmode, int *hud_vis) {
+    portENTER_CRITICAL(&s_ui_pub_mux);
+    if (title_buf && max_len > 0) {
+        snprintf(title_buf, max_len, "%s", s_published_ui.title);
+    }
+    if (track_idx) *track_idx = s_published_ui.track_index;
+    if (vmode) *vmode = s_published_ui.view_mode;
+    if (hud_vis) *hud_vis = s_published_ui.hud_visible;
+    portEXIT_CRITICAL(&s_ui_pub_mux);
+}
+
+void perf_get_ui_state(char *out_view, size_t max_len, int *out_hud) {
+    portENTER_CRITICAL(&s_ui_pub_mux);
+    if (out_view && max_len > 0) {
+        const char *vstr = (s_published_ui.view_mode == VIEW_MODE_FULLSCREEN) ? "full" : "studio";
+        snprintf(out_view, max_len, "%s", vstr);
+    }
+    if (out_hud) {
+        *out_hud = s_published_ui.hud_visible;
+    }
+    portEXIT_CRITICAL(&s_ui_pub_mux);
+}
+
+// -------------------------------------------------------------
+// Timer periódico de LVGL (Núcleo 0, cada 100 ms)
 // -------------------------------------------------------------
 static void ui_refresh_timer_cb(lv_timer_t *timer) {
     player_status_t status;
     player_get_status(&status);
     spotify_ui_update_from_status(&status);
+    publish_ui_state();
 }
 
 // -------------------------------------------------------------
@@ -131,6 +212,9 @@ static void ui_refresh_timer_cb(lv_timer_t *timer) {
 // -------------------------------------------------------------
 static void gui_task(void *arg) {
     ESP_LOGI(TAG, "Iniciando gui_task en Core 0...");
+
+    s_ui_req_queue = xQueueCreate(8, sizeof(ui_req_t));
+    assert(s_ui_req_queue != NULL);
 
     lv_init();
     lv_tick_set_cb((lv_tick_get_cb_t)my_tick_get_cb);
@@ -147,20 +231,40 @@ static void gui_task(void *arg) {
     // Callbacks dummy para spotify_ui_init (la UI envía los comandos internamente)
     spotify_ui_init(NULL, NULL, NULL);
 
-    // Timer de refresco periódico desde player_get_status (200 ms)
-    lv_timer_create(ui_refresh_timer_cb, 200, NULL);
+    // Publicar estado inicial
+    publish_ui_state();
+
+    // Timer de refresco periódico desde player_get_status (100 ms)
+    lv_timer_create(ui_refresh_timer_cb, 100, NULL);
 
     ESP_LOGI(TAG, "Bucle de eventos GUI LVGL iniciado en Core 0.");
     while (1) {
-        // Traspaso atómico de fotograma decodificado
+        // 1. Consumir peticiones UI antes de lv_timer_handler (X3)
+        ui_req_t req;
+        while (xQueueReceive(s_ui_req_queue, &req, 0) == pdPASS) {
+            if (req.type == UI_REQ_SET_VIEW) {
+                spotify_ui_set_view_mode((view_mode_t)req.arg);
+            } else if (req.type == UI_REQ_SET_HUD) {
+                spotify_ui_set_hud_forced(req.arg);
+            }
+            publish_ui_state();
+        }
+
+        // 2. Traspaso atómico de fotograma decodificado
         uint16_t *frame_buf = NULL;
         int frame_w = 0, frame_h = 0;
         if (player_check_and_clear_new_frame(&frame_buf, &frame_w, &frame_h)) {
-            s_present_pending = true;
-            spotify_ui_display_frame(frame_buf, frame_w, frame_h);
+            if (spotify_ui_display_frame(frame_buf, frame_w, frame_h)) {
+                s_present_pending = true;
+            }
         }
 
+        // 3. Ejecutar handler de LVGL
         uint32_t delay_ms = lv_timer_handler();
+
+        // 4. Publicar estado UI actualizado
+        publish_ui_state();
+
         // Regla F1: no dormir más de 5 ms entre lv_timer_handler
         if (delay_ms > 5) delay_ms = 5;
         vTaskDelay(pdMS_TO_TICKS(delay_ms ? delay_ms : 1));
@@ -173,7 +277,7 @@ static void gui_task(void *arg) {
 #if CONFIG_APP_PERF_AUTOTEST
 
 static void autotest_task(void *arg) {
-    ESP_LOGI(TAG, "Tarea de autotest F1 iniciada (usa cola de comandos player_cmd_send).");
+    ESP_LOGI(TAG, "Tarea de autotest F1 iniciada (usa cola de comandos y peticiones UI).");
 
     vTaskDelay(pdMS_TO_TICKS(1000));
 
@@ -189,15 +293,40 @@ static void autotest_task(void *arg) {
         player_cmd_t cmd_open = {.type = PCMD_OPEN, .arg = track_idx};
         player_cmd_send(&cmd_open);
 
-        vTaskDelay(pdMS_TO_TICKS(500));
+        // X1: Al empezar cada track pedir a gui_task VIEW_MODE_FULLSCREEN + PCMD_SET_VIDEO_RECT {0,0,480,320}
+        ui_req_send(UI_REQ_SET_VIEW, VIEW_MODE_FULLSCREEN);
+        player_cmd_t cmd_rect = {.type = PCMD_SET_VIDEO_RECT, .rect = {0, 0, 480, 320}};
+        player_cmd_send(&cmd_rect);
+
+        // Esperar confirmación de que la UI pasó a FULLSCREEN
+        for (int w = 0; w < 50; w++) {
+            view_mode_t vm = VIEW_MODE_STUDIO;
+            ui_get_published_state(NULL, 0, NULL, &vm, NULL);
+            if (vm == VIEW_MODE_FULLSCREEN) break;
+            vTaskDelay(pdMS_TO_TICKS(10));
+        }
+
+        vTaskDelay(pdMS_TO_TICKS(400));
 
         for (int s = 0; s < 3; s++) {
             const char *scn_name = scenarios[s];
-            perf_set_scenario(track_idx, scn_name);
-            ESP_LOGI(TAG, "Track %d -> Escenario '%s' (%d s)", track_idx, scn_name, sec_per_scenario);
 
-            // Configurar HUD: hidden=1, osd=2, seek=1
-            spotify_ui_set_hud_forced((s == 1) ? 2 : 1);
+            // X1 & X3: hidden = HUD forzado oculto (1); osd = HUD forzado visible (2); seek = oculto (1)
+            int hud_req = (s == 1) ? 2 : 1;
+            ui_req_send(UI_REQ_SET_HUD, hud_req);
+
+            int expected_hud = (s == 1) ? 1 : 0;
+            for (int w = 0; w < 50; w++) {
+                view_mode_t vm = VIEW_MODE_STUDIO;
+                int hud_vis = -1;
+                ui_get_published_state(NULL, 0, NULL, &vm, &hud_vis);
+                if (vm == VIEW_MODE_FULLSCREEN && hud_vis == expected_hud) break;
+                vTaskDelay(pdMS_TO_TICKS(10));
+            }
+
+            perf_set_scenario(track_idx, scn_name);
+            ESP_LOGI(TAG, "Track %d -> Escenario '%s' (%d s, view=full, hud=%d)",
+                     track_idx, scn_name, sec_per_scenario, expected_hud);
 
             int64_t scn_start_time = esp_timer_get_time();
             int64_t scenario_duration_us = (int64_t)sec_per_scenario * 1000000LL;
@@ -237,6 +366,7 @@ static void autotest_task(void *arg) {
     int changes_count = 0;
     int seeks_count = 0;
     int title_mismatch_count = 0;
+    int64_t title_wait_ms_max = 0;
 
     // 20 cambios de pista (PCMD_NEXT/PREV alternados cada 500 ms)
     for (int i = 0; i < 20; i++) {
@@ -248,15 +378,35 @@ static void autotest_task(void *arg) {
         vTaskDelay(pdMS_TO_TICKS(500));
         perf_report_if_due();
 
-        player_status_t st;
-        player_get_status(&st);
+        // X4: Esperar hasta 600 ms a que el titulo publicado por la UI coincida con player_get_track_title(status.track_index)
+        int64_t t0 = esp_timer_get_time();
+        bool matched = false;
         char expected_title[64] = {0};
-        player_get_track_title(st.track_index, expected_title, sizeof(expected_title));
+        char ui_title[64] = {0};
 
-        if (strcmp(st.title, expected_title) != 0) {
+        while ((esp_timer_get_time() - t0) < 600000LL) {
+            player_status_t st;
+            player_get_status(&st);
+            player_get_track_title(st.track_index, expected_title, sizeof(expected_title));
+
+            ui_get_published_state(ui_title, sizeof(ui_title), NULL, NULL, NULL);
+
+            if (strlen(ui_title) > 0 && strcmp(ui_title, expected_title) == 0) {
+                matched = true;
+                break;
+            }
+            vTaskDelay(pdMS_TO_TICKS(10));
+        }
+
+        int64_t wait_ms = (esp_timer_get_time() - t0) / 1000;
+        if (wait_ms > title_wait_ms_max) {
+            title_wait_ms_max = wait_ms;
+        }
+
+        if (!matched) {
             title_mismatch_count++;
-            ESP_LOGW(TAG, "Mismatch en cambio %d: pista=%d, esperado='%s', obtenido='%s'",
-                     i, (int)st.track_index, expected_title, st.title);
+            ESP_LOGW(TAG, "Mismatch en cambio %d tras %lld ms: esperado='%s', UI='%s'",
+                     i, (long long)wait_ms, expected_title, ui_title);
         }
     }
 
@@ -276,18 +426,39 @@ static void autotest_task(void *arg) {
         vTaskDelay(pdMS_TO_TICKS(100));
         perf_report_if_due();
 
-        player_get_status(&st);
+        // X4: Esperar hasta 600 ms comprobando consistencia con UI publicada
+        int64_t t0 = esp_timer_get_time();
+        bool matched = false;
         char expected_title[64] = {0};
-        player_get_track_title(st.track_index, expected_title, sizeof(expected_title));
+        char ui_title[64] = {0};
 
-        if (strcmp(st.title, expected_title) != 0) {
+        while ((esp_timer_get_time() - t0) < 600000LL) {
+            player_get_status(&st);
+            player_get_track_title(st.track_index, expected_title, sizeof(expected_title));
+
+            ui_get_published_state(ui_title, sizeof(ui_title), NULL, NULL, NULL);
+
+            if (strlen(ui_title) > 0 && strcmp(ui_title, expected_title) == 0) {
+                matched = true;
+                break;
+            }
+            vTaskDelay(pdMS_TO_TICKS(10));
+        }
+
+        int64_t wait_ms = (esp_timer_get_time() - t0) / 1000;
+        if (wait_ms > title_wait_ms_max) {
+            title_wait_ms_max = wait_ms;
+        }
+
+        if (!matched) {
             title_mismatch_count++;
-            ESP_LOGW(TAG, "Mismatch en seek %d: pista=%d, esperado='%s', obtenido='%s'",
-                     i, (int)st.track_index, expected_title, st.title);
+            ESP_LOGW(TAG, "Mismatch en seek %d tras %lld ms: esperado='%s', UI='%s'",
+                     i, (long long)wait_ms, expected_title, ui_title);
         }
     }
 
-    printf("STRESS,changes=%d,seeks=%d,title_mismatch=%d\n", changes_count, seeks_count, title_mismatch_count);
+    printf("STRESS,changes=%d,seeks=%d,title_mismatch=%d,title_wait_ms_max=%lld\n",
+           changes_count, seeks_count, title_mismatch_count, (long long)title_wait_ms_max);
     fflush(stdout);
 
     printf("AUTOTEST_DONE,tracks=%d\n", total_tracks);

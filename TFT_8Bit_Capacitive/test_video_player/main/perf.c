@@ -13,6 +13,7 @@ static uint32_t s_frames_decoded = 0;
 static uint32_t s_frames_presented = 0;
 static uint32_t s_frames_dropped = 0;    // Siempre 0 en F0/F1
 static uint32_t s_oversize_frames = 0;
+static uint32_t s_frame_mismatch = 0;
 
 static uint64_t s_read_sum_us = 0;
 static uint32_t s_read_count = 0;
@@ -49,6 +50,7 @@ void perf_init(void) {
     s_frames_presented = 0;
     s_frames_dropped = 0;
     s_oversize_frames = 0;
+    s_frame_mismatch = 0;
     s_read_sum_us = 0;
     s_read_count = 0;
     s_read_max_us = 0;
@@ -117,6 +119,12 @@ void perf_mark_oversize(void) {
     portEXIT_CRITICAL(&s_perf_mux);
 }
 
+void perf_mark_frame_mismatch(void) {
+    portENTER_CRITICAL(&s_perf_mux);
+    s_frame_mismatch++;
+    portEXIT_CRITICAL(&s_perf_mux);
+}
+
 void perf_mark_touch_read(uint32_t us) {
     portENTER_CRITICAL(&s_perf_mux);
     s_touch_rd_sum_us += us;
@@ -169,6 +177,7 @@ void perf_report_if_due(void) {
     uint32_t pres = s_frames_presented;
     uint32_t drop = s_frames_dropped;
     uint32_t over = s_oversize_frames;
+    uint32_t mismatch = s_frame_mismatch;
 
     uint64_t rd_sum = s_read_sum_us;
     uint32_t rd_cnt = s_read_count;
@@ -199,6 +208,7 @@ void perf_report_if_due(void) {
     s_frames_presented = 0;
     s_frames_dropped = 0;
     s_oversize_frames = 0;
+    s_frame_mismatch = 0;
 
     s_read_sum_us = 0;
     s_read_count = 0;
@@ -241,18 +251,24 @@ void perf_report_if_due(void) {
     s_last_pres_fps = (float)pres_fps;
     portEXIT_CRITICAL(&s_perf_mux);
 
+    char view_str[16] = "studio";
+    int hud_val = 0;
+    perf_get_ui_state(view_str, sizeof(view_str), &hud_val);
+
     uint32_t heap_int = (uint32_t)heap_caps_get_free_size(MALLOC_CAP_INTERNAL);
     uint32_t heap_psram = (uint32_t)heap_caps_get_free_size(MALLOC_CAP_SPIRAM);
     uint32_t t_ms = (uint32_t)(now / 1000);
 
-    printf("PERF,t_ms=%lu,dec_fps=%.1f,pres_fps=%.1f,drop=%lu,over=%lu,rd_avg=%.1f,rd_max=%.1f,dec_avg=%.1f,dec_max=%.1f,blit_avg=%.1f,blit_max=%.1f,late_max=%.1f,touch_read_ms_avg=%.1f,touch_read_ms_max=%.1f,touch_age_ms_max=%.1f,heap_int=%lu,heap_psram=%lu,track=%d,scn=%s\n",
+    printf("PERF,t_ms=%lu,dec_fps=%.1f,pres_fps=%.1f,drop=%lu,over=%lu,frame_mismatch=%lu,rd_avg=%.1f,rd_max=%.1f,dec_avg=%.1f,dec_max=%.1f,blit_avg=%.1f,blit_max=%.1f,late_max=%.1f,touch_read_ms_avg=%.1f,touch_read_ms_max=%.1f,touch_age_ms_max=%.1f,heap_int=%lu,heap_psram=%lu,track=%d,scn=%s,view=%s,hud=%d\n",
            (unsigned long)t_ms, dec_fps, pres_fps, (unsigned long)drop, (unsigned long)over,
+           (unsigned long)mismatch,
            rd_avg, rd_max,
            dec_avg, dec_max,
            blit_avg, blit_max,
            late_max,
            touch_read_ms_avg, touch_read_ms_max, touch_age_ms_max,
            (unsigned long)heap_int, (unsigned long)heap_psram,
-           track, scn);
+           track, scn,
+           view_str, hud_val);
     fflush(stdout);
 }

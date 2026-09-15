@@ -5,6 +5,7 @@
 #include "esp_timer.h"
 #include "esp_heap_caps.h"
 #include "ili9488_8080.h"
+#include "perf.h"
 
 __attribute__((unused)) static const char *TAG = "SPOTIFY_UI";
 
@@ -548,6 +549,13 @@ void spotify_ui_init(track_change_cb_t track_cb, playback_ctrl_cb_t play_cb, see
 
     lv_screen_load(s_scr_studio);
     s_view_mode = VIEW_MODE_STUDIO;
+
+    // Vista inicial coherente (X2): enviar PCMD_SET_VIDEO_RECT coherente con STUDIO (240x160)
+    player_cmd_t cmd = {
+        .type = PCMD_SET_VIDEO_RECT,
+        .rect = {10, 34, STUDIO_W, STUDIO_H}
+    };
+    player_cmd_send(&cmd);
 }
 
 void spotify_ui_update_progress(uint32_t elapsed_sec, uint32_t duration_sec, int percent) {
@@ -647,6 +655,8 @@ void spotify_ui_set_view_mode(view_mode_t mode) {
     s_view_mode = mode;
     if (mode == VIEW_MODE_STUDIO) {
         lv_screen_load(s_scr_studio);
+        player_cmd_t cmd = {.type = PCMD_SET_VIDEO_RECT, .rect = {10, 34, STUDIO_W, STUDIO_H}};
+        player_cmd_send(&cmd);
     } else {
         lv_screen_load(s_scr_fullscreen);
         if (s_hud_overlay) {
@@ -657,6 +667,8 @@ void spotify_ui_set_view_mode(view_mode_t mode) {
                 s_last_touch_hud_time = esp_timer_get_time();
             }
         }
+        player_cmd_t cmd = {.type = PCMD_SET_VIDEO_RECT, .rect = {0, 0, FULL_W, FULL_H}};
+        player_cmd_send(&cmd);
     }
 }
 
@@ -707,19 +719,38 @@ void spotify_ui_invalidate_video(void) {
     }
 }
 
-void spotify_ui_display_frame(uint16_t *buf, int width, int height) {
-    if (!buf) return;
-    if (s_view_mode == VIEW_MODE_STUDIO && s_canvas_studio) {
-        lv_canvas_set_buffer(s_canvas_studio, buf, width, height, LV_COLOR_FORMAT_RGB565);
-        lv_obj_invalidate(s_canvas_studio);
-    } else if (s_view_mode == VIEW_MODE_FULLSCREEN && s_canvas_fullscreen) {
-        lv_canvas_set_buffer(s_canvas_fullscreen, buf, width, height, LV_COLOR_FORMAT_RGB565);
-        lv_obj_invalidate(s_canvas_fullscreen);
+bool spotify_ui_display_frame(uint16_t *buf, int width, int height) {
+    if (!buf) return false;
+    if (s_view_mode == VIEW_MODE_STUDIO) {
+        if (width != STUDIO_W || height != STUDIO_H) {
+            perf_mark_frame_mismatch();
+            return false;
+        }
+        if (s_canvas_studio) {
+            lv_canvas_set_buffer(s_canvas_studio, buf, STUDIO_W, STUDIO_H, LV_COLOR_FORMAT_RGB565);
+            lv_obj_invalidate(s_canvas_studio);
+            return true;
+        }
+    } else if (s_view_mode == VIEW_MODE_FULLSCREEN) {
+        if (width != FULL_W || height != FULL_H) {
+            perf_mark_frame_mismatch();
+            return false;
+        }
+        if (s_canvas_fullscreen) {
+            lv_canvas_set_buffer(s_canvas_fullscreen, buf, FULL_W, FULL_H, LV_COLOR_FORMAT_RGB565);
+            lv_obj_invalidate(s_canvas_fullscreen);
+            return true;
+        }
     }
+    return false;
 }
 
 void spotify_ui_update_from_status(const player_status_t *status) {
     if (!status) return;
+
+    if (status->track_index >= 0 && status->track_index < PLAYLIST_SIZE) {
+        s_current_track_idx = status->track_index;
+    }
 
     // 1. Titulo y artista
     if (s_lbl_title && status->title[0] != '\0') {
@@ -759,5 +790,33 @@ void spotify_ui_update_from_status(const player_status_t *status) {
     // 6. Animacion de ecualizador si esta en PLAYING
     if (status->state == PST_PLAYING) {
         spotify_ui_tick();
+    }
+}
+
+void spotify_ui_get_published_info(char *title_buf, size_t max_len, int *track_idx, view_mode_t *vmode, int *hud_vis) {
+    if (vmode) *vmode = s_view_mode;
+    if (track_idx) *track_idx = s_current_track_idx;
+
+    if (title_buf && max_len > 0) {
+        const char *txt = "";
+        if (s_view_mode == VIEW_MODE_FULLSCREEN) {
+            if (s_hud_lbl_title) {
+                txt = lv_label_get_text(s_hud_lbl_title);
+            }
+        } else {
+            if (s_lbl_title) {
+                txt = lv_label_get_text(s_lbl_title);
+            }
+        }
+        if (!txt) txt = "";
+        snprintf(title_buf, max_len, "%s", txt);
+    }
+
+    if (hud_vis) {
+        if (s_view_mode == VIEW_MODE_FULLSCREEN && s_hud_overlay) {
+            *hud_vis = lv_obj_has_flag(s_hud_overlay, LV_OBJ_FLAG_HIDDEN) ? 0 : 1;
+        } else {
+            *hud_vis = 0;
+        }
     }
 }

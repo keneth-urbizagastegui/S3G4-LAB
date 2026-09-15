@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#include <stddef.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -15,6 +16,7 @@ void perf_mark_decoded(void);
 void perf_mark_presented(void);
 void perf_mark_blit(uint32_t us);
 void perf_mark_oversize(void);
+void perf_mark_frame_mismatch(void);
 void perf_set_scenario(int track, const char *scn);
 void perf_report_if_due(void);
 
@@ -24,6 +26,9 @@ void perf_mark_touch_age(uint32_t us);
 
 // Consulta de FPS calculados de la ventana actual
 void perf_get_fps(float *dec_fps, float *pres_fps);
+
+// Estado de UI para informe PERF (publicado por gui_task)
+void perf_get_ui_state(char *out_view, size_t max_len, int *out_hud);
 
 #ifdef __cplusplus
 }

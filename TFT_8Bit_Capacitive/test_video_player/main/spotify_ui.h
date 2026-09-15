@@ -36,7 +36,7 @@ typedef void (*seek_cb_t)(int percent);
 
 void spotify_ui_init(track_change_cb_t track_cb, playback_ctrl_cb_t play_cb, seek_cb_t seek_cb);
 void spotify_ui_update_from_status(const player_status_t *status);
-void spotify_ui_display_frame(uint16_t *buf, int width, int height);
+bool spotify_ui_display_frame(uint16_t *buf, int width, int height);
 
 void spotify_ui_update_progress(uint32_t elapsed_sec, uint32_t duration_sec, int percent);
 void spotify_ui_update_fps(float fps);
@@ -48,6 +48,9 @@ void spotify_ui_set_view_mode(view_mode_t mode);
 void spotify_ui_set_hud_forced(int mode);
 view_mode_t spotify_ui_get_view_mode(void);
 playback_state_t spotify_ui_get_play_state(void);
+
+// Consulta de estado interno para publicacion atomica por gui_task (X1, X4)
+void spotify_ui_get_published_info(char *title_buf, size_t max_len, int *track_idx, view_mode_t *vmode, int *hud_vis);
 
 #ifdef __cplusplus
 }
