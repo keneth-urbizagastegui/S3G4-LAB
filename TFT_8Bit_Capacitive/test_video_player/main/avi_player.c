@@ -18,6 +18,7 @@
 #include "esp_jpeg_dec.h"
 #include "perf.h"
 #include "lcd_bus.h"
+#include "tear_diag.h"
 
 static const char *TAG = "AVI_PLAYER_SIMD";
 
@@ -663,8 +664,19 @@ esp_err_t avi_player_read_and_blit_direct(void) {
         int cur_y2 = line_y + cur_lines - 1;
         line_y += cur_lines;
 
+        // Diagnostico de tearing (T2)
+        tear_diag_mode_t diag = tear_diag_get_mode();
+        bool skip_strip = false;
+        if (diag == TEAR_DIAG_MODE_A && b >= (process_count / 2)) {
+            // Modo A: solo mitad superior (10 franjas = 160 lineas, ~10.1 ms)
+            skip_strip = true;
+        } else if (diag == TEAR_DIAG_MODE_B && b != 5) {
+            // Modo B: franja unica fija (franja 5 = lineas 80..95, ~1.0 ms)
+            skip_strip = true;
+        }
+
         // Verificar recorte contra video_rect
-        if (vw > 0 && vh > 0) {
+        if (!skip_strip && vw > 0 && vh > 0) {
             int clip_y1 = (cur_y1 > vy) ? cur_y1 : vy;
             int clip_y2 = (cur_y2 < (vy + vh - 1)) ? cur_y2 : (vy + vh - 1);
 

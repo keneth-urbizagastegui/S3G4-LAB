@@ -191,7 +191,7 @@ esp_err_t ili9488_8080_init(void) {
 #endif
 
 #ifndef CONFIG_APP_LCD_B1_P2
-#define CONFIG_APP_LCD_B1_P2 0x11
+#define CONFIG_APP_LCD_B1_P2 0x12
 #endif
 
     // Registro FRMCTR1 (0xB1): Valor original 60 Hz = {0xA0, 0x11}. Ajuste autorizado Keneth (15/09/2026) = {CONFIG_APP_LCD_B1_P1, CONFIG_APP_LCD_B1_P2}

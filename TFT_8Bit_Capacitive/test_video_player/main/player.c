@@ -15,6 +15,7 @@
 #include "perf.h"
 #include "sdcard_spi.h"
 #include "lcd_bus.h"
+#include "tear_diag.h"
 #include "sdkconfig.h"
 
 static const char *TAG = "PLAYER";
@@ -412,6 +413,49 @@ static void player_task(void *arg) {
         portEXIT_CRITICAL(&s_player_mux);
 
         if (cur_state == PST_PLAYING) {
+            tear_diag_mode_t diag = tear_diag_get_mode();
+            if (diag == TEAR_DIAG_MODE_C) {
+                // Modo C: patron de prueba sin video (alternar pantalla completa rojo/azul a 30 Hz con TE ON)
+#if CONFIG_APP_TE_SYNC
+                if (lcd_bus_te_is_present()) {
+                    uint32_t te_period = lcd_bus_te_get_period_us();
+                    uint32_t te_timeout = (te_period * 3) / 2;
+                    uint32_t te_wait_us = 0;
+                    esp_err_t te_res = lcd_bus_wait_te(te_timeout, &te_wait_us);
+                    if (te_res == ESP_OK) {
+                        perf_mark_te_wait(te_wait_us);
+                    } else {
+                        perf_mark_te_timeout();
+                    }
+                }
+#endif
+                static bool s_diag_c_toggle = false;
+                s_diag_c_toggle = !s_diag_c_toggle;
+                uint16_t color = s_diag_c_toggle ? 0xF800 : 0x001F; // Rojo o Azul RGB565
+
+                static uint16_t *s_diag_c_buf = NULL;
+                if (!s_diag_c_buf) {
+                    s_diag_c_buf = (uint16_t *)heap_caps_aligned_alloc(16, 480 * 16 * sizeof(uint16_t), MALLOC_CAP_DMA | MALLOC_CAP_INTERNAL);
+                }
+                if (s_diag_c_buf) {
+                    for (int p = 0; p < 480 * 16; p++) {
+                        s_diag_c_buf[p] = color;
+                    }
+                    lcd_bus_lock();
+                    for (int b = 0; b < 20; b++) {
+                        uint16_t y1 = b * 16;
+                        uint16_t y2 = y1 + 15;
+                        lcd_bus_draw_strip_async(0, y1, 479, y2, s_diag_c_buf, 480 * 16 * sizeof(uint16_t));
+                        lcd_bus_wait_strip_done(NULL);
+                    }
+                    lcd_bus_unlock();
+                }
+
+                perf_mark_presented();
+                vTaskDelay(pdMS_TO_TICKS(33)); // Cadencia a ~30 Hz
+                continue;
+            }
+
             const avi_info_t *cur_info = avi_player_get_info();
             if (!cur_info->is_open) {
                 vTaskDelay(pdMS_TO_TICKS(20));

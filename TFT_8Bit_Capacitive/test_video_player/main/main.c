@@ -20,6 +20,7 @@
 #include "spotify_ui.h"
 #include "perf.h"
 #include "lcd_bus.h"
+#include "tear_diag.h"
 
 static const char *TAG = "MAIN_APP";
 
@@ -701,6 +702,7 @@ void app_main(void) {
 
     perf_init();
     lcd_bus_init();
+    tear_diag_init();
 
     // 1. Inicializar Hardware
     ESP_ERROR_CHECK(ili9488_8080_init_clock(16 * 1000 * 1000));
