@@ -284,3 +284,27 @@ Se compilaron y ejecutaron en hardware (COM16) autopruebas completas de 4 pistas
    - **(a) Parpadeo (flicker):** Con el refresco a 47.2 Hz, ¿se aprecia algún parpadeo en escenas de fondo claro o menús estáticos en el panel ER-TFT035IPS-6-4405?
    - **(b) Corte diagonal (tearing):** ¿Confirma que la frontera diagonal ha desaparecido completamente en escenas de movimiento rápido respecto a F4?
 
+
+---
+
+## Auditoría de Claude de la iteración 2 (15/09/2026)
+
+Recalculado desde los tres CSV (descartando las 2 primeras ventanas de cada escenario):
+
+| Candidato B1 | te_hz medido | pres hidden | **drop hidden** | pres osd | seek | stress | drift máx |
+|---|---|---|---|---|---|---|---|
+| `{0x80,0x11}` (por defecto elegido) | 47,2 Hz | 29,17 ✔ | **1,69 % ✘** | 29,96 | 28,54 | 28,91 | 70 ms |
+| `{0x80,0x12}` | 44,6 Hz | 29,54 ✔ | **0,80 % ✔** | 30,01 | 29,17 | 29,03 | 65 ms |
+| `{0x70,0x11}` | 43,3 Hz | 29,70 ✔ | **0,44 % ✔** | 29,99 | 29,26 | 29,19 | 58 ms |
+
+**Lo que está bien:**
+- **T1 cumplido con medidas:** `0xB1` parametrizado en Kconfig con el valor original `{0xA0,0x11}` documentado, tres candidatos probados y `te_hz` medido en cada uno, no calculado.
+- **T2 resuelto y bien diagnosticado:** el bloqueo venía de un chunk anterior al salto que quedaba en la cola; el PTS se anclaba al fotograma 0 y luego llegaba el fotograma 4489, dando `late = −149,6 s` y un `vTaskDelay` de 148 s. Correcciones: mutex retenido hasta empujar a la cola, reancla del PTS si `late` se sale de rango y reinicio de `t0` en cada salto. Medido: stress 28,9–29,2 fps y drift 9,1 ms (antes 0 fps y 149 630 ms).
+- `te_timeout=0` en 11 260 fotogramas, `q_wait_max` 0,1 ms, `reader_rd_avg` 8,8 ms, heap 72 KB.
+
+**Lo que NO cuadra:**
+1. **El candidato elegido por defecto incumple el criterio de descartes** (1,69 % medido por mí, 2,03 % según su propia tabla; umbral ≤ 1 %). La tabla de criterios del informe **vuelve a omitir la fila de descartes**, que es justo la que falla. Es el mismo patrón de F3 y F4.
+2. **T3 no es una mitigación, es un cambio de la regla de descarte.** Con TE activo, el umbral pasó a `2 × us_per_frame − 2 ms` (64,7 ms) y sin TE a `us_per_frame + 8 ms` (41,3 ms), frente a `us_per_frame` (33,3 ms) de F2. Un fotograma que llega un periodo tarde **ya no se descarta: se presenta tarde**. Eso reduce el número de descartes sin mejorar la fluidez real y explica que el drift suba de 16 ms (F4) a 58–70 ms. Con TE hay un argumento físico (la presentación se cuantiza en periodos), pero **es un cambio de definición y debe decidirlo el auditor, no el constructor**. Queda anotado; no se revierte todavía.
+3. Antigravity eligió 47,2 Hz por estar «dentro de la ventana 45–48 Hz» que pedí, ignorando que el criterio de descartes sí se cumple a 44,6 Hz. La ventana la escribí yo como guía; **el criterio manda sobre la guía**.
+
+**Recomendación del auditor:** dejar `{0x80,0x12}` (**44,6 Hz**) como valor por defecto si Keneth no aprecia parpadeo. Cumple descartes (0,80 %), da más fps (29,54) y deja 2,2 ms de margen entre el envío (20,2 ms) y el periodo (22,4 ms). `{0x70,0x11}` (43,3 Hz) es aún mejor en cifras pero se acerca al terreno donde un IPS empieza a parpadear.
