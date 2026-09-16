@@ -70,6 +70,51 @@ static uint32_t my_tick_get_cb(void) {
     return (uint32_t)(esp_timer_get_time() / 1000);
 }
 
+#define ROT_CHUNK_LINES 16
+DMA_ATTR static uint16_t s_rot_chunk_buf[320 * ROT_CHUNK_LINES];
+
+static void draw_bitmap_oriented(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, const uint16_t *pixels) {
+    uint8_t madctl = ili9488_8080_get_madctl();
+    if (madctl == 0x28) {
+        ili9488_8080_draw_bitmap(x1, y1, x2, y2, pixels);
+        return;
+    }
+
+    int w = x2 - x1 + 1;
+    int h = y2 - y1 + 1;
+    if (w <= 0 || h <= 0) return;
+
+    // Rotar coordenadas lógicas 480x320 a físicas 320x480 (MADCTL 0x48)
+    // X_phys = 319 - Y_logic, Y_phys = X_logic
+    uint16_t px1 = (uint16_t)(319 - y2);
+    uint16_t px2 = (uint16_t)(319 - y1);
+    int w_phys = h; // W_phys <= 320
+    if (w_phys > 320) w_phys = 320;
+
+    int total_lines = w; // H_phys = w
+    int cur_py = x1;
+
+    while (total_lines > 0) {
+        int chunk_h = (total_lines > ROT_CHUNK_LINES) ? ROT_CHUNK_LINES : total_lines;
+        uint16_t cur_py1 = (uint16_t)cur_py;
+        uint16_t cur_py2 = (uint16_t)(cur_py + chunk_h - 1);
+
+        for (int r = 0; r < chunk_h; r++) {
+            int x_rel = (cur_py + r) - x1;
+            int dst_row = r * w_phys;
+            for (int c = 0; c < w_phys; c++) {
+                int y_rel = (h - 1) - c;
+                s_rot_chunk_buf[dst_row + c] = pixels[y_rel * w + x_rel];
+            }
+        }
+
+        ili9488_8080_draw_bitmap(px1, cur_py1, px2, cur_py2, s_rot_chunk_buf);
+
+        cur_py += chunk_h;
+        total_lines -= chunk_h;
+    }
+}
+
 static void lvgl_disp_flush_cb(lv_display_t *disp, const lv_area_t *area, uint8_t *px_map) {
     uint16_t *pixels = (uint16_t *)px_map;
     view_mode_t vmode = spotify_ui_get_view_mode();
@@ -100,7 +145,7 @@ static void lvgl_disp_flush_cb(lv_display_t *disp, const lv_area_t *area, uint8_
             // Franja superior que queda fuera del video
             if (area->y1 < vy1) {
                 int64_t t0 = esp_timer_get_time();
-                ili9488_8080_draw_bitmap(area->x1, area->y1, area->x2, vy1 - 1, pixels);
+                draw_bitmap_oriented(area->x1, area->y1, area->x2, vy1 - 1, pixels);
                 int64_t blit_us = esp_timer_get_time() - t0;
                 perf_mark_blit((uint32_t)blit_us);
             }
@@ -109,7 +154,7 @@ static void lvgl_disp_flush_cb(lv_display_t *disp, const lv_area_t *area, uint8_
             if (area->y2 > vy2) {
                 int64_t t0 = esp_timer_get_time();
                 size_t offset_pixels = (size_t)(vy2 + 1 - area->y1) * w_span;
-                ili9488_8080_draw_bitmap(area->x1, vy2 + 1, area->x2, area->y2, pixels + offset_pixels);
+                draw_bitmap_oriented(area->x1, vy2 + 1, area->x2, area->y2, pixels + offset_pixels);
                 int64_t blit_us = esp_timer_get_time() - t0;
                 perf_mark_blit((uint32_t)blit_us);
             }
@@ -120,7 +165,7 @@ static void lvgl_disp_flush_cb(lv_display_t *disp, const lv_area_t *area, uint8_
     }
 
     int64_t t0 = esp_timer_get_time();
-    ili9488_8080_draw_bitmap(area->x1, area->y1, area->x2, area->y2, pixels);
+    draw_bitmap_oriented(area->x1, area->y1, area->x2, area->y2, pixels);
     int64_t blit_us = esp_timer_get_time() - t0;
     perf_mark_blit((uint32_t)blit_us);
 

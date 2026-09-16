@@ -41,6 +41,7 @@ static uint32_t s_bus_freq_hz = 16 * 1000 * 1000; // 16 MHz Overclock por defect
 static esp_lcd_i80_bus_handle_t s_i80_bus = NULL;
 static esp_lcd_panel_io_handle_t s_panel_io = NULL;
 static SemaphoreHandle_t s_trans_done_sem = NULL;
+static uint8_t s_current_madctl = 0x28;
 
 // Loop Engineering: Doble Búfer DMA Ping-Pong para solapar CPU y hardware DMA
 static uint16_t *s_dma_chunk_bufs[2] = {NULL, NULL};
@@ -174,7 +175,11 @@ esp_err_t ili9488_8080_init(void) {
     const uint8_t f7_data[] = {0xA9, 0x51, 0x2C, 0x82};
     esp_lcd_panel_io_tx_param(s_panel_io, 0xF7, f7_data, sizeof(f7_data));
 
-    const uint8_t madctl = 0x28; // BGR orden, orientación horizontal Landscape (480x320)
+#ifndef CONFIG_APP_LCD_MADCTL_NATIVE
+#define CONFIG_APP_LCD_MADCTL_NATIVE 0x48
+#endif
+    const uint8_t madctl = CONFIG_APP_LCD_MADCTL_NATIVE; // Orientación nativa vertical (0x48: MX=1, BGR=1)
+    s_current_madctl = madctl;
     esp_lcd_panel_io_tx_param(s_panel_io, 0x36, &madctl, 1);
 
     const uint8_t colmod = 0x55; // 16-bit/pixel RGB565 en modo paralelo
@@ -276,6 +281,22 @@ SemaphoreHandle_t ili9488_8080_get_trans_sem(void) {
 
 void ili9488_8080_set_window(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2) {
     set_window(x1, y1, x2, y2);
+}
+
+esp_err_t ili9488_8080_set_madctl(uint8_t madctl) {
+    if (s_panel_io == NULL) return ESP_ERR_INVALID_STATE;
+    if (s_current_madctl == madctl) return ESP_OK;
+    lcd_bus_lock();
+    esp_err_t ret = esp_lcd_panel_io_tx_param(s_panel_io, 0x36, &madctl, 1);
+    if (ret == ESP_OK) {
+        s_current_madctl = madctl;
+    }
+    lcd_bus_unlock();
+    return ret;
+}
+
+uint8_t ili9488_8080_get_madctl(void) {
+    return s_current_madctl;
 }
 
 esp_err_t ili9488_8080_draw_bitmap(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, const uint16_t *data) {

@@ -32,11 +32,40 @@ int sdcard_spi_get_freq_khz(void) {
     return s_sd_freq_khz;
 }
 
+#include "driver/gpio.h"
+#include "esp_rom_sys.h"
+
+static void sdcard_spi_pre_sync(void) {
+    gpio_config_t io_conf = {
+        .pin_bit_mask = (1ULL << SD_PIN_CS) | (1ULL << SD_PIN_CLK) | (1ULL << SD_PIN_MOSI),
+        .mode = GPIO_MODE_OUTPUT,
+        .pull_up_en = GPIO_PULLUP_ENABLE,
+        .pull_down_en = GPIO_PULLDOWN_DISABLE,
+        .intr_type = GPIO_INTR_DISABLE,
+    };
+    gpio_config(&io_conf);
+    gpio_set_level(SD_PIN_CS, 1);
+    gpio_set_level(SD_PIN_MOSI, 1);
+
+    // Enviar 100 pulsos de reloj con CS=1 y MOSI=1 para recuperar la tarjeta de cualquier estado SPI colgado
+    for (int i = 0; i < 100; i++) {
+        gpio_set_level(SD_PIN_CLK, 0);
+        esp_rom_delay_us(5);
+        gpio_set_level(SD_PIN_CLK, 1);
+        esp_rom_delay_us(5);
+    }
+
+    gpio_set_pull_mode(SD_PIN_MISO, GPIO_PULLUP_ONLY);
+    gpio_set_pull_mode(SD_PIN_CS, GPIO_PULLUP_ONLY);
+}
+
 esp_err_t sdcard_spi_init(void) {
     if (s_is_mounted) {
         ESP_LOGI(TAG, "Tarjeta ya montada en %s", SD_MOUNT_POINT);
         return ESP_OK;
     }
+
+    sdcard_spi_pre_sync();
 
     ESP_LOGI(TAG, "Iniciando montaje MicroSD SPI (CS:%d, MOSI:%d, CLK:%d, MISO:%d) @ %d kHz...",
              SD_PIN_CS, SD_PIN_MOSI, SD_PIN_CLK, SD_PIN_MISO, s_sd_freq_khz);

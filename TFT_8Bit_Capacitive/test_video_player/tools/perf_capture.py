@@ -64,6 +64,10 @@ def main():
     parser.add_argument("--phase", default="F0", help="Fase de prueba (F0, F1, etc.)")
     parser.add_argument("--compare", default=None, help="Ruta al CSV de fase anterior para calcular la comparacion")
     parser.add_argument("--timeout", type=float, default=420.0, help="Timeout total en segundos (default: 420)")
+    parser.add_argument("--no-reset", action="store_true",
+                        help="No reiniciar la placa al abrir el puerto (para medir tras un corte de "
+                             "alimentacion: un reinicio por RTS deja colgada la microSD). Se pierden las "
+                             "lineas MEDIA del arranque, que solo usa el criterio de F0.")
 
     args = parser.parse_args()
 
@@ -84,7 +88,14 @@ def main():
 
     # Abrir puerto serie
     try:
-        ser = serial.Serial(args.port, args.baud, timeout=1.0)
+        ser = serial.Serial()
+        ser.port = args.port
+        ser.baudrate = args.baud
+        ser.timeout = 1.0
+        if args.no_reset:
+            ser.dtr = False   # abrir sin tocar EN/IO0: la placa sigue corriendo
+            ser.rts = False
+        ser.open()
     except Exception as e:
         print(f"Error al abrir puerto serial {args.port}: {e}", file=sys.stderr)
         sys.exit(3)
@@ -92,11 +103,14 @@ def main():
     print(f"Iniciando captura en {args.port} a {args.baud} baud (Fase: {args.phase})...")
     print(f"Archivos de salida: {log_path}, {perf_csv_path}, {media_csv_path}")
 
-    # Reset con RTS/DTR (DTR=False, RTS=True, 0.1 s, RTS=False)
-    ser.dtr = False
-    ser.rts = True
-    time.sleep(0.1)
-    ser.rts = False
+    if args.no_reset:
+        print("Sin reinicio (--no-reset): se captura desde el estado actual de la placa.")
+    else:
+        # Reset con RTS/DTR (DTR=False, RTS=True, 0.1 s, RTS=False)
+        ser.dtr = False
+        ser.rts = True
+        time.sleep(0.1)
+        ser.rts = False
 
     start_time = time.time()
     recent_lines = deque(maxlen=40)
@@ -404,10 +418,10 @@ def main():
         print("=" * 94)
 
     # Evaluacion de criterios segun la fase
-    if args.phase.upper() in ("F5", "F5A"):
+    if args.phase.upper() in ("F5", "F5A", "F5B", "F5D"):
         f5a_passed = True
         print("\n" + "=" * 80)
-        print("EVALUACION DE CRITERIOS FASE F5a")
+        print(f"EVALUACION DE CRITERIOS FASE {args.phase.upper()}")
         print("=" * 80)
 
         # 1. Autotest completado

@@ -60,8 +60,14 @@ menu "App perf"
         help
             1: Modo A 'medio fotograma' (escribe solo las 160 filas superiores, ~10.1 ms).
             2: Modo B 'franja unica' (escribe una sola franja de 16 lineas, ~1 ms).
-            3: Modo C 'patron color plano' (alterna pantalla completa rojo/azul a 30 Hz con TE ON).
+    config APP_LCD_MADCTL_NATIVE
+        hex "Valor MADCTL para orientacion nativa (videos 320x480)"
+        default 0x48
+        help
+            Valor de MADCTL para panel en modo vertical nativo (sin bit MV).
+            0x48 = MX=1, BGR=1.
 
 endmenu
+
 
 

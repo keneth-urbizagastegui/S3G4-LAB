@@ -57,6 +57,7 @@ static jpeg_dec_handle_t s_dec_studio = NULL;
 // Búferes DMA internos alineados a 16 B para decodificación por franjas (P2)
 static uint16_t *s_strip_bufs[2] = {NULL, NULL};
 static size_t s_strip_buf_len = 0;
+static uint16_t *s_clip_strip_bufs[2] = {NULL, NULL};
 
 static char **s_scanned_avi_files = NULL;
 static int s_scanned_avi_count = 0;
@@ -677,17 +678,61 @@ esp_err_t avi_player_read_and_blit_direct(void) {
 
         // Verificar recorte contra video_rect
         if (!skip_strip && vw > 0 && vh > 0) {
-            int clip_y1 = (cur_y1 > vy) ? cur_y1 : vy;
-            int clip_y2 = (cur_y2 < (vy + vh - 1)) ? cur_y2 : (vy + vh - 1);
+            if (hdr_info.width == 320 && hdr_info.height == 480) {
+                // Video rotado 320x480 en panel nativo (MADCTL sin MV)
+                if (vh >= 320) {
+                    // Fullscreen completo sin HUD (hidden / seek): transferir franja completa (320 px)
+                    size_t strip_bytes = (size_t)cur_lines * 320 * sizeof(uint16_t);
+                    lcd_bus_draw_strip_async(0, (uint16_t)cur_y1, 319, (uint16_t)cur_y2,
+                                             s_strip_bufs[b & 1], strip_bytes);
+                    dma_in_flight = true;
+                    strips_sent_count++;
+                } else {
+                    // Fullscreen con OSD: recortar columnas a lo largo del alto lógico vh
+                    // x_start = 319 - (vy + vh - 1), x_end = 319 - vy
+                    int x_start = 319 - (vy + vh - 1);
+                    int x_end = 319 - vy;
+                    if (x_start < 0) x_start = 0;
+                    if (x_end > 319) x_end = 319;
+                    int clip_w = x_end - x_start + 1;
 
-            if (clip_y1 <= clip_y2) {
-                size_t offset_bytes = (size_t)(clip_y1 - cur_y1) * (hdr_info.width * 2);
-                size_t visible_bytes = (size_t)(clip_y2 - clip_y1 + 1) * (hdr_info.width * 2);
-                const uint16_t *strip_px = (const uint16_t *)((uint8_t *)s_strip_bufs[b & 1] + offset_bytes);
+                    if (clip_w > 0) {
+                        if (!s_clip_strip_bufs[0]) {
+                            for (int i = 0; i < 2; i++) {
+                                s_clip_strip_bufs[i] = (uint16_t *)heap_caps_aligned_alloc(
+                                    16, 196 * 16 * sizeof(uint16_t), MALLOC_CAP_DMA | MALLOC_CAP_INTERNAL);
+                                assert(s_clip_strip_bufs[i] != NULL);
+                            }
+                        }
 
-                lcd_bus_draw_strip_async(0, (uint16_t)clip_y1, hdr_info.width - 1, (uint16_t)clip_y2, strip_px, visible_bytes);
-                dma_in_flight = true;
-                strips_sent_count++;
+                        uint16_t *dst_strip = s_clip_strip_bufs[b & 1];
+                        const uint16_t *src_strip = s_strip_bufs[b & 1];
+                        for (int r = 0; r < cur_lines; r++) {
+                            memcpy(dst_strip + r * clip_w, src_strip + r * 320 + x_start, clip_w * sizeof(uint16_t));
+                        }
+
+                        size_t clip_bytes = (size_t)cur_lines * clip_w * sizeof(uint16_t);
+                        lcd_bus_draw_strip_async((uint16_t)x_start, (uint16_t)cur_y1,
+                                                 (uint16_t)x_end, (uint16_t)cur_y2,
+                                                 dst_strip, clip_bytes);
+                        dma_in_flight = true;
+                        strips_sent_count++;
+                    }
+                }
+            } else {
+                // Video clasico 480x320
+                int clip_y1 = (cur_y1 > vy) ? cur_y1 : vy;
+                int clip_y2 = (cur_y2 < (vy + vh - 1)) ? cur_y2 : (vy + vh - 1);
+
+                if (clip_y1 <= clip_y2) {
+                    size_t offset_bytes = (size_t)(clip_y1 - cur_y1) * (hdr_info.width * 2);
+                    size_t visible_bytes = (size_t)(clip_y2 - clip_y1 + 1) * (hdr_info.width * 2);
+                    const uint16_t *strip_px = (const uint16_t *)((uint8_t *)s_strip_bufs[b & 1] + offset_bytes);
+
+                    lcd_bus_draw_strip_async(0, (uint16_t)clip_y1, hdr_info.width - 1, (uint16_t)clip_y2, strip_px, visible_bytes);
+                    dma_in_flight = true;
+                    strips_sent_count++;
+                }
             }
         }
     }

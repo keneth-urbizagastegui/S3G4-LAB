@@ -59,6 +59,8 @@ typedef struct QueueDefinition *SemaphoreHandle_t;
 esp_lcd_panel_io_handle_t ili9488_8080_get_panel_io(void);
 SemaphoreHandle_t ili9488_8080_get_trans_sem(void);
 void ili9488_8080_set_window(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2);
+esp_err_t ili9488_8080_set_madctl(uint8_t madctl);
+uint8_t ili9488_8080_get_madctl(void);
 
 #ifdef __cplusplus
 }

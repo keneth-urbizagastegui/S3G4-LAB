@@ -16,6 +16,7 @@
 #include "sdcard_spi.h"
 #include "lcd_bus.h"
 #include "tear_diag.h"
+#include "ili9488_8080.h"
 #include "sdkconfig.h"
 
 static const char *TAG = "PLAYER";
@@ -177,6 +178,13 @@ static void player_open_track(int index) {
     s_consecutive_open_fails = 0;
 
     const avi_info_t *info = avi_player_get_info();
+#ifndef CONFIG_APP_LCD_MADCTL_NATIVE
+#define CONFIG_APP_LCD_MADCTL_NATIVE 0x48
+#endif
+    uint8_t target_madctl = (info->width == 320 && info->height == 480) ?
+                            (uint8_t)CONFIG_APP_LCD_MADCTL_NATIVE : 0x28;
+    ili9488_8080_set_madctl(target_madctl);
+
     portENTER_CRITICAL(&s_player_mux);
     s_status.track_index = index;
     s_status.track_count = total;
@@ -438,14 +446,19 @@ static void player_task(void *arg) {
                     s_diag_c_buf = (uint16_t *)heap_caps_aligned_alloc(16, 480 * 16 * sizeof(uint16_t), MALLOC_CAP_DMA | MALLOC_CAP_INTERNAL);
                 }
                 if (s_diag_c_buf) {
-                    for (int p = 0; p < 480 * 16; p++) {
+                    uint8_t cur_madctl = ili9488_8080_get_madctl();
+                    bool is_native = (cur_madctl == (uint8_t)CONFIG_APP_LCD_MADCTL_NATIVE);
+                    int strip_w = is_native ? 320 : 480;
+                    int num_strips = is_native ? 30 : 20;
+
+                    for (int p = 0; p < strip_w * 16; p++) {
                         s_diag_c_buf[p] = color;
                     }
                     lcd_bus_lock();
-                    for (int b = 0; b < 20; b++) {
+                    for (int b = 0; b < num_strips; b++) {
                         uint16_t y1 = b * 16;
                         uint16_t y2 = y1 + 15;
-                        lcd_bus_draw_strip_async(0, y1, 479, y2, s_diag_c_buf, 480 * 16 * sizeof(uint16_t));
+                        lcd_bus_draw_strip_async(0, y1, strip_w - 1, y2, s_diag_c_buf, strip_w * 16 * sizeof(uint16_t));
                         lcd_bus_wait_strip_done(NULL);
                     }
                     lcd_bus_unlock();
