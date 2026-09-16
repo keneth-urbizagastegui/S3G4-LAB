@@ -53,9 +53,9 @@ se restauran: no hay nada que comparar.** Decisión de Keneth: avanzar, no volve
   afecta a lo que LVGL redibuja (barras de la OSD), no al video.
 - El recorte del flush alrededor del rectángulo de video (F3) debe seguir funcionando.
 
-### T3 — Medición comparativa
-- Autotest con los **8 ficheros** en la tarjeta (4 girados + 4 originales). En `PERF`, cada registro
-  lleva `rot=0|90` y `madctl=0x..`.
+### T3 — Medición
+- Autotest con los **4 ficheros girados** que hay en la tarjeta. En `PERF`, cada registro lleva
+  `rot=90` y `madctl=0x..`. **No hay versión sin girar: no se compara nada en la placa.**
 - CSV: `F5d_run1.csv`. Compara con `F5a_final.csv` (`--compare`).
 - **Criterios (fijos, no los toques):** pres_fps oculto ≥ 28,5 y con OSD ≥ 28,0; drop oculto ≤ 1 % por
   pista y global; te_present=1 con variación ≤ 2 Hz; te_timeout ≤ 1 %; present_path=direct;
