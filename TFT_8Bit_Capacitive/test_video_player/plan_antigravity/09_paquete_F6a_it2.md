@@ -86,3 +86,8 @@ el firmware normal. **Prohibido** relajar umbrales o redefinir métricas.
 ## Entrega
 Commits en `video-player/fase-6`, `informes/FASE_6a.md` con una tabla D1–D7 (estado y prueba de cada
 uno), el CSV nuevo en `mediciones/`, y el firmware normal flasheado en COM16 para que Keneth lo pruebe.
+
+## Anexo (añadido durante la iteración): referencia visual exacta
+`plan_antigravity/diseno_ui/referencia/`: PNG 480×320 de cada tablero, tabla de medidas por elemento y
+`LEEME.md` con el nombre EEZ, el icono y la acción de cada control. **Úsalo para D2 y D3**; la
+aceptación visual es captura/foto al lado del PNG.
