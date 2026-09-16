@@ -309,3 +309,88 @@ Iteración 4 encargada: recuperación de la SD con prueba de 20 reinicios aleato
 - **Iteración 5:** mantener el vaciado de avisos y la recuperación de la SD; **volver a esperar TE como
   en it3** (antes de decodificar, fuera del bloqueo); comprobar que E2 sigue sin aparecer (patrón C y
   OFF) y recuperar descartes ≤ 1 % con la medición completa.
+
+---
+
+## Iteración 5 — Restauración del Pipeline it3 con Purga Activa de Semáforos TE
+
+### 1. Diagnóstico y Corrección Estructural
+- **Causa raíz de la regresión de descartes en it4 (4.52%):**
+  1. En la it4 se introdujo la pre-decodificación del bloque 0 fuera del lock y el desplazamiento de la espera de TE *dentro* de `lcd_bus_lock()`. Esto detenía el hilo de video `player_task` durante ~10 ms por fotograma de media en lugar de permitir que la CPU continuara decodificando las franjas concurrentemente con el DMA.
+  2. Adicionalmente, al sustituir `xSemaphoreTake(s_te_sem, 0)` por una purga en bucle, se eliminó inadvertidamente la ventana de detección de borde reciente (`time_since_last < 2000 µs`), lo que forzaba a la tarea a esperar 22.4 ms completos (un ciclo TE entero) incluso cuando el flanco acababa de ocurrir pocos microsegundos antes. Al sumarse los ~20.8 ms del blit DMA, la latencia excedía los 33.3 ms del periodo de fotograma y acumulaba retraso (`late > 64.7 ms`), provocando la caída de descartes a 4.52%.
+- **Implementación técnica de it5:**
+  1. **Restauración del pipeline it3 (`commit 68fc767`):**
+     - En `main/avi_player.c`, se eliminó la pre-decodificación del bloque 0 y se restauró el bucle homogéneo limpio `for (int b = 0; b < process_count; b++)`.
+     - En `main/player.c`, la sincronización `lcd_bus_wait_te()` se trasladó de nuevo fuera del lock, inmediatamente antes de invocar `avi_player_read_and_blit_direct()`.
+  2. **Purga activa y robusta de tokens TE (`lcd_bus_te_purge`):**
+     - Se implementó `lcd_bus_te_purge()` en `main/lcd_bus.c` y se declaró en `main/lcd_bus.h`:
+       ```c
+       void lcd_bus_te_purge(void) {
+           if (!s_te_sem) return;
+           while (xSemaphoreTake(s_te_sem, 0) == pdTRUE);
+       }
+       ```
+     - Se invoca `lcd_bus_te_purge()` dentro de `lcd_bus_wait_te()` y al conmutar cualquier modo de diagnóstico en `tear_diag_set_mode()` (`main/tear_diag.c`), eliminando cualquier semáforo residual tras salir del Modo C.
+     - Se preservó la detección de borde reciente (`time_since_last < 2000 µs`) con purga de semáforo para no penalizar el pipeline cuando la tarea llega inmediatamente tras el inicio del V-blank.
+  3. **Mantenimiento estricto:**
+     - Secuencia de recuperación de la MicroSD (`sdcard_spi_recover_card`) y bucle de 3 reintentos en `sdcard_spi.c`.
+     - Ventana única por fotograma (`lcd_bus_set_frame_window` + `lcd_bus_draw_strip_continue_async`).
+
+---
+
+### 2. Validación de E1: Prueba de Tortura de Reinicios en Caliente (20 Ciclos)
+Se repitió la prueba automatizada `tools/reset_torture.py` en COM16 realizando 20 reinicios aleatorios por línea RTS mientras el reproductor se encontraba en plena decodificación y lectura ráfaga por SPI:
+- **Resultado global:** **20/20 ciclos exitosos (100%)**.
+- **Montaje SPI de arranque:** **10/10 superado a 20 MHz (`passed=10/10`) en la totalidad de los 20 ciclos**.
+- **Recuperación tras reset:** Secuencia de recuperación `sdcard_spi_recover_card()` ejecutada y validada en cada arranque (`recov=True`).
+- **Reanudación de video:** $\text{pres\_fps} > 0$ en el 100% de los arranques (estabilizándose de inmediato a 30 FPS).
+- **Errores `0x107`:** **0** (ningún fallo de timeout).
+- **Registro persistido:** `plan_antigravity/mediciones/F5d_reset_torture.log`.
+
+---
+
+### 3. Validación de E2: Transición Dinámica Modo C $\to$ OFF
+Se verificó la transición dinámica mediante `tools/test_mode_c_trans.py` ejecutando Modo C (patrón de prueba rojo/azul alternante a pantalla completa) durante 12 segundos y retornando a Modo OFF durante 35 segundos de video continuo:
+- **`te_wait_ms_avg` previo (Modo OFF, 10 s):** $5.96\,\text{ms}$.
+- **`te_wait_ms_avg` durante Modo C (12 s):** $8.77\,\text{ms}$.
+- **`te_wait_ms_avg` post-Modo C (35 s):** **$8.58\,\text{ms}$** (sincronismo perfectamente retenido, sin caída a 0.00 ms).
+- **$\text{pres\_fps}$ post-Modo C:** **$29.39\,\text{FPS}$**.
+- **Descartes acumulados post-Modo C:** 5 fotogramas en 35 segundos ($\approx 0.4\%$).
+- **Inspección visual:** Ausencia total de desgarros, saltos o cortes verticales tanto en pantalla completa como en modo Studio tras salir del diagnóstico.
+- **Registro persistido:** `plan_antigravity/mediciones/F5d_mode_c_test.log`.
+
+---
+
+### 4. Tabla Completa de Criterios F5d (Medición Autotest `F5d_run7.csv`)
+Medición completa ejecutada con `tools/perf_capture.py --phase F5a --compare plan_antigravity/mediciones/F5d_run5.csv`:
+
+| Criterio / Parámetro | Umbral Requerido | it3 (run5) | it4 (run6 auditor) | it5 (run7) | Estado it5 |
+|---|---|---|---|---|---|
+| **pres_fps oculto (hidden)** | $\ge 28.5$ FPS | 29.47 FPS | 28.16 FPS | **29.78 FPS** | ✔ CUMPLE |
+| **pres_fps con OSD (osd)** | $\ge 28.0$ FPS | 29.97 FPS | 29.42 FPS | **29.91 FPS** | ✔ CUMPLE |
+| **drop oculto Track 0 (ariana)** | $\le 1.0\%$ | 0.34% (2/584) | 7.21% | **0.38% (2/530)** | ✔ CUMPLE |
+| **drop oculto Track 1 (harry)** | $\le 1.0\%$ | 0.00% (0/602) | 5.08% | **0.00% (0/545)** | ✔ CUMPLE |
+| **drop oculto Track 2 (lesserafim)**| $\le 1.0\%$ | 0.00% (0/601) | 0.84% | **0.00% (0/544)** | ✔ CUMPLE |
+| **drop oculto Track 3 (meovv)** | $\le 1.0\%$ | 0.17% (1/601) | 5.06% | **0.00% (0/542)** | ✔ CUMPLE |
+| **drop oculto GLOBAL** | $\le 1.0\%$ | 0.13% (3/2388) | 4.52% | **0.09% (2/2161)** | ✔ CUMPLE |
+| **windows_per_frame** | $= 1$ | 1 | 1 | **1** | ✔ CUMPLE |
+| **TE frecuencia / estabilidad** | $\pm 2.0$ Hz | 44.0–45.0 Hz | 44.1–45.0 Hz | **44.0–45.0 Hz (var: 1.0 Hz)** | ✔ CUMPLE |
+| **TE timeouts** | $\le 1.0\%$ | 0.00% (0/11423)| 0.00% (0/11129) | **0.00% (0/11425)** | ✔ CUMPLE |
+| **present_path / view / hud** | direct / full / coherentes | OK | OK | **direct / full / coherentes** | ✔ CUMPLE |
+| **\|drift_ms\| máximo** | $< 100$ ms | 62 ms | 74 ms | **55.0 ms** | ✔ CUMPLE |
+| **Toque sintético TAP** | 0 → 1 | OK | OK | **OK (hud_before=0, hud_after=1)** | ✔ CUMPLE |
+| **STRESS (title_mismatch)** | $= 0$ | 0 | 0 | **0 (changes=20, seeks=50, max=2ms)** | ✔ CUMPLE |
+| **MicroSD reader_rd_avg** | $< 15.0$ ms | 8.7 ms | 8.8 ms | **8.9 ms (rd_max: 26.6 ms)** | ✔ CUMPLE |
+| **Cola prefetch q_wait_max** | $< 15.0$ ms | 0.1 ms | 0.1 ms | **0.1 ms** | ✔ CUMPLE |
+| **heap_int mínimo** | $\ge 30\,000$ B | 62 975 B | 62 991 B | **63 035 B** | ✔ CUMPLE |
+| **Tortura Reinicios en Caliente (E1)** | 20/20 | No probado | 20/20 | **20/20 ciclos OK (100%)** | ✔ CUMPLE |
+| **Transición Modo C $\to$ OFF (E2)** | Sin corte / te_wait $> 0$ | Fallo (corte) | OK | **OK (te_wait: 8.58 ms, 29.4 fps)** | ✔ CUMPLE |
+
+---
+
+### 5. Estado de la Variante en Placa
+- **Variante NORMAL (`build/`) flasheada en COM16:**
+  - Firmware compilado desde `build/` con `tear_diag` configurado en `TEAR_DIAG_OFF` (`CONFIG_APP_TEAR_DIAG_MODE=0`).
+  - Interfaz de usuario Spotify activa en vista Studio, reproduciendo `ariana.avi` a 30 FPS en panel nativo vertical $320 \times 480$.
+  - Despliegue con ventana única por fotograma (`windows_per_frame = 1`), recuperación SPI de MicroSD ante cualquier reinicio y sincronización TE con purga activa.
+

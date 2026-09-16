@@ -590,8 +590,19 @@ static void player_task(void *arg) {
                 }
             } else {
                 // Modo Direct Fullscreen por franjas DMA (P2)
-                // La sincronización con TE se realiza internamente dentro de avi_player_read_and_blit_direct()
-                // bajo lcd_bus_lock() y con el búfer del bloque 0 ya pre-decodificado.
+#if CONFIG_APP_TE_SYNC
+                if (lcd_bus_te_is_present()) {
+                    uint32_t te_period = lcd_bus_te_get_period_us();
+                    uint32_t te_timeout = (te_period * 3) / 2; // tope 1,5 x periodo medido
+                    uint32_t te_wait_us = 0;
+                    esp_err_t te_res = lcd_bus_wait_te(te_timeout, &te_wait_us);
+                    if (te_res == ESP_OK) {
+                        perf_mark_te_wait(te_wait_us);
+                    } else {
+                        perf_mark_te_timeout();
+                    }
+                }
+#endif
                 ret = avi_player_read_and_blit_direct();
                 if (ret == ESP_OK) {
                     perf_mark_decoded();

@@ -1,4 +1,5 @@
 #include "tear_diag.h"
+#include "lcd_bus.h"
 #include <stdio.h>
 #include <string.h>
 #include <strings.h>
@@ -33,6 +34,7 @@ const char *tear_diag_get_mode_name(tear_diag_mode_t mode) {
 
 void tear_diag_set_mode(tear_diag_mode_t mode) {
     s_diag_mode = mode;
+    lcd_bus_te_purge();
     ESP_LOGI(TAG, "Modo de diagnostico cambiado a: %s", tear_diag_get_mode_name(mode));
     printf("DIAG_MODE,mode=%s\n", tear_diag_get_mode_name(mode));
     fflush(stdout);

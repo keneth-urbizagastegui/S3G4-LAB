@@ -53,6 +53,7 @@ float lcd_bus_te_get_hz(void);
 float lcd_bus_te_get_jitter_ms(void);
 uint32_t lcd_bus_te_get_period_us(void);
 esp_err_t lcd_bus_wait_te(uint32_t timeout_us, uint32_t *out_wait_us);
+void lcd_bus_te_purge(void);
 void lcd_bus_te_perf_sample(uint32_t *out_pulses, float *out_hz, float *out_jitter_ms, bool *out_present);
 
 #ifdef __cplusplus
