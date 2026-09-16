@@ -487,3 +487,25 @@ arrancar, comportamiento idéntico) y lo flasheó en COM16 para que Keneth pueda
 (F2) a `2 × us_per_frame − 2 ms` con TE. Con 44,6 Hz el efecto es menor (la mayoría de fotogramas
 llegan a tiempo), pero la definición de «descarte» ya no es la de F2–F4 y las comparaciones entre fases
 lo arrastran.
+
+---
+
+## Resultado del diagnóstico de tearing (Keneth, 15/09/2026) — CONFIRMADO: ES ORIENTACIÓN
+
+**Modo C (rojo/azul a pantalla completa, con TE activo):** la frontera entre los dos colores es una
+**diagonal limpia de esquina superior izquierda a esquina inferior derecha**, que se mantiene mientras
+los colores alternan. Fotografía aportada por Keneth.
+**Modos A y B:** no aportaron información (solo se vio el fondo cambiar a azul).
+
+**Por qué esto cierra la discusión:**
+- Si el corte fuese por **tiempo** (escritura más larga que el periodo), la frontera seguiría una línea
+  de barrido del panel. Como el panel barre en vertical nativo y nosotros lo usamos girado, esa línea se
+  vería **vertical** en nuestra orientación, y sería intermitente.
+- Una **diagonal estable** solo aparece cuando el frente de escritura y el frente de barrido avanzan en
+  ejes **perpendiculares**: nosotros escribimos filas de 480 px (que son columnas del panel) mientras el
+  haz recorre las 480 líneas nativas. La intersección de ambos frentes describe una diagonal.
+- Con TE alineado y el fotograma cabiendo en un periodo (20,2 ms < 22,42 ms), **el corte persiste**:
+  sincronizar el arranque no puede arreglar una escritura perpendicular al barrido.
+
+**Conclusión:** la opción 2 de la it3 (TE con scanline 0x44) queda descartada; solo movería la diagonal.
+Quedan la opción 1 (rotar el video en origen y escribir en paralelo al barrido) y la 3 (aceptarlo).
