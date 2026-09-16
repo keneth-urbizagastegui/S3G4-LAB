@@ -8,6 +8,15 @@ reloj de reproducción salta por llegar tarde, sobre el total · ambos con la pa
 
 ---
 
+## `vp-v0.6` — Biblioteca dinámica y posición guardada · 16/09/2026
+- **Los videos se leen de la tarjeta**, sin lista en el código: título y subtítulo del `.json`,
+  miniatura del `.jpg`. Escaneo de 4 videos en 0,8 s. Un quinto video aparece sin recompilar.
+- **Formatos no compatibles** detectados por contenido, con su motivo, sin colgar la placa
+  (probado con ficheros truncados y de otra resolución).
+- **Posición guardada en NVS**: al reiniciar vuelve al mismo video, con hasta 5 s de pérdida.
+- Rendimiento intacto: **29,3–30,0 fps**, **descartes 0,31 %**.
+- Código muerto movido a `legacy/`.
+
 ## `vp-v0.5` — Sincronía con el panel y fin del corte diagonal · 16/09/2026
 - **Presentados: 29,4–30,0 fps** sin controles · **29,6–30,0** con controles · **descartes 0,10 %**.
 - **Sin corte diagonal**, confirmado por Keneth. Causa: escribíamos perpendicular al barrido del panel.
@@ -57,4 +66,4 @@ reloj de reproducción salta por llegar tarde, sobre el total · ambos con la pa
 
 ## En curso (sin etiquetar)
 
-- **F5b** — biblioteca dinámica, metadatos, guardado de posición y aviso de formato no compatible.
+- **F6** — interfaz nueva en EEZ Studio.

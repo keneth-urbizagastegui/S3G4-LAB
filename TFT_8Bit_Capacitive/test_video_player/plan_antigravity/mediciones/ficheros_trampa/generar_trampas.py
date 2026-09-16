@@ -81,8 +81,11 @@ def main():
     print("Generando ficheros trampa en", HERE)
     frames_ok = [jpeg_frame(480, 320, i) for i in range(N_FRAMES)]
 
-    # 1. Codec que no es MJPEG: la cabecera dice XVID (los datos dan igual, se rechaza antes)
-    write_avi(os.path.join(HERE, "trampa_codec.avi"), 480, 320, frames_ok, fourcc=b"XVID")
+    # 1. Codec que no es MJPEG: cabecera XVID y fotogramas que NO son JPEG (como un XVID real).
+    #    Correccion del 16/09/2026: la primera version llevaba fotogramas JPEG de verdad y el
+    #    firmware la acepto con razon (la regla admite el fichero si el primer fotograma es JPEG).
+    fake = [bytes([0x00, 0x00, 0x01, 0xB6]) + os.urandom(4000) for _ in range(N_FRAMES)]
+    write_avi(os.path.join(HERE, "trampa_codec.avi"), 480, 320, fake, fourcc=b"XVID")
 
     # 2. MJPEG correcto pero de otra resolucion
     write_avi(os.path.join(HERE, "trampa_tamano.avi"), 240, 160,
