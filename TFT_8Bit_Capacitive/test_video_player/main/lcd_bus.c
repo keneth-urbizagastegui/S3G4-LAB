@@ -243,17 +243,8 @@ esp_err_t lcd_bus_wait_te(uint32_t timeout_us, uint32_t *out_wait_us) {
         return ESP_OK;
     }
 
-    int64_t now_us = esp_timer_get_time();
-    int64_t time_since_last = now_us - s_te_last_edge_us;
-    // Si un flanco TE ocurrio muy recientemente (< 2000 us), estamos al inicio del barrido vertical
-    if (time_since_last >= 0 && time_since_last < 2000) {
-        if (out_wait_us) *out_wait_us = (uint32_t)time_since_last;
-        xSemaphoreTake(s_te_sem, 0); // consumir token si habia
-        return ESP_OK;
-    }
-
-    // Purgar token previo para esperar el SIGUIENTE flanco real
-    xSemaphoreTake(s_te_sem, 0);
+    // Purgar TODOS los tokens previos acumulados para asegurar que esperamos el SIGUIENTE flanco real
+    while (xSemaphoreTake(s_te_sem, 0) == pdTRUE);
 
     int64_t t0 = esp_timer_get_time();
     TickType_t ticks = pdMS_TO_TICKS((timeout_us + 999) / 1000);

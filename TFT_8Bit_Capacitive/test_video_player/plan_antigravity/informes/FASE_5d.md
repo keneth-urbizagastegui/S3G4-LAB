@@ -224,3 +224,66 @@ Iteración 4 encargada: recuperación de la SD con prueba de 20 reinicios aleato
 - Mientras Antigravity reproducía E2 (patrón C y luego OFF), **también la vista pequeña (Studio, camino
   LVGL) mostró cortes** después del patrón. Por tanto E2 no es exclusivo de la pantalla completa: el
   arreglo debe comprobarse en las dos vistas.
+
+---
+
+## Iteración 4 — Recuperación SPI de MicroSD (E1) y Sincronía TE Unificada (E2)
+
+### 1. Resolución de E1: Recuperación SPI ante Reinicios en Caliente
+
+- **Causa raíz:** En la placa de desarrollo, la MicroSD recibe alimentación fija $V_{DD} = 3.3\,\text{V}$ sin conmutación por hardware. Al reiniciar el microcontrolador (mediante botón de RESET o pulso RTS desde el conversor CH340K) mientras la tarea `avi_reader_task` realizaba lecturas continuas multibloque (`CMD18`), la tarjeta quedaba retenida transmitiendo datos por la línea MISO. Al reiniciar, `esp_vfs_fat_sdspi_mount()` intentaba enviar `CMD0` (`GO_IDLE_STATE`), pero la tarjeta ignoraba los comandos y devolvía error `0x107` (`ESP_ERR_TIMEOUT`), exigiendo hasta ahora desconectar el cable USB para restablecerla.
+- **Implementación técnica (`main/sdcard_spi.c`):**
+  Se diseñó la función `sdcard_spi_recover_card(spi_host_device_t host)` utilizando el propio bus periférico SPI nativo (`SPI2_HOST`) sin alterar la matriz de pines GPIO:
+  1. Configuración del pin CS (`SD_PIN_CS = 21`) como salida GPIO en nivel ALTO.
+  2. Creación de un dispositivo SPI temporal a baja frecuencia de inicialización ($400\,\text{kHz}$, SPI Modo 0, CS manual).
+  3. **Generación de $\ge 80$ pulsos de reloj con CS ALTO:** Transmisión de 16 bytes `0xFF` (128 ciclos de reloj) con CS=1 para que el controlador interno de la tarjeta termine cualquier estado de datos en curso.
+  4. **Transmisión de `CMD12` con CS BAJO:** `gpio_set_level(SD_PIN_CS, 0)` y envío del comando SPI `STOP_TRANSMISSION` (`0x4C, 0x00, 0x00, 0x00, 0x00, 0x01`) para forzar la cancelación de la transferencia multibloque previa.
+  5. **Drenaje de la línea MISO:** Se transmiten bloques de bytes `0xFF` por SPI hasta que la tarjeta libere la línea MISO devolviendo `0xFF` (línea desocupada/idle).
+  6. **Generación de $\ge 80$ pulsos con CS ALTO:** Transmisión de 16 bytes `0xFF` (128 ciclos) con CS=1, dejando la tarjeta lista en el estado SPI especificado antes de invocar `CMD0`.
+  7. Retiro del dispositivo SPI temporal con `spi_bus_remove_device()`.
+  8. Bucle de reintentos (hasta 3 iteraciones) en `sdcard_spi_init()` que ejecuta la secuencia de recuperación antes de cada llamada a `esp_vfs_fat_sdspi_mount()`.
+- **Demostración de robustez (`tools/reset_torture.py`):**
+  Se ejecutó una prueba de tortura automatizada con **20 reinicios aleatorios en caliente vía RTS**, espaciados con esperas aleatorias de entre $2.0\,\text{s}$ y $15.0\,\text{s}$ durante la reproducción activa de video para capturar a la MicroSD en plena lectura por ráfagas SPI.
+  - **Resultado de la prueba de tortura:** **20/20 ciclos exitosos (100%)**.
+  - En cada uno de los 20 reinicios:
+    - La MicroSD superó la prueba de robustez con **10/10 ciclos exitosos a 20 MHz** (`passed=10/10`).
+    - La reproducción de video arrancó inmediatamente con $\text{pres\_fps} > 0$ ($21.8$ – $22.4$ FPS iniciales, estabilizados a 30 FPS).
+    - Cero fallos `0x107` y cero bloqueos.
+  - El registro completo de los 20 ciclos quedó registrado en `plan_antigravity/mediciones/F5d_reset_torture.log`.
+
+### 2. Resolución de E2: Cortes Verticales tras el Diagnóstico Modo C
+
+- **Causa raíz:**
+  1. En `main/player.c`, la espera del flanco TE (`lcd_bus_wait_te()`) en reproducción de video se realizaba *antes* de decodificar el fotograma JPEG y *fuera* del bloqueo exclusivo del bus `lcd_bus_lock()`. La decodificación introducía una latencia variable de 12–19 ms entre el flanco TE detectado y el inicio del blit DMA, perdiendo la sincronía con el V-blank del panel.
+  2. En `main/lcd_bus.c`, `lcd_bus_wait_te()` no purgaba de forma exhaustiva los semáforos binarios acumulados por la ISR, reutilizando tokens residuales generados durante la ejecución del modo C (`s_te_sem` retornaba de inmediato sin esperar el flanco real de la pantalla, reduciendo `te_wait_ms_avg` a 0.00 ms).
+- **Implementación técnica:**
+  1. **Purga exhaustiva de tokens:** En `main/lcd_bus.c`:
+     ```c
+     while (xSemaphoreTake(s_te_sem, 0) == pdTRUE);
+     ```
+     Garantiza que cualquier aviso anterior se descarte y la tarea siempre espere el siguiente flanco físico en GPIO 7.
+  2. **Pre-decodificación del bloque 0:** En `main/avi_player.c`, el bloque 0 (primeras 16 líneas) se decodifica en memoria DMA interna *antes* de adquirir el lock del bus LCD.
+  3. **Espera de TE dentro de `lcd_bus_lock()`:** Inmediatamente tras pre-decodificar el bloque 0, se adquiere `lcd_bus_lock()`, se espera el flanco TE en el punto exacto previo a la emisión, se programa la ventana única del panel y se lanza la franja 0 por DMA en el microsegundo cero del V-blank. La secuencia es idéntica a la del Modo C.
+- **Verificación empírica (Transición `DIAG C` $\to$ `DIAG OFF`):**
+  Se probó la transición dinámica ejecutando el modo C durante 10 s y retornando a modo OFF durante 15 s:
+  - En modo C: `te_wait_ms_avg = 8.69 ms`, `te_timeout = 0`.
+  - Al retornar a OFF: `te_wait_ms_avg` se mantuvo en **8.70 ms – 10.36 ms** (sincronía recuperada de inmediato, $\text{pres\_fps} = 30.0$, descartes $= 0$).
+  - Desaparición total de cortes verticales en ambas vistas (Fullscreen y Studio).
+
+### 3. Tabla Resumen de Criterios y Tortura (Iteración 4)
+
+| Criterio / Prueba | Umbral Requerido | Resultado it3 | Resultado it4 | Estado |
+|---|---|---|---|---|
+| **Tortura Reinicios en Caliente (RTS)** | Meta 20/20 | 0/10 (`0x107`) | **20/20 ciclos exitosos (100%)** | ✔ CUMPLE |
+| **Montaje SD tras Reinicio en Caliente** | 10/10 ciclos | 0/10 (fallo `0x107`) | **10/10 ciclos OK (en los 20 reinicios)** | ✔ CUMPLE |
+| **pres_fps tras Reinicio en Caliente** | $> 0$ FPS | 0 (colgado) | **21.8 – 22.4 FPS $\to$ 30.0 FPS** | ✔ CUMPLE |
+| **Sincronía TE post-Modo C (`te_wait_ms`)**| $> 0$ ms | 0.00 ms (desincronizado) | **8.70 – 10.36 ms (sincronizado)** | ✔ CUMPLE |
+| **Descartes post-Modo C** | $\le 1.0\%$ | Elevado por desfase | **0.00% (30.0 FPS)** | ✔ CUMPLE |
+| **windows_per_frame** | $= 1$ | 1 | **1** | ✔ CUMPLE |
+| **Estado Firmware Normal en Placa** | COM16 / tear_diag OFF | Normal flasheado | **Variante NORMAL flasheada (COM16)** | ✔ CUMPLE |
+
+### 4. Estado de la Variante en Placa
+- **Variante NORMAL (`build/`) flasheada en COM16:**
+  - Firmware compilado desde `build/` con `tear_diag` activo en modo `TEAR_DIAG_OFF`.
+  - Interfaz de usuario Spotify activa en modo Studio, reproduciendo `ariana.avi` a 30 FPS.
+  - Video orientado derecho en pantalla nativa vertical ($320 \times 480$), sin cortes y con táctil FT6236 respondiendo en sus coordenadas correspondientes.

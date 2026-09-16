@@ -8,6 +8,10 @@
 #include "sdmmc_cmd.h"
 #include "driver/sdspi_host.h"
 #include "driver/spi_common.h"
+#include "driver/spi_master.h"
+#include "driver/gpio.h"
+#include "esp_rom_sys.h"
+#include "esp_heap_caps.h"
 #include "esp_log.h"
 
 static const char *TAG = "SDCARD_SPI";
@@ -30,6 +34,101 @@ void sdcard_spi_set_freq_khz(int freq_khz) {
 
 int sdcard_spi_get_freq_khz(void) {
     return s_sd_freq_khz;
+}
+
+static void sdcard_spi_recover_card(spi_host_device_t host) {
+    ESP_LOGI(TAG, "Iniciando secuencia de recuperacion SPI para MicroSD...");
+
+    // 0. Configurar pin CS como GPIO output con pullup y forzar nivel ALTO
+    gpio_config_t io_conf = {
+        .pin_bit_mask = (1ULL << SD_PIN_CS),
+        .mode = GPIO_MODE_OUTPUT,
+        .pull_up_en = GPIO_PULLUP_ENABLE,
+        .pull_down_en = GPIO_PULLDOWN_DISABLE,
+        .intr_type = GPIO_INTR_DISABLE,
+    };
+    gpio_config(&io_conf);
+    gpio_set_level(SD_PIN_CS, 1);
+
+    spi_device_handle_t spi = NULL;
+    spi_device_interface_config_t devcfg = {
+        .clock_speed_hz = 400 * 1000, // 400 kHz baja frecuencia
+        .mode = 0,                    // SPI modo 0
+        .spics_io_num = -1,           // Control manual de CS por GPIO
+        .queue_size = 1,
+    };
+    esp_err_t err = spi_bus_add_device(host, &devcfg, &spi);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Fallo al registrar dispositivo SPI temporal: %s", esp_err_to_name(err));
+        return;
+    }
+
+    uint8_t *dma_buf = heap_caps_malloc(32, MALLOC_CAP_DMA);
+    uint8_t *rx_buf = heap_caps_malloc(32, MALLOC_CAP_DMA);
+    if (!dma_buf || !rx_buf) {
+        ESP_LOGE(TAG, "Fallo al reservar memoria DMA para recuperacion");
+        if (dma_buf) heap_caps_free(dma_buf);
+        if (rx_buf) heap_caps_free(rx_buf);
+        spi_bus_remove_device(spi);
+        return;
+    }
+
+    // 1. Con CS ALTO, >= 80 pulsos de reloj (16 bytes = 128 pulsos a 400 kHz)
+    gpio_set_level(SD_PIN_CS, 1);
+    esp_rom_delay_us(50);
+    memset(dma_buf, 0xFF, 16);
+    spi_transaction_t t;
+    memset(&t, 0, sizeof(t));
+    t.length = 16 * 8;
+    t.tx_buffer = dma_buf;
+    spi_device_polling_transmit(spi, &t);
+
+    // 2. Con CS BAJO, enviar CMD12 (Stop Transmission: 0x4C, 0x00, 0x00, 0x00, 0x00, 0x01)
+    gpio_set_level(SD_PIN_CS, 0);
+    esp_rom_delay_us(50);
+    dma_buf[0] = 0x4C;
+    dma_buf[1] = 0x00;
+    dma_buf[2] = 0x00;
+    dma_buf[3] = 0x00;
+    dma_buf[4] = 0x00;
+    dma_buf[5] = 0x01;
+    memset(&t, 0, sizeof(t));
+    t.length = 6 * 8;
+    t.tx_buffer = dma_buf;
+    spi_device_polling_transmit(spi, &t);
+
+    // 3. Drenar el bus hasta que MISO devuelva 0xFF (tarjeta desocupada)
+    int drained = 0;
+    bool released = false;
+    for (int chunk = 0; chunk < 32; chunk++) { // Hasta 32 * 16 = 512 bytes
+        memset(dma_buf, 0xFF, 16);
+        memset(rx_buf, 0, 16);
+        memset(&t, 0, sizeof(t));
+        t.length = 16 * 8;
+        t.tx_buffer = dma_buf;
+        t.rx_buffer = rx_buf;
+        spi_device_polling_transmit(spi, &t);
+        drained += 16;
+        if (rx_buf[15] == 0xFF && rx_buf[14] == 0xFF) {
+            released = true;
+            break;
+        }
+    }
+    ESP_LOGI(TAG, "CMD12 drenado: %d bytes (tarjeta lista/released=%d)", drained, released);
+
+    // 4. Con CS ALTO, volver a dar >= 80 pulsos (16 bytes = 128 pulsos a 400 kHz)
+    gpio_set_level(SD_PIN_CS, 1);
+    esp_rom_delay_us(50);
+    memset(dma_buf, 0xFF, 16);
+    memset(&t, 0, sizeof(t));
+    t.length = 16 * 8;
+    t.tx_buffer = dma_buf;
+    spi_device_polling_transmit(spi, &t);
+
+    heap_caps_free(dma_buf);
+    heap_caps_free(rx_buf);
+    spi_bus_remove_device(spi);
+    ESP_LOGI(TAG, "Secuencia de recuperacion completada.");
 }
 
 esp_err_t sdcard_spi_init(void) {
@@ -69,9 +168,22 @@ esp_err_t sdcard_spi_init(void) {
     slot_config.gpio_cs = SD_PIN_CS;
     slot_config.host_id = s_host.slot;
 
-    ret = esp_vfs_fat_sdspi_mount(SD_MOUNT_POINT, &s_host, &slot_config, &mount_config, &s_card);
+    const int max_retries = 3;
+    for (int attempt = 1; attempt <= max_retries; attempt++) {
+        sdcard_spi_recover_card(s_host.slot);
+        vTaskDelay(pdMS_TO_TICKS(10));
+
+        ret = esp_vfs_fat_sdspi_mount(SD_MOUNT_POINT, &s_host, &slot_config, &mount_config, &s_card);
+        if (ret == ESP_OK) {
+            break;
+        }
+        ESP_LOGW(TAG, "Fallo montaje intento %d/%d (%s), reintentando recuperacion...",
+                 attempt, max_retries, esp_err_to_name(ret));
+        vTaskDelay(pdMS_TO_TICKS(50));
+    }
+
     if (ret != ESP_OK) {
-        ESP_LOGE(TAG, "Fallo al montar sistema de archivos FATFS: %s", esp_err_to_name(ret));
+        ESP_LOGE(TAG, "Fallo al montar sistema de archivos FATFS tras %d intentos: %s", max_retries, esp_err_to_name(ret));
         spi_bus_free(s_host.slot);
         return ret;
     }

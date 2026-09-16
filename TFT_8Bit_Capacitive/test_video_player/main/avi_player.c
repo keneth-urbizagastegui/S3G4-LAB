@@ -671,11 +671,60 @@ esp_err_t avi_player_read_and_blit_direct(void) {
         }
     }
 
+    // 1. Pre-decodificar el bloque 0 ANTES de adquirir el lock del bus y antes de esperar TE
+    io.outbuf = (uint8_t *)s_strip_bufs[0];
+    int64_t t_dec0_start = esp_timer_get_time();
+    jerr = jpeg_dec_process(dec, &io);
+    int64_t t_dec0_end = esp_timer_get_time();
+    uint32_t s_dec0_us = (uint32_t)(t_dec0_end - t_dec0_start);
+    perf_mark_decode(s_dec0_us);
+    total_frame_dec_us += s_dec0_us;
+
+    if (jerr != JPEG_ERR_OK) {
+        ESP_LOGW(TAG, "Fallo en jpeg_dec_process bloque 0/%d: %d", process_count, jerr);
+        xQueueSend(s_q_free, &slot, 0);
+        return ESP_FAIL;
+    }
+
+    int cur_lines0 = (hdr_info.width > 0) ? (io.out_size / (hdr_info.width * 2)) : 0;
+    line_y += cur_lines0;
+
+    if (hdr_info.width == 320 && hdr_info.height == 480 && vh < 320 && clip_w > 0) {
+        if (!s_clip_strip_bufs[0]) {
+            for (int i = 0; i < 2; i++) {
+                s_clip_strip_bufs[i] = (uint16_t *)heap_caps_aligned_alloc(
+                    16, 196 * 16 * sizeof(uint16_t), MALLOC_CAP_DMA | MALLOC_CAP_INTERNAL);
+                assert(s_clip_strip_bufs[i] != NULL);
+            }
+        }
+        uint16_t *dst0 = s_clip_strip_bufs[0];
+        const uint16_t *src0 = s_strip_bufs[0];
+        for (int r = 0; r < cur_lines0; r++) {
+            memcpy(dst0 + r * clip_w, src0 + r * 320 + x_start, clip_w * sizeof(uint16_t));
+        }
+    }
+
+    // 2. Adquirir lock exclusivo del bus LCD
     lcd_bus_lock();
+
+    // 3. Esperar el flanco vertical TE DENTRO del lock con el búfer ya listo
+#if CONFIG_APP_TE_SYNC
+    if (lcd_bus_te_is_present()) {
+        uint32_t te_period = lcd_bus_te_get_period_us();
+        uint32_t te_timeout = (te_period * 3) / 2;
+        uint32_t te_wait_us = 0;
+        esp_err_t te_res = lcd_bus_wait_te(te_timeout, &te_wait_us);
+        if (te_res == ESP_OK) {
+            perf_mark_te_wait(te_wait_us);
+        } else {
+            perf_mark_te_timeout();
+        }
+    }
+#endif
 
     tear_diag_mode_t diag = tear_diag_get_mode();
 
-    // Programar la ventana de visualización UNA ÚNICA VEZ por fotograma
+    // 4. En el microsegundo 0 tras el flanco TE: programar la ventana única del fotograma
     if (vw > 0 && vh > 0) {
         if (diag == TEAR_DIAG_MODE_B) {
             // Modo B de diagnóstico: franja única fija (líneas 80..95)
@@ -700,7 +749,31 @@ esp_err_t avi_player_read_and_blit_direct(void) {
         }
     }
 
-    for (int b = 0; b < process_count; b++) {
+    // 5. Inmediatamente lanzar DMA de la franja 0 en el milisegundo cero del V-blank
+    bool skip_strip0 = (diag == TEAR_DIAG_MODE_B);
+    if (!skip_strip0 && vw > 0 && vh > 0) {
+        if (hdr_info.width == 320 && hdr_info.height == 480) {
+            if (vh >= 320) {
+                size_t strip_bytes = (size_t)cur_lines0 * 320 * sizeof(uint16_t);
+                lcd_bus_draw_strip_continue_async(s_strip_bufs[0], strip_bytes, true);
+                dma_in_flight = true;
+                strips_sent_count++;
+            } else if (clip_w > 0) {
+                size_t clip_bytes = (size_t)cur_lines0 * clip_w * sizeof(uint16_t);
+                lcd_bus_draw_strip_continue_async(s_clip_strip_bufs[0], clip_bytes, true);
+                dma_in_flight = true;
+                strips_sent_count++;
+            }
+        } else {
+            size_t visible_bytes = (size_t)cur_lines0 * (hdr_info.width * 2);
+            lcd_bus_draw_strip_continue_async(s_strip_bufs[0], visible_bytes, true);
+            dma_in_flight = true;
+            strips_sent_count++;
+        }
+    }
+
+    // 6. Transmitir franjas restantes en pipeline (mientras DMA transmite b-1, CPU decodifica b)
+    for (int b = 1; b < process_count; b++) {
         io.outbuf = (uint8_t *)s_strip_bufs[b & 1];
 
         int64_t t_dec_start = esp_timer_get_time();
