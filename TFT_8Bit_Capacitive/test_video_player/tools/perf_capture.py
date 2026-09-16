@@ -124,6 +124,8 @@ def main():
     sdpull_data = None
     mount_data = None
     lib_data = None
+    ui_data = None
+    uinav_records = []
     crashed = False
     crash_reason = ""
 
@@ -153,12 +155,26 @@ def main():
             if (line_str.startswith("PERF,") or
                 line_str.startswith("MEDIA,") or
                 line_str.startswith("LIB,") or
+                line_str.startswith("UI,") or
+                line_str.startswith("UINAV,") or
                 line_str.startswith("STRESS,") or
                 line_str.startswith("TAP,") or
                 line_str.startswith("SDPULL,") or
                 line_str.startswith("MOUNT_TEST,") or
                 "AUTOTEST_DONE" in line_str):
                 print(f"  {line_str}")
+
+            # Deteccion de UI
+            if line_str.startswith("UI,"):
+                kv = parse_kv_line(line_str, "UI")
+                if kv:
+                    ui_data = kv
+
+            # Deteccion de UINAV
+            if line_str.startswith("UINAV,"):
+                kv = parse_kv_line(line_str, "UINAV")
+                if kv:
+                    uinav_records.append(kv)
 
             # Deteccion de LIB
             if line_str.startswith("LIB,"):
@@ -426,7 +442,7 @@ def main():
         print("=" * 94)
 
     # Evaluacion de criterios segun la fase
-    if args.phase.upper() in ("F5", "F5A", "F5B", "F5D"):
+    if args.phase.upper() in ("F5", "F5A", "F5B", "F5D", "F6", "F6A"):
         f5a_passed = True
         print("\n" + "=" * 80)
         print(f"EVALUACION DE CRITERIOS FASE {args.phase.upper()}")
@@ -684,13 +700,13 @@ def main():
         else:
             print(f"[CRITERIO F5a OK]: heap_int minimo = {min_heap_int} >= 30000 B.")
 
-        # 14. Criterios especificos F5b: Biblioteca dinamica, metadatos y NVS (linea LIB)
-        if args.phase.upper() == "F5B":
+        # 14. Criterios especificos F5b / F6a: Biblioteca dinamica, metadatos y NVS (linea LIB)
+        if args.phase.upper() in ("F5B", "F6", "F6A"):
             print("\n" + "-" * 80)
-            print("EVALUACION CRITERIOS ESPECIFICOS FASE F5b (BIBLIOTECA Y NVS)")
+            print(f"EVALUACION CRITERIOS ESPECIFICOS FASE {args.phase.upper()} (BIBLIOTECA Y NVS)")
             print("-" * 80)
             if not lib_data:
-                print("[CRITERIO F5b FALLIDO]: No se recibio la linea LIB.", file=sys.stderr)
+                print(f"[CRITERIO {args.phase.upper()} FALLIDO]: No se recibio la linea LIB.", file=sys.stderr)
                 f5a_passed = False
             else:
                 try:
@@ -707,34 +723,61 @@ def main():
 
                 # a) count == compatible + incompatible
                 if lib_count != (lib_compat + lib_incompat):
-                    print(f"[CRITERIO F5b FALLIDO]: count ({lib_count}) != compatible ({lib_compat}) + incompatible ({lib_incompat}).", file=sys.stderr)
+                    print(f"[CRITERIO {args.phase.upper()} FALLIDO]: count ({lib_count}) != compatible ({lib_compat}) + incompatible ({lib_incompat}).", file=sys.stderr)
                     f5a_passed = False
                 else:
-                    print(f"[CRITERIO F5b OK]: count == compatible + incompatible ({lib_count} == {lib_compat} + {lib_incompat}).")
+                    print(f"[CRITERIO {args.phase.upper()} OK]: count == compatible + incompatible ({lib_count} == {lib_compat} + {lib_incompat}).")
 
                 # b) count == len(media_records)
                 num_media = len(media_records)
                 if num_media > 0 and lib_count != num_media:
-                    print(f"[CRITERIO F5b FALLIDO]: count ({lib_count}) != pistas de MEDIA ({num_media}).", file=sys.stderr)
+                    print(f"[CRITERIO {args.phase.upper()} FALLIDO]: count ({lib_count}) != pistas de MEDIA ({num_media}).", file=sys.stderr)
                     f5a_passed = False
                 elif num_media > 0:
-                    print(f"[CRITERIO F5b OK]: count coincide con registros de MEDIA ({lib_count} == {num_media}).")
+                    print(f"[CRITERIO {args.phase.upper()} OK]: count coincide con registros de MEDIA ({lib_count} == {num_media}).")
 
                 # c) scan_ms < 3000 ms
                 if lib_scan_ms >= 3000 or lib_scan_ms < 0:
-                    print(f"[CRITERIO F5b FALLIDO]: scan_ms={lib_scan_ms} ms >= 3000 ms.", file=sys.stderr)
+                    print(f"[CRITERIO {args.phase.upper()} FALLIDO]: scan_ms={lib_scan_ms} ms >= 3000 ms.", file=sys.stderr)
                     f5a_passed = False
                 else:
-                    print(f"[CRITERIO F5b OK]: scan_ms={lib_scan_ms} ms < 3000 ms.")
+                    print(f"[CRITERIO {args.phase.upper()} OK]: scan_ms={lib_scan_ms} ms < 3000 ms.")
 
                 # d) PSRAM libre tras escaneo >= 6 MB (6 000 000 B)
                 min_psram = min((int(r.get("heap_psram", 0)) for r in perf_records if "heap_psram" in r), default=0)
                 print(f"[EVALUACION PSRAM LIBRE]: minimo observado = {min_psram} B (umbral: >= 6000000 B)")
                 if min_psram < 6000000:
-                    print(f"[CRITERIO F5b FALLIDO]: PSRAM libre minima = {min_psram} < 6000000 B.", file=sys.stderr)
+                    print(f"[CRITERIO {args.phase.upper()} FALLIDO]: PSRAM libre minima = {min_psram} < 6000000 B.", file=sys.stderr)
                     f5a_passed = False
                 else:
-                    print(f"[CRITERIO F5b OK]: PSRAM libre minima = {min_psram} B >= 6 MB.")
+                    print(f"[CRITERIO {args.phase.upper()} OK]: PSRAM libre minima = {min_psram} B >= 6 MB.")
+
+        # 15. Criterios especificos F6/F6a: UI EEZ y navegacion de botones (UINAV)
+        if args.phase.upper() in ("F6", "F6A"):
+            print("\n" + "-" * 80)
+            print("EVALUACION CRITERIOS ESPECIFICOS FASE F6a (UI EEZ + NAVEGACION UINAV)")
+            print("-" * 80)
+            if ui_data:
+                print(f"[EVALUACION UI]: screens={ui_data.get('screens')}, widgets={ui_data.get('widgets')}, fonts={ui_data.get('fonts')}, images={ui_data.get('images')}")
+                print("[CRITERIO F6a OK]: Componentes UI reportados con exito.")
+            else:
+                print("[INFO F6a]: Linea UI no recibida en este run.")
+
+            if uinav_records:
+                all_uinav_pass = True
+                for rec in uinav_records:
+                    btn = rec.get("btn", "?")
+                    res = rec.get("result", "FAIL")
+                    print(f"[EVALUACION UINAV]: btn={btn} -> {res}")
+                    if res != "PASS":
+                        all_uinav_pass = False
+                if all_uinav_pass:
+                    print("[CRITERIO F6a OK]: Todos los botones verificados con PASS en UINAV.")
+                else:
+                    print("[CRITERIO F6a FALLIDO]: Al menos un boton fallo en UINAV.", file=sys.stderr)
+                    f5a_passed = False
+            else:
+                print("[INFO UINAV]: No se recibieron registros UINAV en este run.")
 
         print("=" * 80)
         if f5a_passed:
