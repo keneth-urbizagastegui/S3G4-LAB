@@ -5,3 +5,5 @@ sdkconfig.old
 sdkconfig.perf
 *.avi
 plan_antigravity/diseno_ui/reproductor-video-s3g4.html
+*.eez-project-ui-state
+scratch/
