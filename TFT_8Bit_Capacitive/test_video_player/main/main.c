@@ -519,14 +519,13 @@ static void autotest_task(void *arg) {
     for (int i = 0; i < 20; i++) {
         player_cmd_type_t ctype = (i % 2 == 0) ? PCMD_NEXT : PCMD_PREV;
         player_cmd_t cmd = {.type = ctype};
+
+        // P3d: Capturar t0 justo antes de enviar el comando para medir la espera real de la UI
+        int64_t t0 = esp_timer_get_time();
         player_cmd_send(&cmd);
         changes_count++;
 
-        vTaskDelay(pdMS_TO_TICKS(500));
-        perf_report_if_due();
-
         // X4: Esperar hasta 600 ms a que el titulo publicado por la UI coincida con player_get_track_title(status.track_index)
-        int64_t t0 = esp_timer_get_time();
         bool matched = false;
         char expected_title[64] = {0};
         char ui_title[64] = {0};
@@ -555,6 +554,12 @@ static void autotest_task(void *arg) {
             ESP_LOGW(TAG, "Mismatch en cambio %d tras %lld ms: esperado='%s', UI='%s'",
                      i, (long long)wait_ms, expected_title, ui_title);
         }
+
+        int64_t step_elapsed = (esp_timer_get_time() - t0) / 1000;
+        if (step_elapsed < 500) {
+            vTaskDelay(pdMS_TO_TICKS(500 - step_elapsed));
+        }
+        perf_report_if_due();
     }
 
     // 50 PCMD_SEEK_MS cada 100 ms (simulando arrastre continuo)
@@ -567,14 +572,11 @@ static void autotest_task(void *arg) {
         int32_t seek_ms = (int32_t)((dur * pct) / 100);
 
         player_cmd_t cmd = {.type = PCMD_SEEK_MS, .arg = seek_ms};
+        int64_t t0 = esp_timer_get_time();
         player_cmd_send(&cmd);
         seeks_count++;
 
-        vTaskDelay(pdMS_TO_TICKS(100));
-        perf_report_if_due();
-
         // X4: Esperar hasta 600 ms comprobando consistencia con UI publicada
-        int64_t t0 = esp_timer_get_time();
         bool matched = false;
         char expected_title[64] = {0};
         char ui_title[64] = {0};
@@ -602,27 +604,37 @@ static void autotest_task(void *arg) {
             ESP_LOGW(TAG, "Mismatch en seek %d tras %lld ms: esperado='%s', UI='%s'",
                      i, (long long)wait_ms, expected_title, ui_title);
         }
+
+        int64_t step_elapsed = (esp_timer_get_time() - t0) / 1000;
+        if (step_elapsed < 100) {
+            vTaskDelay(pdMS_TO_TICKS(100 - step_elapsed));
+        }
+        perf_report_if_due();
     }
 
     printf("STRESS,changes=%d,seeks=%d,title_mismatch=%d,title_wait_ms_max=%lld\n",
            changes_count, seeks_count, title_mismatch_count, (long long)title_wait_ms_max);
     fflush(stdout);
 
-    // Escenario SDPULL (Fase 4): robustez ante extracción de MicroSD
-    ESP_LOGI(TAG, "Iniciando escenario SDPULL...");
+    // Escenario SDPULL (Fase 4/5a): robustez ante extracción de MicroSD (ventana 120 s)
+    ESP_LOGI(TAG, "Iniciando escenario SDPULL (ventana 120 s)...");
     printf("SDPULL,waiting=1\n");
     fflush(stdout);
 
     int64_t pull_start_us = esp_timer_get_time();
+    bool card_was_playing = false;
     bool card_was_removed = false;
     int64_t removed_time_us = 0;
     int64_t remount_time_us = 0;
 
-    // Ventana de 15 s para detectar extracción
-    while ((esp_timer_get_time() - pull_start_us) < 15000000LL) {
+    // Ventana de 120 s para detectar extracción: exigir que ANTES estuviera montada y reproduciendo
+    while ((esp_timer_get_time() - pull_start_us) < 120000000LL) {
         player_status_t st;
         player_get_status(&st);
-        if (st.state == PST_NO_MEDIA || !sdcard_is_mounted()) {
+        if (st.state == PST_PLAYING && sdcard_is_mounted()) {
+            card_was_playing = true;
+        }
+        if (card_was_playing && (st.state == PST_NO_MEDIA || !sdcard_is_mounted())) {
             card_was_removed = true;
             removed_time_us = esp_timer_get_time();
             ESP_LOGW(TAG, "SDPULL: ¡MicroSD extraída! Esperando reinserción (hasta 120 s)...");
@@ -679,12 +691,12 @@ void app_main(void) {
     board_turn_off_rgb_led();
 
     ESP_LOGI(TAG, "==========================================================");
-    ESP_LOGI(TAG, "   S3G4 LAB — REPRODUCTOR DE VIDEO FASE 3 (DIRECT BLIT / DMA)");
-    ESP_LOGI(TAG, "   Display: ILI9488 (8080 8-bit @ 16.0 MHz)");
+    ESP_LOGI(TAG, "   S3G4 LAB — REPRODUCTOR DE VIDEO FASE 5a (TE SYNC + AUDIT)");
+    ESP_LOGI(TAG, "   Display: ILI9488 (8080 8-bit @ 16.0 MHz, TE pin en GPIO 7)");
     ESP_LOGI(TAG, "   Touch:   FT6236 Capacitivo (Desacoplado, sondeo 10 ms)");
-    ESP_LOGI(TAG, "   Storage: MicroSD SPI @ 20 MHz (32 KB Buffer)");
+    ESP_LOGI(TAG, "   Storage: MicroSD SPI @ 20 MHz (Prefetch asincrono Core 0)");
     ESP_LOGI(TAG, "   Core 1:  player_task (Motor video + cola comandos + PTS)");
-    ESP_LOGI(TAG, "   Core 0:  gui_task (LVGL) + touch_task");
+    ESP_LOGI(TAG, "   Core 0:  gui_task (LVGL) + touch_task + avi_reader_task");
     ESP_LOGI(TAG, "==========================================================");
 
     perf_init();
@@ -692,6 +704,7 @@ void app_main(void) {
 
     // 1. Inicializar Hardware
     ESP_ERROR_CHECK(ili9488_8080_init_clock(16 * 1000 * 1000));
+    ESP_ERROR_CHECK(lcd_bus_te_init(GPIO_NUM_7));
     ESP_ERROR_CHECK(ft6236_i2c_init());
 
     // 2. Probar robustez y montar MicroSD

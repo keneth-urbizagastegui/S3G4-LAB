@@ -36,6 +36,17 @@ esp_err_t lcd_bus_draw_strip_async(uint16_t x1, uint16_t y1, uint16_t x2, uint16
 // out_dma_us entrega el tiempo transcurrido en microsegundos si no es NULL
 esp_err_t lcd_bus_wait_strip_done(uint32_t *out_dma_us);
 
+// Sincronización y monitoreo del pin TE (Tearing Effect)
+#include "driver/gpio.h"
+
+esp_err_t lcd_bus_te_init(gpio_num_t pin);
+bool lcd_bus_te_is_present(void);
+float lcd_bus_te_get_hz(void);
+float lcd_bus_te_get_jitter_ms(void);
+uint32_t lcd_bus_te_get_period_us(void);
+esp_err_t lcd_bus_wait_te(uint32_t timeout_us, uint32_t *out_wait_us);
+void lcd_bus_te_perf_sample(uint32_t *out_pulses, float *out_hz, float *out_jitter_ms, bool *out_present);
+
 #ifdef __cplusplus
 }
 #endif

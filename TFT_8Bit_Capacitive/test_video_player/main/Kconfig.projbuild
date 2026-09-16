@@ -25,5 +25,11 @@ menu "App perf"
         help
             Frecuencia máxima del bus SPI para la tarjeta MicroSD (20000, 26000 o 40000 kHz).
 
+    config APP_TE_SYNC
+        bool "Sincronizacion de envio con pin TE del display"
+        default y
+        help
+            Sincroniza el envio de cada fotograma de video al display con el flanco de subida del pin TE (GPIO 7).
+
 endmenu
 

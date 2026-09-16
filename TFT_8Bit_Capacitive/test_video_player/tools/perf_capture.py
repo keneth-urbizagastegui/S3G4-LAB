@@ -280,9 +280,17 @@ def main():
             pres_path = filtered[0].get("present_path", "?")
             v_rect = filtered[0].get("vrect", "?")
             avg_strip_t = sum(float(x.get("strip_ms_avg", 0.0)) for x in filtered) / n
+            avg_te_hz = sum(float(x.get("te_hz", 0.0)) for x in filtered) / n
+            avg_te_jitter = sum(float(x.get("te_jitter_ms", 0.0)) for x in filtered) / n
+            avg_te_wait = sum(float(x.get("te_wait_ms_avg", 0.0)) for x in filtered) / n
+            tot_te_timeout = sum(int(x.get("te_timeout", 0)) for x in filtered)
+            avg_q_wait = sum(float(x.get("q_wait_avg", x.get("rd_avg", 0.0))) for x in filtered) / n
+            max_reader_rd = max((float(x.get("reader_rd_max", x.get("rd_max", 0.0))) for x in filtered), default=0.0)
+            avg_slots_ready = sum(float(x.get("slots_ready_avg", 0.0)) for x in filtered) / n
         else:
             avg_dec = avg_pres = avg_drift = avg_rd = avg_rd_p50 = avg_rd_p95 = max_rd = avg_dec_t = avg_dec_frame = max_dec_frame = avg_blit = max_late = avg_strip_t = 0.0
-            tot_drop = tot_rd_slow = 0
+            avg_te_hz = avg_te_jitter = avg_te_wait = avg_q_wait = max_reader_rd = avg_slots_ready = 0.0
+            tot_drop = tot_rd_slow = tot_te_timeout = 0
             v_mode = hud_mode = pres_path = v_rect = "?"
 
         summary_data[(str(trk), str(scn))] = {
@@ -305,9 +313,17 @@ def main():
             "path": pres_path,
             "vrect": v_rect,
             "strip_ms": avg_strip_t,
+            "te_hz": avg_te_hz,
+            "te_jitter": avg_te_jitter,
+            "te_wait": avg_te_wait,
+            "te_timeout": tot_te_timeout,
+            "q_wait": avg_q_wait,
+            "reader_rd_max": max_reader_rd,
+            "slots_ready": avg_slots_ready,
         }
 
-        print(f"{trk:<7}{scn:<11}{v_mode:<7}{hud_mode:<5}{n:<9}{avg_dec:<9.1f}{avg_pres:<9.1f}{tot_drop:<6}{avg_rd:<8.1f}{avg_rd_p50:<8.1f}{avg_rd_p95:<8.1f}{max_rd:<8.1f}{tot_rd_slow:<9}{avg_dec_frame:<11.1f}{max_dec_frame:<11.1f}{avg_blit:<9.1f}{avg_drift:<8.1f}")
+        te_str = f" te_hz={avg_te_hz:.1f} te_wait={avg_te_wait:.1f}ms te_to={tot_te_timeout}" if avg_te_hz > 0 else ""
+        print(f"{trk:<7}{scn:<11}{v_mode:<7}{hud_mode:<5}{n:<9}{avg_dec:<9.1f}{avg_pres:<9.1f}{tot_drop:<6}{avg_rd:<8.1f}{avg_rd_p50:<8.1f}{avg_rd_p95:<8.1f}{max_rd:<8.1f}{tot_rd_slow:<9}{avg_dec_frame:<11.1f}{max_dec_frame:<11.1f}{avg_blit:<9.1f}{avg_drift:<8.1f}{te_str}")
 
     print("=" * 172)
 
@@ -388,7 +404,273 @@ def main():
         print("=" * 94)
 
     # Evaluacion de criterios segun la fase
-    if args.phase.upper() == "F4":
+    if args.phase.upper() in ("F5", "F5A"):
+        f5a_passed = True
+        print("\n" + "=" * 80)
+        print("EVALUACION DE CRITERIOS FASE F5a")
+        print("=" * 80)
+
+        # 1. Autotest completado
+        if not autotest_done:
+            print("[CRITERIO F5a FALLIDO]: No se recibio AUTOTEST_DONE.", file=sys.stderr)
+            f5a_passed = False
+        else:
+            print(f"[CRITERIO F5a OK]: AUTOTEST_DONE recibido con {autotest_tracks} pistas.")
+
+        # 2. Presencia de senal TE y estabilidad de frecuencia
+        te_present_all = True
+        te_hz_vals = []
+        for r in perf_records:
+            scn = r.get("scn", "")
+            tp = r.get("te_present", "0")
+            if tp != "1":
+                te_present_all = False
+            if scn not in ("init", "?"):
+                try:
+                    hz = float(r.get("te_hz", 0.0))
+                    if hz > 0.0:
+                        te_hz_vals.append(hz)
+                except ValueError:
+                    pass
+
+        if not te_present_all or not te_hz_vals:
+            print(f"[CRITERIO F5a FALLIDO]: te_present != 1 en todos los registros o sin muestras de te_hz.", file=sys.stderr)
+            f5a_passed = False
+        else:
+            hz_min = min(te_hz_vals)
+            hz_max = max(te_hz_vals)
+            hz_var = hz_max - hz_min
+            print(f"[EVALUACION TE]: presente en 100% de registros. te_hz min={hz_min:.1f}, max={hz_max:.1f}, variacion={hz_var:.2f} Hz (umbral <= 2.0 Hz)")
+            if hz_var > 2.0:
+                print(f"[CRITERIO F5a FALLIDO]: Variacion de te_hz ({hz_var:.2f} Hz) > 2.0 Hz.", file=sys.stderr)
+                f5a_passed = False
+            else:
+                print(f"[CRITERIO F5a OK]: Senal TE detectada y frecuencia estable ({hz_min:.1f}-{hz_max:.1f} Hz).")
+
+        # 3. Tasa de timeouts de TE <= 1.0% de frames
+        total_te_timeouts = sum(int(r.get("te_timeout", 0)) for r in perf_records)
+        total_frames_dec = sum(int(r.get("dec_frames", round(float(r.get("dec_fps", 0.0)) * 2.0))) for r in perf_records)
+        te_timeout_rate = (total_te_timeouts / total_frames_dec * 100.0) if total_frames_dec > 0 else 0.0
+        print(f"[EVALUACION TE TIMEOUT]: timeouts={total_te_timeouts}, frames={total_frames_dec}, tasa={te_timeout_rate:.2f}% (umbral: <= 1.0%)")
+        if te_timeout_rate > 1.0:
+            print(f"[CRITERIO F5a FALLIDO]: Tasa de te_timeout ({te_timeout_rate:.2f}%) > 1.0%.", file=sys.stderr)
+            f5a_passed = False
+        else:
+            print(f"[CRITERIO F5a OK]: Tasa de te_timeout <= 1.0%.")
+
+        # 4. Toque sintetico TAP
+        if not tap_data:
+            print("[CRITERIO F5a FALLIDO]: No se recibio la linea TAP.", file=sys.stderr)
+            f5a_passed = False
+        else:
+            print(f"[EVALUACION TAP]: hud_before={tap_data['hud_before']}, hud_after={tap_data['hud_after']}")
+            if tap_data['hud_before'] != 0 or tap_data['hud_after'] != 1:
+                print(f"[CRITERIO F5a FALLIDO]: TAP requiere hud_before=0 y hud_after=1 (obtenido: {tap_data['hud_before']}, {tap_data['hud_after']}).", file=sys.stderr)
+                f5a_passed = False
+            else:
+                print("[CRITERIO F5a OK]: TAP paso de 0 a 1 correctamente.")
+
+        # 5. STRESS con title_mismatch == 0
+        if not stress_data:
+            print("[CRITERIO F5a FALLIDO]: No se recibio linea STRESS.", file=sys.stderr)
+            f5a_passed = False
+        else:
+            print(f"[EVALUACION STRESS]: changes={stress_data['changes']}, seeks={stress_data['seeks']}, title_mismatch={stress_data['title_mismatch']}, title_wait_ms_max={stress_data.get('title_wait_ms_max')}")
+            if stress_data['title_mismatch'] != 0:
+                print(f"[CRITERIO F5a FALLIDO]: title_mismatch={stress_data['title_mismatch']} (debe ser 0).", file=sys.stderr)
+                f5a_passed = False
+            if stress_data['changes'] < 20:
+                print(f"[CRITERIO F5a FALLIDO]: changes={stress_data['changes']} < 20.", file=sys.stderr)
+                f5a_passed = False
+            if stress_data['seeks'] < 50:
+                print(f"[CRITERIO F5a FALLIDO]: seeks={stress_data['seeks']} < 50.", file=sys.stderr)
+                f5a_passed = False
+            if stress_data['title_mismatch'] == 0 and stress_data['changes'] >= 20 and stress_data['seeks'] >= 50:
+                print("[CRITERIO F5a OK]: STRESS sin fallos de sincronizacion.")
+
+        # 6. View y HUD coherentes en todos los registros hidden/osd/seek
+        view_hud_ok = True
+        for r in perf_records:
+            scn = r.get("scn", "")
+            if scn in ("hidden", "osd", "seek"):
+                v = r.get("view", "")
+                h = r.get("hud", "")
+                if v != "full":
+                    print(f"[CRITERIO F5a FALLIDO]: Registro con scn='{scn}' tiene view='{v}' (debe ser 'full').", file=sys.stderr)
+                    view_hud_ok = False
+                    f5a_passed = False
+                    break
+                if scn == "osd" and h != "1":
+                    print(f"[CRITERIO F5a FALLIDO]: Registro con scn='osd' tiene hud='{h}' (debe ser '1').", file=sys.stderr)
+                    view_hud_ok = False
+                    f5a_passed = False
+                    break
+                if scn in ("hidden", "seek") and h != "0":
+                    print(f"[CRITERIO F5a FALLIDO]: Registro con scn='{scn}' tiene hud='{h}' (debe ser '0').", file=sys.stderr)
+                    view_hud_ok = False
+                    f5a_passed = False
+                    break
+        if view_hud_ok:
+            print("[CRITERIO F5a OK]: view=full y hud coherente en todos los escenarios.")
+
+        # 7. Present path == direct en todos los registros de fullscreen
+        path_ok = True
+        for r in perf_records:
+            scn = r.get("scn", "")
+            if scn in ("hidden", "osd", "seek", "toggle"):
+                p = r.get("present_path", "")
+                if p != "direct":
+                    print(f"[CRITERIO F5a FALLIDO]: Registro con scn='{scn}' tiene present_path='{p}' (debe ser 'direct').", file=sys.stderr)
+                    path_ok = False
+                    f5a_passed = False
+                    break
+        if path_ok:
+            print("[CRITERIO F5a OK]: present_path=direct en todos los escenarios a pantalla completa.")
+
+        # 8. |drift_ms| < 100 en todos los registros hidden/osd/seek tras descartar primeros 2 s
+        drift_ok = True
+        max_drift_observed = 0.0
+        for (trk, scn), recs in groups.items():
+            if scn in ("hidden", "osd", "seek"):
+                filtered = recs[1:] if len(recs) > 1 else recs
+                for r in filtered:
+                    try:
+                        d_val = float(r.get("drift_ms", 0))
+                    except ValueError:
+                        d_val = 0.0
+                    if abs(d_val) > max_drift_observed:
+                        max_drift_observed = abs(d_val)
+                    if abs(d_val) >= 100.0:
+                        print(f"[CRITERIO F5a FALLIDO]: drift_ms={d_val} >= 100 ms en track={trk}, scn={scn}, t_ms={r.get('t_ms')}", file=sys.stderr)
+                        drift_ok = False
+                        f5a_passed = False
+        if drift_ok:
+            print(f"[CRITERIO F5a OK]: |drift_ms| < 100 ms en todos los registros (max observado: {max_drift_observed:.1f} ms).")
+
+        # 9. pres_fps medio en hidden >= 28.5 y en osd >= 28.0
+        hidden_pres_list = []
+        osd_pres_list = []
+        for (trk, scn), recs in groups.items():
+            filtered = recs[1:] if len(recs) > 1 else recs
+            if scn == "hidden":
+                for r in filtered:
+                    hidden_pres_list.append(float(r.get("pres_fps", 0.0)))
+            elif scn == "osd":
+                for r in filtered:
+                    osd_pres_list.append(float(r.get("pres_fps", 0.0)))
+
+        avg_pres_hidden = sum(hidden_pres_list) / len(hidden_pres_list) if hidden_pres_list else 0.0
+        avg_pres_osd = sum(osd_pres_list) / len(osd_pres_list) if osd_pres_list else 0.0
+
+        print(f"[EVALUACION pres_fps HIDDEN]: media = {avg_pres_hidden:.2f} FPS (umbral: >= 28.5 FPS)")
+        if avg_pres_hidden < 28.5:
+            print(f"[CRITERIO F5a FALLIDO]: pres_fps en hidden = {avg_pres_hidden:.2f} < 28.5 FPS.", file=sys.stderr)
+            f5a_passed = False
+        else:
+            print(f"[CRITERIO F5a OK]: pres_fps en hidden = {avg_pres_hidden:.2f} >= 28.5 FPS.")
+
+        print(f"[EVALUACION pres_fps OSD]: media = {avg_pres_osd:.2f} FPS (umbral: >= 28.0 FPS)")
+        if avg_pres_osd < 28.0:
+            print(f"[CRITERIO F5a FALLIDO]: pres_fps en osd = {avg_pres_osd:.2f} < 28.0 FPS.", file=sys.stderr)
+            f5a_passed = False
+        else:
+            print(f"[CRITERIO F5a OK]: pres_fps en osd = {avg_pres_osd:.2f} >= 28.0 FPS.")
+
+        # 10. Criterio de descartes: drop / (dec + drop) en hidden <= 1.0% por track y global
+        drop_per_track_ok = True
+        total_hidden_drop = 0
+        total_hidden_dec = 0
+        for (trk, scn), recs in sorted(groups.items(), key=sort_key):
+            if scn == "hidden":
+                filtered = recs[1:] if len(recs) > 1 else recs
+                trk_drop = sum(int(r.get("drop", 0)) for r in filtered)
+                trk_dec = sum(int(r.get("dec_frames", round(float(r.get("dec_fps", 0.0)) * 2.0))) for r in filtered)
+                trk_total = trk_dec + trk_drop
+                trk_rate = (trk_drop / trk_total * 100.0) if trk_total > 0 else 0.0
+                total_hidden_drop += trk_drop
+                total_hidden_dec += trk_dec
+                print(f"[EVALUACION DROP HIDDEN TRACK {trk}]: drop={trk_drop}, dec={trk_dec}, tasa={trk_rate:.2f}% (umbral: <= 1.0%)")
+                if trk_rate > 1.0:
+                    print(f"[CRITERIO F5a FALLIDO]: tasa de drop en track {trk} ({trk_rate:.2f}%) > 1.0%.", file=sys.stderr)
+                    drop_per_track_ok = False
+                    f5a_passed = False
+
+        glob_total = total_hidden_dec + total_hidden_drop
+        glob_rate = (total_hidden_drop / glob_total * 100.0) if glob_total > 0 else 0.0
+        print(f"[EVALUACION DROP HIDDEN GLOBAL]: drop={total_hidden_drop}, dec={total_hidden_dec}, tasa={glob_rate:.2f}% (umbral: <= 1.0%)")
+        if glob_rate > 1.0:
+            print(f"[CRITERIO F5a FALLIDO]: tasa de drop global ({glob_rate:.2f}%) > 1.0%.", file=sys.stderr)
+            f5a_passed = False
+        elif drop_per_track_ok:
+            print(f"[CRITERIO F5a OK]: tasa de drop en hidden <= 1.0% por track y global.")
+
+        # 11. Latencia de E/S de MicroSD: reader_rd_avg < 15.0 ms y q_wait_max < 15.0 ms
+        rd_avg_ok = True
+        q_wait_ok = True
+        max_reader_rd_observed = 0.0
+        max_q_wait_observed = 0.0
+        reader_rd_list = []
+        for (trk, scn), recs in groups.items():
+            if scn in ("hidden", "osd", "seek"):
+                filtered = recs[1:] if len(recs) > 1 else recs
+                for r in filtered:
+                    try:
+                        rd_a = float(r.get("reader_rd_avg", r.get("rd_avg", 0.0)))
+                        rd_m = float(r.get("reader_rd_max", r.get("rd_max", 0.0)))
+                        qw_m = float(r.get("q_wait_max", 0.0))
+                    except ValueError:
+                        rd_a = rd_m = qw_m = 0.0
+                    if rd_a > 0.0:
+                        reader_rd_list.append(rd_a)
+                    if rd_m > max_reader_rd_observed:
+                        max_reader_rd_observed = rd_m
+                    if qw_m > max_q_wait_observed:
+                        max_q_wait_observed = qw_m
+                    if qw_m >= 15.0:
+                        q_wait_ok = False
+        avg_reader_rd = (sum(reader_rd_list) / len(reader_rd_list)) if reader_rd_list else 0.0
+        if avg_reader_rd >= 15.0:
+            rd_avg_ok = False
+        print(f"[EVALUACION SD READER]: reader_rd_avg={avg_reader_rd:.1f} ms (umbral: < 15.0 ms), reader_rd_max={max_reader_rd_observed:.1f} ms, q_wait_max={max_q_wait_observed:.1f} ms (umbral: < 15.0 ms)")
+        if not rd_avg_ok:
+            print(f"[CRITERIO F5a FALLIDO]: reader_rd_avg ({avg_reader_rd:.1f} ms) >= 15.0 ms.", file=sys.stderr)
+            f5a_passed = False
+        elif not q_wait_ok:
+            print(f"[CRITERIO F5a FALLIDO]: q_wait_max ({max_q_wait_observed:.1f} ms) >= 15.0 ms.", file=sys.stderr)
+            f5a_passed = False
+        else:
+            print(f"[CRITERIO F5a OK]: reader_rd_avg < 15.0 ms y cola de prefetch sin inanicion (q_wait_max < 15.0 ms).")
+
+        # 12. SDPULL
+        if sdpull_data:
+            if sdpull_data.get("skipped") == "1":
+                print("[INFO SDPULL]: SDPULL omitido (skipped=1) - pendiente de prueba manual.")
+            elif sdpull_data.get("resumed") == "1":
+                print(f"[CRITERIO F5a OK]: SDPULL recuperado con exito (resumed=1, removed_ms={sdpull_data.get('removed_ms')}, remount_ms={sdpull_data.get('remount_ms')}).")
+            else:
+                print(f"[CRITERIO F5a FALLIDO]: SDPULL no reanudado (resumed={sdpull_data.get('resumed', '0')}).", file=sys.stderr)
+                f5a_passed = False
+        else:
+            print("[INFO SDPULL]: Escenario SDPULL no ejecutado en este run.")
+
+        # 13. Memoria interna heap_int >= 30000 B
+        min_heap_int = min((int(r.get("heap_int", 0)) for r in perf_records if "heap_int" in r), default=0)
+        print(f"[EVALUACION HEAP_INT]: minimo observado = {min_heap_int} B (umbral: >= 30000 B)")
+        if min_heap_int < 30000:
+            print(f"[CRITERIO F5a FALLIDO]: heap_int minimo = {min_heap_int} < 30000 B.", file=sys.stderr)
+            f5a_passed = False
+        else:
+            print(f"[CRITERIO F5a OK]: heap_int minimo = {min_heap_int} >= 30000 B.")
+
+        print("=" * 80)
+        if f5a_passed:
+            print("\n[RESULTADO F5a]: EXITO - Todos los criterios cumplidos satisfactoriamente.")
+            sys.exit(0)
+        else:
+            print("\n[RESULTADO F5a]: FALLO - Criterios no cumplidos.", file=sys.stderr)
+            sys.exit(1)
+
+    elif args.phase.upper() == "F4":
         f4_passed = True
         print("\n" + "=" * 80)
         print("EVALUACION DE CRITERIOS FASE F4")

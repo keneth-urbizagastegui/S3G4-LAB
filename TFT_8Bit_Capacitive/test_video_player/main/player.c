@@ -14,6 +14,8 @@
 #include "avi_player.h"
 #include "perf.h"
 #include "sdcard_spi.h"
+#include "lcd_bus.h"
+#include "sdkconfig.h"
 
 static const char *TAG = "PLAYER";
 
@@ -428,8 +430,13 @@ static void player_task(void *arg) {
                 perf_mark_late((uint32_t)late);
             }
 
-            // Si late > us_per_frame: saltar el chunk SIN decodificar
-            if (late > (int64_t)cur_info->us_per_frame) {
+            // Si late > us_per_frame + margen de fase TE: saltar el chunk SIN decodificar
+#if CONFIG_APP_TE_SYNC
+            int64_t drop_threshold = (int64_t)cur_info->us_per_frame + 12000;
+#else
+            int64_t drop_threshold = (int64_t)cur_info->us_per_frame;
+#endif
+            if (late > drop_threshold) {
                 esp_err_t ret_skip = avi_player_skip_next_frame();
                 if (ret_skip == ESP_OK) {
                     perf_mark_dropped();
@@ -497,6 +504,19 @@ static void player_task(void *arg) {
                 }
             } else {
                 // Modo Direct Fullscreen por franjas DMA (P2)
+#if CONFIG_APP_TE_SYNC
+                if (lcd_bus_te_is_present()) {
+                    uint32_t te_period = lcd_bus_te_get_period_us();
+                    uint32_t te_timeout = (te_period * 3) / 2; // tope 1,5 x periodo medido
+                    uint32_t te_wait_us = 0;
+                    esp_err_t te_res = lcd_bus_wait_te(te_timeout, &te_wait_us);
+                    if (te_res == ESP_OK) {
+                        perf_mark_te_wait(te_wait_us);
+                    } else {
+                        perf_mark_te_timeout();
+                    }
+                }
+#endif
                 ret = avi_player_read_and_blit_direct();
                 if (ret == ESP_OK) {
                     perf_mark_decoded();

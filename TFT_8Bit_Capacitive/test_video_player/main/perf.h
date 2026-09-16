@@ -10,7 +10,12 @@ extern "C" {
 #endif
 
 void perf_init(void);
-void perf_mark_read(uint32_t us);
+void perf_mark_read(uint32_t us); // compatibilidad
+void perf_mark_q_wait(uint32_t us);
+void perf_mark_reader_read(uint32_t us);
+void perf_mark_slots_ready(uint32_t count);
+void perf_mark_te_wait(uint32_t wait_us);
+void perf_mark_te_timeout(void);
 void perf_mark_decode(uint32_t us);
 void perf_mark_frame_decode(uint32_t frame_dec_us);
 void perf_mark_decoded(void);

@@ -226,6 +226,10 @@ esp_err_t ili9488_8080_init(void) {
     esp_lcd_panel_io_tx_param(s_panel_io, 0x29, NULL, 0);
     vTaskDelay(pdMS_TO_TICKS(20));
 
+    // Activar senal TE (Tearing Effect) - Solo V-blanking (0x00)
+    const uint8_t teon_param = 0x00;
+    esp_lcd_panel_io_tx_param(s_panel_io, 0x35, &teon_param, 1);
+
     // Inicializar backlight al 100%
     init_backlight();
 

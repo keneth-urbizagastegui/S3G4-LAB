@@ -24,6 +24,22 @@ static uint32_t s_rd_samples[RD_SAMPLES_MAX];
 static uint32_t s_rd_samples_cnt = 0;
 static uint32_t s_rd_slow_count = 0;
 
+// Lectura real de SD en avi_reader_task (P3c)
+static uint64_t s_reader_rd_sum_us = 0;
+static uint32_t s_reader_rd_count = 0;
+static uint32_t s_reader_rd_max_us = 0;
+static uint32_t s_reader_rd_samples[RD_SAMPLES_MAX];
+static uint32_t s_reader_rd_samples_cnt = 0;
+
+static uint64_t s_slots_ready_sum = 0;
+static uint32_t s_slots_ready_count = 0;
+
+// Sincronización TE (P1/P2)
+static uint64_t s_te_wait_sum_us = 0;
+static uint32_t s_te_wait_count = 0;
+static uint32_t s_te_wait_max_us = 0;
+static uint32_t s_te_timeout_count = 0;
+
 static uint64_t s_decode_sum_us = 0;
 static uint32_t s_decode_count = 0;
 static uint32_t s_decode_max_us = 0;
@@ -115,6 +131,16 @@ void perf_init(void) {
     s_read_max_us = 0;
     s_rd_samples_cnt = 0;
     s_rd_slow_count = 0;
+    s_reader_rd_sum_us = 0;
+    s_reader_rd_count = 0;
+    s_reader_rd_max_us = 0;
+    s_reader_rd_samples_cnt = 0;
+    s_slots_ready_sum = 0;
+    s_slots_ready_count = 0;
+    s_te_wait_sum_us = 0;
+    s_te_wait_count = 0;
+    s_te_wait_max_us = 0;
+    s_te_timeout_count = 0;
     s_decode_sum_us = 0;
     s_decode_count = 0;
     s_decode_max_us = 0;
@@ -145,7 +171,7 @@ void perf_init(void) {
     portEXIT_CRITICAL(&s_perf_mux);
 }
 
-void perf_mark_read(uint32_t us) {
+void perf_mark_q_wait(uint32_t us) {
     portENTER_CRITICAL(&s_perf_mux);
     s_read_sum_us += us;
     s_read_count++;
@@ -158,6 +184,46 @@ void perf_mark_read(uint32_t us) {
     if (us > 20000) {
         s_rd_slow_count++;
     }
+    portEXIT_CRITICAL(&s_perf_mux);
+}
+
+void perf_mark_read(uint32_t us) {
+    perf_mark_q_wait(us);
+}
+
+void perf_mark_reader_read(uint32_t us) {
+    portENTER_CRITICAL(&s_perf_mux);
+    s_reader_rd_sum_us += us;
+    s_reader_rd_count++;
+    if (us > s_reader_rd_max_us) {
+        s_reader_rd_max_us = us;
+    }
+    if (s_reader_rd_samples_cnt < RD_SAMPLES_MAX) {
+        s_reader_rd_samples[s_reader_rd_samples_cnt++] = us;
+    }
+    portEXIT_CRITICAL(&s_perf_mux);
+}
+
+void perf_mark_slots_ready(uint32_t count) {
+    portENTER_CRITICAL(&s_perf_mux);
+    s_slots_ready_sum += count;
+    s_slots_ready_count++;
+    portEXIT_CRITICAL(&s_perf_mux);
+}
+
+void perf_mark_te_wait(uint32_t wait_us) {
+    portENTER_CRITICAL(&s_perf_mux);
+    s_te_wait_sum_us += wait_us;
+    s_te_wait_count++;
+    if (wait_us > s_te_wait_max_us) {
+        s_te_wait_max_us = wait_us;
+    }
+    portEXIT_CRITICAL(&s_perf_mux);
+}
+
+void perf_mark_te_timeout(void) {
+    portENTER_CRITICAL(&s_perf_mux);
+    s_te_timeout_count++;
     portEXIT_CRITICAL(&s_perf_mux);
 }
 
@@ -293,6 +359,33 @@ void perf_report_if_due(void) {
     uint32_t rd_cnt = s_read_count;
     uint32_t rd_max_us = s_read_max_us;
 
+    uint64_t reader_rd_sum = s_reader_rd_sum_us;
+    uint32_t reader_rd_cnt = s_reader_rd_count;
+    uint32_t reader_rd_max_us = s_reader_rd_max_us;
+    uint32_t reader_rd_cnt_samples = s_reader_rd_samples_cnt;
+    uint32_t reader_rd_samples_copy[RD_SAMPLES_MAX];
+    if (reader_rd_cnt_samples > 0) {
+        memcpy(reader_rd_samples_copy, s_reader_rd_samples, reader_rd_cnt_samples * sizeof(uint32_t));
+    }
+    s_reader_rd_sum_us = 0;
+    s_reader_rd_count = 0;
+    s_reader_rd_max_us = 0;
+    s_reader_rd_samples_cnt = 0;
+
+    uint64_t slots_ready_sum = s_slots_ready_sum;
+    uint32_t slots_ready_cnt = s_slots_ready_count;
+    s_slots_ready_sum = 0;
+    s_slots_ready_count = 0;
+
+    uint64_t te_wait_sum = s_te_wait_sum_us;
+    uint32_t te_wait_cnt = s_te_wait_count;
+    uint32_t te_wait_max_us = s_te_wait_max_us;
+    uint32_t te_timeout_cnt = s_te_timeout_count;
+    s_te_wait_sum_us = 0;
+    s_te_wait_count = 0;
+    s_te_wait_max_us = 0;
+    s_te_timeout_count = 0;
+
     uint64_t dec_sum = s_decode_sum_us;
     uint32_t dec_cnt = s_decode_count;
     uint32_t dec_max_us = s_decode_max_us;
@@ -373,7 +466,18 @@ void perf_report_if_due(void) {
     s_last_report_us = now;
     portEXIT_CRITICAL(&s_perf_mux);
 
-    // Calcular percentiles rd_p50 y rd_p95
+    // Muestreo de TE en la ventana
+    uint32_t te_pulses = 0;
+    float te_hz = 0.0f;
+    float te_jitter_ms = 0.0f;
+    bool te_present = false;
+    lcd_bus_te_perf_sample(&te_pulses, &te_hz, &te_jitter_ms, &te_present);
+    int te_present_int = te_present ? 1 : 0;
+
+    double te_wait_ms_avg = (te_wait_cnt > 0) ? (((double)te_wait_sum / (double)te_wait_cnt) / 1000.0) : 0.0;
+    double te_wait_ms_max = (double)te_wait_max_us / 1000.0;
+
+    // Calcular percentiles q_wait (consumidor)
     for (uint32_t i = 1; i < rd_cnt_samples; i++) {
         uint32_t key = rd_samples_copy[i];
         int j = (int)i - 1;
@@ -383,27 +487,59 @@ void perf_report_if_due(void) {
         }
         rd_samples_copy[j + 1] = key;
     }
-    double rd_p50 = 0.0;
-    double rd_p95 = 0.0;
+    double q_wait_p50 = 0.0;
+    double q_wait_p95 = 0.0;
     if (rd_cnt_samples > 0) {
         uint32_t idx50 = (rd_cnt_samples * 50) / 100;
         if (idx50 >= rd_cnt_samples) idx50 = rd_cnt_samples - 1;
-        rd_p50 = (double)rd_samples_copy[idx50] / 1000.0;
+        q_wait_p50 = (double)rd_samples_copy[idx50] / 1000.0;
 
         uint32_t idx95 = (rd_cnt_samples * 95) / 100;
         if (idx95 >= rd_cnt_samples) idx95 = rd_cnt_samples - 1;
-        rd_p95 = (double)rd_samples_copy[idx95] / 1000.0;
+        q_wait_p95 = (double)rd_samples_copy[idx95] / 1000.0;
     }
+    double q_wait_avg = (rd_cnt > 0) ? (((double)rd_sum / (double)rd_cnt) / 1000.0) : 0.0;
+    double q_wait_max = (double)rd_max_us / 1000.0;
+
+    // Calcular percentiles reader_rd (lectura real de SD en Core 0)
+    for (uint32_t i = 1; i < reader_rd_cnt_samples; i++) {
+        uint32_t key = reader_rd_samples_copy[i];
+        int j = (int)i - 1;
+        while (j >= 0 && reader_rd_samples_copy[j] > key) {
+            reader_rd_samples_copy[j + 1] = reader_rd_samples_copy[j];
+            j--;
+        }
+        reader_rd_samples_copy[j + 1] = key;
+    }
+    double reader_rd_p50 = 0.0;
+    double reader_rd_p95 = 0.0;
+    if (reader_rd_cnt_samples > 0) {
+        uint32_t idx50 = (reader_rd_cnt_samples * 50) / 100;
+        if (idx50 >= reader_rd_cnt_samples) idx50 = reader_rd_cnt_samples - 1;
+        reader_rd_p50 = (double)reader_rd_samples_copy[idx50] / 1000.0;
+
+        uint32_t idx95 = (reader_rd_cnt_samples * 95) / 100;
+        if (idx95 >= reader_rd_cnt_samples) idx95 = reader_rd_cnt_samples - 1;
+        reader_rd_p95 = (double)reader_rd_samples_copy[idx95] / 1000.0;
+    }
+    double reader_rd_avg = (reader_rd_cnt > 0) ? (((double)reader_rd_sum / (double)reader_rd_cnt) / 1000.0) : 0.0;
+    double reader_rd_max = (double)reader_rd_max_us / 1000.0;
+
+    double slots_ready_avg = (slots_ready_cnt > 0) ? ((double)slots_ready_sum / (double)slots_ready_cnt) : 0.0;
+
+    // rd_* se asigna a la lectura real del lector para consistencia
+    double rd_avg = reader_rd_avg;
+    double rd_max = reader_rd_max;
+    double rd_p50 = reader_rd_p50;
+    double rd_p95 = reader_rd_p95;
 
     double dec_frame_ms_avg = (frame_dec_cnt > 0) ? (((double)frame_dec_sum / (double)frame_dec_cnt) / 1000.0) : 0.0;
     double dec_frame_ms_max = (double)frame_dec_max_us / 1000.0;
 
     double dec_fps = (window_us > 0) ? ((double)dec * 1000000.0 / (double)window_us) : 0.0;
     double pres_fps = (window_us > 0) ? ((double)pres * 1000000.0 / (double)window_us) : 0.0;
-    double rd_avg = (rd_cnt > 0) ? (((double)rd_sum / (double)rd_cnt) / 1000.0) : 0.0;
     double dec_avg = (dec_cnt > 0) ? (((double)dec_sum / (double)dec_cnt) / 1000.0) : 0.0;
     double blit_avg = (blit_cnt > 0) ? (((double)blit_sum / (double)blit_cnt) / 1000.0) : 0.0;
-    double rd_max = (double)rd_max_us / 1000.0;
     double dec_max = (double)dec_max_us / 1000.0;
     double blit_max = (double)blit_max_us / 1000.0;
     double late_max = (double)late_max_us / 1000.0;
@@ -462,11 +598,16 @@ void perf_report_if_due(void) {
     uint32_t heap_psram = (uint32_t)heap_caps_get_free_size(MALLOC_CAP_SPIRAM);
     uint32_t t_ms = (uint32_t)(now / 1000);
 
-    printf("PERF,t_ms=%lu,dec_fps=%.1f,pres_fps=%.1f,drop=%lu,over=%lu,frame_mismatch=%lu,rd_avg=%.1f,rd_max=%.1f,rd_p50=%.1f,rd_p95=%.1f,rd_slow=%lu,dec_avg=%.1f,dec_max=%.1f,dec_frame_ms_avg=%.1f,dec_frame_ms_max=%.1f,blit_avg=%.1f,blit_max=%.1f,late_max=%.1f,drift_ms=%ld,touch_read_ms_avg=%.1f,touch_read_ms_max=%.1f,touch_age_ms_max=%.1f,heap_int=%lu,heap_psram=%lu,track=%d,scn=%s,view=%s,hud=%d,present_path=%s,vrect=%d-%d,strips_per_frame=%lu,strip_ms_avg=%.2f,frame_blit_ms_avg=%.1f,lvgl_rows_clipped=%lu,dec_frames=%lu\n",
+    printf("PERF,t_ms=%lu,dec_fps=%.1f,pres_fps=%.1f,drop=%lu,over=%lu,frame_mismatch=%lu,rd_avg=%.1f,rd_max=%.1f,rd_p50=%.1f,rd_p95=%.1f,rd_slow=%lu,reader_rd_avg=%.1f,reader_rd_max=%.1f,reader_rd_p50=%.1f,reader_rd_p95=%.1f,slots_ready_avg=%.1f,q_wait_avg=%.1f,q_wait_max=%.1f,q_wait_p50=%.1f,q_wait_p95=%.1f,te_present=%d,te_hz=%.1f,te_jitter_ms=%.2f,te_wait_ms_avg=%.2f,te_wait_ms_max=%.2f,te_timeout=%lu,dec_avg=%.1f,dec_max=%.1f,dec_frame_ms_avg=%.1f,dec_frame_ms_max=%.1f,blit_avg=%.1f,blit_max=%.1f,late_max=%.1f,drift_ms=%ld,touch_read_ms_avg=%.1f,touch_read_ms_max=%.1f,touch_age_ms_max=%.1f,heap_int=%lu,heap_psram=%lu,track=%d,scn=%s,view=%s,hud=%d,present_path=%s,vrect=%d-%d,strips_per_frame=%lu,strip_ms_avg=%.2f,frame_blit_ms_avg=%.1f,lvgl_rows_clipped=%lu,dec_frames=%lu\n",
            (unsigned long)t_ms, dec_fps, pres_fps, (unsigned long)drop, (unsigned long)over,
            (unsigned long)mismatch,
            rd_avg, rd_max,
            rd_p50, rd_p95, (unsigned long)rd_slow,
+           reader_rd_avg, reader_rd_max, reader_rd_p50, reader_rd_p95,
+           slots_ready_avg,
+           q_wait_avg, q_wait_max, q_wait_p50, q_wait_p95,
+           te_present_int, (double)te_hz, (double)te_jitter_ms,
+           te_wait_ms_avg, te_wait_ms_max, (unsigned long)te_timeout_cnt,
            dec_avg, dec_max,
            dec_frame_ms_avg, dec_frame_ms_max,
            blit_avg, blit_max,

@@ -144,11 +144,14 @@ static void avi_reader_task(void *arg) {
                     slot->capacity = new_cap;
                 }
 
+                int64_t t_real_rd_start = esp_timer_get_time();
                 ssize_t jr = read(fd, slot->buf, chunk_len);
                 if (chunk_len & 1) {
                     uint8_t pad;
                     read(fd, &pad, 1);
                 }
+                int64_t t_real_rd_end = esp_timer_get_time();
+                perf_mark_reader_read((uint32_t)(t_real_rd_end - t_real_rd_start));
 
                 if (jr < (ssize_t)chunk_len) {
                     if (jr < 0) {
@@ -182,6 +185,7 @@ static void avi_reader_task(void *arg) {
 
         if (got_frame) {
             xQueueSend(s_q_ready, &slot, portMAX_DELAY);
+            perf_mark_slots_ready((uint32_t)uxQueueMessagesWaiting(s_q_ready));
         } else {
             xQueueSend(s_q_free, &slot, 0);
         }
@@ -507,7 +511,7 @@ esp_err_t avi_player_read_next_frame(uint16_t *out_rgb565, uint8_t scale) {
         return ESP_ERR_TIMEOUT;
     }
     int64_t t_rd_end = esp_timer_get_time();
-    perf_mark_read((uint32_t)(t_rd_end - t_rd_start));
+    perf_mark_q_wait((uint32_t)(t_rd_end - t_rd_start));
 
     if (slot->err != ESP_OK) {
         esp_err_t err = slot->err;
@@ -563,7 +567,7 @@ esp_err_t avi_player_read_and_blit_direct(void) {
         return ESP_ERR_TIMEOUT;
     }
     int64_t t_rd_end = esp_timer_get_time();
-    perf_mark_read((uint32_t)(t_rd_end - t_rd_start));
+    perf_mark_q_wait((uint32_t)(t_rd_end - t_rd_start));
 
     if (slot->err != ESP_OK) {
         esp_err_t err = slot->err;
