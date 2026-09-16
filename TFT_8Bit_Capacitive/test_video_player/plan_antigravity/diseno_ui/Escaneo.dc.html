@@ -1,0 +1,59 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&amp;display=swap">
+  <style>
+    body { margin: 0; background: #0B0C0F; font-family: Montserrat, "Segoe UI", sans-serif; }
+    a { color: #F2B33D; } a:hover { color: #FFCB6B; }
+    svg { display: block; }
+  </style>
+</helmet>
+<div style="position: relative; width: 480px; height: 320px; overflow: hidden; background: #0B0C0F; color: #EDEDEA;">
+  <div style="position: absolute; left: 0; top: 0; width: 480px; height: 44px; border-bottom: 1px solid #2A2D34; box-sizing: border-box;">
+    <div style="position: absolute; left: 16px; top: 10px; font-size: 20px; font-weight: 700;">Biblioteca</div>
+    <div style="position: absolute; left: 220px; top: 16px; width: 200px; text-align: right; font-size: 11px; color: #F2B33D;">Escaneando microSD… 3 de 4</div>
+    <div style="position: absolute; left: 428px; top: 0; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; color: #8E929B;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h9M18 7h2M4 17h3M12 17h8"></path><circle cx="15.5" cy="7" r="2.5"></circle><circle cx="9.5" cy="17" r="2.5"></circle></svg>
+    </div>
+  </div>
+
+  <div style="position: absolute; left: 0; top: 44px; width: 480px; height: 3px; background: #2A2D34;">
+    <div style="width: 62%; height: 3px; background: #F2B33D;"></div>
+  </div>
+
+  <div style="position: absolute; left: 12px; top: 56px; width: 456px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px;">
+    <div style="display: flex; flex-direction: column;">
+      <div style="width: 144px; height: 81px; border-radius: 6px; background: radial-gradient(120% 90% at 70% 40%, #C9683A 0%, #5B2A3F 45%, #16213A 100%);"></div>
+      <div style="margin-top: 7px; font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Dance No More</div>
+      <div style="margin-top: 2px; font-size: 11px; color: #8E929B;">Harry Styles · 3:21</div>
+    </div>
+    <div style="display: flex; flex-direction: column;">
+      <div style="width: 144px; height: 81px; border-radius: 6px; background: linear-gradient(160deg, #3A4A6B 0%, #1B2233 60%, #0E1118 100%);"></div>
+      <div style="margin-top: 7px; font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">hate that i made you love me</div>
+      <div style="margin-top: 2px; font-size: 11px; color: #8E929B;">Ariana Grande · 3:02</div>
+    </div>
+    <div style="display: flex; flex-direction: column;">
+      <div style="width: 144px; height: 81px; border-radius: 6px; background: #15171C; display: flex; align-items: center; justify-content: center; color: #4A4E57;">
+        <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><rect x="2.5" y="5" width="13" height="14" rx="2"></rect><path d="M15.5 10.5L21.5 7v10l-6-3.5z"></path></svg>
+      </div>
+      <div style="margin-top: 7px; font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">ICONIC BY MISTAKE</div>
+      <div style="margin-top: 2px; font-size: 11px; color: #8E929B;">Sin miniatura · 3:40</div>
+    </div>
+    <div style="display: flex; flex-direction: column;">
+      <div style="width: 144px; height: 81px; border-radius: 6px; background: #15171C; display: flex; align-items: center; justify-content: center;">
+        <div style="width: 22px; height: 22px; border-radius: 11px; border: 3px solid #2A2D34; border-top-color: #F2B33D;"></div>
+      </div>
+      <div style="margin-top: 7px; font-size: 13px; font-weight: 600; color: #8E929B;">Leyendo…</div>
+      <div style="margin-top: 2px; font-size: 11px; color: #8E929B;">meovv.avi</div>
+    </div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

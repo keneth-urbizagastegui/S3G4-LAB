@@ -1,0 +1,48 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&amp;display=swap">
+  <style>
+    body { margin: 0; background: #0B0C0F; font-family: Montserrat, "Segoe UI", sans-serif; }
+    a { color: #F2B33D; } a:hover { color: #FFCB6B; }
+    svg { display: block; }
+  </style>
+</helmet>
+<div style="position: relative; width: 480px; height: 320px; overflow: hidden; background: #0B0C0F; color: #EDEDEA;">
+  <div style="position: absolute; left: 0; top: 0; width: 150px; height: 320px; border-right: 1px solid #2A2D34; box-sizing: border-box;">
+    <div style="position: absolute; left: 0; top: 0; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg>
+    </div>
+    <div style="position: absolute; left: 44px; top: 13px; font-size: 14px; font-weight: 600;">Ajustes</div>
+    <div style="position: absolute; left: 0; top: 52px; width: 149px; display: flex; flex-direction: column;">
+      <div style="height: 48px; padding-left: 16px; display: flex; align-items: center; font-size: 13px;">Pantalla</div>
+      <div style="height: 48px; padding-left: 16px; display: flex; align-items: center; font-size: 13px;">Reproducción</div>
+      <div style="height: 48px; padding-left: 16px; display: flex; align-items: center; font-size: 13px;">Almacenamiento</div>
+      <div style="height: 48px; padding-left: 16px; display: flex; align-items: center; background: #15171C; color: #F2B33D; font-size: 13px; font-weight: 600;">Acerca de</div>
+    </div>
+  </div>
+
+  <div style="position: absolute; left: 150px; top: 0; width: 330px; height: 320px; padding: 16px; box-sizing: border-box; display: flex; flex-direction: column; gap: 0;">
+    <div style="font-size: 20px; font-weight: 700;">S3G4 Video</div>
+    <div style="font-size: 11px; color: #8E929B; margin-top: 2px;">Reproductor de video embebido</div>
+
+    <div style="margin-top: 14px; display: flex; flex-direction: column;">
+      <div style="height: 40px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #2A2D34; font-size: 12px;"><span style="color: #8E929B;">Firmware</span><span>v0.5.0</span></div>
+      <div style="height: 40px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #2A2D34; font-size: 12px;"><span style="color: #8E929B;">ESP-IDF</span><span>6.0.1</span></div>
+      <div style="height: 40px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #2A2D34; font-size: 12px;"><span style="color: #8E929B;">LVGL</span><span>9.5.0</span></div>
+      <div style="height: 40px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #2A2D34; font-size: 12px;"><span style="color: #8E929B;">Panel</span><span>ILI9488 · 8080 8 bits · 16 MHz</span></div>
+      <div style="height: 40px; display: flex; align-items: center; justify-content: space-between; font-size: 12px;"><span style="color: #8E929B;">Sincronía</span><span>TE en GPIO 7 · 46 Hz</span></div>
+    </div>
+
+    <div style="margin-top: 14px; width: 140px; height: 44px; border-radius: 8px; background: #15171C; color: #F2B33D; font-size: 13px; font-weight: 600; display: flex; align-items: center; justify-content: center;">Ver rendimiento</div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

@@ -272,3 +272,82 @@ de progreso **no debe mover nada**. Se añade a la verificación visual de Kenet
 5. **Miniatura de marcador de posición** para los videos sin `.jpg`.
 6. **Comportamiento del título largo**: marquesina o corte con puntos suspensivos (hoy `LONG_DOT`).
 7. El propio **proyecto EEZ**, que es trabajo de F6.
+
+---
+
+## 10. Pantallas añadidas el 15/09/2026 (resuelven los puntos 2, 3, 4 y 5 del §9)
+
+Mismas reglas de §2 y §8: nada desplazable salvo `lib_grid` y `queue_list`.
+
+### 10.1 `scr_settings` · pestaña **Almacenamiento** *(artboard «Ajustes · Almacenamiento»)*
+Panel derecho `settings_panel` (150,0,330,320, pad 16):
+| Objeto | Tipo | x,y,w,h (relativo al panel) | Contenido |
+|---|---|---|---|
+| `card_sd` | container | 0,0,298,88 | `st_card`; icono SD 32×32 en 12,28 (`c_muted`) |
+| `lbl_sd_name` | label | 56,12,150,16 | 14; var `sd_name` («microSD SDHC 32 GB») |
+| `lbl_sd_fs` | label | 206,12,80,16 | 12 `c_muted`, derecha; var `sd_fs` («FAT32») |
+| `bar_sd_usage` | bar | 56,36,230,6 | radio 3; MAIN `c_line`, INDICATOR `c_accent`; rango 0–1000; var `sd_used_permil` |
+| `lbl_sd_free` | label | 56,50,230,14 | 12 `c_muted`; var `sd_free_text` («6,4 GB usados · 23,3 GB libres») |
+| `row_bus` | container | 0,96,298,48 | borde inferior 1 px `c_line`; etiqueta «Velocidad del bus» (13) + `lbl_sd_speed` a la derecha (13 `c_muted`, «SPI · 20 MHz», var `sd_speed_text`) |
+| `row_count` | container | 0,144,298,48 | igual; «Videos encontrados» + `lbl_sd_count` (var `library_count_text`) |
+| `btn_rescan` | button | 0,208,140,44 | `st_card`, texto `c_accent` 13 + icono ⟳ 16 px; → `action_rescan` |
+
+**Los valores salen de `sdmmc_card_t` y de `f_getfree`, contados en el momento**: nada fijo en el código.
+Si `f_getfree` falla, `sd_free_text` = «Espacio no disponible» y la barra a 0.
+
+### 10.2 `scr_settings` · pestaña **Acerca de** *(artboard «Ajustes · Acerca de»)*
+| Objeto | x,y,w,h | Contenido |
+|---|---|---|
+| `lbl_about_name` | 0,0,298,26 | 20 «S3G4 Video» |
+| `lbl_about_sub` | 0,26,298,14 | 12 `c_muted` «Reproductor de video embebido» |
+| filas 40 px con borde inferior `c_line`, etiqueta 12 `c_muted` a la izquierda y valor 12 a la derecha | 0,54 en adelante | **Firmware** (`APP_VERSION` de CMake, no escrito a mano) · **ESP-IDF** (`IDF_VER`) · **LVGL** (`LVGL_VERSION_*`) · **Panel** («ILI9488 · 8080 8 bits · 16 MHz», derivado de la config) · **Sincronía** («TE en GPIO 7 · <te_hz medido> Hz» o «TE ausente») |
+| `btn_open_stats` | 0,258,140,44 | `st_card`, texto `c_accent` «Ver rendimiento» → `action_open_stats` |
+
+### 10.3 `scr_library` · estado **escaneando** *(artboard «Biblioteca · escaneando»)*
+No es una pantalla nueva: es `scr_library` durante el escaneo.
+- `lbl_lib_count` (44 alto de cabecera) pasa a `c_accent`: «Escaneando microSD… `<n>` de `<total>`», ambos contados.
+- `bar_scan` 0,44,480,3: MAIN `c_line`, INDICATOR `c_accent`, rango 0–1000. Visible solo mientras se escanea.
+- `btn_lib_settings` se deshabilita (opacidad 40 %) mientras dura.
+- Las tarjetas aparecen **según se leen**, en orden. La que se está leyendo muestra un `lv_spinner` de
+  22 px (arco `c_accent` sobre `c_line`) centrado en la miniatura, título «Leyendo…» en `c_muted` y como
+  metadato el nombre del fichero.
+- Al terminar: se oculta `bar_scan` y `lbl_lib_count` vuelve a `c_muted` con el resumen.
+
+### 10.4 `scr_no_media` · variante **error** *(artboard «Error de microSD»)*
+Misma pantalla que «Sin videos», con otro contenido (una sola pantalla, dos estados):
+| Objeto | Estado «sin videos» | Estado «error» |
+|---|---|---|
+| `img_nomedia` 48×48 | icono SD, `c_muted` | icono SD con «!», **`c_danger`** |
+| `lbl_nomedia_title` 20 | «No hay videos» | «No se pudo leer la microSD» |
+| `lbl_nomedia_sub` 12 `c_muted` | «Copia archivos .avi en /videos de la microSD» | «Sácala, límpiala y vuelve a insertarla» |
+| `chip_err` (`st_chip`, 11, `c_muted`) | oculto | «Error 0x<err_code> · <texto>» con el código **real** de `player_status_t.err_code` |
+| `btn_retry` 120×44 | «Reintentar» | «Reintentar» |
+| `btn_settings_alt` 120×44 (borde 1 px `c_line`, texto `c_muted`) | oculto | «Ver ajustes» → `action_open_settings` |
+| `lbl_retry_hint` 11 `c_muted` abajo (y 288) | oculto | «Reintentando cada segundo…» mientras `state == PST_NO_MEDIA` |
+
+### 10.5 Miniatura de relleno (punto 5)
+Cuando un `.avi` no trae `.jpg`: `img_thumb` se sustituye por un contenedor 144×81, radio 6, fondo
+`c_surface`, con un icono de claqueta/película de 34 px centrado en `#4A4E57`, y `lbl_card_meta` empieza
+por «Sin miniatura · ». **No se genera la miniatura decodificando el video en el arranque**: alargaría el
+escaneo. El conversor (`02` F5) es quien debe crear los `.jpg`.
+
+## 11. Títulos largos: marquesina (punto 6, decidido por Keneth)
+
+- **Marquesina** (`LV_LABEL_LONG_SCROLL_CIRCULAR`) **solo en dos sitios**, donde el título es el
+  protagonista y hay uno solo en pantalla:
+  - `lbl_title` del reproductor (OSD superior).
+  - `lbl` de la fila **actual** de la cola (`uw_queue_row` con `is_current`).
+- Velocidad: `lv_obj_set_style_anim_duration` calculada para ~**40 px/s**; pausa de 1 s al inicio y al
+  final del ciclo (comportamiento por defecto de LVGL con `anim_speed`).
+- **En todo lo demás sigue el corte con puntos suspensivos** (`LV_LABEL_LONG_DOT`): tarjetas de la
+  biblioteca, filas no actuales de la cola, subtítulos y ajustes. Motivo: varias marquesinas a la vez
+  obligan a LVGL a repintar sin parar sobre la zona del video y se comen el presupuesto de los 33 ms.
+- La marquesina **se detiene** cuando su pantalla no está visible (LVGL ya lo hace al ocultar el objeto:
+  no crear timers propios).
+- Comprobación en F6: con la OSD visible y un título largo, `pres_fps` debe seguir ≥ 28,0.
+
+## 12. Estado del diseño
+
+Resueltos los puntos 2, 3, 4, 5 y 6 del §9. **Queda solo el punto 1**: los iconos PNG de 24×24 (⟲10,
+⟳10, candado, cola, tarjeta SD) y el de 48×48 de «sin medios» / «error», que genera Antigravity en F6 a
+partir de los dibujos del canvas: blancos, con alfa, y teñidos con `image_recolor`.

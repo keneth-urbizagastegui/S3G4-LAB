@@ -6,17 +6,22 @@
     { "file": "Estadisticas.dc.html", "title": "Estadísticas", "x": 1680, "y": 0, "w": 480, "h": 320 },
     { "file": "Bloqueo.dc.html", "title": "Bloqueo", "x": 2240, "y": 0, "w": 480, "h": 320 },
     { "file": "Biblioteca.dc.html", "title": "Biblioteca", "x": 0, "y": 440, "w": 480, "h": 320 },
-    { "file": "Cola.dc.html", "title": "Cola", "x": 560, "y": 440, "w": 480, "h": 320 },
-    { "file": "Ajustes.dc.html", "title": "Ajustes · Pantalla", "x": 1120, "y": 440, "w": 480, "h": 320 },
-    { "file": "AjustesReproduccion.dc.html", "title": "Ajustes · Reproducción", "x": 1680, "y": 440, "w": 480, "h": 320 },
-    { "file": "SinMedios.dc.html", "title": "Sin medios", "x": 2240, "y": 440, "w": 480, "h": 320 },
-    { "file": "Componentes.dc.html", "title": "Estados de componentes", "x": 0, "y": 900, "w": 900, "h": 440 },
-    { "file": "Tokens.dc.html", "title": "Tokens", "x": 1000, "y": 900, "w": 620, "h": 440 }
+    { "file": "Escaneo.dc.html", "title": "Biblioteca · escaneando", "x": 560, "y": 440, "w": 480, "h": 320 },
+    { "file": "Cola.dc.html", "title": "Cola", "x": 1120, "y": 440, "w": 480, "h": 320 },
+    { "file": "SinMedios.dc.html", "title": "Sin videos", "x": 1680, "y": 440, "w": 480, "h": 320 },
+    { "file": "ErrorSD.dc.html", "title": "Error de microSD", "x": 2240, "y": 440, "w": 480, "h": 320 },
+    { "file": "Ajustes.dc.html", "title": "Ajustes · Pantalla", "x": 0, "y": 880, "w": 480, "h": 320 },
+    { "file": "AjustesReproduccion.dc.html", "title": "Ajustes · Reproducción", "x": 560, "y": 880, "w": 480, "h": 320 },
+    { "file": "AjustesAlmacenamiento.dc.html", "title": "Ajustes · Almacenamiento", "x": 1120, "y": 880, "w": 480, "h": 320 },
+    { "file": "AjustesAcercaDe.dc.html", "title": "Ajustes · Acerca de", "x": 1680, "y": 880, "w": 480, "h": 320 },
+    { "file": "Componentes.dc.html", "title": "Estados de componentes", "x": 0, "y": 1340, "w": 900, "h": 440 },
+    { "file": "Tokens.dc.html", "title": "Tokens", "x": 1000, "y": 1340, "w": 620, "h": 440 }
   ],
   "annotations": [
     { "id": "restriccion-blit", "x": 0, "y": -150, "w": 520, "text": "Pantallas a 1:1 del panel (480×320). Las barras de la OSD son OPACAS a propósito: el video se pinta directo al panel en la franja entre ellas, sin pasar por LVGL. Las coordenadas exactas están en 03_especificacion_ui_eez.md; si algo no coincide, manda el documento." },
     { "id": "fuentes", "x": 1120, "y": -150, "w": 420, "text": "Tipografía Montserrat (la que trae LVGL): 20 títulos, 14 elementos, 12 metadatos. Acento único ámbar #F2B33D. Los degradados del fondo solo representan un fotograma de video." },
-    { "id": "hoja-sistema", "x": 0, "y": 800, "w": 620, "text": "Hojas de sistema: estados de cada componente (para los estilos de EEZ) y tokens. No son pantallas del dispositivo." }
+    { "id": "sin-scroll", "x": 0, "y": 350, "w": 560, "text": "SOLO se desplazan la Biblioteca (con más de 6 videos) y la Cola (con más de 4). En todo lo demás hay que desmarcar SCROLLABLE y poner Scrollbar mode en OFF: en LVGL todo nace desplazable y eso es el rebote molesto de la UI vieja. Ver 03 §8." },
+    { "id": "hoja-sistema", "x": 0, "y": 1240, "w": 620, "text": "Hojas de sistema: estados de cada componente (para los estilos de EEZ) y tokens. No son pantallas del dispositivo." }
   ],
   "launch": { "view": "canvas" }
 }

@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&amp;display=swap">
+  <style>
+    body { margin: 0; background: #0B0C0F; font-family: Montserrat, "Segoe UI", sans-serif; }
+    a { color: #F2B33D; } a:hover { color: #FFCB6B; }
+    svg { display: block; }
+  </style>
+</helmet>
+<div style="position: relative; width: 480px; height: 320px; overflow: hidden; background: #0B0C0F; color: #EDEDEA; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+  <div style="color: #E5484D;">
+    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"><path d="M8 3h9a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6z"></path><path d="M12 9v4"></path><path d="M12 16.5v.01"></path></svg>
+  </div>
+  <div style="margin-top: 14px; font-size: 20px; font-weight: 700;">No se pudo leer la microSD</div>
+  <div style="margin-top: 6px; font-size: 12px; color: #8E929B;">Sácala, límpiala y vuelve a insertarla</div>
+  <div style="margin-top: 8px; height: 20px; padding: 0 10px; border-radius: 10px; background: #15171C; color: #8E929B; font-size: 11px; display: flex; align-items: center;">Error 0x107 · tiempo de espera agotado</div>
+  <div style="margin-top: 20px; display: flex; gap: 12px;">
+    <div style="width: 120px; height: 44px; border-radius: 8px; background: #15171C; color: #F2B33D; font-size: 13px; font-weight: 600; display: flex; align-items: center; justify-content: center;">Reintentar</div>
+    <div style="width: 120px; height: 44px; border-radius: 8px; border: 1px solid #2A2D34; box-sizing: border-box; color: #8E929B; font-size: 13px; display: flex; align-items: center; justify-content: center;">Ver ajustes</div>
+  </div>
+  <div style="position: absolute; left: 0; bottom: 12px; width: 480px; text-align: center; font-size: 11px; color: #8E929B;">Reintentando cada segundo…</div>
+</div>
+</x-dc>
+</body>
+</html>
