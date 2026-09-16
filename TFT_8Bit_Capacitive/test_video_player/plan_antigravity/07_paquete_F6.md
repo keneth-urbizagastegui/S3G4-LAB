@@ -54,3 +54,26 @@
 3. ¿Los toques caen donde se ve el botón, en las 4 esquinas de la pantalla?
 4. ¿Los colores son correctos (piel, cielo azul)? Si no, cambiar el formato de color de §1 y **anotarlo**.
 5. ¿El video sigue igual de fluido con la interfaz nueva?
+
+---
+
+## Actualización tras F5d (16/09/2026): el panel ya no va en horizontal
+
+Desde F5d el panel trabaja en su **orientación nativa (320×480, `MADCTL 0x48`)** y los videos vienen
+**girados en origen**. Es lo que eliminó el corte diagonal, y **no se cambia**. Consecuencias para F6:
+
+- **LVGL rota por software** (`lv_display_set_rotation(..., LV_DISPLAY_ROTATION_90)`), así que las
+  pantallas de EEZ **se siguen diseñando en 480×320 horizontal**, como dicta `03`. No hay que girar nada
+  en el proyecto EEZ.
+- **Defecto observado por Keneth con la UI vieja:** al tocar en pantalla completa, los controles aparecen
+  **dibujándose a franjas**, con un corte visible mientras se completan. Pasa porque LVGL repinta la OSD
+  por bloques y, con la rotación, esos bloques caen perpendiculares a la pantalla. En F6 hay que
+  evitarlo:
+  1. La OSD se muestra **en un solo flush por barra**: búfer de dibujo de LVGL suficiente para una
+     barra entera (480×84 px en horizontal), o `LV_DISPLAY_RENDER_MODE_PARTIAL` con un tamaño que la
+     cubra.
+  2. El flush de LVGL también **espera TE** (con `lcd_bus_wait_te`, igual que el video) antes de
+     enviar, para que la barra aparezca de golpe en un refresco.
+  3. Criterio visual: al tocar en pantalla completa, los controles aparecen **enteros, sin barrido ni
+     corte**. Se añade a la verificación de Keneth.
+- La **ventana única por fotograma** y la **recuperación de la microSD** de F5d se mantienen tal cual.
