@@ -28,8 +28,9 @@
 | `lesserafim_rot.avi` | 67,4 MB | 5988 | 11,5 KB | 34,3 KB |
 | `meovv_rot.avi` | 59,3 MB | 6136 | 9,9 KB | 20,3 KB |
 
-**Keneth los copia a la microSD** (el auditor le pide que la lleve al PC). Deben convivir con los
-originales durante la fase: así se puede comparar girado y sin girar en la misma tarjeta.
+**YA ESTÁN COPIADOS EN LA MICROSD** (16/09/2026, con los nombres de siempre: harry.avi, ariana.avi,
+lesserafim.avi, meovv.avi, cada uno con su .jpg y su .json). **Los originales sin girar ya no están y no
+se restauran: no hay nada que comparar.** Decisión de Keneth: avanzar, no volver a medir lo ya descartado.
 
 ## Tareas
 
