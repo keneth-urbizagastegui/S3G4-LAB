@@ -77,3 +77,33 @@ Desde F5d el panel trabaja en su **orientación nativa (320×480, `MADCTL 0x48`)
   3. Criterio visual: al tocar en pantalla completa, los controles aparecen **enteros, sin barrido ni
      corte**. Se añade a la verificación de Keneth.
 - La **ventana única por fotograma** y la **recuperación de la microSD** de F5d se mantienen tal cual.
+
+---
+
+## División de F6 y pendientes heredados de F5b (16/09/2026)
+
+**F6a — proyecto EEZ y pantallas principales**
+1. `video_player.eez-project`: ajustes de `03` §1 (480×320, sin flow, salida `../main/ui`), estilos y
+   tokens de §2, imágenes de `diseno_ui/iconos/`.
+2. Pantallas **`scr_player`** (con `osd_top`, `osd_bottom`, `player_touch`, `bar_mini_progress`),
+   **`scr_library`** (con `uw_video_card`, incluido el estado de escaneo §10.3 y la miniatura de relleno
+   §10.5) y **`scr_no_media`** (dos estados, §10.4).
+3. **Generación de código.** El `.eez-project` es JSON y se edita directamente. Para generar `main/ui/*`
+   intenta la compilación de EEZ Studio por línea de comandos; si no existe, **PARA y pide a Keneth que
+   abra el proyecto en EEZ Studio y pulse *Build***. No escribas a mano los ficheros de `main/ui`.
+4. Integración mínima: `ui_glue/actions.c` y `vars.c` para esas tres pantallas, `spotify_ui.*` a `legacy/`,
+   rotación de LVGL, **OSD en un solo flush sincronizado con TE**.
+5. Medición completa `--phase F5b` con la UI nueva: **mismos criterios** (fps, descartes, TE, LIB, TAP,
+   STRESS). Nueva línea `UI,screens=<n>,widgets=<n>,images=<n>` contada.
+
+**F6b — resto de la interfaz**
+`scr_settings` (4 pestañas), `scr_queue`, `ovl_stats`, `ovl_lock`, capa de gestos (§4), marquesina (§11),
+prueba automática de scroll (§8) y navegación aleatoria (`scn=uinav`).
+
+**Heredado de F5b (entra en F6a o F6b según la pantalla):**
+- Biblioteca: tarjeta **atenuada con el motivo** para los incompatibles; aviso «Sin girar: puede verse
+  corte» para 480×320; pantalla de «ninguno compatible» (`06` §7.2).
+- Botón **«Volver a escanear»** en Ajustes · Almacenamiento (la función `media_library_scan` ya existe).
+- Al reanudar, **retroceder 2 s** respecto a la posición guardada (se guarda cada 5 s; medido en F5b).
+- Estado de la tarjeta: tiene `quinto.avi` y los tres ficheros trampa (`trampa_codec.avi` es de la
+  versión antigua y se acepta como compatible: es correcto).
