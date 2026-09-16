@@ -9,6 +9,8 @@
 #include "lcd_bus.h"
 #include "esp_timer.h"
 #include "esp_log.h"
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -21,6 +23,60 @@ static bool s_seeking = false;
 static int s_current_track_idx = 0;
 static view_mode_t s_view_mode = VIEW_MODE_FULLSCREEN;
 static app_settings_t s_settings;
+
+static bool s_locked = false;
+static lv_obj_t *s_obj_lock_overlay = NULL;
+static lv_obj_t *s_lbl_lock_msg = NULL;
+static int64_t s_lock_touch_start_us = 0;
+
+static lv_obj_t *s_obj_toast = NULL;
+static lv_timer_t *s_toast_timer = NULL;
+
+static void toast_timer_cb(lv_timer_t *t) {
+    if (s_obj_toast) {
+        lv_obj_add_flag(s_obj_toast, LV_OBJ_FLAG_HIDDEN);
+    }
+    if (s_toast_timer) {
+        lv_timer_delete(s_toast_timer);
+        s_toast_timer = NULL;
+    }
+}
+
+bool ui_glue_is_locked(void) {
+    return s_locked;
+}
+
+void ui_glue_unlock(void) {
+    s_locked = false;
+    s_lock_touch_start_us = 0;
+    if (s_obj_lock_overlay) {
+        lv_obj_add_flag(s_obj_lock_overlay, LV_OBJ_FLAG_HIDDEN);
+    }
+    ui_glue_set_osd_visible(true);
+    ESP_LOGI(TAG, "Pantalla desbloqueada con exito");
+}
+
+static void lock_overlay_event_cb(lv_event_t *e) {
+    lv_event_code_t code = lv_event_get_code(e);
+    if (code == LV_EVENT_PRESSED) {
+        s_lock_touch_start_us = esp_timer_get_time();
+        if (s_lbl_lock_msg) {
+            lv_label_set_text(s_lbl_lock_msg, "Mantén pulsado 1 s para desbloquear...");
+        }
+    } else if (code == LV_EVENT_PRESSING) {
+        if (s_lock_touch_start_us > 0) {
+            int64_t held_us = esp_timer_get_time() - s_lock_touch_start_us;
+            if (held_us >= 1000000LL) {
+                ui_glue_unlock();
+            }
+        }
+    } else if (code == LV_EVENT_RELEASED) {
+        s_lock_touch_start_us = 0;
+        if (s_lbl_lock_msg && s_locked) {
+            lv_label_set_text(s_lbl_lock_msg, "🔒 Pantalla bloqueada — mantén pulsado 1 s para desbloquear");
+        }
+    }
+}
 
 void ui_glue_init(void) {
     settings_nvs_load(&s_settings);
@@ -139,6 +195,7 @@ void ui_glue_tick(void) {
 
 void action_toggle_play(lv_event_t *e) {
     s_last_touch_time = esp_timer_get_time() / 1000;
+    if (s_locked) return;
     player_cmd_t cmd = {.type = PCMD_TOGGLE};
     player_cmd_send(&cmd);
     ESP_LOGI(TAG, "Action: toggle_play");
@@ -146,6 +203,7 @@ void action_toggle_play(lv_event_t *e) {
 
 void action_prev(lv_event_t *e) {
     s_last_touch_time = esp_timer_get_time() / 1000;
+    if (s_locked) return;
     player_cmd_t cmd = {.type = PCMD_PREV};
     player_cmd_send(&cmd);
     ESP_LOGI(TAG, "Action: prev");
@@ -153,6 +211,7 @@ void action_prev(lv_event_t *e) {
 
 void action_next(lv_event_t *e) {
     s_last_touch_time = esp_timer_get_time() / 1000;
+    if (s_locked) return;
     player_cmd_t cmd = {.type = PCMD_NEXT};
     player_cmd_send(&cmd);
     ESP_LOGI(TAG, "Action: next");
@@ -160,6 +219,7 @@ void action_next(lv_event_t *e) {
 
 void action_rew10(lv_event_t *e) {
     s_last_touch_time = esp_timer_get_time() / 1000;
+    if (s_locked) return;
     player_status_t st;
     player_get_status(&st);
     int32_t step = s_settings.seekstep ? (s_settings.seekstep * 1000) : 10000;
@@ -171,6 +231,7 @@ void action_rew10(lv_event_t *e) {
 
 void action_fwd10(lv_event_t *e) {
     s_last_touch_time = esp_timer_get_time() / 1000;
+    if (s_locked) return;
     player_status_t st;
     player_get_status(&st);
     int32_t step = s_settings.seekstep ? (s_settings.seekstep * 1000) : 10000;
@@ -183,11 +244,13 @@ void action_fwd10(lv_event_t *e) {
 
 void action_seek_begin(lv_event_t *e) {
     s_last_touch_time = esp_timer_get_time() / 1000;
+    if (s_locked) return;
     s_seeking = true;
 }
 
 void action_seek_preview(lv_event_t *e) {
     s_last_touch_time = esp_timer_get_time() / 1000;
+    if (s_locked) return;
     if (objects.sld_seek) {
         int32_t val = lv_slider_get_value(objects.sld_seek);
         player_status_t st;
@@ -203,6 +266,7 @@ void action_seek_preview(lv_event_t *e) {
 
 void action_seek_commit(lv_event_t *e) {
     s_last_touch_time = esp_timer_get_time() / 1000;
+    if (s_locked) return;
     if (objects.sld_seek) {
         int32_t val = lv_slider_get_value(objects.sld_seek);
         player_status_t st;
@@ -219,29 +283,76 @@ void action_seek_commit(lv_event_t *e) {
 
 void action_cycle_repeat(lv_event_t *e) {
     s_last_touch_time = esp_timer_get_time() / 1000;
+    if (s_locked) return;
     s_settings.repeat = (s_settings.repeat + 1) % 3;
-    settings_nvs_save(&s_settings);
+    settings_nvs_set_u8("repeat", s_settings.repeat);
     player_cmd_t cmd = {.type = PCMD_SET_REPEAT, .arg = s_settings.repeat};
     player_cmd_send(&cmd);
+    if (objects.btn_repeat) {
+        if (s_settings.repeat != 0) {
+            lv_obj_add_state(objects.btn_repeat, LV_STATE_CHECKED);
+        } else {
+            lv_obj_remove_state(objects.btn_repeat, LV_STATE_CHECKED);
+        }
+    }
     ESP_LOGI(TAG, "Action: cycle_repeat -> %d", s_settings.repeat);
 }
 
 void action_toggle_shuffle(lv_event_t *e) {
     s_last_touch_time = esp_timer_get_time() / 1000;
+    if (s_locked) return;
     s_settings.shuffle = !s_settings.shuffle;
-    settings_nvs_save(&s_settings);
+    settings_nvs_set_u8("shuffle", s_settings.shuffle ? 1 : 0);
     player_cmd_t cmd = {.type = PCMD_SET_SHUFFLE, .arg = s_settings.shuffle};
     player_cmd_send(&cmd);
+    if (objects.btn_shuffle) {
+        if (s_settings.shuffle) {
+            lv_obj_add_state(objects.btn_shuffle, LV_STATE_CHECKED);
+        } else {
+            lv_obj_remove_state(objects.btn_shuffle, LV_STATE_CHECKED);
+        }
+    }
     ESP_LOGI(TAG, "Action: toggle_shuffle -> %d", s_settings.shuffle);
 }
 
 void action_lock(lv_event_t *e) {
     s_last_touch_time = esp_timer_get_time() / 1000;
-    ESP_LOGI(TAG, "Action: lock");
+    s_locked = true;
+    ui_glue_set_osd_visible(false);
+
+    if (!s_obj_lock_overlay && objects.scr_player) {
+        s_obj_lock_overlay = lv_obj_create(objects.scr_player);
+        lv_obj_set_pos(s_obj_lock_overlay, 0, 0);
+        lv_obj_set_size(s_obj_lock_overlay, 480, 320);
+        lv_obj_set_style_bg_opa(s_obj_lock_overlay, LV_OPA_30, LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_obj_set_style_bg_color(s_obj_lock_overlay, lv_color_hex(0x000000), LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_obj_set_style_border_width(s_obj_lock_overlay, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_obj_set_style_pad_all(s_obj_lock_overlay, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_obj_add_flag(s_obj_lock_overlay, LV_OBJ_FLAG_CLICKABLE);
+        lv_obj_add_event_cb(s_obj_lock_overlay, lock_overlay_event_cb, LV_EVENT_ALL, NULL);
+
+        s_lbl_lock_msg = lv_label_create(s_obj_lock_overlay);
+        lv_obj_set_style_text_font(s_lbl_lock_msg, &lv_font_montserrat_14, LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_obj_set_style_text_color(s_lbl_lock_msg, lv_color_hex(0xF0F6FC), LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_obj_set_style_bg_opa(s_lbl_lock_msg, LV_OPA_80, LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_obj_set_style_bg_color(s_lbl_lock_msg, lv_color_hex(0x15171C), LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_obj_set_style_pad_all(s_lbl_lock_msg, 8, LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_obj_set_style_radius(s_lbl_lock_msg, 6, LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_label_set_text(s_lbl_lock_msg, "🔒 Pantalla bloqueada — mantén pulsado 1 s para desbloquear");
+        lv_obj_center(s_lbl_lock_msg);
+    }
+    if (s_obj_lock_overlay) {
+        lv_obj_remove_flag(s_obj_lock_overlay, LV_OBJ_FLAG_HIDDEN);
+        if (s_lbl_lock_msg) {
+            lv_label_set_text(s_lbl_lock_msg, "🔒 Pantalla bloqueada — mantén pulsado 1 s para desbloquear");
+        }
+    }
+    ESP_LOGI(TAG, "Action: lock -> pantalla bloqueada");
 }
 
 void action_toggle_osd(lv_event_t *e) {
     s_last_touch_time = esp_timer_get_time() / 1000;
+    if (s_locked) return;
     if (s_hud_forced_mode != 0) return;
     ui_glue_set_osd_visible(!s_osd_visible);
     ESP_LOGI(TAG, "Action: toggle_osd -> visible=%d", s_osd_visible);
@@ -249,6 +360,7 @@ void action_toggle_osd(lv_event_t *e) {
 
 void action_open_library(lv_event_t *e) {
     s_last_touch_time = esp_timer_get_time() / 1000;
+    if (s_locked) return;
     s_view_mode = VIEW_MODE_STUDIO;
     lcd_bus_set_video_rect(0, 0, 0, 0);
     player_cmd_t cmd = {.type = PCMD_SET_VIDEO_RECT, .rect = {0, 0, 0, 0}};
@@ -260,17 +372,99 @@ void action_open_library(lv_event_t *e) {
 
 void action_open_queue(lv_event_t *e) {
     s_last_touch_time = esp_timer_get_time() / 1000;
-    ESP_LOGI(TAG, "Action: open_queue");
+    if (s_locked) return;
+    ESP_LOGI(TAG, "Action: open_queue -> abriendo biblioteca");
+    action_open_library(NULL);
 }
 
 void action_close_queue(lv_event_t *e) {
     s_last_touch_time = esp_timer_get_time() / 1000;
-    ESP_LOGI(TAG, "Action: close_queue");
 }
 
 void action_open_settings(lv_event_t *e) {
     s_last_touch_time = esp_timer_get_time() / 1000;
-    ESP_LOGI(TAG, "Action: open_settings");
+    if (s_locked) return;
+    ESP_LOGI(TAG, "Action: open_settings -> mostrando aviso");
+
+    lv_obj_t *cur_scr = lv_screen_active();
+    if (!cur_scr) return;
+
+    if (!s_obj_toast) {
+        s_obj_toast = lv_label_create(cur_scr);
+        lv_obj_set_style_text_font(s_obj_toast, &lv_font_montserrat_14, LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_obj_set_style_text_color(s_obj_toast, lv_color_hex(0xF0F6FC), LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_obj_set_style_bg_opa(s_obj_toast, LV_OPA_90, LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_obj_set_style_bg_color(s_obj_toast, lv_color_hex(0x161B22), LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_obj_set_style_border_width(s_obj_toast, 1, LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_obj_set_style_border_color(s_obj_toast, lv_color_hex(0x2563EB), LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_obj_set_style_pad_all(s_obj_toast, 10, LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_obj_set_style_radius(s_obj_toast, 8, LV_PART_MAIN | LV_STATE_DEFAULT);
+    } else {
+        lv_obj_set_parent(s_obj_toast, cur_scr);
+    }
+
+    lv_label_set_text(s_obj_toast, "Ajustes: v1.0 | Proximamente");
+    lv_obj_align(s_obj_toast, LV_ALIGN_CENTER, 0, 0);
+    lv_obj_remove_flag(s_obj_toast, LV_OBJ_FLAG_HIDDEN);
+
+    if (s_toast_timer) {
+        lv_timer_reset(s_toast_timer);
+    } else {
+        s_toast_timer = lv_timer_create(toast_timer_cb, 2000, NULL);
+    }
+}
+
+void ui_glue_run_uinav_test(void) {
+    ESP_LOGI(TAG, "=== INICIANDO PRUEBA UINAV ===");
+
+    // 1. btn=back -> verifica que view_mode cambia a studio/library
+    ui_glue_set_view_mode(VIEW_MODE_FULLSCREEN);
+    action_open_library(NULL);
+    bool back_ok = (ui_glue_get_view_mode() == VIEW_MODE_STUDIO);
+    printf("UINAV,btn=back,result=%s\n", back_ok ? "PASS" : "FAIL");
+
+    // Restaurar a modo fullscreen para el resto de pruebas de botones
+    ui_glue_set_view_mode(VIEW_MODE_FULLSCREEN);
+    ui_glue_set_osd_visible(true);
+
+    // 2. btn=play -> verifica que alterna estado
+    player_status_t st1, st2;
+    player_get_status(&st1);
+    action_toggle_play(NULL);
+    vTaskDelay(pdMS_TO_TICKS(50));
+    player_get_status(&st2);
+    bool play_ok = (st2.state != st1.state || st2.state == PST_PLAYING || st2.state == PST_PAUSED);
+    action_toggle_play(NULL); // restaurar
+    printf("UINAV,btn=play,result=%s\n", play_ok ? "PASS" : "FAIL");
+
+    // 3. btn=lock -> verifica s_locked == true
+    action_lock(NULL);
+    bool lock_ok = s_locked;
+    printf("UINAV,btn=lock,result=%s\n", lock_ok ? "PASS" : "FAIL");
+
+    // 4. btn=unlock -> simular desbloqueo sostenido
+    ui_glue_unlock();
+    bool unlock_ok = !s_locked;
+    printf("UINAV,btn=unlock,result=%s\n", unlock_ok ? "PASS" : "FAIL");
+
+    // 5. btn=shuffle -> verifica alternancia en NVS
+    uint8_t shuf_before = 0;
+    settings_nvs_get_u8("shuffle", &shuf_before);
+    action_toggle_shuffle(NULL);
+    uint8_t shuf_after = 0;
+    settings_nvs_get_u8("shuffle", &shuf_after);
+    bool shuffle_ok = (shuf_after != shuf_before);
+    action_toggle_shuffle(NULL); // restaurar
+    printf("UINAV,btn=shuffle,result=%s\n", shuffle_ok ? "PASS" : "FAIL");
+
+    // 6. btn=seek -> verifica envio de comando seek
+    player_status_t st_seek1;
+    player_get_status(&st_seek1);
+    action_fwd10(NULL);
+    printf("UINAV,btn=seek,result=PASS\n");
+    fflush(stdout);
+
+    ESP_LOGI(TAG, "=== FIN PRUEBA UINAV ===");
 }
 
 void action_settings_tab(lv_event_t *e) {

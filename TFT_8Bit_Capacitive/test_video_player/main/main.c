@@ -239,6 +239,7 @@ static void touch_task(void *arg) {
 typedef enum {
     UI_REQ_SET_VIEW,
     UI_REQ_SET_HUD,
+    UI_REQ_UINAV,
 } ui_req_type_t;
 
 typedef struct {
@@ -379,6 +380,8 @@ static void gui_task(void *arg) {
                 ui_glue_set_view_mode((view_mode_t)req.arg);
             } else if (req.type == UI_REQ_SET_HUD) {
                 ui_glue_set_hud_forced(req.arg);
+            } else if (req.type == UI_REQ_UINAV) {
+                ui_glue_run_uinav_test();
             }
             publish_ui_state();
         }
@@ -538,6 +541,11 @@ static void autotest_task(void *arg) {
 
     printf("TAP,hud_before=%d,hud_after=%d\n", hud_before, hud_after);
     fflush(stdout);
+
+    // Escenario UINAV: verificación automatizada de navegación de botones
+    ESP_LOGI(TAG, "Iniciando escenario UINAV (verificación de botones y navegación)...");
+    ui_req_send(UI_REQ_UINAV, 0);
+    vTaskDelay(pdMS_TO_TICKS(1500));
 
     // Escenario TOGGLE (Fase 3): alternar HUD cada 500 ms durante 10 s para verificar estabilidad de direct blit
     ESP_LOGI(TAG, "Iniciando escenario TOGGLE (10 s, alterna cada 500 ms)...");

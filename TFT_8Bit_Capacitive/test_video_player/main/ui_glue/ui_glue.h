@@ -28,6 +28,10 @@ view_mode_t ui_glue_get_view_mode(void);
 
 void ui_glue_get_published_info(char *title_buf, size_t max_len, int *track_idx, view_mode_t *vmode, int *hud_vis);
 
+bool ui_glue_is_locked(void);
+void ui_glue_unlock(void);
+void ui_glue_run_uinav_test(void);
+
 #ifdef __cplusplus
 }
 #endif
