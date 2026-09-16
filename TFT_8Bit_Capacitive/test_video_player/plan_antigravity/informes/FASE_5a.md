@@ -167,3 +167,30 @@ La placa cuenta con el firmware normal interactivo en `COM16` listo para la veri
   - `plan_antigravity/mediciones/F5a_te_on.csv` (evaluación formal con sincronización TE activa)
   - `plan_antigravity/mediciones/F5a_te_off.csv` (evaluación formal con TE desactivado)
 - **Fase siguiente:** **FASE 5b** (Biblioteca dinámica de medios con escaneo de `.avi`, metadatos `.json`, miniaturas `.jpg` 144×81 en PSRAM, persistencia en NVS y unificación del conversor de video).
+
+---
+
+## Auditoría de Claude (15/09/2026) — F5a: TE VERIFICADO, PERO NO SE PUEDE CERRAR LA FASE
+
+Recalculado desde `F5a_te_on.csv`, `F5a_te_off.csv` y `F5a_te_probe.csv`, y contrastado con `c003175`.
+
+**Confirmado:**
+- **El cable TE de Keneth funciona.** `te_present=1` en el 100 % de los registros, **57,7 Hz** (17,33 ms), jitter ~0, `te_timeout=0` en todas las ejecuciones. `0x35` con `0x00` añadido **después** de la init (sin tocar la secuencia congelada); GPIO 7 como entrada sin pull, flanco de subida.
+- Pendientes de F4 resueltos: `q_wait_ms` (consumidor) separado de `reader_rd_*` (lectura real de la SD: media 8,5–12,7 ms, **máximo 42,6 ms**, `slots_ready` ~2,4); SDPULL a 120 s con `card_was_playing`; `skipped` ya no cuenta como cumplido; `sdkconfig` normal sin autotest (verificado en el log de arranque).
+
+**Por qué NO se cierra la fase (criterios medidos, no opinión):**
+
+| Criterio | Umbral | TE ON | TE OFF | F4 (sin TE) |
+|---|---|---|---|---|
+| pres_fps hidden | ≥ 28,5 | **28,20 ✘** | 29,43 ✔ | 30,01 |
+| drop hidden | ≤ 1 % | **5,30 % ✘** | **1,28 % ✘** | 0,00 % |
+| reader_rd_max | < 15 ms | **22,7 ✘** | **23,8 ✘** | (no se medía) |
+| te_present / te_timeout | 1 / ≤ 1 % | ✔ / 0 ✔ | ✔ / 0 ✔ | — |
+
+1. **El choque físico es real y está bien explicado:** enviar un fotograma ocupa 20,2 ms y el refresco dura 17,33 ms, así que un fotograma sincronizado ocupa **2 periodos TE → tope de 28,85 fps**. Con videos a 30 fps, el reloj descarta ~1,15 fotogramas/s. Las cifras encajan con la explicación.
+2. **`reader_rd_max` 22–42 ms** es la lectura real de la microSD, que nunca se había medido. No rompe la reproducción (la cola de precarga la absorbe, `q_wait_max` 0,1 ms), pero **incumple el umbral de F4** y conviene revisarlo.
+3. **TE OFF ya no reproduce como F4** (1,28 % de descartes frente a 0 %, 29,4 fps frente a 30,0) con el mismo camino de presentación. Hay que explicar la regresión: sospecha de la ISR de TE y del coste de medir.
+4. **FALLO NUEVO con TE ON: el escenario `stress` se queda a 0 fps** durante sus 6 ventanas, con `drift` de 149 630 ms (`F5a_te_on.csv`). En TE OFF ese mismo escenario da 28,8 fps. Con saltos rápidos y espera de TE, el reproductor **deja de presentar**. Es un bloqueo funcional y hay que corregirlo antes de aceptar TE ON.
+5. **Puerto:** todo se midió en **COM16** (el CH340K reenumeró; hoy no existe COM17). Antigravity cambió de puerto sin anotarlo. Hay que actualizar `04` §2 y `00_LEEME.md`.
+
+**Camino que abre la medición:** con el refresco a 57,7 Hz el envío no cabe en un periodo. Bajando el refresco del panel a **~45–48 Hz** (periodo 20,8–22,2 ms > 20,2 ms), cada fotograma cabría en **un** periodo y se podrían tener **30 fps sincronizados**, sin tearing y sin descartes. Requiere tocar `FRMCTR1 (0xB1)`, que está congelado: **decisión de Keneth**, y hay que comprobar parpadeo en el panel IPS.
