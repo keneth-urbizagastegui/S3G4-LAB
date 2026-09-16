@@ -93,6 +93,22 @@ static esp_err_t ensure_studio_decoder(uint16_t src_w, uint16_t src_h) {
 static uint16_t *s_strip_bufs[2] = {NULL, NULL};
 static size_t s_strip_buf_len = 0;
 static uint16_t *s_clip_strip_bufs[2] = {NULL, NULL};
+static size_t s_clip_strip_buf_len = 0;
+
+static void ensure_clip_strip_bufs(size_t required_bytes) {
+    if (!s_clip_strip_bufs[0] || s_clip_strip_buf_len < required_bytes) {
+        for (int i = 0; i < 2; i++) {
+            if (s_clip_strip_bufs[i]) {
+                free(s_clip_strip_bufs[i]);
+                s_clip_strip_bufs[i] = NULL;
+            }
+            s_clip_strip_bufs[i] = (uint16_t *)heap_caps_aligned_alloc(
+                16, required_bytes, MALLOC_CAP_DMA | MALLOC_CAP_INTERNAL);
+            assert(s_clip_strip_bufs[i] != NULL);
+        }
+        s_clip_strip_buf_len = required_bytes;
+    }
+}
 
 static void avi_reader_task(void *arg) {
     ESP_LOGI(TAG, "Tarea avi_reader_task iniciada en Core 0.");
@@ -750,14 +766,7 @@ esp_err_t avi_player_read_and_blit_direct(void) {
                 } else {
                     // Fullscreen con OSD: recortar columnas a lo largo del alto lógico vh
                     if (clip_w > 0) {
-                        if (!s_clip_strip_bufs[0]) {
-                            for (int i = 0; i < 2; i++) {
-                                s_clip_strip_bufs[i] = (uint16_t *)heap_caps_aligned_alloc(
-                                    16, 196 * 16 * sizeof(uint16_t), MALLOC_CAP_DMA | MALLOC_CAP_INTERNAL);
-                                assert(s_clip_strip_bufs[i] != NULL);
-                            }
-                        }
-
+                        ensure_clip_strip_bufs(320 * 16 * sizeof(uint16_t));
                         uint16_t *dst_strip = s_clip_strip_bufs[b & 1];
                         const uint16_t *src_strip = s_strip_bufs[b & 1];
                         for (int r = 0; r < cur_lines; r++) {
@@ -776,13 +785,7 @@ esp_err_t avi_player_read_and_blit_direct(void) {
                 int clip_cols = clip_w;
                 if (clip_cols > 320) clip_cols = 320;
                 if (clip_cols > 0 && cur_lines > 0) {
-                    if (!s_clip_strip_bufs[0]) {
-                        for (int i = 0; i < 2; i++) {
-                            s_clip_strip_bufs[i] = (uint16_t *)heap_caps_aligned_alloc(
-                                16, 320 * 16 * sizeof(uint16_t), MALLOC_CAP_DMA | MALLOC_CAP_INTERNAL);
-                            assert(s_clip_strip_bufs[i] != NULL);
-                        }
-                    }
+                    ensure_clip_strip_bufs(320 * 16 * sizeof(uint16_t));
                     uint16_t *dst_strip = s_clip_strip_bufs[b & 1];
                     const uint16_t *src_strip = s_strip_bufs[b & 1];
                     for (int r = 0; r < cur_lines; r++) {

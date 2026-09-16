@@ -229,6 +229,15 @@ def main():
             if CRASH_REGEX.search(line_str):
                 crashed = True
                 crash_reason = f"Crash / excepcion detectada: {line_str}"
+                for _ in range(25):
+                    try:
+                        extra_b = ser.readline()
+                        if extra_b:
+                            extra_s = extra_b.decode("utf-8", errors="replace").rstrip("\r\n")
+                            recent_lines.append(extra_s)
+                            log_file.write(extra_s + "\n")
+                    except Exception:
+                        break
                 break
 
             # Parsear lineas PERF

@@ -203,6 +203,9 @@ static void player_open_track(int index) {
 
     player_get_track_title(index, s_status.title, sizeof(s_status.title));
     player_get_track_subtitle(index, s_status.subtitle, sizeof(s_status.subtitle));
+    if (info->width == 480 && info->height == 320) {
+        snprintf(s_status.subtitle, sizeof(s_status.subtitle), "Sin girar");
+    }
     s_pts_started = false;
     s_pts_t0_us = 0;
     s_track_play_start_us = esp_timer_get_time();
