@@ -54,12 +54,29 @@ static uint32_t s_reader_frame_idx = 0;
 static jpeg_dec_handle_t s_dec_full = NULL;
 static jpeg_dec_handle_t s_dec_studio = NULL;
 
-// Búferes DMA internos alineados a 16 B para decodificación por franjas (P2)
-static uint16_t *s_strip_bufs[2] = {NULL, NULL};
-static size_t s_strip_buf_len = 0;
+#define FULL_SCREEN_W 320
+#define FULL_SCREEN_H 480
+#define FULL_FRAME_BYTES (FULL_SCREEN_W * FULL_SCREEN_H * sizeof(uint16_t)) // 307200 B
+
+#define NUM_FULL_FRAME_BUFS 3
+static uint16_t *s_full_frame_bufs[NUM_FULL_FRAME_BUFS] = {NULL, NULL, NULL};
+static uint16_t *s_clipped_buf = NULL;
+static volatile int s_buf_head = 0;
+static volatile int s_buf_tail = 0;
+static volatile int s_buf_count = 0;
+static volatile uint32_t s_frame_idx_ring[NUM_FULL_FRAME_BUFS] = {0};
+static volatile bool s_prerolled = false;
+static TaskHandle_t s_decoder_task_handle = NULL;
+static SemaphoreHandle_t s_ring_free_sem = NULL;
+static SemaphoreHandle_t s_ring_ready_sem = NULL;
+static portMUX_TYPE s_ring_mux = portMUX_INITIALIZER_UNLOCKED;
+static volatile bool s_direct_pipeline_enabled = false;
+static esp_err_t avi_player_preroll_first_frame(void);
 
 static char **s_scanned_avi_files = NULL;
 static int s_scanned_avi_count = 0;
+
+static void avi_decoder_task(void *arg);
 
 static void avi_reader_task(void *arg) {
     ESP_LOGI(TAG, "Tarea avi_reader_task iniciada en Core 0.");
@@ -193,6 +210,86 @@ static void avi_reader_task(void *arg) {
     }
 }
 
+static void avi_decoder_task(void *arg) {
+    ESP_LOGI(TAG, "Tarea avi_decoder_task iniciada en Core 1.");
+    while (1) {
+        while (!s_direct_pipeline_enabled || !s_reader_run || !s_info.is_open) {
+            ulTaskNotifyTake(pdTRUE, pdMS_TO_TICKS(50));
+        }
+
+        // Esperar búfer libre en el anillo de cuadro completo
+        if (xSemaphoreTake(s_ring_free_sem, pdMS_TO_TICKS(50)) != pdTRUE) {
+            continue;
+        }
+
+        if (!s_direct_pipeline_enabled || !s_reader_run || !s_info.is_open) {
+            xSemaphoreGive(s_ring_free_sem);
+            continue;
+        }
+
+        // Obtener slot con JPEG comprimido desde reader task
+        avi_slot_t *slot = NULL;
+        int64_t t_rd_start = esp_timer_get_time();
+        if (xQueueReceive(s_q_ready, &slot, pdMS_TO_TICKS(100)) != pdTRUE) {
+            xSemaphoreGive(s_ring_free_sem);
+            continue;
+        }
+        perf_mark_q_wait((uint32_t)(esp_timer_get_time() - t_rd_start));
+
+        if (slot->err != ESP_OK || slot->is_eof) {
+            if (slot->is_eof) s_info.is_eof = true;
+            xQueueSend(s_q_free, &slot, 0);
+            xSemaphoreGive(s_ring_free_sem);
+            continue;
+        }
+
+        jpeg_dec_handle_t dec = s_dec_full;
+        if (!dec) {
+            xQueueSend(s_q_free, &slot, 0);
+            xSemaphoreGive(s_ring_free_sem);
+            continue;
+        }
+
+        jpeg_dec_io_t io = {
+            .inbuf = slot->buf,
+            .inbuf_len = (int)slot->chunk_len,
+            .outbuf = (uint8_t *)s_full_frame_bufs[s_buf_tail],
+        };
+        jpeg_dec_header_info_t hdr;
+        jpeg_error_t jerr = jpeg_dec_parse_header(dec, &io, &hdr);
+        if (jerr == JPEG_ERR_OK) {
+            int64_t t_d0 = esp_timer_get_time();
+            jerr = jpeg_dec_process(dec, &io);
+            uint32_t dec_us0 = (uint32_t)(esp_timer_get_time() - t_d0);
+            perf_mark_decode(dec_us0);
+            perf_mark_frame_decode(dec_us0);
+
+            if (jerr == JPEG_ERR_OK) {
+                s_frame_idx_ring[s_buf_tail] = slot->frame_idx;
+                s_buf_tail = (s_buf_tail + 1) % NUM_FULL_FRAME_BUFS;
+                portENTER_CRITICAL(&s_ring_mux);
+                s_buf_count++;
+                portEXIT_CRITICAL(&s_ring_mux);
+                xSemaphoreGive(s_ring_ready_sem);
+            } else {
+                xSemaphoreGive(s_ring_free_sem);
+            }
+        } else {
+            xSemaphoreGive(s_ring_free_sem);
+        }
+
+        xQueueSend(s_q_free, &slot, 0);
+        vTaskDelay(pdMS_TO_TICKS(1));
+    }
+}
+
+void avi_player_set_direct_pipeline(bool enable) {
+    s_direct_pipeline_enabled = enable;
+    if (enable && s_decoder_task_handle) {
+        xTaskNotifyGive(s_decoder_task_handle);
+    }
+}
+
 esp_err_t avi_player_init(void) {
     ESP_LOGI(TAG, "Inicializando motor de video SIMD (esp_new_jpeg) con prefetch task...");
 
@@ -241,12 +338,12 @@ esp_err_t avi_player_init(void) {
         }
     }
 
-    // 1. Decoder para Fullscreen 480x320 (RGB565 Little Endian)
+    // 1. Decoder para Fullscreen 480x320 con rotación 90° (salida 320x480 RGB565 LE)
     if (!s_dec_full) {
         jpeg_dec_config_t cfg_full = DEFAULT_JPEG_DEC_CONFIG();
         cfg_full.output_type = JPEG_PIXEL_FORMAT_RGB565_LE;
-        cfg_full.rotate = JPEG_ROTATE_0D;
-        cfg_full.block_enable = true;
+        cfg_full.rotate = JPEG_ROTATE_90D;
+        cfg_full.block_enable = false;
         jpeg_error_t err = jpeg_dec_open(&cfg_full, &s_dec_full);
         if (err != JPEG_ERR_OK) {
             ESP_LOGE(TAG, "Fallo al crear decoder Fullscreen: %d", err);
@@ -269,7 +366,51 @@ esp_err_t avi_player_init(void) {
         }
     }
 
-    ESP_LOGI(TAG, "Decodificadores SIMD Fullscreen y Studio inicializados con éxito.");
+    // 3. Búferes PSRAM para triple búfer de cuadro completo alineados a 64 B
+    for (int i = 0; i < NUM_FULL_FRAME_BUFS; i++) {
+        if (!s_full_frame_bufs[i]) {
+            s_full_frame_bufs[i] = (uint16_t *)heap_caps_aligned_alloc(64, FULL_FRAME_BYTES, MALLOC_CAP_SPIRAM);
+            if (!s_full_frame_bufs[i]) {
+                ESP_LOGE(TAG, "Fallo al reservar s_full_frame_bufs[%d] en PSRAM", i);
+                return ESP_ERR_NO_MEM;
+            }
+            memset(s_full_frame_bufs[i], 0, FULL_FRAME_BYTES);
+        }
+    }
+    if (!s_clipped_buf) {
+        s_clipped_buf = (uint16_t *)heap_caps_aligned_alloc(64, FULL_FRAME_BYTES, MALLOC_CAP_SPIRAM);
+        if (!s_clipped_buf) {
+            ESP_LOGE(TAG, "Fallo al reservar s_clipped_buf en PSRAM");
+            return ESP_ERR_NO_MEM;
+        }
+        memset(s_clipped_buf, 0, FULL_FRAME_BYTES);
+    }
+
+    // 4. Semáforos de sincronización para pipeline desacoplado en anillo de 3 búferes
+    if (!s_ring_free_sem) {
+        s_ring_free_sem = xSemaphoreCreateCounting(NUM_FULL_FRAME_BUFS, NUM_FULL_FRAME_BUFS);
+        s_ring_ready_sem = xSemaphoreCreateCounting(NUM_FULL_FRAME_BUFS, 0);
+        assert(s_ring_free_sem != NULL && s_ring_ready_sem != NULL);
+    }
+
+    // 5. Tarea de decodificación SIMD en Core 1 (prioridad 4, subordinada a player_task p5)
+    if (!s_decoder_task_handle) {
+        BaseType_t ret_dec = xTaskCreatePinnedToCore(
+            avi_decoder_task,
+            "avi_decoder",
+            4096,
+            NULL,
+            4,
+            &s_decoder_task_handle,
+            1
+        );
+        if (ret_dec != pdPASS) {
+            ESP_LOGE(TAG, "Fallo al crear avi_decoder_task en Core 1");
+            return ESP_FAIL;
+        }
+    }
+
+    ESP_LOGI(TAG, "Decodificadores SIMD Fullscreen (Rot 90°) y Studio inicializados con éxito.");
     return ESP_OK;
 }
 
@@ -443,6 +584,17 @@ esp_err_t avi_player_open(const char *filepath) {
     s_reader_frame_idx = 0;
     s_info.is_eof = false;
     s_reader_run = true;
+    s_prerolled = false;
+    s_buf_head = 0;
+    s_buf_tail = 0;
+    s_buf_count = 0;
+    if (s_ring_ready_sem && s_ring_free_sem) {
+        while (xSemaphoreTake(s_ring_ready_sem, 0) == pdTRUE);
+        while (xSemaphoreTake(s_ring_free_sem, 0) == pdTRUE);
+        for (int i = 0; i < NUM_FULL_FRAME_BUFS; i++) {
+            xSemaphoreGive(s_ring_free_sem);
+        }
+    }
 
     if (s_file_mutex) {
         xSemaphoreGive(s_file_mutex);
@@ -451,11 +603,25 @@ esp_err_t avi_player_open(const char *filepath) {
     if (s_reader_task_handle) {
         xTaskNotifyGive(s_reader_task_handle);
     }
+    if (s_decoder_task_handle && s_direct_pipeline_enabled) {
+        xTaskNotifyGive(s_decoder_task_handle);
+    }
 
-    // Preroll: precargar hasta 2 cuadros
+    // Preroll: precargar búferes
     for (int w = 0; w < 40; w++) {
-        if (uxQueueMessagesWaiting(s_q_ready) >= 2 || s_info.is_eof) break;
+        if (s_direct_pipeline_enabled) {
+            if (s_buf_count >= 2 || s_info.is_eof) break;
+        } else {
+            if (uxQueueMessagesWaiting(s_q_ready) >= 3 || s_info.is_eof) break;
+        }
         vTaskDelay(pdMS_TO_TICKS(5));
+    }
+    if (s_direct_pipeline_enabled) {
+        s_info.current_frame = 0;
+        s_info.elapsed_sec = 0;
+        s_prerolled = (s_buf_count > 0);
+    } else {
+        avi_player_preroll_first_frame();
     }
 
     ESP_LOGI(TAG, "AVI Abierto: %ux%u @ %u FPS, %u cuadros (%u:%02u), preroll listo (%d frames)",
@@ -469,6 +635,17 @@ esp_err_t avi_player_open(const char *filepath) {
 
 void avi_player_close(void) {
     s_reader_run = false;
+    s_prerolled = false;
+    s_buf_head = 0;
+    s_buf_tail = 0;
+    s_buf_count = 0;
+    if (s_ring_ready_sem && s_ring_free_sem) {
+        while (xSemaphoreTake(s_ring_ready_sem, 0) == pdTRUE);
+        while (xSemaphoreTake(s_ring_free_sem, 0) == pdTRUE);
+        for (int i = 0; i < NUM_FULL_FRAME_BUFS; i++) {
+            xSemaphoreGive(s_ring_free_sem);
+        }
+    }
     if (s_file_mutex) {
         xSemaphoreTake(s_file_mutex, portMAX_DELAY);
     }
@@ -557,157 +734,94 @@ esp_err_t avi_player_read_next_frame(uint16_t *out_rgb565, uint8_t scale) {
     return ESP_OK;
 }
 
+static esp_err_t avi_player_preroll_first_frame(void) {
+    if (!s_file || !s_info.is_open) return ESP_ERR_INVALID_STATE;
+    if (s_decoder_task_handle && s_direct_pipeline_enabled) {
+        xTaskNotifyGive(s_decoder_task_handle);
+    }
+    for (int w = 0; w < 30; w++) {
+        if (s_buf_count >= 2 || s_info.is_eof) break;
+        vTaskDelay(pdMS_TO_TICKS(5));
+    }
+    s_prerolled = (s_buf_count > 0);
+    return (s_buf_count > 0) ? ESP_OK : ESP_ERR_TIMEOUT;
+}
+
 esp_err_t avi_player_read_and_blit_direct(void) {
     if (!s_file || !s_info.is_open) {
         return ESP_ERR_INVALID_STATE;
     }
 
-    int64_t t_rd_start = esp_timer_get_time();
-    avi_slot_t *slot = NULL;
-    if (xQueueReceive(s_q_ready, &slot, pdMS_TO_TICKS(150)) != pdTRUE) {
+    if (xSemaphoreTake(s_ring_ready_sem, pdMS_TO_TICKS(100)) != pdTRUE) {
+        if (s_info.is_eof && s_buf_count == 0) {
+            return ESP_ERR_NOT_FOUND;
+        }
         return ESP_ERR_TIMEOUT;
     }
-    int64_t t_rd_end = esp_timer_get_time();
-    perf_mark_q_wait((uint32_t)(t_rd_end - t_rd_start));
 
-    if (slot->err != ESP_OK) {
-        esp_err_t err = slot->err;
-        xQueueSend(s_q_free, &slot, 0);
-        return err;
-    }
-
-    jpeg_dec_handle_t dec = s_dec_full;
-    if (!dec) {
-        xQueueSend(s_q_free, &slot, 0);
-        return ESP_FAIL;
-    }
-
-    jpeg_dec_io_t io = {
-        .inbuf = slot->buf,
-        .inbuf_len = (int)slot->chunk_len,
-    };
-
-    jpeg_dec_header_info_t hdr_info;
-    jpeg_error_t jerr = jpeg_dec_parse_header(dec, &io, &hdr_info);
-    if (jerr != JPEG_ERR_OK) {
-        ESP_LOGW(TAG, "Fallo al parsear cabecera JPEG en direct: %d", jerr);
-        xQueueSend(s_q_free, &slot, 0);
-        return ESP_FAIL;
-    }
-
-    int outbuf_len = 0;
-    jpeg_dec_get_outbuf_len(dec, &outbuf_len);
-    int process_count = 0;
-    jpeg_dec_get_process_count(dec, &process_count);
-    if (process_count <= 0 || outbuf_len <= 0) {
-        ESP_LOGW(TAG, "process_count=%d outbuf_len=%d invalido", process_count, outbuf_len);
-        xQueueSend(s_q_free, &slot, 0);
-        return ESP_FAIL;
-    }
-
-    // Asegurar que los búferes DMA internos de franja estén asignados
-    if (!s_strip_bufs[0] || s_strip_buf_len < (size_t)outbuf_len) {
-        for (int i = 0; i < 2; i++) {
-            if (s_strip_bufs[i]) free(s_strip_bufs[i]);
-            s_strip_bufs[i] = (uint16_t *)heap_caps_aligned_alloc(16, outbuf_len, MALLOC_CAP_DMA | MALLOC_CAP_INTERNAL);
-            if (!s_strip_bufs[i]) {
-                ESP_LOGE(TAG, "Fallo al reservar strip_buf[%d] (%d bytes DMA)", i, outbuf_len);
-                xQueueSend(s_q_free, &slot, 0);
-                return ESP_ERR_NO_MEM;
-            }
-        }
-        s_strip_buf_len = (size_t)outbuf_len;
-    }
+    int buf_to_blit_idx = s_buf_head;
+    const uint16_t *buf_to_blit = s_full_frame_bufs[buf_to_blit_idx];
 
     int16_t vx, vy, vw, vh;
     lcd_bus_get_video_rect(&vx, &vy, &vw, &vh);
 
-    int line_y = 0;
-    bool dma_in_flight = false;
-    uint32_t strip_dma_us = 0;
-    uint32_t total_frame_blit_us = 0;
-    uint32_t strips_sent_count = 0;
-    uint32_t total_frame_dec_us = 0;
+    tear_diag_mode_t diag = tear_diag_get_mode();
+    uint16_t x1 = 0, y1 = 0, x2 = 319, y2 = 479;
+    size_t blit_bytes = FULL_FRAME_BYTES;
 
+    if (diag == TEAR_DIAG_MODE_A) {
+        y2 = 239;
+        blit_bytes = 320 * 240 * sizeof(uint16_t);
+    } else if (diag == TEAR_DIAG_MODE_B) {
+        y1 = 80;
+        y2 = 95;
+        buf_to_blit += (80 * 320);
+        blit_bytes = 320 * 16 * sizeof(uint16_t);
+    } else if (vh > 0 && vh < 320 && s_clipped_buf) {
+        int cx1 = vy;
+        int cx2 = vy + vh - 1;
+        int clip_w = cx2 - cx1 + 1;
+        const uint16_t *src_line = buf_to_blit + cx1;
+        uint16_t *dst_line = s_clipped_buf;
+        for (int row = 0; row < 480; row++) {
+            memcpy(dst_line, src_line, clip_w * sizeof(uint16_t));
+            src_line += 320;
+            dst_line += clip_w;
+        }
+        x1 = (uint16_t)vy;
+        x2 = (uint16_t)(vy + vh - 1);
+        buf_to_blit = s_clipped_buf;
+        blit_bytes = (size_t)clip_w * 480 * sizeof(uint16_t);
+    }
+
+    // 1. Lanzar DMA asíncrono inmediatamente tras el pulso TE
     lcd_bus_lock();
-
-    for (int b = 0; b < process_count; b++) {
-        io.outbuf = (uint8_t *)s_strip_bufs[b & 1];
-
-        int64_t t_dec_start = esp_timer_get_time();
-        jerr = jpeg_dec_process(dec, &io);
-        int64_t t_dec_end = esp_timer_get_time();
-        uint32_t s_dec_us = (uint32_t)(t_dec_end - t_dec_start);
-        perf_mark_decode(s_dec_us);
-        total_frame_dec_us += s_dec_us;
-
-        if (jerr != JPEG_ERR_OK) {
-            ESP_LOGW(TAG, "Fallo en jpeg_dec_process bloque %d/%d: %d", b, process_count, jerr);
-            if (dma_in_flight) {
-                lcd_bus_wait_strip_done(NULL);
-            }
-            lcd_bus_unlock();
-            xQueueSend(s_q_free, &slot, 0);
-            return ESP_FAIL;
-        }
-
-        // Si habia un DMA previo en vuelo, esperar a que termine antes de lanzar el siguiente
-        if (dma_in_flight) {
-            lcd_bus_wait_strip_done(&strip_dma_us);
-            dma_in_flight = false;
-            total_frame_blit_us += strip_dma_us;
-            perf_mark_strip(strip_dma_us);
-        }
-
-        int cur_lines = (hdr_info.width > 0) ? (io.out_size / (hdr_info.width * 2)) : 0;
-        int cur_y1 = line_y;
-        int cur_y2 = line_y + cur_lines - 1;
-        line_y += cur_lines;
-
-        // Diagnostico de tearing (T2)
-        tear_diag_mode_t diag = tear_diag_get_mode();
-        bool skip_strip = false;
-        if (diag == TEAR_DIAG_MODE_A && b >= (process_count / 2)) {
-            // Modo A: solo mitad superior (10 franjas = 160 lineas, ~10.1 ms)
-            skip_strip = true;
-        } else if (diag == TEAR_DIAG_MODE_B && b != 5) {
-            // Modo B: franja unica fija (franja 5 = lineas 80..95, ~1.0 ms)
-            skip_strip = true;
-        }
-
-        // Verificar recorte contra video_rect
-        if (!skip_strip && vw > 0 && vh > 0) {
-            int clip_y1 = (cur_y1 > vy) ? cur_y1 : vy;
-            int clip_y2 = (cur_y2 < (vy + vh - 1)) ? cur_y2 : (vy + vh - 1);
-
-            if (clip_y1 <= clip_y2) {
-                size_t offset_bytes = (size_t)(clip_y1 - cur_y1) * (hdr_info.width * 2);
-                size_t visible_bytes = (size_t)(clip_y2 - clip_y1 + 1) * (hdr_info.width * 2);
-                const uint16_t *strip_px = (const uint16_t *)((uint8_t *)s_strip_bufs[b & 1] + offset_bytes);
-
-                lcd_bus_draw_strip_async(0, (uint16_t)clip_y1, hdr_info.width - 1, (uint16_t)clip_y2, strip_px, visible_bytes);
-                dma_in_flight = true;
-                strips_sent_count++;
-            }
-        }
+    esp_err_t tx_err = lcd_bus_draw_strip_async(x1, y1, x2, y2, buf_to_blit, blit_bytes);
+    if (tx_err != ESP_OK) {
+        lcd_bus_unlock();
+        xSemaphoreGive(s_ring_ready_sem);
+        return tx_err;
     }
 
-    // Esperar al ultimo DMA si quedo en vuelo
-    if (dma_in_flight) {
-        lcd_bus_wait_strip_done(&strip_dma_us);
-        dma_in_flight = false;
-        total_frame_blit_us += strip_dma_us;
-        perf_mark_strip(strip_dma_us);
-    }
+    // 2. Esperar a que concluya la transmisión DMA
+    uint32_t dma_us = 0;
+    lcd_bus_wait_strip_done(&dma_us);
     lcd_bus_unlock();
 
-    s_info.current_frame = slot->frame_idx + 1;
+    // 3. Actualizar cuadro presentado y avanzar cabeza del anillo
+    uint32_t pres_idx = s_frame_idx_ring[s_buf_head];
+    s_info.current_frame = pres_idx + 1;
     s_info.elapsed_sec = (s_info.fps > 0) ? (s_info.current_frame / s_info.fps) : 0;
+    s_buf_head = (s_buf_head + 1) % NUM_FULL_FRAME_BUFS;
 
-    xQueueSend(s_q_free, &slot, 0);
+    portENTER_CRITICAL(&s_ring_mux);
+    s_buf_count--;
+    portEXIT_CRITICAL(&s_ring_mux);
 
-    perf_mark_frame_decode(total_frame_dec_us);
-    perf_mark_direct_frame(strips_sent_count, total_frame_blit_us);
+    // 4. Liberar búfer para que el decodificador prepare el siguiente fotograma
+    xSemaphoreGive(s_ring_free_sem);
+
+    perf_mark_direct_frame(1, dma_us);
     perf_mark_presented();
 
     return ESP_OK;
@@ -716,6 +830,18 @@ esp_err_t avi_player_read_and_blit_direct(void) {
 esp_err_t avi_player_skip_next_frame(void) {
     if (!s_file || !s_info.is_open) {
         return ESP_ERR_INVALID_STATE;
+    }
+
+    if (xSemaphoreTake(s_ring_ready_sem, 0) == pdTRUE) {
+        uint32_t pres_idx = s_frame_idx_ring[s_buf_head];
+        s_info.current_frame = pres_idx + 1;
+        s_info.elapsed_sec = (s_info.fps > 0) ? (s_info.current_frame / s_info.fps) : 0;
+        s_buf_head = (s_buf_head + 1) % NUM_FULL_FRAME_BUFS;
+        portENTER_CRITICAL(&s_ring_mux);
+        s_buf_count--;
+        portEXIT_CRITICAL(&s_ring_mux);
+        xSemaphoreGive(s_ring_free_sem);
+        return ESP_OK;
     }
 
     avi_slot_t *slot = NULL;
@@ -803,6 +929,17 @@ void avi_player_seek_percent(int percent) {
     }
 
     s_info.is_eof = false;
+    s_prerolled = false;
+    s_buf_head = 0;
+    s_buf_tail = 0;
+    s_buf_count = 0;
+    if (s_ring_ready_sem && s_ring_free_sem) {
+        while (xSemaphoreTake(s_ring_ready_sem, 0) == pdTRUE);
+        while (xSemaphoreTake(s_ring_free_sem, 0) == pdTRUE);
+        for (int i = 0; i < NUM_FULL_FRAME_BUFS; i++) {
+            xSemaphoreGive(s_ring_free_sem);
+        }
+    }
     s_reader_run = true;
 
     if (s_file_mutex) {
@@ -812,11 +949,19 @@ void avi_player_seek_percent(int percent) {
     if (s_reader_task_handle) {
         xTaskNotifyGive(s_reader_task_handle);
     }
+    if (s_decoder_task_handle && s_direct_pipeline_enabled) {
+        xTaskNotifyGive(s_decoder_task_handle);
+    }
 
     for (int w = 0; w < 30; w++) {
-        if (uxQueueMessagesWaiting(s_q_ready) >= 1 || s_info.is_eof) break;
+        if (s_direct_pipeline_enabled) {
+            if (s_buf_count >= 1 || s_info.is_eof) break;
+        } else {
+            if (uxQueueMessagesWaiting(s_q_ready) >= 1 || s_info.is_eof) break;
+        }
         vTaskDelay(pdMS_TO_TICKS(5));
     }
+    avi_player_preroll_first_frame();
 
     ESP_LOGI(TAG, "Seek completado a %d%% (cuadro %u/%u)",
              percent, (unsigned int)s_info.current_frame, (unsigned int)s_info.total_frames);
@@ -843,6 +988,17 @@ void avi_player_restart(void) {
     s_info.elapsed_sec = 0;
     s_info.is_eof = false;
     s_need_index_seek = false;
+    s_prerolled = false;
+    s_buf_head = 0;
+    s_buf_tail = 0;
+    s_buf_count = 0;
+    if (s_ring_ready_sem && s_ring_free_sem) {
+        while (xSemaphoreTake(s_ring_ready_sem, 0) == pdTRUE);
+        while (xSemaphoreTake(s_ring_free_sem, 0) == pdTRUE);
+        for (int i = 0; i < NUM_FULL_FRAME_BUFS; i++) {
+            xSemaphoreGive(s_ring_free_sem);
+        }
+    }
     s_reader_run = true;
 
     if (s_file_mutex) {
@@ -852,11 +1008,19 @@ void avi_player_restart(void) {
     if (s_reader_task_handle) {
         xTaskNotifyGive(s_reader_task_handle);
     }
+    if (s_decoder_task_handle && s_direct_pipeline_enabled) {
+        xTaskNotifyGive(s_decoder_task_handle);
+    }
 
     for (int w = 0; w < 30; w++) {
-        if (uxQueueMessagesWaiting(s_q_ready) >= 1 || s_info.is_eof) break;
+        if (s_direct_pipeline_enabled) {
+            if (s_buf_count >= 1 || s_info.is_eof) break;
+        } else {
+            if (uxQueueMessagesWaiting(s_q_ready) >= 1 || s_info.is_eof) break;
+        }
         vTaskDelay(pdMS_TO_TICKS(5));
     }
+    avi_player_preroll_first_frame();
 }
 
 const avi_info_t *avi_player_get_info(void) {

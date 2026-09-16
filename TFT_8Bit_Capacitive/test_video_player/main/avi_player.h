@@ -36,6 +36,9 @@ esp_err_t avi_player_read_and_blit_direct(void);
 // Salta el siguiente cuadro sin decodificar (lectura de cabecera de chunk + fseek)
 esp_err_t avi_player_skip_next_frame(void);
 
+// Activa o desactiva la decodificación continua en segundo plano para Direct Fullscreen
+void avi_player_set_direct_pipeline(bool enable);
+
 void avi_player_seek_percent(int percent);
 void avi_player_restart(void);
 

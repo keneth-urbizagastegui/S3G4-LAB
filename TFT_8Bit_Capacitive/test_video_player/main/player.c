@@ -340,12 +340,18 @@ static void player_handle_cmd(const player_cmd_t *cmd) {
 
         case PCMD_SET_VIDEO_RECT: {
             portENTER_CRITICAL(&s_player_mux);
+            uint8_t old_scale = s_current_scale;
             if (cmd->rect.w <= STUDIO_W && cmd->rect.h <= STUDIO_H && cmd->rect.w > 0) {
                 s_current_scale = 1;
             } else {
                 s_current_scale = 0;
             }
+            if (old_scale != s_current_scale) {
+                s_pts_started = false;
+                s_pts_t0_us = 0;
+            }
             portEXIT_CRITICAL(&s_player_mux);
+            avi_player_set_direct_pipeline(s_current_scale != 1);
             break;
         }
 
@@ -435,17 +441,17 @@ static void player_task(void *arg) {
 
                 static uint16_t *s_diag_c_buf = NULL;
                 if (!s_diag_c_buf) {
-                    s_diag_c_buf = (uint16_t *)heap_caps_aligned_alloc(16, 480 * 16 * sizeof(uint16_t), MALLOC_CAP_DMA | MALLOC_CAP_INTERNAL);
+                    s_diag_c_buf = (uint16_t *)heap_caps_aligned_alloc(16, 320 * 16 * sizeof(uint16_t), MALLOC_CAP_DMA | MALLOC_CAP_INTERNAL);
                 }
                 if (s_diag_c_buf) {
-                    for (int p = 0; p < 480 * 16; p++) {
+                    for (int p = 0; p < 320 * 16; p++) {
                         s_diag_c_buf[p] = color;
                     }
                     lcd_bus_lock();
-                    for (int b = 0; b < 20; b++) {
+                    for (int b = 0; b < 30; b++) {
                         uint16_t y1 = b * 16;
                         uint16_t y2 = y1 + 15;
-                        lcd_bus_draw_strip_async(0, y1, 479, y2, s_diag_c_buf, 480 * 16 * sizeof(uint16_t));
+                        lcd_bus_draw_strip_async(0, y1, 319, y2, s_diag_c_buf, 320 * 16 * sizeof(uint16_t));
                         lcd_bus_wait_strip_done(NULL);
                     }
                     lcd_bus_unlock();
@@ -462,19 +468,28 @@ static void player_task(void *arg) {
                 continue;
             }
 
-            // Inicializar reloj PTS (t0 = now - pos_us)
+            int64_t now_us = esp_timer_get_time();
+            int64_t due_us;
+            int64_t late;
+
             if (!s_pts_started) {
-                int64_t pos_us = (int64_t)cur_info->current_frame * (int64_t)cur_info->us_per_frame;
-                s_pts_t0_us = esp_timer_get_time() - pos_us;
-                s_pts_started = true;
+                if (scale == 1) {
+                    int64_t pos_us = (int64_t)cur_info->current_frame * (int64_t)cur_info->us_per_frame;
+                    s_pts_t0_us = now_us - pos_us;
+                    s_pts_started = true;
+                    due_us = now_us;
+                    late = 0;
+                } else {
+                    due_us = now_us;
+                    late = 0;
+                }
+            } else {
+                due_us = s_pts_t0_us + (int64_t)cur_info->current_frame * (int64_t)cur_info->us_per_frame;
+                late = now_us - due_us;
             }
 
-            int64_t now_us = esp_timer_get_time();
-            int64_t due_us = s_pts_t0_us + (int64_t)cur_info->current_frame * (int64_t)cur_info->us_per_frame;
-            int64_t late = now_us - due_us;
-
             // Deteccion de desincronia PTS / saltos temporales bruscos (SEEK frecuente o cambio de flujo)
-            if (late < -50000 || late > 100000) {
+            if (late < -50000 || late > 80000) {
                 int64_t pos_us = (int64_t)cur_info->current_frame * (int64_t)cur_info->us_per_frame;
                 s_pts_t0_us = now_us - pos_us;
                 due_us = s_pts_t0_us + pos_us;
@@ -485,9 +500,9 @@ static void player_task(void *arg) {
                 perf_mark_late((uint32_t)late);
             }
 
-            // Si late > us_per_frame + margen de fase TE: saltar el chunk SIN decodificar
+            // Si late > margen de 3 periodos TE: saltar el chunk SIN decodificar
 #if CONFIG_APP_TE_SYNC
-            int64_t drop_threshold = (int64_t)cur_info->us_per_frame * 2 - 2000;
+            int64_t drop_threshold = 85000;
 #else
             int64_t drop_threshold = (int64_t)cur_info->us_per_frame + 8000;
 #endif
@@ -504,7 +519,7 @@ static void player_task(void *arg) {
 
                     // drift_ms = pos_ms del reproductor - tiempo de pared transcurrido desde t0 (con signo)
                     int64_t wall_ms = (esp_timer_get_time() - s_pts_t0_us) / 1000;
-                    int32_t drift_ms = (int32_t)((int64_t)s_status.pos_ms - wall_ms);
+                    int32_t drift_ms = s_pts_started ? (int32_t)((int64_t)s_status.pos_ms - wall_ms) : 0;
                     perf_mark_drift(drift_ms);
                     continue;
                 } else if (ret_skip == ESP_ERR_NOT_FOUND) {
@@ -517,7 +532,7 @@ static void player_task(void *arg) {
             int64_t te_lead_us = 0;
             if (scale != 1 && lcd_bus_te_is_present()) {
                 uint32_t te_p = lcd_bus_te_get_period_us();
-                te_lead_us = (int64_t)(te_p / 2);
+                te_lead_us = (int64_t)((te_p * 9) / 16);
             }
             int64_t wait_target_us = due_us - te_lead_us;
 #else
@@ -560,7 +575,7 @@ static void player_task(void *arg) {
                     portEXIT_CRITICAL(&s_player_mux);
 
                     int64_t wall_ms = (esp_timer_get_time() - s_pts_t0_us) / 1000;
-                    int32_t drift_ms = (int32_t)((int64_t)s_status.pos_ms - wall_ms);
+                    int32_t drift_ms = s_pts_started ? (int32_t)((int64_t)s_status.pos_ms - wall_ms) : 0;
                     perf_mark_drift(drift_ms);
                 } else if (ret == ESP_ERR_NOT_FOUND) {
                     player_handle_eof();
@@ -584,6 +599,11 @@ static void player_task(void *arg) {
                     }
                 }
 #endif
+                if (!s_pts_started) {
+                    int64_t pos_us = (int64_t)cur_info->current_frame * (int64_t)cur_info->us_per_frame;
+                    s_pts_t0_us = esp_timer_get_time() - pos_us;
+                    s_pts_started = true;
+                }
                 ret = avi_player_read_and_blit_direct();
                 if (ret == ESP_OK) {
                     perf_mark_decoded();
@@ -596,7 +616,7 @@ static void player_task(void *arg) {
                     portEXIT_CRITICAL(&s_player_mux);
 
                     int64_t wall_ms = (esp_timer_get_time() - s_pts_t0_us) / 1000;
-                    int32_t drift_ms = (int32_t)((int64_t)s_status.pos_ms - wall_ms);
+                    int32_t drift_ms = s_pts_started ? (int32_t)((int64_t)s_status.pos_ms - wall_ms) : 0;
                     perf_mark_drift(drift_ms);
                 } else if (ret == ESP_ERR_NOT_FOUND) {
                     player_handle_eof();
@@ -622,6 +642,7 @@ esp_err_t player_start(void) {
     s_status.shuffle = false;
     s_current_scale = 1;
     portEXIT_CRITICAL(&s_player_mux);
+    avi_player_set_direct_pipeline(false);
 
     if (!s_cmd_queue) {
         s_cmd_queue = xQueueCreate(8, sizeof(player_cmd_t));

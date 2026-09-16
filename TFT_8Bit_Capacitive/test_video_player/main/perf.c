@@ -1,4 +1,5 @@
 #include "perf.h"
+#include "sdkconfig.h"
 #include <stdio.h>
 #include <string.h>
 #include "freertos/FreeRTOS.h"
@@ -6,6 +7,10 @@
 #include "esp_timer.h"
 #include "esp_heap_caps.h"
 #include "lcd_bus.h"
+
+#ifndef CONFIG_APP_LCD_MADCTL
+#define CONFIG_APP_LCD_MADCTL 0x48
+#endif
 
 static portMUX_TYPE s_perf_mux = portMUX_INITIALIZER_UNLOCKED;
 
@@ -598,7 +603,7 @@ void perf_report_if_due(void) {
     uint32_t heap_psram = (uint32_t)heap_caps_get_free_size(MALLOC_CAP_SPIRAM);
     uint32_t t_ms = (uint32_t)(now / 1000);
 
-    printf("PERF,t_ms=%lu,dec_fps=%.1f,pres_fps=%.1f,drop=%lu,over=%lu,frame_mismatch=%lu,rd_avg=%.1f,rd_max=%.1f,rd_p50=%.1f,rd_p95=%.1f,rd_slow=%lu,reader_rd_avg=%.1f,reader_rd_max=%.1f,reader_rd_p50=%.1f,reader_rd_p95=%.1f,slots_ready_avg=%.1f,q_wait_avg=%.1f,q_wait_max=%.1f,q_wait_p50=%.1f,q_wait_p95=%.1f,te_present=%d,te_hz=%.1f,te_jitter_ms=%.2f,te_wait_ms_avg=%.2f,te_wait_ms_max=%.2f,te_timeout=%lu,dec_avg=%.1f,dec_max=%.1f,dec_frame_ms_avg=%.1f,dec_frame_ms_max=%.1f,blit_avg=%.1f,blit_max=%.1f,late_max=%.1f,drift_ms=%ld,touch_read_ms_avg=%.1f,touch_read_ms_max=%.1f,touch_age_ms_max=%.1f,heap_int=%lu,heap_psram=%lu,track=%d,scn=%s,view=%s,hud=%d,present_path=%s,vrect=%d-%d,strips_per_frame=%lu,strip_ms_avg=%.2f,frame_blit_ms_avg=%.1f,lvgl_rows_clipped=%lu,dec_frames=%lu\n",
+    printf("PERF,t_ms=%lu,dec_fps=%.1f,pres_fps=%.1f,drop=%lu,over=%lu,frame_mismatch=%lu,rd_avg=%.1f,rd_max=%.1f,rd_p50=%.1f,rd_p95=%.1f,rd_slow=%lu,reader_rd_avg=%.1f,reader_rd_max=%.1f,reader_rd_p50=%.1f,reader_rd_p95=%.1f,slots_ready_avg=%.1f,q_wait_avg=%.1f,q_wait_max=%.1f,q_wait_p50=%.1f,q_wait_p95=%.1f,te_present=%d,te_hz=%.1f,te_jitter_ms=%.2f,te_wait_ms_avg=%.2f,te_wait_ms_max=%.2f,te_timeout=%lu,dec_avg=%.1f,dec_max=%.1f,dec_frame_ms_avg=%.1f,dec_frame_ms_max=%.1f,blit_avg=%.1f,blit_max=%.1f,late_max=%.1f,drift_ms=%ld,touch_read_ms_avg=%.1f,touch_read_ms_max=%.1f,touch_age_ms_max=%.1f,heap_int=%lu,heap_psram=%lu,track=%d,scn=%s,view=%s,hud=%d,present_path=%s,vrect=%d-%d,strips_per_frame=%lu,strip_ms_avg=%.2f,frame_blit_ms_avg=%.1f,lvgl_rows_clipped=%lu,dec_frames=%lu,rot=90,madctl=0x%02X\n",
            (unsigned long)t_ms, dec_fps, pres_fps, (unsigned long)drop, (unsigned long)over,
            (unsigned long)mismatch,
            rd_avg, rd_max,
@@ -623,6 +628,7 @@ void perf_report_if_due(void) {
            strip_ms_avg,
            frame_blit_ms_avg,
            (unsigned long)lvgl_clipped,
-           (unsigned long)dec);
+           (unsigned long)dec,
+           (unsigned int)CONFIG_APP_LCD_MADCTL);
     fflush(stdout);
 }

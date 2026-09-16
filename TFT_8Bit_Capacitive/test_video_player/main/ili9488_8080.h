@@ -9,8 +9,8 @@
 extern "C" {
 #endif
 
-#define LCD_WIDTH   480
-#define LCD_HEIGHT  320
+#define LCD_WIDTH   320
+#define LCD_HEIGHT  480
 
 // Colores RGB565 estandar
 #define COLOR_BLACK       0x0000

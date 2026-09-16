@@ -33,8 +33,9 @@ static const char *TAG = "MAIN_APP";
 #endif
 
 #define DRAW_BUF_LINES 40
-static uint16_t s_disp_buf1[LCD_WIDTH * DRAW_BUF_LINES];
-static uint16_t s_disp_buf2[LCD_WIDTH * DRAW_BUF_LINES];
+static uint16_t s_disp_buf1[480 * DRAW_BUF_LINES];
+static uint16_t s_disp_buf2[480 * DRAW_BUF_LINES];
+static uint16_t *s_rotated_flush_buf = NULL;
 
 static volatile bool s_present_pending = false;
 
@@ -58,8 +59,8 @@ static volatile bool s_autotest_active = true;
 void touch_inject_synthetic(uint16_t x, uint16_t y, bool pressed) {
     portENTER_CRITICAL(&s_touch_mux);
     s_synthetic_touch_active = pressed;
-    s_synthetic_touch.x = x;
-    s_synthetic_touch.y = y;
+    s_synthetic_touch.x = y;
+    s_synthetic_touch.y = (x < 480) ? (479 - x) : 0;
     s_synthetic_touch.pressed = pressed;
     s_synthetic_touch.timestamp_us = esp_timer_get_time();
     s_shared_touch = s_synthetic_touch;
@@ -99,17 +100,31 @@ static void lvgl_disp_flush_cb(lv_display_t *disp, const lv_area_t *area, uint8_
 
             // Franja superior que queda fuera del video
             if (area->y1 < vy1) {
+                lv_area_t sub_area = {.x1 = area->x1, .y1 = area->y1, .x2 = area->x2, .y2 = vy1 - 1};
+                int sub_w = sub_area.x2 - sub_area.x1 + 1;
+                int sub_h = sub_area.y2 - sub_area.y1 + 1;
+                lv_area_t phys_area = sub_area;
+                lv_display_rotate_area(disp, &phys_area);
+                lv_draw_sw_rotate(pixels, s_rotated_flush_buf, sub_w, sub_h, w_span * sizeof(uint16_t),
+                                  sub_h * sizeof(uint16_t), LV_DISPLAY_ROTATION_90, LV_COLOR_FORMAT_RGB565);
                 int64_t t0 = esp_timer_get_time();
-                ili9488_8080_draw_bitmap(area->x1, area->y1, area->x2, vy1 - 1, pixels);
+                ili9488_8080_draw_bitmap(phys_area.x1, phys_area.y1, phys_area.x2, phys_area.y2, s_rotated_flush_buf);
                 int64_t blit_us = esp_timer_get_time() - t0;
                 perf_mark_blit((uint32_t)blit_us);
             }
 
             // Franja inferior que queda fuera del video
             if (area->y2 > vy2) {
-                int64_t t0 = esp_timer_get_time();
+                lv_area_t sub_area = {.x1 = area->x1, .y1 = vy2 + 1, .x2 = area->x2, .y2 = area->y2};
+                int sub_w = sub_area.x2 - sub_area.x1 + 1;
+                int sub_h = sub_area.y2 - sub_area.y1 + 1;
                 size_t offset_pixels = (size_t)(vy2 + 1 - area->y1) * w_span;
-                ili9488_8080_draw_bitmap(area->x1, vy2 + 1, area->x2, area->y2, pixels + offset_pixels);
+                lv_area_t phys_area = sub_area;
+                lv_display_rotate_area(disp, &phys_area);
+                lv_draw_sw_rotate(pixels + offset_pixels, s_rotated_flush_buf, sub_w, sub_h, w_span * sizeof(uint16_t),
+                                  sub_h * sizeof(uint16_t), LV_DISPLAY_ROTATION_90, LV_COLOR_FORMAT_RGB565);
+                int64_t t0 = esp_timer_get_time();
+                ili9488_8080_draw_bitmap(phys_area.x1, phys_area.y1, phys_area.x2, phys_area.y2, s_rotated_flush_buf);
                 int64_t blit_us = esp_timer_get_time() - t0;
                 perf_mark_blit((uint32_t)blit_us);
             }
@@ -119,8 +134,15 @@ static void lvgl_disp_flush_cb(lv_display_t *disp, const lv_area_t *area, uint8_
         }
     }
 
+    int w = area->x2 - area->x1 + 1;
+    int h = area->y2 - area->y1 + 1;
+    lv_area_t phys_area = *area;
+    lv_display_rotate_area(disp, &phys_area);
+    lv_draw_sw_rotate(pixels, s_rotated_flush_buf, w, h, w * sizeof(uint16_t),
+                      h * sizeof(uint16_t), LV_DISPLAY_ROTATION_90, LV_COLOR_FORMAT_RGB565);
+
     int64_t t0 = esp_timer_get_time();
-    ili9488_8080_draw_bitmap(area->x1, area->y1, area->x2, area->y2, pixels);
+    ili9488_8080_draw_bitmap(phys_area.x1, phys_area.y1, phys_area.x2, phys_area.y2, s_rotated_flush_buf);
     int64_t blit_us = esp_timer_get_time() - t0;
     perf_mark_blit((uint32_t)blit_us);
 
@@ -177,8 +199,8 @@ static void touch_task(void *arg) {
             s_shared_touch.pressed = false;
 #endif
         } else if (ret == ESP_OK && touch.touched) {
-            s_shared_touch.x = touch.x1;
-            s_shared_touch.y = touch.y1;
+            s_shared_touch.x = touch.y1;
+            s_shared_touch.y = (touch.x1 < 480) ? (479 - touch.x1) : 0;
             s_shared_touch.pressed = true;
         } else {
             s_shared_touch.pressed = false;
@@ -292,10 +314,16 @@ static void gui_task(void *arg) {
     lv_init();
     lv_tick_set_cb((lv_tick_get_cb_t)my_tick_get_cb);
 
+    if (!s_rotated_flush_buf) {
+        s_rotated_flush_buf = (uint16_t *)heap_caps_aligned_alloc(64, 480 * 480 * sizeof(uint16_t), MALLOC_CAP_SPIRAM);
+        assert(s_rotated_flush_buf != NULL);
+    }
+
     lv_display_t *disp = lv_display_create(LCD_WIDTH, LCD_HEIGHT);
     lv_display_set_color_format(disp, LV_COLOR_FORMAT_RGB565);
     lv_display_set_buffers(disp, s_disp_buf1, s_disp_buf2, sizeof(s_disp_buf1), LV_DISPLAY_RENDER_MODE_PARTIAL);
     lv_display_set_flush_cb(disp, lvgl_disp_flush_cb);
+    lv_display_set_rotation(disp, LV_DISPLAY_ROTATION_90);
 
     lv_indev_t *indev = lv_indev_create();
     lv_indev_set_type(indev, LV_INDEV_TYPE_POINTER);

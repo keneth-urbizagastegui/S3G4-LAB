@@ -143,7 +143,7 @@ esp_err_t ili9488_8080_init(void) {
             TFT_D4, TFT_D5, TFT_D6, TFT_D7
         },
         .bus_width = 8,
-        .max_transfer_bytes = LCD_WIDTH * 40 * sizeof(uint16_t),
+        .max_transfer_bytes = LCD_WIDTH * LCD_HEIGHT * sizeof(uint16_t),
         .dma_burst_size = 64,
     };
     ESP_ERROR_CHECK(esp_lcd_new_i80_bus(&bus_config, &s_i80_bus));
@@ -174,7 +174,10 @@ esp_err_t ili9488_8080_init(void) {
     const uint8_t f7_data[] = {0xA9, 0x51, 0x2C, 0x82};
     esp_lcd_panel_io_tx_param(s_panel_io, 0xF7, f7_data, sizeof(f7_data));
 
-    const uint8_t madctl = 0x28; // BGR orden, orientación horizontal Landscape (480x320)
+#ifndef CONFIG_APP_LCD_MADCTL
+#define CONFIG_APP_LCD_MADCTL 0x48
+#endif
+    const uint8_t madctl = (uint8_t)CONFIG_APP_LCD_MADCTL; // BGR orden, orientación nativa sin MV (0x28 previo)
     esp_lcd_panel_io_tx_param(s_panel_io, 0x36, &madctl, 1);
 
     const uint8_t colmod = 0x55; // 16-bit/pixel RGB565 en modo paralelo

@@ -45,6 +45,16 @@ menu "App perf"
             Segundo parametro de FRMCTR1 (0xB1): bits [4:0] RTNA[4:0] (relojes por linea).
             Original 60 Hz: 0x11 (17 relojes). Candidato oficial F5a 44.6 Hz: 0x12 (18 relojes).
 
+    config APP_LCD_MADCTL
+        hex "Parametro MADCTL (0x36) ILI9488"
+        default 0x48
+        help
+            Registro MADCTL (0x36) para orientacion de memoria y panel.
+            Valor original F5a (Landscape): 0x28 (MV=1, BGR=1).
+            En F5c se desactiva el bit MV (bit 5) para orientacion nativa (320x480)
+            y escritura paralela al barrido del panel.
+            Candidatos sin MV: 0x48 (MX=1, BGR=1), 0x88 (MY=1, BGR=1), 0x08 (MY=0, MX=0, BGR=1), 0xC8 (MY=1, MX=1, BGR=1).
+
     config APP_TEAR_DIAG
         bool "Habilitar modo de diagnostico de tearing (T2)"
         default n
