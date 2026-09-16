@@ -13,6 +13,7 @@
 #include "freertos/task.h"
 #include "freertos/semphr.h"
 #include "esp_heap_caps.h"
+#include "sdkconfig.h"
 
 static const char *TAG = "ili9488_8080";
 
@@ -185,7 +186,16 @@ esp_err_t ili9488_8080_init(void) {
     const uint8_t b4_data = 0x02; // Inversion 2-dot
     esp_lcd_panel_io_tx_param(s_panel_io, 0xB4, &b4_data, 1);
 
-    const uint8_t b1_data[] = {0xA0, 0x11}; // 60 Hz
+#ifndef CONFIG_APP_LCD_B1_P1
+#define CONFIG_APP_LCD_B1_P1 0x80
+#endif
+
+#ifndef CONFIG_APP_LCD_B1_P2
+#define CONFIG_APP_LCD_B1_P2 0x11
+#endif
+
+    // Registro FRMCTR1 (0xB1): Valor original 60 Hz = {0xA0, 0x11}. Ajuste autorizado Keneth (15/09/2026) = {CONFIG_APP_LCD_B1_P1, CONFIG_APP_LCD_B1_P2}
+    const uint8_t b1_data[] = {(uint8_t)CONFIG_APP_LCD_B1_P1, (uint8_t)CONFIG_APP_LCD_B1_P2};
     esp_lcd_panel_io_tx_param(s_panel_io, 0xB1, b1_data, sizeof(b1_data));
 
     const uint8_t c0_data[] = {0x0F, 0x0F};

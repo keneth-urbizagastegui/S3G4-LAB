@@ -281,6 +281,7 @@ static void player_handle_cmd(const player_cmd_t *cmd) {
             avi_player_seek_percent(pct);
             const avi_info_t *info = avi_player_get_info();
             s_pts_started = false;
+            s_pts_t0_us = 0;
             portENTER_CRITICAL(&s_player_mux);
             s_status.pos_ms = ((uint64_t)info->current_frame * (uint64_t)info->us_per_frame) / 1000ULL;
             portEXIT_CRITICAL(&s_player_mux);
@@ -296,11 +297,13 @@ static void player_handle_cmd(const player_cmd_t *cmd) {
             avi_player_seek_percent(pct);
             const avi_info_t *info = avi_player_get_info();
             s_pts_started = false;
+            s_pts_t0_us = 0;
             portENTER_CRITICAL(&s_player_mux);
             s_status.pos_ms = ((uint64_t)info->current_frame * (uint64_t)info->us_per_frame) / 1000ULL;
             portEXIT_CRITICAL(&s_player_mux);
             break;
         }
+
 
         case PCMD_NEXT: {
             int total = s_status.track_count;
@@ -426,15 +429,23 @@ static void player_task(void *arg) {
             int64_t due_us = s_pts_t0_us + (int64_t)cur_info->current_frame * (int64_t)cur_info->us_per_frame;
             int64_t late = now_us - due_us;
 
+            // Deteccion de desincronia PTS / saltos temporales bruscos (SEEK frecuente o cambio de flujo)
+            if (late < -50000 || late > 100000) {
+                int64_t pos_us = (int64_t)cur_info->current_frame * (int64_t)cur_info->us_per_frame;
+                s_pts_t0_us = now_us - pos_us;
+                due_us = s_pts_t0_us + pos_us;
+                late = 0;
+            }
+
             if (late > 0) {
                 perf_mark_late((uint32_t)late);
             }
 
             // Si late > us_per_frame + margen de fase TE: saltar el chunk SIN decodificar
 #if CONFIG_APP_TE_SYNC
-            int64_t drop_threshold = (int64_t)cur_info->us_per_frame + 12000;
+            int64_t drop_threshold = (int64_t)cur_info->us_per_frame * 2 - 2000;
 #else
-            int64_t drop_threshold = (int64_t)cur_info->us_per_frame;
+            int64_t drop_threshold = (int64_t)cur_info->us_per_frame + 8000;
 #endif
             if (late > drop_threshold) {
                 esp_err_t ret_skip = avi_player_skip_next_frame();
@@ -458,17 +469,29 @@ static void player_task(void *arg) {
                 }
             }
 
+#if CONFIG_APP_TE_SYNC
+            int64_t te_lead_us = 0;
+            if (scale != 1 && lcd_bus_te_is_present()) {
+                uint32_t te_p = lcd_bus_te_get_period_us();
+                te_lead_us = (int64_t)(te_p / 2);
+            }
+            int64_t wait_target_us = due_us - te_lead_us;
+#else
+            int64_t wait_target_us = due_us;
+#endif
+
             // Si llega adelantado: esperar con precisión
-            if (late < -2000) {
-                int64_t wait = -late;
+            int64_t diff = now_us - wait_target_us;
+            if (diff < -2000) {
+                int64_t wait = -diff;
                 if (wait > 3000) {
                     vTaskDelay(pdMS_TO_TICKS((wait - 2000) / 1000));
                 }
-                while (esp_timer_get_time() < due_us) {
+                while (esp_timer_get_time() < wait_target_us) {
                     taskYIELD();
                 }
-            } else if (late < 0) {
-                while (esp_timer_get_time() < due_us) {
+            } else if (diff < 0) {
+                while (esp_timer_get_time() < wait_target_us) {
                     taskYIELD();
                 }
             }

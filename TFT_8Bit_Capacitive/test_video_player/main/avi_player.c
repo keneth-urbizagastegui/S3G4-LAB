@@ -181,14 +181,14 @@ static void avi_reader_task(void *arg) {
             }
         }
 
-        xSemaphoreGive(s_file_mutex);
-
-        if (got_frame) {
+        if (got_frame && s_reader_run) {
             xQueueSend(s_q_ready, &slot, portMAX_DELAY);
             perf_mark_slots_ready((uint32_t)uxQueueMessagesWaiting(s_q_ready));
         } else {
             xQueueSend(s_q_free, &slot, 0);
         }
+
+        xSemaphoreGive(s_file_mutex);
     }
 }
 
@@ -230,7 +230,7 @@ esp_err_t avi_player_init(void) {
             "avi_reader",
             4096,
             NULL,
-            4,
+            5,
             &s_reader_task_handle,
             0
         );

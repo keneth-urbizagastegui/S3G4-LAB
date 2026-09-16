@@ -31,5 +31,20 @@ menu "App perf"
         help
             Sincroniza el envio de cada fotograma de video al display con el flanco de subida del pin TE (GPIO 7).
 
+    config APP_LCD_B1_P1
+        hex "Parametro 1 de FRMCTR1 (0xB1) ILI9488"
+        default 0x80
+        help
+            Primer parametro de FRMCTR1 (0xB1): bits [7:4] FRS[3:0], bits [1:0] DIVA[1:0].
+            Original 60 Hz: 0xA0. Ajuste 45-48 Hz: 0x80.
+
+    config APP_LCD_B1_P2
+        hex "Parametro 2 de FRMCTR1 (0xB1) ILI9488"
+        default 0x11
+        help
+            Segundo parametro de FRMCTR1 (0xB1): bits [4:0] RTNA[4:0] (relojes por linea).
+            Original 60 Hz: 0x11 (17 relojes).
+
 endmenu
+
 
