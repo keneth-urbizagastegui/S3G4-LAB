@@ -120,7 +120,7 @@ reproducirlo**.
 | # | Requisito | De dónde sale | Motivo mostrado si falla |
 |---|---|---|---|
 | 1 | El vídeo es **MJPEG** | `strf`/`biCompression` del AVI (`MJPG`, `mjpg`, `jpeg`, `dmb1`) o el primer chunk empieza por `FF D8` | «No es MJPEG» |
-| 2 | **480 × 320** exactos | `avih` | «Resolución 1280×720» (la real) |
+| 2 | **320 × 480** (girado, recomendado) **o 480 × 320** (clásico) | `avih` | «Resolución 1280×720» (la real) |
 | 3 | Submuestreo **4:2:0** | SOF0/SOF2 del primer fotograma (ya corregido en F1) | «Color 4:2:2 o 4:4:4» |
 | 4 | **fps entre 24 y 31** | `us_per_frame` de `avih` | «60 fps» (los reales) |
 | 5 | **chunk máximo ≤ 128 KB** | recorriendo `idx1` | «Fotogramas de 210 KB» |
@@ -129,6 +129,8 @@ reproducirlo**.
 - `media_item_t` gana: `bool compatible;` y `char incompat[48];` (el motivo, ya redactado para mostrar).
 - La línea `MEDIA` gana `compat=1|0,reason=<texto sin comas>`.
 - **Nada de rechazar por el nombre ni por la extensión**: se juzga por el contenido.
+- Un fichero **480×320** es compatible pero **no recomendado**: se reproduce, y la tarjeta muestra en
+  `c_muted` «Sin girar: puede verse corte» (aviso, no bloqueo). `media_item_t` gana `bool rotated;`.
 
 ### 7.2 En la interfaz (coordinado con `03`)
 - La tarjeta de un video incompatible se muestra **atenuada al 45 %**, con la miniatura de relleno, el
