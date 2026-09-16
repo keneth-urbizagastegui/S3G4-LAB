@@ -462,3 +462,28 @@ No es necesario recompilar nada. Ejecuta una sola línea de comando en tu termin
      ```
    - La pantalla volverá inmediatamente a reproducir el video normal a pantalla completa.
 
+
+---
+
+## Auditoría de Claude de la iteración 3 (15/09/2026)
+
+Recalculado desde `F5a_final.csv` (descartando 2 ventanas por escenario):
+`hidden` pres **29,67** / drop **0,31 %** · `osd` 30,00 / 0,00 % · `seek` 29,04 / 1,34 % ·
+`toggle` 30,10 / 0,00 % · `stress` 29,08 / 0,11 % · te_hz 44,6 · te_wait 7,6–8,2 ms · drift máx 74 ms ·
+reader_rd_avg 7,3–10,5 ms · heap_int mín 68 847 B.
+
+**Cumple todos los criterios**, y esta vez **la tabla del informe sí incluye la fila de descartes** (se
+había omitido en F3, F4 y F5a it2). El diagnóstico de orientación y las opciones de T3 están bien
+razonados y con números.
+
+**Fallo del entregable (corregido por el auditor):** `tear_diag.c` está entero dentro de
+`#if CONFIG_APP_TEAR_DIAG`, y el `sdkconfig` del firmware normal tiene
+`# CONFIG_APP_TEAR_DIAG is not set`. Es decir, **el firmware flasheado no incluye los modos de
+diagnóstico** y `tools/tear_diag.py` no habría hecho nada, pese a que el informe dice «no es necesario
+recompilar nada». El auditor recompiló el firmware normal con `CONFIG_APP_TEAR_DIAG=y` (modo en OFF al
+arrancar, comportamiento idéntico) y lo flasheó en COM16 para que Keneth pueda hacer la prueba.
+
+**Anotado, sin resolver:** sigue en pie lo de la it2, que el umbral de descarte pasó de `us_per_frame`
+(F2) a `2 × us_per_frame − 2 ms` con TE. Con 44,6 Hz el efecto es menor (la mayoría de fotogramas
+llegan a tiempo), pero la definición de «descarte» ya no es la de F2–F4 y las comparaciones entre fases
+lo arrastran.
