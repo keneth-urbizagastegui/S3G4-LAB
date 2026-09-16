@@ -182,3 +182,19 @@ Dado que el bus LCD 8080 permanece bloqueado exclusivamente durante todo el foto
 ### 5. Estado de la Variante en Placa
 - **Variante NORMAL flasheada en COM16:** Compilada desde `build/` con autotest desactivado y `tear_diag` compilado en modo `TEAR_DIAG_OFF` (interfaz Spotify activa, reproduciendo de fondo a 30 FPS en panel vertical nativo con ventana única).
 
+
+---
+
+## Auditoría de Claude de la iteración 3 (16/09/2026) — CRITERIOS CUMPLIDOS
+
+Recalculado desde `F5d_run5.csv` (descartando 2 ventanas por escenario):
+- **Descartes ocultos: 0,16 % global** (el informe da 0,14 %; la diferencia sale de la ventana
+  descartada). Por pista: ariana 0,42 % · harry 0,00 % · lesserafim 0,00 % · meovv 0,21 %.
+- pres oculto 29,40–30,04 · con OSD 29,76–30,07 · `windows_per_frame=1` en todos los registros ·
+  drift máx 62 ms · heap_int 62 975 B · TAP 0→1 · STRESS mismatch 0 · AUTOTEST_DONE 4.
+- **Observación:** el envío medio por fotograma apenas baja (20,6–21,2 ms sin OSD); lo que desaparece
+  son los picos que superaban el periodo. Con la OSD visible baja a 14–19 ms.
+
+**Pendiente antes de etiquetar `vp-v0.5`:** verificación visual de Keneth sobre el firmware normal:
+(a) pantalla completa sin corte y sin franjas mal colocadas; (b) vista pequeña derecha; (c) modo C con la
+frontera quieta.
