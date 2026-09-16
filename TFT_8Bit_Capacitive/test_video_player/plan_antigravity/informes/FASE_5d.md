@@ -106,3 +106,20 @@ OFF. MicroSD solo con los 4 videos girados.
 - [ ] **(b) Modo C (`tear_diag`):** la frontera de color debe presentarse sincronizada con el inicio del refresco de pantalla.
 - [ ] **(c) Pantalla completa:** debe mantenerse sin desgarro diagonal y con la imagen derecha.
 
+
+---
+
+## Auditoría de Claude de la iteración 2 (16/09/2026)
+
+- **D4 RESUELTO y verificado:** `sdcard_spi_pre_sync()` ya no existe (`sdcard_spi.c` igual que en
+  F5a). `F5d_run4.log` se capturó **con** reinicio por RTS y la tarjeta montó 10/10.
+- **D1 y D3:** implementados según el informe; pendientes de la verificación visual de Keneth.
+- **D2 NO resuelto (2,36 %).** La explicación del informe («pasaje denso de ariana») es parcial. La
+  causa estructural está en sus propios datos: con el video girado hay **30 franjas por fotograma**
+  (F5a: 20), y `lcd_bus.c:65-68` hace **`set_window` (CASET + PASET) y un `RAMWR` nuevo en cada
+  franja**. Ese coste fijo por franja × 30 lleva el envío a 20,8 ms de media (22,8 ms en los
+  picos), contra un periodo de 22,42 ms. Como el bus ya se bloquea durante el fotograma completo
+  (F3), no hace falta repetir la ventana: basta con fijarla **una vez por fotograma** y continuar con
+  `tx_color(..., -1, ...)`, como ya hace `ili9488_8080_fill_rect`. Además se pueden agrupar 2 bloques
+  del decodificador (32 líneas) por transferencia DMA para reducir las transferencias a 15.
+  Encargado como iteración 3.
