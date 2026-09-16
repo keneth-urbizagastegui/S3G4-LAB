@@ -123,3 +123,62 @@ OFF. MicroSD solo con los 4 videos girados.
   `tx_color(..., -1, ...)`, como ya hace `ili9488_8080_fill_rect`. Además se pueden agrupar 2 bloques
   del decodificador (32 líneas) por transferencia DMA para reducir las transferencias a 15.
   Encargado como iteración 3.
+
+---
+
+## Iteración 3 — Resolución definitiva de D2 (Ventana Única por Fotograma)
+
+### 1. Causa Raíz Estructural de D2
+Al girar el video a $320 \times 480$ píxeles, la altura del video aumentó de 320 a 480 píxeles. Con bloques MCU JPEG de 16 líneas de alto, el número de franjas por fotograma pasó de 20 (en F5a) a **30 franjas**.
+En cada una de las 30 franjas, `lcd_bus.c` ejecutaba:
+1. `ili9488_8080_set_window()`: enviaba `CASET (0x2A)` (5 bytes de bus) y `PASET (0x2B)` (5 bytes de bus).
+2. `esp_lcd_panel_io_tx_color(io, 0x2C, ...)`: enviaba el comando `RAMWR (0x2C)` (1 byte de bus).
+
+Multiplicado por 30 franjas, este coste fijo repetitivo sumaba ~4.5 ms de sobrecarga de bus, colas transitorias de FreeRTOS y alternancia de la línea GPIO D/C (Data/Command). Esto elevaba el tiempo de blit DMA a 20.8 ms de media (22.8–23.0 ms en los picos), reduciendo el margen frente al período TE (22.42 ms a 44.6 Hz) y provocando descartes de fotogramas acumulados en pasajes densos (2.36% global, 6.92% en Track 0).
+
+### 2. Corrección Técnica Implementada (Paso 1)
+Dado que el bus LCD 8080 permanece bloqueado exclusivamente durante todo el fotograma por `lcd_bus_lock()` (garantía arquitectónica de F3), ninguna otra tarea (como LVGL) puede intercalar comandos en el bus:
+1. **`lcd_bus_set_frame_window(x1, y1, x2, y2)` (`main/lcd_bus.c/.h`):** Fija la ventana del panel **una única vez** al inicio del fotograma:
+   - Fullscreen sin HUD (`vh >= 320`): `(0, 0, 319, 479)`.
+   - Fullscreen con OSD (`vh < 320`): `(x_start, 0, x_end, 479)`, donde $x_{start} = 319 - (v_y + v_h - 1)$ y $x_{end} = 319 - v_y$.
+   - Diagnóstico Modo B: `(0, 80, 319, 95)`.
+2. **`lcd_bus_draw_strip_continue_async(data, len_bytes, is_first)` (`main/lcd_bus.c/.h`):**
+   - Primera franja (`is_first = true`): envía comando `0x2C` (`RAMWR`) iniciando la escritura secuencial en la memoria gráfica del ILI9488.
+   - Franjas subsiguientes 1 a 29 (`is_first = false`): envía `lcd_cmd = -1`, omitiendo la fase de comando y continuando el flujo DMA secuencial ininterrumpido sin reiniciar los punteros internos del panel.
+3. **Métrica obligatoria `windows_per_frame` (`main/perf.c/.h`):** Añadida al reporte `PERF` y capturada en CSV. Se cuenta de forma estricta por fotograma presentado.
+
+### 3. Resultados Medidos (`F5d_run5.csv`, Autotest Completo)
+- **`windows_per_frame` medido:** **1** en el 100% de los fotogramas directos presentados.
+- **Tasa de descartes (`drop`):** Reducción de **2.36% a 0.14% global**, cumpliendo sobradamente el umbral $\le 1.0\%$:
+  - **Pista 0 (`ariana.avi`):** Descenso de 6.92% (37 descartes) a **0.37%** (2 descartes / 534).
+  - **Pista 1 (`harry.avi`):** Descenso de 0.74% a **0.00%** (0 descartes / 546).
+  - **Pista 2 (`lesserafim.avi`):** Se mantiene en **0.00%** (0 descartes / 546).
+  - **Pista 3 (`meovv.avi`):** Descenso de 1.85% (10 descartes) a **0.18%** (1 descarte / 547).
+- **Tiempo de blit en OSD (`frame_blit_ms_avg`):** Al transferir únicamente las 196 columnas visibles de la ventana única, el tiempo de blit cae a **14.2 ms – 16.4 ms**, garantizando un margen holgado (> 6 ms) contra TE.
+- Al cumplirse todos los criterios con el Paso 1, no fue necesario recurrir al agrupamiento de bloques MCU (Paso 2).
+
+### 4. Tabla Comparativa Completa de Criterios (F5d it1 vs it2 vs it3)
+
+| Criterio | Umbral Requerido | Medido it1 (`run3`) | Medido it2 (`run4`) | Medido it3 (`run5`) | Estado Final it3 |
+|---|---|---|---|---|---|
+| **pres_fps oculto** | $\ge 28.5$ FPS | 29.02 FPS | 29.06 FPS | **29.83 FPS** | ✔ CUMPLE |
+| **pres_fps con OSD** | $\ge 28.0$ FPS | 29.73 FPS | 29.72 FPS | **29.96 FPS** | ✔ CUMPLE |
+| **drop oculto Track 0 (ariana)** | $\le 1.0\%$ | 7.28% | 6.92% (37/535) | **0.37% (2/534)** | ✔ CUMPLE |
+| **drop oculto Track 1 (harry)** | $\le 1.0\%$ | 0.55% | 0.74% (4/542) | **0.00% (0/546)** | ✔ CUMPLE |
+| **drop oculto Track 2 (lesserafim)** | $\le 1.0\%$ | 0.00% | 0.00% (0/543) | **0.00% (0/546)** | ✔ CUMPLE |
+| **drop oculto Track 3 (meovv)** | $\le 1.0\%$ | 2.04% | 1.85% (10/541) | **0.18% (1/547)** | ✔ CUMPLE |
+| **drop oculto GLOBAL** | $\le 1.0\%$ | 2.46% | 2.36% (51/2161) | **0.14% (3/2173)** | ✔ CUMPLE |
+| **windows_per_frame** | Contado $= 1$ | 30 (implícito) | 30 (implícito) | **1 (contado)** | ✔ CUMPLE |
+| **TE frecuencia / estabilidad** | $\pm 2.0$ Hz | 44.0–45.0 Hz | 44.0–45.0 Hz | **44.0–45.0 Hz** | ✔ CUMPLE |
+| **TE timeout** | $\le 1.0\%$ | 0.0% | 0.0% | **0.00% (0/11423)** | ✔ CUMPLE |
+| **present_path / view / hud** | direct / full / coherentes | OK | OK | **direct / full / coherentes** | ✔ CUMPLE |
+| **\|drift_ms\| máximo** | $< 100$ ms | 71 ms | 74 ms | **62 ms** | ✔ CUMPLE |
+| **Toque sintético TAP** | 0 → 1 | OK | OK | **OK (0 → 1)** | ✔ CUMPLE |
+| **STRESS (title_mismatch)** | $= 0$ | 0 | 0 | **0 (mismatch=0)** | ✔ CUMPLE |
+| **MicroSD reader_rd_avg** | $< 15.0$ ms | OK | 8.5 ms | **8.7 ms** | ✔ CUMPLE |
+| **Cola prefetch q_wait_max** | $< 15.0$ ms | OK | 0.1 ms | **0.1 ms** | ✔ CUMPLE |
+| **heap_int mínimo** | $\ge 30\,000$ B | 56 275 B | 62 995 B | **62 975 B** | ✔ CUMPLE |
+
+### 5. Estado de la Variante en Placa
+- **Variante NORMAL flasheada en COM16:** Compilada desde `build/` con autotest desactivado y `tear_diag` compilado en modo `TEAR_DIAG_OFF` (interfaz Spotify activa, reproduciendo de fondo a 30 FPS en panel vertical nativo con ventana única).
+

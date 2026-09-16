@@ -65,6 +65,7 @@ static uint64_t s_strip_sum_us = 0;
 
 static uint32_t s_direct_frames_count = 0;
 static uint32_t s_total_strips_sent = 0;
+static uint32_t s_total_windows_sent = 0;
 static uint64_t s_frame_blit_sum_us = 0;
 
 static uint32_t s_lvgl_rows_clipped = 0;
@@ -106,10 +107,11 @@ void perf_mark_strip(uint32_t strip_us) {
     portEXIT_CRITICAL(&s_perf_mux);
 }
 
-void perf_mark_direct_frame(uint32_t strips_count, uint32_t frame_blit_us) {
+void perf_mark_direct_frame(uint32_t strips_count, uint32_t frame_blit_us, uint32_t windows_count) {
     portENTER_CRITICAL(&s_perf_mux);
     s_direct_frames_count++;
     s_total_strips_sent += strips_count;
+    s_total_windows_sent += windows_count;
     s_frame_blit_sum_us += frame_blit_us;
     portEXIT_CRITICAL(&s_perf_mux);
 }
@@ -157,6 +159,7 @@ void perf_init(void) {
     s_strip_sum_us = 0;
     s_direct_frames_count = 0;
     s_total_strips_sent = 0;
+    s_total_windows_sent = 0;
     s_frame_blit_sum_us = 0;
     s_lvgl_rows_clipped = 0;
     s_present_path_override[0] = '\0';
@@ -428,6 +431,7 @@ void perf_report_if_due(void) {
     uint64_t strip_sum = s_strip_sum_us;
     uint32_t dir_frames = s_direct_frames_count;
     uint32_t tot_strips = s_total_strips_sent;
+    uint32_t tot_windows = s_total_windows_sent;
     uint64_t frame_blit_sum = s_frame_blit_sum_us;
     uint32_t lvgl_clipped = s_lvgl_rows_clipped;
 
@@ -456,6 +460,7 @@ void perf_report_if_due(void) {
     s_strip_sum_us = 0;
     s_direct_frames_count = 0;
     s_total_strips_sent = 0;
+    s_total_windows_sent = 0;
     s_frame_blit_sum_us = 0;
     s_lvgl_rows_clipped = 0;
 
@@ -552,6 +557,7 @@ void perf_report_if_due(void) {
     double strip_ms_avg = (strip_cnt > 0) ? (((double)strip_sum / (double)strip_cnt) / 1000.0) : 0.0;
     double frame_blit_ms_avg = (dir_frames > 0) ? (((double)frame_blit_sum / (double)dir_frames) / 1000.0) : 0.0;
     uint32_t strips_per_frame = (dir_frames > 0) ? (tot_strips / dir_frames) : 0;
+    uint32_t windows_per_frame = (dir_frames > 0) ? (tot_windows / dir_frames) : 0;
 
     portENTER_CRITICAL(&s_perf_mux);
     s_last_dec_fps = (float)dec_fps;
@@ -600,7 +606,7 @@ void perf_report_if_due(void) {
     uint32_t t_ms = (uint32_t)(now / 1000);
     uint8_t cur_madctl = ili9488_8080_get_madctl();
 
-    printf("PERF,t_ms=%lu,dec_fps=%.1f,pres_fps=%.1f,drop=%lu,over=%lu,frame_mismatch=%lu,rd_avg=%.1f,rd_max=%.1f,rd_p50=%.1f,rd_p95=%.1f,rd_slow=%lu,reader_rd_avg=%.1f,reader_rd_max=%.1f,reader_rd_p50=%.1f,reader_rd_p95=%.1f,slots_ready_avg=%.1f,q_wait_avg=%.1f,q_wait_max=%.1f,q_wait_p50=%.1f,q_wait_p95=%.1f,te_present=%d,te_hz=%.1f,te_jitter_ms=%.2f,te_wait_ms_avg=%.2f,te_wait_ms_max=%.2f,te_timeout=%lu,dec_avg=%.1f,dec_max=%.1f,dec_frame_ms_avg=%.1f,dec_frame_ms_max=%.1f,blit_avg=%.1f,blit_max=%.1f,late_max=%.1f,drift_ms=%ld,touch_read_ms_avg=%.1f,touch_read_ms_max=%.1f,touch_age_ms_max=%.1f,heap_int=%lu,heap_psram=%lu,track=%d,scn=%s,view=%s,hud=%d,present_path=%s,rot=90,madctl=0x%02X,vrect=%d-%d,strips_per_frame=%lu,strip_ms_avg=%.2f,frame_blit_ms_avg=%.1f,lvgl_rows_clipped=%lu,dec_frames=%lu\n",
+    printf("PERF,t_ms=%lu,dec_fps=%.1f,pres_fps=%.1f,drop=%lu,over=%lu,frame_mismatch=%lu,rd_avg=%.1f,rd_max=%.1f,rd_p50=%.1f,rd_p95=%.1f,rd_slow=%lu,reader_rd_avg=%.1f,reader_rd_max=%.1f,reader_rd_p50=%.1f,reader_rd_p95=%.1f,slots_ready_avg=%.1f,q_wait_avg=%.1f,q_wait_max=%.1f,q_wait_p50=%.1f,q_wait_p95=%.1f,te_present=%d,te_hz=%.1f,te_jitter_ms=%.2f,te_wait_ms_avg=%.2f,te_wait_ms_max=%.2f,te_timeout=%lu,dec_avg=%.1f,dec_max=%.1f,dec_frame_ms_avg=%.1f,dec_frame_ms_max=%.1f,blit_avg=%.1f,blit_max=%.1f,late_max=%.1f,drift_ms=%ld,touch_read_ms_avg=%.1f,touch_read_ms_max=%.1f,touch_age_ms_max=%.1f,heap_int=%lu,heap_psram=%lu,track=%d,scn=%s,view=%s,hud=%d,present_path=%s,rot=90,madctl=0x%02X,vrect=%d-%d,strips_per_frame=%lu,windows_per_frame=%lu,strip_ms_avg=%.2f,frame_blit_ms_avg=%.1f,lvgl_rows_clipped=%lu,dec_frames=%lu\n",
            (unsigned long)t_ms, dec_fps, pres_fps, (unsigned long)drop, (unsigned long)over,
            (unsigned long)mismatch,
            rd_avg, rd_max,
@@ -623,6 +629,7 @@ void perf_report_if_due(void) {
            (unsigned int)cur_madctl,
            v_y1, v_y2,
            (unsigned long)strips_per_frame,
+           (unsigned long)windows_per_frame,
            strip_ms_avg,
            frame_blit_ms_avg,
            (unsigned long)lvgl_clipped,

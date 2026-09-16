@@ -32,6 +32,14 @@ void lcd_bus_get_video_rect(int16_t *x, int16_t *y, int16_t *w, int16_t *h);
 // Requiere haber llamado lcd_bus_lock() antes
 esp_err_t lcd_bus_draw_strip_async(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, const uint16_t *data, size_t len_bytes);
 
+// Fija la ventana de visualización una única vez por fotograma para direct blit
+// Requiere haber llamado lcd_bus_lock() antes
+esp_err_t lcd_bus_set_frame_window(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2);
+
+// Lanzamiento asíncrono de franja DMA continuando la escritura de la ventana establecida.
+// is_first=true envía comando 0x2C (RAMWR); is_first=false envía -1 (continuación sin comando)
+esp_err_t lcd_bus_draw_strip_continue_async(const uint16_t *data, size_t len_bytes, bool is_first);
+
 // Espera a que termine la transmisión DMA de la franja previa
 // out_dma_us entrega el tiempo transcurrido en microsegundos si no es NULL
 esp_err_t lcd_bus_wait_strip_done(uint32_t *out_dma_us);

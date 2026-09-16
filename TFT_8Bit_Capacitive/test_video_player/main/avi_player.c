@@ -656,8 +656,49 @@ esp_err_t avi_player_read_and_blit_direct(void) {
     uint32_t total_frame_blit_us = 0;
     uint32_t strips_sent_count = 0;
     uint32_t total_frame_dec_us = 0;
+    uint32_t windows_count = 0;
+
+    int x_start = 0;
+    int x_end = 319;
+    int clip_w = 320;
+    if (hdr_info.width == 320 && hdr_info.height == 480) {
+        if (vh < 320) {
+            x_start = 319 - (vy + vh - 1);
+            x_end = 319 - vy;
+            if (x_start < 0) x_start = 0;
+            if (x_end > 319) x_end = 319;
+            clip_w = x_end - x_start + 1;
+        }
+    }
 
     lcd_bus_lock();
+
+    tear_diag_mode_t diag = tear_diag_get_mode();
+
+    // Programar la ventana de visualización UNA ÚNICA VEZ por fotograma
+    if (vw > 0 && vh > 0) {
+        if (diag == TEAR_DIAG_MODE_B) {
+            // Modo B de diagnóstico: franja única fija (líneas 80..95)
+            lcd_bus_set_frame_window(0, 80, 319, 95);
+            windows_count++;
+        } else if (hdr_info.width == 320 && hdr_info.height == 480) {
+            if (clip_w > 0) {
+                // Video rotado: ventana completa (0..319, 0..479) o recortada en X (x_start..x_end, 0..479)
+                lcd_bus_set_frame_window((uint16_t)x_start, 0, (uint16_t)x_end, 479);
+                windows_count++;
+            }
+        } else {
+            // Video clásico 480x320
+            int clip_y1 = vy;
+            int clip_y2 = vy + vh - 1;
+            if (clip_y1 < 0) clip_y1 = 0;
+            if (clip_y2 >= 320) clip_y2 = 319;
+            if (clip_y1 <= clip_y2) {
+                lcd_bus_set_frame_window(0, (uint16_t)clip_y1, hdr_info.width - 1, (uint16_t)clip_y2);
+                windows_count++;
+            }
+        }
+    }
 
     for (int b = 0; b < process_count; b++) {
         io.outbuf = (uint8_t *)s_strip_bufs[b & 1];
@@ -693,7 +734,6 @@ esp_err_t avi_player_read_and_blit_direct(void) {
         line_y += cur_lines;
 
         // Diagnostico de tearing (T2)
-        tear_diag_mode_t diag = tear_diag_get_mode();
         bool skip_strip = false;
         if (diag == TEAR_DIAG_MODE_A && b >= (process_count / 2)) {
             // Modo A: solo mitad superior (10 franjas = 160 lineas, ~10.1 ms)
@@ -703,26 +743,19 @@ esp_err_t avi_player_read_and_blit_direct(void) {
             skip_strip = true;
         }
 
-        // Verificar recorte contra video_rect
+        // Enviar franja dentro de la ventana fijada previamente
         if (!skip_strip && vw > 0 && vh > 0) {
             if (hdr_info.width == 320 && hdr_info.height == 480) {
                 // Video rotado 320x480 en panel nativo (MADCTL sin MV)
                 if (vh >= 320) {
                     // Fullscreen completo sin HUD (hidden / seek): transferir franja completa (320 px)
                     size_t strip_bytes = (size_t)cur_lines * 320 * sizeof(uint16_t);
-                    lcd_bus_draw_strip_async(0, (uint16_t)cur_y1, 319, (uint16_t)cur_y2,
-                                             s_strip_bufs[b & 1], strip_bytes);
+                    bool is_first = (strips_sent_count == 0);
+                    lcd_bus_draw_strip_continue_async(s_strip_bufs[b & 1], strip_bytes, is_first);
                     dma_in_flight = true;
                     strips_sent_count++;
                 } else {
                     // Fullscreen con OSD: recortar columnas a lo largo del alto lógico vh
-                    // x_start = 319 - (vy + vh - 1), x_end = 319 - vy
-                    int x_start = 319 - (vy + vh - 1);
-                    int x_end = 319 - vy;
-                    if (x_start < 0) x_start = 0;
-                    if (x_end > 319) x_end = 319;
-                    int clip_w = x_end - x_start + 1;
-
                     if (clip_w > 0) {
                         if (!s_clip_strip_bufs[0]) {
                             for (int i = 0; i < 2; i++) {
@@ -739,9 +772,8 @@ esp_err_t avi_player_read_and_blit_direct(void) {
                         }
 
                         size_t clip_bytes = (size_t)cur_lines * clip_w * sizeof(uint16_t);
-                        lcd_bus_draw_strip_async((uint16_t)x_start, (uint16_t)cur_y1,
-                                                 (uint16_t)x_end, (uint16_t)cur_y2,
-                                                 dst_strip, clip_bytes);
+                        bool is_first = (strips_sent_count == 0);
+                        lcd_bus_draw_strip_continue_async(dst_strip, clip_bytes, is_first);
                         dma_in_flight = true;
                         strips_sent_count++;
                     }
@@ -756,7 +788,8 @@ esp_err_t avi_player_read_and_blit_direct(void) {
                     size_t visible_bytes = (size_t)(clip_y2 - clip_y1 + 1) * (hdr_info.width * 2);
                     const uint16_t *strip_px = (const uint16_t *)((uint8_t *)s_strip_bufs[b & 1] + offset_bytes);
 
-                    lcd_bus_draw_strip_async(0, (uint16_t)clip_y1, hdr_info.width - 1, (uint16_t)clip_y2, strip_px, visible_bytes);
+                    bool is_first = (strips_sent_count == 0);
+                    lcd_bus_draw_strip_continue_async(strip_px, visible_bytes, is_first);
                     dma_in_flight = true;
                     strips_sent_count++;
                 }
@@ -779,7 +812,7 @@ esp_err_t avi_player_read_and_blit_direct(void) {
     xQueueSend(s_q_free, &slot, 0);
 
     perf_mark_frame_decode(total_frame_dec_us);
-    perf_mark_direct_frame(strips_sent_count, total_frame_blit_us);
+    perf_mark_direct_frame(strips_sent_count, total_frame_blit_us, windows_count);
     perf_mark_presented();
 
     return ESP_OK;

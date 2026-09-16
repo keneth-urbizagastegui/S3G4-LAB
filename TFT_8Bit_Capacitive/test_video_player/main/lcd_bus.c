@@ -54,7 +54,14 @@ void lcd_bus_get_video_rect(int16_t *x, int16_t *y, int16_t *w, int16_t *h) {
     portEXIT_CRITICAL(&s_rect_mux);
 }
 
-esp_err_t lcd_bus_draw_strip_async(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, const uint16_t *data, size_t len_bytes) {
+esp_err_t lcd_bus_set_frame_window(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2) {
+    esp_lcd_panel_io_handle_t io = ili9488_8080_get_panel_io();
+    if (!io) return ESP_ERR_INVALID_STATE;
+    ili9488_8080_set_window(x1, y1, x2, y2);
+    return ESP_OK;
+}
+
+esp_err_t lcd_bus_draw_strip_continue_async(const uint16_t *data, size_t len_bytes, bool is_first) {
     esp_lcd_panel_io_handle_t io = ili9488_8080_get_panel_io();
     SemaphoreHandle_t sem = ili9488_8080_get_trans_sem();
     if (!io || !sem) return ESP_ERR_INVALID_STATE;
@@ -62,10 +69,15 @@ esp_err_t lcd_bus_draw_strip_async(uint16_t x1, uint16_t y1, uint16_t x2, uint16
     // Purgar token previo si existiera
     xSemaphoreTake(sem, 0);
 
-    ili9488_8080_set_window(x1, y1, x2, y2);
     s_strip_start_us = esp_timer_get_time();
     s_strip_in_flight = true;
-    return esp_lcd_panel_io_tx_color(io, 0x2C, data, len_bytes);
+    return esp_lcd_panel_io_tx_color(io, is_first ? 0x2C : -1, data, len_bytes);
+}
+
+esp_err_t lcd_bus_draw_strip_async(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, const uint16_t *data, size_t len_bytes) {
+    esp_err_t ret = lcd_bus_set_frame_window(x1, y1, x2, y2);
+    if (ret != ESP_OK) return ret;
+    return lcd_bus_draw_strip_continue_async(data, len_bytes, true);
 }
 
 esp_err_t lcd_bus_wait_strip_done(uint32_t *out_dma_us) {
