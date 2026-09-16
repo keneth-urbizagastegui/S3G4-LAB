@@ -115,6 +115,10 @@ def main():
     ap.add_argument("--q", type=int, default=8, help="calidad MJPEG de ffmpeg (2 mejor, 31 peor)")
     ap.add_argument("--fit", choices=("crop", "pad"), default="crop",
                     help="crop recorta para llenar la pantalla; pad deja bandas negras")
+    ap.add_argument("--rotate", type=int, choices=(0, 90), default=90,
+                    help="90 (por defecto) gira el video para que el firmware escriba en el mismo "
+                         "sentido en que barre el panel y no aparezca el corte diagonal; "
+                         "0 deja la orientacion clasica 480x320")
     ap.add_argument("--width", type=int, default=480)
     ap.add_argument("--height", type=int, default=320)
     ap.add_argument("--thumb-at", type=float, default=5.0, help="segundo del que se saca la miniatura")
@@ -134,7 +138,9 @@ def main():
         sys.exit(f"ERROR: no hay videos en {src}")
 
     print(f"ffmpeg: {ffmpeg}")
-    print(f"{len(sources)} videos en {src} -> {dst}  ({args.width}x{args.height}, {args.fps} fps, q={args.q}, {args.fit})\n")
+    orient = (f"{args.height}x{args.width} (girado 90 para el panel)" if args.rotate == 90
+              else f"{args.width}x{args.height} (sin girar)")
+    print(f"{len(sources)} videos en {src} -> {dst}  ({orient}, {args.fps} fps, q={args.q}, {args.fit})\n")
 
     ok, failed, warnings = 0, 0, []
     for name in sources:
@@ -149,9 +155,12 @@ def main():
         if os.path.exists(avi) and not args.force:
             print("    ya existe, se omite (usa --force para rehacer)")
         else:
+            vf = f"{scale_filter(args.fit, args.width, args.height)},fps={args.fps}"
+            if args.rotate == 90:
+                vf += ",transpose=1"   # el fichero queda 320x480: filas = lineas nativas del panel
             code, err = run([
                 ffmpeg, "-y", "-i", in_path,
-                "-vf", f"{scale_filter(args.fit, args.width, args.height)},fps={args.fps}",
+                "-vf", vf,
                 "-c:v", "mjpeg", "-pix_fmt", "yuvj420p", "-q:v", str(args.q), "-an", avi,
             ])
             if code != 0:
@@ -169,7 +178,8 @@ def main():
 
         title, subtitle = title_from_filename(stem)
         with open(js, "w", encoding="utf-8") as fh:
-            json.dump({"title": title, "subtitle": subtitle}, fh, ensure_ascii=False, indent=1)
+            json.dump({"title": title, "subtitle": subtitle, "rotated": args.rotate == 90},
+                      fh, ensure_ascii=False, indent=1)
 
         frames, avg, cmax = measure_avi(avi)
         mb = os.path.getsize(avi) / (1024 * 1024)
