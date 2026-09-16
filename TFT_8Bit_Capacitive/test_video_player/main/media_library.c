@@ -196,8 +196,8 @@ static void load_jpeg_thumbnail(const char *jpg_path, media_item_t *item, int *t
         return;
     }
 
-    if (hdr_info.width != 144 || hdr_info.height != 81) {
-        ESP_LOGW(TAG, "Miniatura %s tiene dimensiones %ux%u != 144x81, usando marcador",
+    if (hdr_info.width != 144 || (hdr_info.height != 80 && hdr_info.height != 81)) {
+        ESP_LOGW(TAG, "Miniatura %s tiene dimensiones %ux%u != 144x80, usando marcador",
                  jpg_path, hdr_info.width, hdr_info.height);
         jpeg_dec_close(dec);
         free(jpg_buf);
@@ -245,7 +245,7 @@ static void load_jpeg_thumbnail(const char *jpg_path, media_item_t *item, int *t
 
     dsc->header.cf = LV_COLOR_FORMAT_RGB565;
     dsc->header.w = 144;
-    dsc->header.h = 81;
+    dsc->header.h = hdr_info.height;
     dsc->header.flags = 0;
     dsc->header.magic = LV_IMAGE_HEADER_MAGIC;
     dsc->data_size = outlen;

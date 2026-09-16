@@ -1,5 +1,6 @@
 #include "ui/actions.h"
 #include "ui/screens.h"
+#include "ui/images.h"
 #include "ui/ui.h"
 #include "ui_glue.h"
 #include "player.h"
@@ -347,10 +348,19 @@ void action_library_populate(lv_event_t *e) {
         // Child 2: bar_resume
         // Child 3: lbl_card_title
         // Child 4: lbl_card_meta
+        lv_obj_t *img_thumb = lv_obj_get_child(card, 0);
         lv_obj_t *badge = lv_obj_get_child(card, 1);
         lv_obj_t *bar_res = lv_obj_get_child(card, 2);
         lv_obj_t *lbl_title = lv_obj_get_child(card, 3);
         lv_obj_t *lbl_meta = lv_obj_get_child(card, 4);
+
+        if (img_thumb) {
+            if (item->thumb_dsc) {
+                lv_image_set_src(img_thumb, item->thumb_dsc);
+            } else {
+                lv_image_set_src(img_thumb, &img_film);
+            }
+        }
 
         if (lbl_title) {
             lv_label_set_text(lbl_title, item->title[0] ? item->title : item->path);

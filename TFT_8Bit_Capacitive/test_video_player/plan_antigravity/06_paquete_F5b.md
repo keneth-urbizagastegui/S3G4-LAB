@@ -58,11 +58,11 @@ int  media_library_index_of(const char *path);
 - Tamaño máximo aceptado: 2 KB por fichero. Por encima, se ignora con aviso.
 
 ### 3. Miniaturas `nombre.jpg`
-- 144×81, JPEG 4:2:0 (las genera el conversor, §5).
-- Se decodifican **una vez** al escanear, a RGB565 en PSRAM (144×81×2 = 23 328 B por video).
+- 144×80, JPEG 4:2:0 (las genera el conversor, §5).
+- Se decodifican **una vez** al escanear, a RGB565 en PSRAM (144×80×2 = 23 040 B por video).
 - **Tope de memoria: 24 miniaturas** (unos 560 KB). A partir de ahí, las tarjetas usan el marcador de
   posición de `03` §10.5. El tope es una constante de Kconfig `APP_THUMB_CACHE_MAX` (default 24).
-- Si el `.jpg` no es 144×81, se ignora y se usa el marcador (no se reescala).
+- Si el `.jpg` no es 144×80 (o 144×81 por compatibilidad), se ignora y se usa el marcador (no se reescala).
 
 ### 4. Persistencia en NVS (`main/settings_nvs.c/.h`)
 Espacio de nombres `s3g4vid`. Claves y tipos exactos:

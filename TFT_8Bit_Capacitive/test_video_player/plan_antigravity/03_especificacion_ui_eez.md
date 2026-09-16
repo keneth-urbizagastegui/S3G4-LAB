@@ -110,7 +110,7 @@ exclusión** del blit (`02` F3 paso 5).
 | `lib_grid` | container scroll V | 0,44,480,276 | flex ROW_WRAP, pad 12, gap 12 |
 | `card_video` ×N | **user widget** `uw_video_card` | 144×124 | se crea **por código** en `action_library_populate` (N se cuenta al escanear la SD) |
 
-`uw_video_card` (144×124): `img_thumb` 0,0,144,81 radio 6 · `badge_now` 6,6,auto,18 (`st_chip`,
+`uw_video_card` (144×124): `img_thumb` 0,0,144,80 radio 6 · `badge_now` 6,6,auto,18 (`st_chip`,
 «Reproduciendo», visible si es el actual) · `bar_resume` 0,78,144,3 (visible si hay posición guardada) ·
 `lbl_card_title` 0,88,144,18 (14, `LONG_DOT`) · `lbl_card_meta` 0,106,144,14 (12 `c_muted`, «3:21»).
 `CLICKED` → `action_play_index` (índice en `user_data`).
@@ -326,7 +326,7 @@ Misma pantalla que «Sin videos», con otro contenido (una sola pantalla, dos es
 | `lbl_retry_hint` 11 `c_muted` abajo (y 288) | oculto | «Reintentando cada segundo…» mientras `state == PST_NO_MEDIA` |
 
 ### 10.5 Miniatura de relleno (punto 5)
-Cuando un `.avi` no trae `.jpg`: `img_thumb` se sustituye por un contenedor 144×81, radio 6, fondo
+Cuando un `.avi` no trae `.jpg`: `img_thumb` se sustituye por un contenedor 144×80, radio 6, fondo
 `c_surface`, con un icono de claqueta/película de 34 px centrado en `#4A4E57`, y `lbl_card_meta` empieza
 por «Sin miniatura · ». **No se genera la miniatura decodificando el video en el arranque**: alargaría el
 escaneo. El conversor (`02` F5) es quien debe crear los `.jpg`.
