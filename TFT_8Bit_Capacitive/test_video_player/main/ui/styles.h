@@ -27,6 +27,10 @@ void remove_style_st_play_btn(lv_obj_t *obj);
 void add_style_st_card(lv_obj_t *obj);
 void remove_style_st_card(lv_obj_t *obj);
 
+// Style: st_card_btn
+void add_style_st_card_btn(lv_obj_t *obj);
+void remove_style_st_card_btn(lv_obj_t *obj);
+
 // Style: st_seek
 void add_style_st_seek(lv_obj_t *obj);
 void remove_style_st_seek(lv_obj_t *obj);
@@ -38,6 +42,9 @@ void remove_style_st_chip(lv_obj_t *obj);
 // Style: st_list_item
 void add_style_st_list_item(lv_obj_t *obj);
 void remove_style_st_list_item(lv_obj_t *obj);
+
+void add_style(lv_obj_t *obj, int32_t styleIndex);
+void remove_style(lv_obj_t *obj, int32_t styleIndex);
 
 #ifdef __cplusplus
 }
