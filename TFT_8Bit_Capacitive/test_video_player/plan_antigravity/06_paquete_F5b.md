@@ -104,3 +104,45 @@ generar material de prueba, y reporta cualquier fallo. Sustituye a `convert_to_s
 ## Lo que NO se toca en F5b
 La ruta de presentación (F3/F5a), el reloj PTS, el driver del panel, la UI actual, `perf_capture.py`
 más allá de añadir la comprobación de `LIB`, y nada fuera de `test_video_player` salvo el conversor.
+
+---
+
+## 7. Validación de compatibilidad: «Formato no compatible» (pedido por Keneth, 15/09/2026)
+
+Hoy, si se copia un `.avi` que el reproductor no puede reproducir, falla sin explicar por qué. Como el
+escaneo ya lee la cabecera de cada fichero, la biblioteca debe **decirlo en pantalla** y **no intentar
+reproducirlo**.
+
+### 7.1 Reglas de compatibilidad (todas se comprueban leyendo el fichero, sin decodificar)
+| # | Requisito | De dónde sale | Motivo mostrado si falla |
+|---|---|---|---|
+| 1 | El vídeo es **MJPEG** | `strf`/`biCompression` del AVI (`MJPG`, `mjpg`, `jpeg`, `dmb1`) o el primer chunk empieza por `FF D8` | «No es MJPEG» |
+| 2 | **480 × 320** exactos | `avih` | «Resolución 1280×720» (la real) |
+| 3 | Submuestreo **4:2:0** | SOF0/SOF2 del primer fotograma (ya corregido en F1) | «Color 4:2:2 o 4:4:4» |
+| 4 | **fps entre 24 y 31** | `us_per_frame` de `avih` | «60 fps» (los reales) |
+| 5 | **chunk máximo ≤ 128 KB** | recorriendo `idx1` | «Fotogramas de 210 KB» |
+| 6 | Tiene **`idx1`** | cola del fichero | «Sin índice: no se puede saltar» (**aviso, no bloqueo**: se reproduce sin saltos) |
+
+- `media_item_t` gana: `bool compatible;` y `char incompat[48];` (el motivo, ya redactado para mostrar).
+- La línea `MEDIA` gana `compat=1|0,reason=<texto sin comas>`.
+- **Nada de rechazar por el nombre ni por la extensión**: se juzga por el contenido.
+
+### 7.2 En la interfaz (coordinado con `03`)
+- La tarjeta de un video incompatible se muestra **atenuada al 45 %**, con la miniatura de relleno, el
+  título en `c_muted` y, en lugar de la duración, el motivo en `c_danger` a 11 px (por ejemplo
+  «Resolución 1280×720»).
+- Al tocarla **no reproduce**: muestra 3 s un aviso sobre la propia tarjeta con el motivo completo y la
+  frase «Conviértelo con convert_videos.py».
+- Los incompatibles **no entran en la cola** ni en «siguiente/anterior», y no cuentan en
+  `library_summary`, que dirá «4 videos · 1 no compatible».
+- Si **todos** son incompatibles: la pantalla `scr_no_media` en estado «sin videos» con el subtítulo
+  «Hay N archivos, ninguno compatible. Conviértelos con convert_videos.py».
+
+### 7.3 Criterio de aceptación añadido a F5b
+- Copiar a la tarjeta **tres ficheros trampa** y comprobar que el escaneo los marca sin colgarse y sin
+  reiniciar: (a) un AVI con códec no MJPEG, (b) un MJPEG de otra resolución, (c) un fichero `.avi` que
+  en realidad sea texto o esté truncado.
+- `LIB,count=<n>,compatible=<c>,incompatible=<i>` en el log, con `n = c + i` **contado**.
+- El resto de criterios de F5b se mantienen; el tiempo de escaneo sigue por debajo de 3 s.
+- Los tres ficheros trampa los genera el propio encargo con Python (no hace falta ffmpeg) y se dejan en
+  `plan_antigravity/mediciones/ficheros_trampa/` para poder repetir la prueba.
