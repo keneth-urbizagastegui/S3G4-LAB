@@ -198,3 +198,21 @@ Recalculado desde `F5d_run5.csv` (descartando 2 ventanas por escenario):
 **Pendiente antes de etiquetar `vp-v0.5`:** verificación visual de Keneth sobre el firmware normal:
 (a) pantalla completa sin corte y sin franjas mal colocadas; (b) vista pequeña derecha; (c) modo C con la
 frontera quieta.
+
+---
+
+## Verificación visual de Keneth sobre la iteración 3 (16/09/2026) — NO SE ETIQUETA TODAVÍA
+
+- **Vista pequeña: derecha.** ✔ (D1 confirmado)
+- **Pantalla completa, antes de usar el modo C: sin cortes.** ✔
+- **Tras activar el modo C y volver a OFF, el video pasó a tener cortes verticales.** ✘ → **E2**
+- **Tras reiniciar la placa, no hubo video.** ✘ → **E1**. El auditor reinició por RTS y el arranque dio
+  `0x107` en los 10 ciclos (`scratchpad/boot_nov.log`): **D4 no estaba resuelto**. Los 5 reinicios
+  buenos de la it2 fueron cuestión de azar. La tarjeta tiene VDD fijo; si el reinicio llega en mitad de
+  una lectura (casi siempre, con la precarga), queda colgada hasta que se le quita la alimentación.
+  No es un cable ni una avería: es falta de un mecanismo de recuperación, mitigable por software
+  (CMD12 y pulsos de reloj antes de montar) y resoluble del todo por hardware (interruptor de VDD).
+- **E2, pista del auditor:** el video espera TE fuera del bloqueo del bus y antes de decodificar; el modo
+  C la espera dentro del bloqueo. Probables avisos de TE acumulados al volver a OFF.
+
+Iteración 4 encargada: recuperación de la SD con prueba de 20 reinicios aleatorios, y la corrección de E2.
