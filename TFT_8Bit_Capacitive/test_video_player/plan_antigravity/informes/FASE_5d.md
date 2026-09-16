@@ -287,3 +287,25 @@ Iteración 4 encargada: recuperación de la SD con prueba de 20 reinicios aleato
   - Firmware compilado desde `build/` con `tear_diag` activo en modo `TEAR_DIAG_OFF`.
   - Interfaz de usuario Spotify activa en modo Studio, reproduciendo `ariana.avi` a 30 FPS.
   - Video orientado derecho en pantalla nativa vertical ($320 \times 480$), sin cortes y con táctil FT6236 respondiendo en sus coordenadas correspondientes.
+
+---
+
+## Auditoría de Claude de la iteración 4 (16/09/2026) — REGRESIÓN DE RENDIMIENTO
+
+- **E1 resuelto:** recuperación por el propio bus SPI (CS alto + 128 pulsos, CMD12, drenaje acotado a
+  512 bytes, pulsos otra vez). Código revisado: bucles acotados y sin reconfigurar los pines del bus.
+  `F5d_reset_torture.log`: **20/20 reinicios aleatorios** montando 10/10, **0 errores 0x107**.
+  Keneth confirma que los reinicios con RESET funcionan.
+- **E2 resuelto a la vista** (Keneth: sin cortes tras el patrón y OFF).
+- **PERO Antigravity no repitió la medición completa.** La hizo el auditor (`F5d_run6.csv`,
+  perf_capture con código 1):
+  - **Descartes ocultos 4,52 % global** (pistas: 7,21 / 5,08 / 0,84 / 5,06 %) — en it3 era 0,16 %.
+  - **pres oculto 27,35–29,59** (criterio 28,5; perf_capture da media 28,16).
+  - Sin cambios en: TE (0 timeouts), deriva (74 ms), STRESS, TAP, heap (62 991 B), lectura de la SD.
+- **Causa:** de los tres cambios de E2, el necesario era el 1 (**vaciar los avisos de TE acumulados**
+  antes de esperar). El 3 (**esperar TE dentro del bloqueo, después de predecodificar el bloque 0**)
+  deja el hilo de video parado ~10 ms de media por fotograma (`te_wait_ms_avg` 10,0) en lugar de
+  seguir decodificando: el envío empieza tarde y se pierde el margen frente a los 33,3 ms.
+- **Iteración 5:** mantener el vaciado de avisos y la recuperación de la SD; **volver a esperar TE como
+  en it3** (antes de decodificar, fuera del bloqueo); comprobar que E2 sigue sin aparecer (patrón C y
+  OFF) y recuperar descartes ≤ 1 % con la medición completa.
