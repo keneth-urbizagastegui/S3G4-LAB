@@ -123,6 +123,7 @@ def main():
     tap_data = None
     sdpull_data = None
     mount_data = None
+    lib_data = None
     crashed = False
     crash_reason = ""
 
@@ -151,12 +152,19 @@ def main():
             # Imprimir en consola para visibilidad
             if (line_str.startswith("PERF,") or
                 line_str.startswith("MEDIA,") or
+                line_str.startswith("LIB,") or
                 line_str.startswith("STRESS,") or
                 line_str.startswith("TAP,") or
                 line_str.startswith("SDPULL,") or
                 line_str.startswith("MOUNT_TEST,") or
                 "AUTOTEST_DONE" in line_str):
                 print(f"  {line_str}")
+
+            # Deteccion de LIB
+            if line_str.startswith("LIB,"):
+                kv = parse_kv_line(line_str, "LIB")
+                if kv:
+                    lib_data = kv
 
             # Deteccion de SDPULL
             if line_str.startswith("SDPULL,"):
@@ -676,12 +684,64 @@ def main():
         else:
             print(f"[CRITERIO F5a OK]: heap_int minimo = {min_heap_int} >= 30000 B.")
 
+        # 14. Criterios especificos F5b: Biblioteca dinamica, metadatos y NVS (linea LIB)
+        if args.phase.upper() == "F5B":
+            print("\n" + "-" * 80)
+            print("EVALUACION CRITERIOS ESPECIFICOS FASE F5b (BIBLIOTECA Y NVS)")
+            print("-" * 80)
+            if not lib_data:
+                print("[CRITERIO F5b FALLIDO]: No se recibio la linea LIB.", file=sys.stderr)
+                f5a_passed = False
+            else:
+                try:
+                    lib_count = int(lib_data.get("count", -1))
+                    lib_compat = int(lib_data.get("compatible", -1))
+                    lib_incompat = int(lib_data.get("incompatible", -1))
+                    lib_json = int(lib_data.get("with_json", -1))
+                    lib_thumb = int(lib_data.get("with_thumb", -1))
+                    lib_scan_ms = int(lib_data.get("scan_ms", -1))
+                except ValueError:
+                    lib_count = lib_compat = lib_incompat = lib_json = lib_thumb = lib_scan_ms = -1
+
+                print(f"[EVALUACION LIB]: count={lib_count}, compatible={lib_compat}, incompatible={lib_incompat}, with_json={lib_json}, with_thumb={lib_thumb}, scan_ms={lib_scan_ms} ms")
+
+                # a) count == compatible + incompatible
+                if lib_count != (lib_compat + lib_incompat):
+                    print(f"[CRITERIO F5b FALLIDO]: count ({lib_count}) != compatible ({lib_compat}) + incompatible ({lib_incompat}).", file=sys.stderr)
+                    f5a_passed = False
+                else:
+                    print(f"[CRITERIO F5b OK]: count == compatible + incompatible ({lib_count} == {lib_compat} + {lib_incompat}).")
+
+                # b) count == len(media_records)
+                num_media = len(media_records)
+                if num_media > 0 and lib_count != num_media:
+                    print(f"[CRITERIO F5b FALLIDO]: count ({lib_count}) != pistas de MEDIA ({num_media}).", file=sys.stderr)
+                    f5a_passed = False
+                elif num_media > 0:
+                    print(f"[CRITERIO F5b OK]: count coincide con registros de MEDIA ({lib_count} == {num_media}).")
+
+                # c) scan_ms < 3000 ms
+                if lib_scan_ms >= 3000 or lib_scan_ms < 0:
+                    print(f"[CRITERIO F5b FALLIDO]: scan_ms={lib_scan_ms} ms >= 3000 ms.", file=sys.stderr)
+                    f5a_passed = False
+                else:
+                    print(f"[CRITERIO F5b OK]: scan_ms={lib_scan_ms} ms < 3000 ms.")
+
+                # d) PSRAM libre tras escaneo >= 6 MB (6 000 000 B)
+                min_psram = min((int(r.get("heap_psram", 0)) for r in perf_records if "heap_psram" in r), default=0)
+                print(f"[EVALUACION PSRAM LIBRE]: minimo observado = {min_psram} B (umbral: >= 6000000 B)")
+                if min_psram < 6000000:
+                    print(f"[CRITERIO F5b FALLIDO]: PSRAM libre minima = {min_psram} < 6000000 B.", file=sys.stderr)
+                    f5a_passed = False
+                else:
+                    print(f"[CRITERIO F5b OK]: PSRAM libre minima = {min_psram} B >= 6 MB.")
+
         print("=" * 80)
         if f5a_passed:
-            print("\n[RESULTADO F5a]: EXITO - Todos los criterios cumplidos satisfactoriamente.")
+            print(f"\n[RESULTADO {args.phase.upper()}]: EXITO - Todos los criterios cumplidos satisfactoriamente.")
             sys.exit(0)
         else:
-            print("\n[RESULTADO F5a]: FALLO - Criterios no cumplidos.", file=sys.stderr)
+            print(f"\n[RESULTADO {args.phase.upper()}]: FALLO - Criterios no cumplidos.", file=sys.stderr)
             sys.exit(1)
 
     elif args.phase.upper() == "F4":

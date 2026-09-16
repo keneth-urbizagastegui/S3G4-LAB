@@ -67,6 +67,12 @@ menu "App perf"
             Valor de MADCTL para panel en modo vertical nativo (sin bit MV).
             0x48 = MX=1, BGR=1.
 
+    config APP_THUMB_CACHE_MAX
+        int "Tope de miniaturas en cache de PSRAM"
+        default 24
+        help
+            Numero maximo de miniaturas decodificadas y cacheadas en PSRAM (F5b §3).
+
 endmenu
 
 

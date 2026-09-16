@@ -1,4 +1,5 @@
 #include "avi_player.h"
+#include "media_library.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -871,11 +872,12 @@ esp_err_t avi_player_skip_next_frame(void) {
     }
 }
 
-void avi_player_seek_percent(int percent) {
+void avi_player_seek_frame(uint32_t target_frame) {
     if (!s_file) return;
 
-    if (percent < 0) percent = 0;
-    if (percent > 99) percent = 99;
+    if (s_info.total_frames > 0 && target_frame >= s_info.total_frames) {
+        target_frame = s_info.total_frames - 1;
+    }
 
     s_reader_run = false;
     if (s_file_mutex) {
@@ -890,7 +892,6 @@ void avi_player_seek_percent(int percent) {
     }
 
     int fd = fileno(s_file);
-    uint32_t target_frame = (percent * s_info.total_frames) / 100;
     if (s_index_table && target_frame < s_info.total_frames) {
         lseek(fd, s_index_table[target_frame], SEEK_SET);
         s_info.current_frame = target_frame;
@@ -899,7 +900,10 @@ void avi_player_seek_percent(int percent) {
         s_need_index_seek = false;
     } else {
         off_t sz = lseek(fd, 0, SEEK_END);
-        off_t target_pos = s_movi_start_offset + (off_t)(((sz - s_movi_start_offset) * (int64_t)percent) / 100);
+        off_t target_pos = s_movi_start_offset;
+        if (s_info.total_frames > 0) {
+            target_pos += (off_t)(((sz - s_movi_start_offset) * (int64_t)target_frame) / s_info.total_frames);
+        }
         lseek(fd, target_pos, SEEK_SET);
         s_info.current_frame = target_frame;
         s_reader_frame_idx = target_frame;
@@ -923,8 +927,24 @@ void avi_player_seek_percent(int percent) {
         vTaskDelay(pdMS_TO_TICKS(5));
     }
 
-    ESP_LOGI(TAG, "Seek completado a %d%% (cuadro %u/%u)",
-             percent, (unsigned int)s_info.current_frame, (unsigned int)s_info.total_frames);
+    ESP_LOGI(TAG, "Seek completado a cuadro %u/%u",
+             (unsigned int)s_info.current_frame, (unsigned int)s_info.total_frames);
+}
+
+void avi_player_seek_ms(uint32_t ms) {
+    if (s_info.us_per_frame > 0) {
+        uint32_t target_frame = (uint32_t)(((uint64_t)ms * 1000ULL) / s_info.us_per_frame);
+        avi_player_seek_frame(target_frame);
+    } else {
+        avi_player_seek_percent(0);
+    }
+}
+
+void avi_player_seek_percent(int percent) {
+    if (percent < 0) percent = 0;
+    if (percent > 99) percent = 99;
+    uint32_t target_frame = (percent * s_info.total_frames) / 100;
+    avi_player_seek_frame(target_frame);
 }
 
 void avi_player_restart(void) {
@@ -1196,64 +1216,15 @@ static bool is_avi_filename(const char *name) {
 }
 
 int media_scan_sdcard(void) {
-    DIR *dir = opendir("/sdcard");
-    if (!dir) {
-        ESP_LOGE(TAG, "No se pudo abrir /sdcard para escanear");
-        return 0;
-    }
-
-    if (s_scanned_avi_files) {
-        for (int i = 0; i < s_scanned_avi_count; i++) {
-            free(s_scanned_avi_files[i]);
-        }
-        free(s_scanned_avi_files);
-        s_scanned_avi_files = NULL;
-    }
-    s_scanned_avi_count = 0;
-    int cap = 0;
-
-    struct dirent *de;
-    while ((de = readdir(dir)) != NULL) {
-        if (de->d_name[0] == '.') continue;
-        if (is_avi_filename(de->d_name)) {
-            char path[256];
-            snprintf(path, sizeof(path), "/sdcard/%s", de->d_name);
-            if (s_scanned_avi_count >= cap) {
-                cap = (cap == 0) ? 8 : cap * 2;
-                s_scanned_avi_files = (char **)realloc(s_scanned_avi_files, cap * sizeof(char *));
-            }
-            s_scanned_avi_files[s_scanned_avi_count++] = strdup(path);
-        }
-    }
-    closedir(dir);
-
-    // Ordenar alfabeticamente para orden determinista
-    for (int i = 0; i < s_scanned_avi_count - 1; i++) {
-        for (int j = i + 1; j < s_scanned_avi_count; j++) {
-            if (strcmp(s_scanned_avi_files[i], s_scanned_avi_files[j]) > 0) {
-                char *tmp = s_scanned_avi_files[i];
-                s_scanned_avi_files[i] = s_scanned_avi_files[j];
-                s_scanned_avi_files[j] = tmp;
-            }
-        }
-    }
-
-    ESP_LOGI(TAG, "MicroSD escaneada: %d archivos AVI encontrados.", s_scanned_avi_count);
-
-    for (int i = 0; i < s_scanned_avi_count; i++) {
-        avi_player_log_media(s_scanned_avi_files[i]);
-    }
-
-    return s_scanned_avi_count;
+    media_library_scan();
+    return media_library_count();
 }
 
 int media_get_avi_count(void) {
-    return s_scanned_avi_count;
+    return media_library_count();
 }
 
 const char *media_get_avi_path(int index) {
-    if (index >= 0 && index < s_scanned_avi_count) {
-        return s_scanned_avi_files[index];
-    }
-    return NULL;
+    const media_item_t *item = media_library_get(index);
+    return item ? item->path : NULL;
 }

@@ -21,6 +21,8 @@
 #include "perf.h"
 #include "lcd_bus.h"
 #include "tear_diag.h"
+#include "settings_nvs.h"
+#include "media_library.h"
 
 static const char *TAG = "MAIN_APP";
 
@@ -421,7 +423,7 @@ static void autotest_task(void *arg) {
     vTaskDelay(pdMS_TO_TICKS(1000));
     log_stack_and_heap_diag("AUTOTEST_START");
 
-    int total_tracks = media_get_avi_count();
+    int total_tracks = media_library_count();
     int sec_per_track = CONFIG_APP_PERF_SECONDS_PER_TRACK;
     if (sec_per_track < 3) sec_per_track = 3;
     int sec_per_scenario = sec_per_track / 3;
@@ -429,7 +431,12 @@ static void autotest_task(void *arg) {
     const char *scenarios[3] = {"hidden", "osd", "seek"};
 
     for (int track_idx = 0; track_idx < total_tracks; track_idx++) {
-        ESP_LOGI(TAG, "Autotest: Abriendo Track %d via PCMD_OPEN", track_idx);
+        const media_item_t *item = media_library_get(track_idx);
+        if (!item || !item->compatible) {
+            ESP_LOGW(TAG, "Autotest: Saltando pista incompatible %d (%s)", track_idx, item ? item->path : "");
+            continue;
+        }
+        ESP_LOGI(TAG, "Autotest: Abriendo Track %d via PCMD_OPEN (%s)", track_idx, item->path);
         player_cmd_t cmd_open = {.type = PCMD_OPEN, .arg = track_idx};
         player_cmd_send(&cmd_open);
 
@@ -717,7 +724,7 @@ static void autotest_task(void *arg) {
 
     log_stack_and_heap_diag("AUTOTEST_END");
 
-    printf("AUTOTEST_DONE,tracks=%d\n", total_tracks);
+    printf("AUTOTEST_DONE,tracks=%d\n", media_library_compatible_count());
     fflush(stdout);
 
     s_autotest_active = false;
@@ -746,6 +753,7 @@ void app_main(void) {
     ESP_LOGI(TAG, "==========================================================");
 
     perf_init();
+    settings_nvs_init();
     lcd_bus_init();
     tear_diag_init();
 
@@ -765,7 +773,7 @@ void app_main(void) {
     if (sd_err != ESP_OK) {
         ESP_LOGE(TAG, "Fallo al inicializar MicroSD tras test.");
     } else {
-        media_scan_sdcard();
+        media_library_scan();
     }
 
     // 3. Inicializar decodificador de video

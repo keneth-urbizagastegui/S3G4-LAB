@@ -37,6 +37,8 @@ esp_err_t avi_player_read_and_blit_direct(void);
 esp_err_t avi_player_skip_next_frame(void);
 
 void avi_player_seek_percent(int percent);
+void avi_player_seek_frame(uint32_t target_frame);
+void avi_player_seek_ms(uint32_t ms);
 void avi_player_restart(void);
 
 const avi_info_t *avi_player_get_info(void);

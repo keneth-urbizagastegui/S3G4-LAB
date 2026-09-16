@@ -1,4 +1,5 @@
 #include "spotify_ui.h"
+#include "media_library.h"
 #include <stdio.h>
 #include <string.h>
 #include "esp_log.h"
@@ -9,14 +10,6 @@
 #include "lcd_bus.h"
 
 __attribute__((unused)) static const char *TAG = "SPOTIFY_UI";
-
-// Lista de reproducción oficial cargada en la MicroSD (formato AVI MJPEG a 30 FPS)
-const track_meta_t g_playlist[PLAYLIST_SIZE] = {
-    {"Dance No More", "Harry Styles", "/sdcard/harry.avi"},
-    {"hate that i made you love me", "Ariana Grande", "/sdcard/ariana.avi"},
-    {"ICONIC BY MISTAKE", "LE SSERAFIM x ILLIT", "/sdcard/lesserafim.avi"},
-    {"HANDS UP", "MEOVV", "/sdcard/meovv.avi"},
-};
 
 // Dimensiones de canvas de video
 #define STUDIO_W 240
@@ -129,7 +122,7 @@ static void on_btn_fullscreen_toggle(lv_event_t *e) {
 static void on_dropdown_change(lv_event_t *e) {
     lv_obj_t *dropdown = lv_event_get_target(e);
     uint32_t selected = lv_dropdown_get_selected(dropdown);
-    if (selected < PLAYLIST_SIZE) {
+    if ((int)selected < media_library_count()) {
         player_cmd_t cmd = {.type = PCMD_OPEN, .arg = (int32_t)selected};
         player_cmd_send(&cmd);
     }
@@ -244,13 +237,15 @@ static void build_studio_screen(void) {
     lv_obj_set_style_border_color(info_panel, COLOR_SPOTIFY_SURFACE, 0);
     lv_obj_set_style_pad_all(info_panel, 8, 0);
 
+    const media_item_t *it0 = media_library_get(0);
+
     s_lbl_title = lv_label_create(info_panel);
-    lv_label_set_text(s_lbl_title, g_playlist[0].title);
+    lv_label_set_text(s_lbl_title, it0 ? it0->title : "Sin videos");
     lv_obj_set_style_text_color(s_lbl_title, COLOR_SPOTIFY_WHITE, 0);
     lv_obj_set_pos(s_lbl_title, 2, 2);
 
     s_lbl_artist = lv_label_create(info_panel);
-    lv_label_set_text(s_lbl_artist, g_playlist[0].artist);
+    lv_label_set_text(s_lbl_artist, it0 ? it0->subtitle : "");
     lv_obj_set_style_text_color(s_lbl_artist, COLOR_SPOTIFY_GRAY, 0);
     lv_obj_set_pos(s_lbl_artist, 2, 20);
 
@@ -264,13 +259,21 @@ static void build_studio_screen(void) {
         lv_obj_set_style_border_width(s_eq_bars[i], 0, 0);
     }
 
-    // Dropdown selector de canciones estilizado
+    // Dropdown selector de canciones estilizado dinamico
     s_dropdown_tracks = lv_dropdown_create(info_panel);
-    lv_dropdown_set_options(s_dropdown_tracks,
-        "1. Harry Styles\n"
-        "2. Ariana Grande\n"
-        "3. LE SSERAFIM\n"
-        "4. MEOVV");
+    int tot = media_library_count();
+    if (tot > 0) {
+        char opts[512] = {0};
+        for (int i = 0; i < tot; i++) {
+            const media_item_t *item = media_library_get(i);
+            char line[96];
+            snprintf(line, sizeof(line), "%d. %s%s", i + 1, item ? item->title : "Track", (i + 1 < tot) ? "\n" : "");
+            strncat(opts, line, sizeof(opts) - strlen(opts) - 1);
+        }
+        lv_dropdown_set_options(s_dropdown_tracks, opts);
+    } else {
+        lv_dropdown_set_options(s_dropdown_tracks, "Sin videos");
+    }
     lv_obj_set_size(s_dropdown_tracks, 195, 34);
     lv_obj_set_pos(s_dropdown_tracks, 2, 42);
     lv_obj_set_style_bg_color(s_dropdown_tracks, COLOR_SPOTIFY_SURFACE, 0);
@@ -452,7 +455,8 @@ static void build_fullscreen_screen(void) {
     lv_obj_set_style_border_width(top_bar, 1, 0);
 
     s_hud_lbl_title = lv_label_create(top_bar);
-    lv_label_set_text(s_hud_lbl_title, g_playlist[0].title);
+    const media_item_t *it0_fs = media_library_get(0);
+    lv_label_set_text(s_hud_lbl_title, it0_fs ? it0_fs->title : "Sin videos");
     lv_obj_set_style_text_color(s_hud_lbl_title, COLOR_SPOTIFY_WHITE, 0);
     lv_obj_set_pos(s_hud_lbl_title, 16, 10);
 
@@ -656,12 +660,15 @@ void spotify_ui_tick(void) {
 }
 
 void spotify_ui_set_track(int index) {
-    if (index < 0 || index >= PLAYLIST_SIZE) return;
+    if (index < 0 || index >= media_library_count()) return;
     s_current_track_idx = index;
 
-    if (s_lbl_title) lv_label_set_text(s_lbl_title, g_playlist[index].title);
-    if (s_lbl_artist) lv_label_set_text(s_lbl_artist, g_playlist[index].artist);
-    if (s_hud_lbl_title) lv_label_set_text(s_hud_lbl_title, g_playlist[index].title);
+    const media_item_t *item = media_library_get(index);
+    if (item) {
+        if (s_lbl_title) lv_label_set_text(s_lbl_title, item->title);
+        if (s_lbl_artist) lv_label_set_text(s_lbl_artist, item->subtitle);
+        if (s_hud_lbl_title) lv_label_set_text(s_hud_lbl_title, item->title);
+    }
     if (s_dropdown_tracks) lv_dropdown_set_selected(s_dropdown_tracks, index);
 }
 
@@ -761,7 +768,7 @@ bool spotify_ui_display_frame(uint16_t *buf, int width, int height) {
 void spotify_ui_update_from_status(const player_status_t *status) {
     if (!status) return;
 
-    if (status->track_index >= 0 && status->track_index < PLAYLIST_SIZE) {
+    if (status->track_index >= 0 && status->track_index < media_library_count()) {
         s_current_track_idx = status->track_index;
     }
 
@@ -777,7 +784,7 @@ void spotify_ui_update_from_status(const player_status_t *status) {
     }
 
     // 2. Dropdown
-    if (s_dropdown_tracks && status->track_index >= 0 && status->track_index < PLAYLIST_SIZE) {
+    if (s_dropdown_tracks && status->track_index >= 0 && status->track_index < media_library_count()) {
         if (lv_dropdown_get_selected(s_dropdown_tracks) != (uint32_t)status->track_index) {
             lv_dropdown_set_selected(s_dropdown_tracks, (uint32_t)status->track_index);
         }

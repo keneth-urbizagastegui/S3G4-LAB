@@ -12,6 +12,8 @@
 #include "esp_random.h"
 
 #include "avi_player.h"
+#include "media_library.h"
+#include "settings_nvs.h"
 #include "perf.h"
 #include "sdcard_spi.h"
 #include "lcd_bus.h"
@@ -43,50 +45,34 @@ static bool s_pts_started = false;
 
 static void player_open_track(int index);
 
+static int player_find_compatible(int current, int total, int step) {
+    if (total <= 0) return -1;
+    for (int i = 1; i <= total; i++) {
+        int idx = (current + i * step + total * total) % total;
+        const media_item_t *it = media_library_get(idx);
+        if (it && it->compatible) return idx;
+    }
+    return -1;
+}
+
 void player_get_track_title(int track_index, char *out_title, size_t max_len) {
     if (!out_title || max_len == 0) return;
-    const char *path = media_get_avi_path(track_index);
-    if (!path) {
-        snprintf(out_title, max_len, "Pista %d", track_index + 1);
-        return;
-    }
-    if (strstr(path, "harry.avi")) {
-        strncpy(out_title, "Dance No More", max_len - 1);
-    } else if (strstr(path, "ariana.avi")) {
-        strncpy(out_title, "hate that i made you love me", max_len - 1);
-    } else if (strstr(path, "lesserafim.avi")) {
-        strncpy(out_title, "ICONIC BY MISTAKE", max_len - 1);
-    } else if (strstr(path, "meovv.avi")) {
-        strncpy(out_title, "HANDS UP", max_len - 1);
+    const media_item_t *item = media_library_get(track_index);
+    if (item && item->title[0] != '\0') {
+        snprintf(out_title, max_len, "%s", item->title);
     } else {
-        const char *base = strrchr(path, '/');
-        base = base ? (base + 1) : path;
-        strncpy(out_title, base, max_len - 1);
-        char *dot = strrchr(out_title, '.');
-        if (dot) *dot = '\0';
+        snprintf(out_title, max_len, "Pista %d", track_index + 1);
     }
-    out_title[max_len - 1] = '\0';
 }
 
 void player_get_track_subtitle(int track_index, char *out_sub, size_t max_len) {
     if (!out_sub || max_len == 0) return;
-    const char *path = media_get_avi_path(track_index);
-    if (!path) {
-        out_sub[0] = '\0';
-        return;
-    }
-    if (strstr(path, "harry.avi")) {
-        strncpy(out_sub, "Harry Styles", max_len - 1);
-    } else if (strstr(path, "ariana.avi")) {
-        strncpy(out_sub, "Ariana Grande", max_len - 1);
-    } else if (strstr(path, "lesserafim.avi")) {
-        strncpy(out_sub, "LE SSERAFIM x ILLIT", max_len - 1);
-    } else if (strstr(path, "meovv.avi")) {
-        strncpy(out_sub, "MEOVV", max_len - 1);
+    const media_item_t *item = media_library_get(track_index);
+    if (item && item->subtitle[0] != '\0') {
+        snprintf(out_sub, max_len, "%s", item->subtitle);
     } else {
-        strncpy(out_sub, "Video", max_len - 1);
+        out_sub[0] = '\0';
     }
-    out_sub[max_len - 1] = '\0';
 }
 
 static int s_consecutive_open_fails = 0;
@@ -106,10 +92,8 @@ static void player_handle_sd_error(void) {
 
     portENTER_CRITICAL(&s_player_mux);
     s_status.state = PST_NO_MEDIA;
-    strncpy(s_status.title, "Sin microSD", sizeof(s_status.title) - 1);
-    s_status.title[sizeof(s_status.title) - 1] = '\0';
-    strncpy(s_status.subtitle, "Inserte tarjeta MicroSD", sizeof(s_status.subtitle) - 1);
-    s_status.subtitle[sizeof(s_status.subtitle) - 1] = '\0';
+    snprintf(s_status.title, sizeof(s_status.title), "Sin microSD");
+    snprintf(s_status.subtitle, sizeof(s_status.subtitle), "Inserte tarjeta MicroSD");
     portEXIT_CRITICAL(&s_player_mux);
 
     ESP_LOGW(TAG, "MicroSD desmontada. Reintentando montaje cada 1 s...");
@@ -120,14 +104,14 @@ static void player_handle_sd_error(void) {
         esp_err_t err = sdcard_spi_init();
         if (err == ESP_OK) {
             ESP_LOGI(TAG, "¡MicroSD reconectada con exito! Reescaneando archivos...");
-            media_scan_sdcard();
+            media_library_scan();
             break;
         }
     }
 
     // Restaurar reproduccion
-    if (media_get_avi_count() > 0) {
-        if (saved_track >= media_get_avi_count()) saved_track = 0;
+    if (media_library_count() > 0) {
+        if (saved_track >= media_library_count()) saved_track = 0;
         player_open_track(saved_track);
         if (total_frames > 0 && saved_frame > 0) {
             int pct = (int)(((int64_t)saved_frame * 100) / total_frames);
@@ -144,7 +128,7 @@ static void player_handle_sd_error(void) {
 }
 
 static void player_open_track(int index) {
-    int total = media_get_avi_count();
+    int total = media_library_count();
     if (total <= 0) {
         portENTER_CRITICAL(&s_player_mux);
         s_status.state = PST_NO_MEDIA;
@@ -156,11 +140,30 @@ static void player_open_track(int index) {
     if (index < 0) index = 0;
     if (index >= total) index = total - 1;
 
-    const char *path = media_get_avi_path(index);
-    if (!path) return;
+    const media_item_t *item = media_library_get(index);
+    if (!item) return;
 
-    ESP_LOGI(TAG, "Abriendo pista %d: %s", index, path);
-    esp_err_t ret = avi_player_open(path);
+    if (!item->compatible) {
+        ESP_LOGW(TAG, "Pista %d (%s) no es compatible: %s", index, item->path, item->incompat);
+        portENTER_CRITICAL(&s_player_mux);
+        s_status.state = PST_ERROR;
+        snprintf(s_status.title, sizeof(s_status.title), "%s", item->title);
+        snprintf(s_status.subtitle, sizeof(s_status.subtitle), "%s", item->incompat);
+        s_status.err_code = 0x434F4D50; // 'COMP'
+        portEXIT_CRITICAL(&s_player_mux);
+        return;
+    }
+
+    // Guardar posicion del video previo si cambiamos de pista
+    if (s_status.track_index >= 0 && s_status.track_index < total) {
+        const media_item_t *prev = media_library_get(s_status.track_index);
+        if (prev && prev->compatible && s_status.pos_ms >= 5000) {
+            settings_nvs_set_pos(prev->path, (uint32_t)s_status.pos_ms);
+        }
+    }
+
+    ESP_LOGI(TAG, "Abriendo pista %d: %s", index, item->path);
+    esp_err_t ret = avi_player_open(item->path);
     if (ret != ESP_OK) {
         s_consecutive_open_fails++;
         if (s_consecutive_open_fails >= 2) {
@@ -168,7 +171,7 @@ static void player_open_track(int index) {
             player_handle_sd_error();
             return;
         }
-        ESP_LOGE(TAG, "Fallo al abrir pista %d (%s): ret=%d", index, path, ret);
+        ESP_LOGE(TAG, "Fallo al abrir pista %d (%s): ret=%d", index, item->path, ret);
         portENTER_CRITICAL(&s_player_mux);
         s_status.state = PST_ERROR;
         s_status.err_code = (uint32_t)ret;
@@ -181,7 +184,7 @@ static void player_open_track(int index) {
 #ifndef CONFIG_APP_LCD_MADCTL_NATIVE
 #define CONFIG_APP_LCD_MADCTL_NATIVE 0x48
 #endif
-    uint8_t target_madctl = (info->width == 320 && info->height == 480) ?
+    uint8_t target_madctl = item->rotated ?
                             (uint8_t)CONFIG_APP_LCD_MADCTL_NATIVE : 0x28;
     ili9488_8080_set_madctl(target_madctl);
 
@@ -192,7 +195,7 @@ static void player_open_track(int index) {
     s_status.height = (uint16_t)info->height;
     s_status.fps_milli = (info->us_per_frame > 0) ? (uint32_t)(1000000000ULL / (uint64_t)info->us_per_frame) : 30000;
     s_status.pos_ms = 0;
-    s_status.dur_ms = ((uint64_t)info->total_frames * (uint64_t)info->us_per_frame) / 1000ULL;
+    s_status.dur_ms = item->dur_ms;
     s_status.state = PST_PLAYING;
     s_status.err_code = 0;
 
@@ -201,6 +204,8 @@ static void player_open_track(int index) {
     s_pts_started = false;
     s_pts_t0_us = 0;
     portEXIT_CRITICAL(&s_player_mux);
+
+    settings_nvs_set_last_path(item->path);
 }
 
 static void player_handle_cmd(const player_cmd_t *cmd) {
@@ -231,8 +236,7 @@ static void player_handle_cmd(const player_cmd_t *cmd) {
                         s_status.height = (uint16_t)info->height;
                         s_status.pos_ms = 0;
                         s_status.dur_ms = ((uint64_t)info->total_frames * (uint64_t)info->us_per_frame) / 1000ULL;
-                        strncpy(s_status.title, cmd->path, sizeof(s_status.title) - 1);
-                        s_status.title[sizeof(s_status.title) - 1] = '\0';
+                        snprintf(s_status.title, sizeof(s_status.title), "%.*s", (int)(sizeof(s_status.title) - 1), cmd->path);
                         portEXIT_CRITICAL(&s_player_mux);
                     }
                 }
@@ -255,6 +259,10 @@ static void player_handle_cmd(const player_cmd_t *cmd) {
             s_status.state = PST_PAUSED;
             portEXIT_CRITICAL(&s_player_mux);
             s_pts_started = false;
+            const media_item_t *cur = media_library_get(s_status.track_index);
+            if (cur && cur->compatible && s_status.pos_ms >= 5000) {
+                settings_nvs_set_pos(cur->path, (uint32_t)s_status.pos_ms);
+            }
             break;
         }
 
@@ -267,10 +275,20 @@ static void player_handle_cmd(const player_cmd_t *cmd) {
             }
             portEXIT_CRITICAL(&s_player_mux);
             s_pts_started = false;
+            if (s_status.state == PST_PAUSED) {
+                const media_item_t *cur = media_library_get(s_status.track_index);
+                if (cur && cur->compatible && s_status.pos_ms >= 5000) {
+                    settings_nvs_set_pos(cur->path, (uint32_t)s_status.pos_ms);
+                }
+            }
             break;
         }
 
         case PCMD_STOP: {
+            const media_item_t *cur = media_library_get(s_status.track_index);
+            if (cur && cur->compatible && s_status.pos_ms >= 5000) {
+                settings_nvs_set_pos(cur->path, (uint32_t)s_status.pos_ms);
+            }
             avi_player_restart();
             s_pts_started = false;
             s_pts_t0_us = 0;
@@ -283,11 +301,8 @@ static void player_handle_cmd(const player_cmd_t *cmd) {
 
         case PCMD_SEEK_MS: {
             // Este caso se procesa en el bucle principal con vaciado/coalescencia de cola
-            int64_t dur_ms = (int64_t)s_status.dur_ms;
-            int pct = (dur_ms > 0) ? (int)(((int64_t)cmd->arg * 100) / dur_ms) : 0;
-            if (pct < 0) pct = 0;
-            if (pct > 99) pct = 99;
-            avi_player_seek_percent(pct);
+            uint32_t target_ms = (uint32_t)cmd->arg;
+            avi_player_seek_ms(target_ms);
             const avi_info_t *info = avi_player_get_info();
             s_pts_started = false;
             s_pts_t0_us = 0;
@@ -302,8 +317,7 @@ static void player_handle_cmd(const player_cmd_t *cmd) {
             int64_t dur_ms = (int64_t)s_status.dur_ms;
             if (target_ms < 0) target_ms = 0;
             if (target_ms > dur_ms) target_ms = dur_ms;
-            int pct = (dur_ms > 0) ? (int)((target_ms * 100) / dur_ms) : 0;
-            avi_player_seek_percent(pct);
+            avi_player_seek_ms((uint32_t)target_ms);
             const avi_info_t *info = avi_player_get_info();
             s_pts_started = false;
             s_pts_t0_us = 0;
@@ -313,12 +327,13 @@ static void player_handle_cmd(const player_cmd_t *cmd) {
             break;
         }
 
-
         case PCMD_NEXT: {
             int total = s_status.track_count;
             if (total > 0) {
-                int next = (s_status.track_index + 1) % total;
-                player_open_track(next);
+                int next = player_find_compatible(s_status.track_index, total, 1);
+                if (next >= 0) {
+                    player_open_track(next);
+                }
             }
             break;
         }
@@ -326,8 +341,10 @@ static void player_handle_cmd(const player_cmd_t *cmd) {
         case PCMD_PREV: {
             int total = s_status.track_count;
             if (total > 0) {
-                int prev = (s_status.track_index - 1 + total) % total;
-                player_open_track(prev);
+                int prev = player_find_compatible(s_status.track_index, total, -1);
+                if (prev >= 0) {
+                    player_open_track(prev);
+                }
             }
             break;
         }
@@ -336,6 +353,7 @@ static void player_handle_cmd(const player_cmd_t *cmd) {
             portENTER_CRITICAL(&s_player_mux);
             s_status.repeat = (repeat_mode_t)cmd->arg;
             portEXIT_CRITICAL(&s_player_mux);
+            settings_nvs_set_u8("repeat", (uint8_t)cmd->arg);
             break;
         }
 
@@ -343,6 +361,7 @@ static void player_handle_cmd(const player_cmd_t *cmd) {
             portENTER_CRITICAL(&s_player_mux);
             s_status.shuffle = (bool)cmd->arg;
             portEXIT_CRITICAL(&s_player_mux);
+            settings_nvs_set_u8("shuffle", (uint8_t)(cmd->arg ? 1 : 0));
             break;
         }
 
@@ -364,17 +383,36 @@ static void player_handle_cmd(const player_cmd_t *cmd) {
 
 static void player_handle_eof(void) {
     ESP_LOGI(TAG, "Fin de video alcanzado. Aplicando politica de repeticion.");
+    const media_item_t *cur = media_library_get(s_status.track_index);
+    if (cur) {
+        settings_nvs_set_pos(cur->path, 0);
+    }
+
     if (s_status.repeat == REPEAT_ONE) {
         avi_player_restart();
         s_pts_started = false;
         s_pts_t0_us = 0;
     } else {
         int total = s_status.track_count;
-        int next = (s_status.track_index + 1) % total;
+        int next = -1;
         if (s_status.shuffle && total > 1) {
-            next = (int)(esp_random() % total);
+            int rand_start = (int)(esp_random() % total);
+            next = player_find_compatible(rand_start - 1, total, 1);
+        } else {
+            next = player_find_compatible(s_status.track_index, total, 1);
         }
-        if (s_status.repeat == REPEAT_OFF && next == 0) {
+
+        if (next < 0) {
+            portENTER_CRITICAL(&s_player_mux);
+            s_status.state = PST_ENDED;
+            portEXIT_CRITICAL(&s_player_mux);
+            avi_player_restart();
+            s_pts_started = false;
+            s_pts_t0_us = 0;
+            return;
+        }
+
+        if (s_status.repeat == REPEAT_OFF && next <= s_status.track_index) {
             portENTER_CRITICAL(&s_player_mux);
             s_status.state = PST_ENDED;
             portEXIT_CRITICAL(&s_player_mux);
@@ -390,8 +428,60 @@ static void player_handle_eof(void) {
 static void player_task(void *arg) {
     ESP_LOGI(TAG, "Tarea player_task ejecutandose en CPU 1.");
 
-    // Abrir pista inicial
-    player_open_track(0);
+    // Cargar configuracion persistente de NVS
+    app_settings_t nvs_cfg;
+    settings_nvs_load(&nvs_cfg);
+
+    portENTER_CRITICAL(&s_player_mux);
+    s_status.repeat = (repeat_mode_t)nvs_cfg.repeat;
+    s_status.shuffle = (nvs_cfg.shuffle != 0);
+    portEXIT_CRITICAL(&s_player_mux);
+
+    int initial_track = -1;
+    if (nvs_cfg.last_path[0] != '\0') {
+        int idx = media_library_index_of(nvs_cfg.last_path);
+        const media_item_t *it = (idx >= 0) ? media_library_get(idx) : NULL;
+        if (it && it->compatible) {
+            initial_track = idx;
+        }
+    }
+    if (initial_track < 0) {
+        int total = media_library_count();
+        for (int i = 0; i < total; i++) {
+            const media_item_t *it = media_library_get(i);
+            if (it && it->compatible) {
+                initial_track = i;
+                break;
+            }
+        }
+    }
+
+    if (initial_track >= 0) {
+        player_open_track(initial_track);
+        const media_item_t *it = media_library_get(initial_track);
+        if (nvs_cfg.resume && it && it->resume_ms >= 5000) {
+            ESP_LOGI(TAG, "Reanudando '%s' en %u ms (NVS resume=1)", it->path, (unsigned int)it->resume_ms);
+            avi_player_seek_ms(it->resume_ms);
+            const avi_info_t *info = avi_player_get_info();
+            portENTER_CRITICAL(&s_player_mux);
+            s_status.pos_ms = ((uint64_t)info->current_frame * (uint64_t)info->us_per_frame) / 1000ULL;
+            portEXIT_CRITICAL(&s_player_mux);
+        }
+    } else {
+        portENTER_CRITICAL(&s_player_mux);
+        s_status.state = PST_NO_MEDIA;
+        s_status.track_count = media_library_count();
+        if (s_status.track_count > 0) {
+            snprintf(s_status.title, sizeof(s_status.title), "Formato no compatible");
+            snprintf(s_status.subtitle, sizeof(s_status.subtitle), "Hay %d archivos, ninguno compatible", (int)s_status.track_count);
+        } else {
+            snprintf(s_status.title, sizeof(s_status.title), "Sin videos");
+            snprintf(s_status.subtitle, sizeof(s_status.subtitle), "Inserte tarjeta MicroSD con videos");
+        }
+        portEXIT_CRITICAL(&s_player_mux);
+    }
+
+    int64_t last_nvs_pos_save_us = esp_timer_get_time();
 
     while (1) {
         perf_report_if_due();
@@ -623,6 +713,17 @@ static void player_task(void *arg) {
                     player_handle_sd_error();
                 } else {
                     vTaskDelay(pdMS_TO_TICKS(10));
+                }
+            }
+
+            if (ret == ESP_OK) {
+                int64_t now_us = esp_timer_get_time();
+                if (now_us - last_nvs_pos_save_us >= 5000000) {
+                    last_nvs_pos_save_us = now_us;
+                    const media_item_t *cur_it = media_library_get(s_status.track_index);
+                    if (cur_it && cur_it->compatible && s_status.pos_ms >= 5000) {
+                        settings_nvs_set_pos(cur_it->path, (uint32_t)s_status.pos_ms);
+                    }
                 }
             }
         } else {

@@ -21,15 +21,6 @@ typedef enum {
     VIEW_MODE_FULLSCREEN,
 } view_mode_t;
 
-typedef struct {
-    const char *title;
-    const char *artist;
-    const char *filepath;
-} track_meta_t;
-
-#define PLAYLIST_SIZE 4
-extern const track_meta_t g_playlist[PLAYLIST_SIZE];
-
 typedef void (*track_change_cb_t)(int new_index);
 typedef void (*playback_ctrl_cb_t)(playback_state_t state);
 typedef void (*seek_cb_t)(int percent);
