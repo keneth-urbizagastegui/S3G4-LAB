@@ -423,20 +423,7 @@ static void player_task(void *arg) {
         if (cur_state == PST_PLAYING) {
             tear_diag_mode_t diag = tear_diag_get_mode();
             if (diag == TEAR_DIAG_MODE_C) {
-                // Modo C: patron de prueba sin video (alternar pantalla completa rojo/azul a 30 Hz con TE ON)
-#if CONFIG_APP_TE_SYNC
-                if (lcd_bus_te_is_present()) {
-                    uint32_t te_period = lcd_bus_te_get_period_us();
-                    uint32_t te_timeout = (te_period * 3) / 2;
-                    uint32_t te_wait_us = 0;
-                    esp_err_t te_res = lcd_bus_wait_te(te_timeout, &te_wait_us);
-                    if (te_res == ESP_OK) {
-                        perf_mark_te_wait(te_wait_us);
-                    } else {
-                        perf_mark_te_timeout();
-                    }
-                }
-#endif
+                // Modo C: patron de prueba sin video (alternar pantalla completa rojo/azul sincronizado con TE)
                 static bool s_diag_c_toggle = false;
                 s_diag_c_toggle = !s_diag_c_toggle;
                 uint16_t color = s_diag_c_toggle ? 0xF800 : 0x001F; // Rojo o Azul RGB565
@@ -451,10 +438,29 @@ static void player_task(void *arg) {
                     int strip_w = is_native ? 320 : 480;
                     int num_strips = is_native ? 30 : 20;
 
+                    // 1. Preparar datos del buffer ANTES de esperar TE
                     for (int p = 0; p < strip_w * 16; p++) {
                         s_diag_c_buf[p] = color;
                     }
+
                     lcd_bus_lock();
+
+                    // 2. Esperar flanco TE para sincronizar el inicio exacto del blit con el V-blank
+#if CONFIG_APP_TE_SYNC
+                    if (lcd_bus_te_is_present()) {
+                        uint32_t te_period = lcd_bus_te_get_period_us();
+                        uint32_t te_timeout = (te_period * 3) / 2;
+                        uint32_t te_wait_us = 0;
+                        esp_err_t te_res = lcd_bus_wait_te(te_timeout, &te_wait_us);
+                        if (te_res == ESP_OK) {
+                            perf_mark_te_wait(te_wait_us);
+                        } else {
+                            perf_mark_te_timeout();
+                        }
+                    }
+#endif
+
+                    // 3. Inmediatamente tras el flanco TE, emitir franjas
                     for (int b = 0; b < num_strips; b++) {
                         uint16_t y1 = b * 16;
                         uint16_t y2 = y1 + 15;
@@ -465,7 +471,7 @@ static void player_task(void *arg) {
                 }
 
                 perf_mark_presented();
-                vTaskDelay(pdMS_TO_TICKS(33)); // Cadencia a ~30 Hz
+                vTaskDelay(pdMS_TO_TICKS(15));
                 continue;
             }
 

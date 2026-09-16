@@ -53,6 +53,40 @@ static uint32_t s_reader_frame_idx = 0;
 
 static jpeg_dec_handle_t s_dec_full = NULL;
 static jpeg_dec_handle_t s_dec_studio = NULL;
+static jpeg_rotate_t s_current_std_rot = (jpeg_rotate_t)-1;
+
+static esp_err_t ensure_studio_decoder(uint16_t src_w, uint16_t src_h) {
+    bool is_rotated = (src_w == 320 && src_h == 480);
+    uint16_t req_scale_w = is_rotated ? 160 : 240;
+    uint16_t req_scale_h = is_rotated ? 240 : 160;
+    jpeg_rotate_t req_rot = is_rotated ? JPEG_ROTATE_270D : JPEG_ROTATE_0D;
+
+    if (s_dec_studio && s_current_std_rot == req_rot) {
+        return ESP_OK;
+    }
+
+    if (s_dec_studio) {
+        jpeg_dec_close(s_dec_studio);
+        s_dec_studio = NULL;
+    }
+
+    jpeg_dec_config_t cfg_std = DEFAULT_JPEG_DEC_CONFIG();
+    cfg_std.output_type = JPEG_PIXEL_FORMAT_RGB565_LE;
+    cfg_std.scale.width = req_scale_w;
+    cfg_std.scale.height = req_scale_h;
+    cfg_std.rotate = req_rot;
+    cfg_std.block_enable = false;
+    jpeg_error_t err = jpeg_dec_open(&cfg_std, &s_dec_studio);
+    if (err != JPEG_ERR_OK) {
+        ESP_LOGE(TAG, "Fallo al crear decoder Studio (scale=%ux%u, rot=%d): %d",
+                 req_scale_w, req_scale_h, (int)req_rot, err);
+        return ESP_FAIL;
+    }
+    s_current_std_rot = req_rot;
+    ESP_LOGI(TAG, "Decoder Studio configurado: scale=%ux%u, rot=%d (salida 240x160)",
+             req_scale_w, req_scale_h, (int)req_rot);
+    return ESP_OK;
+}
 
 // Búferes DMA internos alineados a 16 B para decodificación por franjas (P2)
 static uint16_t *s_strip_bufs[2] = {NULL, NULL};
@@ -255,19 +289,10 @@ esp_err_t avi_player_init(void) {
         }
     }
 
-    // 2. Decoder para Studio 240x160 con hardware downsampling SIMD
-    if (!s_dec_studio) {
-        jpeg_dec_config_t cfg_std = DEFAULT_JPEG_DEC_CONFIG();
-        cfg_std.output_type = JPEG_PIXEL_FORMAT_RGB565_LE;
-        cfg_std.scale.width = 240;
-        cfg_std.scale.height = 160;
-        cfg_std.rotate = JPEG_ROTATE_0D;
-        cfg_std.block_enable = false;
-        jpeg_error_t err = jpeg_dec_open(&cfg_std, &s_dec_studio);
-        if (err != JPEG_ERR_OK) {
-            ESP_LOGE(TAG, "Fallo al crear decoder Studio (Downscale 2:1): %d", err);
-            return ESP_FAIL;
-        }
+    // 2. Decoder para Studio 240x160 con hardware downsampling SIMD (D1: rotación según fichero)
+    s_current_std_rot = (jpeg_rotate_t)-1;
+    if (ensure_studio_decoder(480, 320) != ESP_OK) {
+        return ESP_FAIL;
     }
 
     ESP_LOGI(TAG, "Decodificadores SIMD Fullscreen y Studio inicializados con éxito.");
@@ -348,6 +373,8 @@ esp_err_t avi_player_open(const char *filepath) {
         s_info.is_open = true;
         s_info.is_eof = false;
     }
+
+    ensure_studio_decoder(s_info.width, s_info.height);
 
     int movi_pos = -1;
     int movi_chunk_start = -1;
