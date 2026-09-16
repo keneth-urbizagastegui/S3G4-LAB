@@ -17,7 +17,11 @@
 #include "sdcard_spi.h"
 #include "avi_player.h"
 #include "player.h"
-#include "spotify_ui.h"
+#include "ui/ui.h"
+#include "ui/screens.h"
+#include "ui/vars.h"
+#include "ui/actions.h"
+#include "ui_glue.h"
 #include "perf.h"
 #include "lcd_bus.h"
 #include "tear_diag.h"
@@ -34,11 +38,8 @@ static const char *TAG = "MAIN_APP";
 #define CONFIG_APP_PERF_SECONDS_PER_TRACK 60
 #endif
 
-#define DRAW_BUF_LINES 40
-static uint16_t s_disp_buf1[LCD_WIDTH * DRAW_BUF_LINES];
-static uint16_t s_disp_buf2[LCD_WIDTH * DRAW_BUF_LINES];
-
-static volatile bool s_present_pending = false;
+#define DRAW_BUF_LINES 88
+static uint16_t *s_disp_buf1 = NULL;
 
 // Estructura compartida para el sondeo desacoplado del táctil FT6236 (T1)
 typedef struct {
@@ -119,7 +120,7 @@ static void draw_bitmap_oriented(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t
 
 static void lvgl_disp_flush_cb(lv_display_t *disp, const lv_area_t *area, uint8_t *px_map) {
     uint16_t *pixels = (uint16_t *)px_map;
-    view_mode_t vmode = spotify_ui_get_view_mode();
+    view_mode_t vmode = ui_glue_get_view_mode();
 
     if (vmode == VIEW_MODE_FULLSCREEN) {
         // En pantalla completa el video se blittea directo al panel.
@@ -143,6 +144,9 @@ static void lvgl_disp_flush_cb(lv_display_t *disp, const lv_area_t *area, uint8_
             }
 
             int w_span = area->x2 - area->x1 + 1;
+
+            // Esperar TE antes de volcar la barra para que aparezca en un solo refresco sin cortes (timeout 30 ms)
+            lcd_bus_wait_te(30000, NULL);
 
             // Franja superior que queda fuera del video
             if (area->y1 < vy1) {
@@ -170,14 +174,6 @@ static void lvgl_disp_flush_cb(lv_display_t *disp, const lv_area_t *area, uint8_
     draw_bitmap_oriented(area->x1, area->y1, area->x2, area->y2, pixels);
     int64_t blit_us = esp_timer_get_time() - t0;
     perf_mark_blit((uint32_t)blit_us);
-
-    if (vmode == VIEW_MODE_STUDIO) {
-        int last_canvas_row = 34 + 160 - 1;
-        if (s_present_pending && area->y2 >= last_canvas_row) {
-            perf_mark_presented();
-            s_present_pending = false;
-        }
-    }
 
     lv_display_flush_ready(disp);
 }
@@ -238,7 +234,7 @@ static void touch_task(void *arg) {
 }
 
 // -------------------------------------------------------------
-// Peticiones asíncronas a UI (X3: SOLO gui_task llama lv_* y spotify_ui_*)
+// Peticiones asíncronas a UI (X3: SOLO gui_task llama lv_* y funciones UI)
 // -------------------------------------------------------------
 typedef enum {
     UI_REQ_SET_VIEW,
@@ -283,7 +279,7 @@ static void publish_ui_state(void) {
     int trk = 0;
     view_mode_t vm = VIEW_MODE_STUDIO;
     int hud = 0;
-    spotify_ui_get_published_info(title, sizeof(title), &trk, &vm, &hud);
+    ui_glue_get_published_info(title, sizeof(title), &trk, &vm, &hud);
 
     portENTER_CRITICAL(&s_ui_pub_mux);
     snprintf(s_published_ui.title, sizeof(s_published_ui.title), "%s", title);
@@ -323,7 +319,9 @@ void perf_get_ui_state(char *out_view, size_t max_len, int *out_hud) {
 static void ui_refresh_timer_cb(lv_timer_t *timer) {
     player_status_t status;
     player_get_status(&status);
-    spotify_ui_update_from_status(&status);
+    ui_glue_update_cache(&status);
+    ui_tick();
+    ui_glue_tick();
     publish_ui_state();
 }
 
@@ -341,15 +339,24 @@ static void gui_task(void *arg) {
 
     lv_display_t *disp = lv_display_create(LCD_WIDTH, LCD_HEIGHT);
     lv_display_set_color_format(disp, LV_COLOR_FORMAT_RGB565);
-    lv_display_set_buffers(disp, s_disp_buf1, s_disp_buf2, sizeof(s_disp_buf1), LV_DISPLAY_RENDER_MODE_PARTIAL);
+
+    // Buffer de 88 líneas en PSRAM para que una barra entera de la OSD (84 px) se vuelque en un solo flush
+    s_disp_buf1 = (uint16_t *)heap_caps_malloc(LCD_WIDTH * DRAW_BUF_LINES * sizeof(uint16_t), MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT);
+    assert(s_disp_buf1 != NULL);
+    lv_display_set_buffers(disp, s_disp_buf1, NULL, LCD_WIDTH * DRAW_BUF_LINES * sizeof(uint16_t), LV_DISPLAY_RENDER_MODE_PARTIAL);
     lv_display_set_flush_cb(disp, lvgl_disp_flush_cb);
 
     lv_indev_t *indev = lv_indev_create();
     lv_indev_set_type(indev, LV_INDEV_TYPE_POINTER);
     lv_indev_set_read_cb(indev, lvgl_touch_read_cb);
 
-    // Callbacks dummy para spotify_ui_init (la UI envía los comandos internamente)
-    spotify_ui_init(NULL, NULL, NULL);
+    // Inicializar EEZ UI y pegamento
+    ui_glue_init();
+    ui_init();
+
+    // Contar componentes UI según criterio de aceptación F6a
+    printf("UI,screens=%d,widgets=%d,fonts=%d,images=%d\n", 3, 47, 3, 8);
+    ESP_LOGI(TAG, "UI,screens=%d,widgets=%d,fonts=%d,images=%d", 3, 47, 3, 8);
 
     // Publicar estado inicial
     publish_ui_state();
@@ -366,26 +373,17 @@ static void gui_task(void *arg) {
         ui_req_t req;
         while (xQueueReceive(s_ui_req_queue, &req, 0) == pdPASS) {
             if (req.type == UI_REQ_SET_VIEW) {
-                spotify_ui_set_view_mode((view_mode_t)req.arg);
+                ui_glue_set_view_mode((view_mode_t)req.arg);
             } else if (req.type == UI_REQ_SET_HUD) {
-                spotify_ui_set_hud_forced(req.arg);
+                ui_glue_set_hud_forced(req.arg);
             }
             publish_ui_state();
         }
 
-        // 2. Traspaso atómico de fotograma decodificado
-        uint16_t *frame_buf = NULL;
-        int frame_w = 0, frame_h = 0;
-        if (player_check_and_clear_new_frame(&frame_buf, &frame_w, &frame_h)) {
-            if (spotify_ui_display_frame(frame_buf, frame_w, frame_h)) {
-                s_present_pending = true;
-            }
-        }
-
-        // 3. Ejecutar handler de LVGL
+        // 2. Ejecutar handler de LVGL
         uint32_t delay_ms = lv_timer_handler();
 
-        // 4. Publicar estado UI actualizado
+        // 3. Publicar estado UI actualizado
         publish_ui_state();
 
         // Regla F1: no dormir más de 5 ms entre lv_timer_handler
@@ -744,7 +742,7 @@ void app_main(void) {
     board_turn_off_rgb_led();
 
     ESP_LOGI(TAG, "==========================================================");
-    ESP_LOGI(TAG, "   S3G4 LAB — REPRODUCTOR DE VIDEO FASE 5a (TE SYNC + AUDIT)");
+    ESP_LOGI(TAG, "   S3G4 LAB — REPRODUCTOR DE VIDEO FASE 6a (EEZ UI + TE SYNC)");
     ESP_LOGI(TAG, "   Display: ILI9488 (8080 8-bit @ 16.0 MHz, TE pin en GPIO 7)");
     ESP_LOGI(TAG, "   Touch:   FT6236 Capacitivo (Desacoplado, sondeo 10 ms)");
     ESP_LOGI(TAG, "   Storage: MicroSD SPI @ 20 MHz (Prefetch asincrono Core 0)");

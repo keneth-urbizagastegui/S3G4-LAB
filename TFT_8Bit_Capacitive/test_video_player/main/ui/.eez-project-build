@@ -1,0 +1,24 @@
+{
+  "files": [
+    "actions.h",
+    "fonts.h",
+    "images.c",
+    "images.h",
+    "screens.c",
+    "screens.h",
+    "structs.h",
+    "styles.c",
+    "styles.h",
+    "ui.c",
+    "ui.h",
+    "ui_image_film.c",
+    "ui_image_fwd10.c",
+    "ui_image_lock.c",
+    "ui_image_queue.c",
+    "ui_image_rew10.c",
+    "ui_image_sdcard.c",
+    "ui_image_sdcard_big.c",
+    "ui_image_sdcard_error_big.c",
+    "vars.h"
+  ]
+}
