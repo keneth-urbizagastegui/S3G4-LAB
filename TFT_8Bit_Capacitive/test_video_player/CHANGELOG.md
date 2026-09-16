@@ -8,6 +8,17 @@ reloj de reproducción salta por llegar tarde, sobre el total · ambos con la pa
 
 ---
 
+## `vp-v0.5` — Sincronía con el panel y fin del corte diagonal · 16/09/2026
+- **Presentados: 29,4–30,0 fps** sin controles · **29,6–30,0** con controles · **descartes 0,10 %**.
+- **Sin corte diagonal**, confirmado por Keneth. Causa: escribíamos perpendicular al barrido del panel.
+  Solución: **videos girados en origen** (320×480, `transpose=1`) y panel en orientación nativa
+  (`MADCTL 0x48`), con **una sola ventana por fotograma**.
+- Sincronía con la señal **TE** del panel (cable del pin 22 de JP1 al GPIO 7) y refresco del panel
+  a **44,6 Hz** (`FRMCTR1 = {0x80,0x12}`), sin parpadeo.
+- **La microSD ya no se cuelga al reiniciar en caliente**: CMD12 y pulsos de reloj antes de montar.
+  20 de 20 reinicios aleatorios con el video en marcha.
+- Descartado: girar dentro del chip (F5c), 27,8 fps.
+
 ## `vp-v0.4` — E/S de la microSD y lector adelantado · 15/09/2026
 - **Presentados: 30,01 fps** sin controles · **30,02** con controles · **descartes 0,00 %** (0 de 2100).
 - Lector de la tarjeta en el núcleo 0 con 3 huecos en PSRAM: el hilo de video ya no espera (0,1 ms).
@@ -46,9 +57,4 @@ reloj de reproducción salta por llegar tarde, sobre el total · ambos con la pa
 
 ## En curso (sin etiquetar)
 
-- **F5a** — sincronía con el pin TE del panel (GPIO 7, cableado por Keneth) y refresco bajado a 44,6 Hz:
-  **29,67 fps y 0,31 % de descartes**. El corte diagonal persiste: se diagnosticó, con fotografía, que
-  es por **orientación** (escribimos perpendicular al barrido).
-- **F5c** — girar dentro del chip: **descartado**, 27,8 fps y una variante que agotaba la memoria.
-- **F5d** — girar el video en origen: los 4 videos ya están convertidos a 320×480 y copiados en la
-  tarjeta; falta el cambio de orientación en el firmware.
+- **F5b** — biblioteca dinámica, metadatos, guardado de posición y aviso de formato no compatible.

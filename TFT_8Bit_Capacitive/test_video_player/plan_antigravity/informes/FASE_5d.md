@@ -394,3 +394,21 @@ Medición completa ejecutada con `tools/perf_capture.py --phase F5a --compare pl
   - Interfaz de usuario Spotify activa en vista Studio, reproduciendo `ariana.avi` a 30 FPS en panel nativo vertical $320 \times 480$.
   - Despliegue con ventana única por fotograma (`windows_per_frame = 1`), recuperación SPI de MicroSD ante cualquier reinicio y sincronización TE con purga activa.
 
+
+---
+
+## Auditoría de Claude de la iteración 5 (16/09/2026) — F5d APROBADA → `vp-v0.5`
+
+Verificado por el auditor en los ficheros, no en el informe:
+- `F5d_run7.csv`: **descartes ocultos 0,10 % global** (pistas 0,42 / 0,00 / 0,00 / 0,00 %) ·
+  pres oculto **29,38–30,02** · con OSD **29,64–30,01** · te_wait medio 7,5 ms.
+- `F5d_reset_torture.log`: **20 reinicios, 20 éxitos, 0 errores 0x107.**
+- `F5d_mode_c_test.log`: te_wait antes del modo C 5,96 ms, **después 8,58 ms** (no cae a 0).
+- `sdkconfig` normal sin autotest y con `tear_diag` compilado en OFF.
+- Verificación visual de Keneth (it4, misma corrección de TE y SD): reinicios con RESET correctos y sin
+  cortes tras el patrón.
+
+**Resultado de la fase F5 completa (F5a + F5d):** 30 fps presentados con y sin controles, 0,10 % de
+descartes, **sin corte diagonal**, arranque fiable tras reiniciar en caliente.
+
+Pendiente para F6: los controles de la OSD se dibujan a franjas al aparecer (UI vieja); ver `07`.
