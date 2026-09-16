@@ -53,10 +53,10 @@ menu "App perf"
             (tiempo de transferencia vs orientacion del panel con MADCTL).
 
     config APP_TEAR_DIAG_MODE
-        int "Modo de diagnostico inicial (1=A medio fotograma, 2=B franja unica, 3=C patron color plano)"
+        int "Modo de diagnostico inicial (0=OFF normal, 1=A medio fotograma, 2=B franja unica, 3=C patron color plano)"
         depends on APP_TEAR_DIAG
-        default 1
-        range 1 3
+        default 0
+        range 0 3
         help
             1: Modo A 'medio fotograma' (escribe solo las 160 filas superiores, ~10.1 ms).
             2: Modo B 'franja unica' (escribe una sola franja de 16 lineas, ~1 ms).
