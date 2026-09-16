@@ -18,7 +18,7 @@
 - Se retira la marca «Spotify» del producto.
 
 ## Datos del banco (confirmados por Keneth el 15/09/2026)
-- ESP32-S3 del reproductor: **UART COM17**. Nunca COM8.
+- ESP32-S3 del reproductor: **UART COM16** (el CH340K reenumeró; COM17 ya no existe, verificado en F5a it2). Nunca COM8.
 - INT del táctil FT6236: **no conectado** → sondeo I2C.
 - Los AVI están en la microSD, en el zócalo de la pantalla. **Se desconocen sus fps**: F0 los mide.
 - Ramas y versiones: `04` §10.

@@ -1,17 +1,22 @@
 {
   "artboards": [
     { "file": "Main.dc.html", "title": "Reproductor · OSD visible", "x": 0, "y": 0, "w": 480, "h": 320 },
-    { "file": "Gestos.dc.html", "title": "Reproductor · gestos", "x": 560, "y": 0, "w": 480, "h": 320 },
-    { "file": "Estadisticas.dc.html", "title": "Estadísticas", "x": 1120, "y": 0, "w": 480, "h": 320 },
-    { "file": "Bloqueo.dc.html", "title": "Bloqueo", "x": 1680, "y": 0, "w": 480, "h": 320 },
+    { "file": "PlayerLimpio.dc.html", "title": "Reproductor · sin controles", "x": 560, "y": 0, "w": 480, "h": 320 },
+    { "file": "Gestos.dc.html", "title": "Reproductor · gestos", "x": 1120, "y": 0, "w": 480, "h": 320 },
+    { "file": "Estadisticas.dc.html", "title": "Estadísticas", "x": 1680, "y": 0, "w": 480, "h": 320 },
+    { "file": "Bloqueo.dc.html", "title": "Bloqueo", "x": 2240, "y": 0, "w": 480, "h": 320 },
     { "file": "Biblioteca.dc.html", "title": "Biblioteca", "x": 0, "y": 440, "w": 480, "h": 320 },
     { "file": "Cola.dc.html", "title": "Cola", "x": 560, "y": 440, "w": 480, "h": 320 },
     { "file": "Ajustes.dc.html", "title": "Ajustes · Pantalla", "x": 1120, "y": 440, "w": 480, "h": 320 },
-    { "file": "SinMedios.dc.html", "title": "Sin medios", "x": 1680, "y": 440, "w": 480, "h": 320 }
+    { "file": "AjustesReproduccion.dc.html", "title": "Ajustes · Reproducción", "x": 1680, "y": 440, "w": 480, "h": 320 },
+    { "file": "SinMedios.dc.html", "title": "Sin medios", "x": 2240, "y": 440, "w": 480, "h": 320 },
+    { "file": "Componentes.dc.html", "title": "Estados de componentes", "x": 0, "y": 900, "w": 900, "h": 440 },
+    { "file": "Tokens.dc.html", "title": "Tokens", "x": 1000, "y": 900, "w": 620, "h": 440 }
   ],
   "annotations": [
-    { "id": "restriccion-blit", "x": 0, "y": -150, "w": 520, "text": "Pantallas a 1:1 del panel (480×320). Las barras de la OSD son OPACAS a propósito: el video se pinta directo al panel en la franja y 40–235, sin pasar por LVGL. Las coordenadas exactas están en 03_especificacion_ui_eez.md; si algo no coincide, manda el documento." },
-    { "id": "fuentes", "x": 1120, "y": -150, "w": 420, "text": "Tipografía Montserrat (la que trae LVGL): 20 títulos, 14 elementos, 12 metadatos. Acento único ámbar #F2B33D. Los degradados del fondo solo representan un fotograma de video." }
+    { "id": "restriccion-blit", "x": 0, "y": -150, "w": 520, "text": "Pantallas a 1:1 del panel (480×320). Las barras de la OSD son OPACAS a propósito: el video se pinta directo al panel en la franja entre ellas, sin pasar por LVGL. Las coordenadas exactas están en 03_especificacion_ui_eez.md; si algo no coincide, manda el documento." },
+    { "id": "fuentes", "x": 1120, "y": -150, "w": 420, "text": "Tipografía Montserrat (la que trae LVGL): 20 títulos, 14 elementos, 12 metadatos. Acento único ámbar #F2B33D. Los degradados del fondo solo representan un fotograma de video." },
+    { "id": "hoja-sistema", "x": 0, "y": 800, "w": 620, "text": "Hojas de sistema: estados de cada componente (para los estilos de EEZ) y tokens. No son pantallas del dispositivo." }
   ],
   "launch": { "view": "canvas" }
 }

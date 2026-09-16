@@ -21,13 +21,13 @@ cd "C:\Users\Keneth\Desktop\S3G4 LAB\TFT_8Bit_Capacitive\test_video_player"
 
 ## 2. Puerto de la placa
 
-**El ESP32-S3 del reproductor está en el UART COM17** (confirmado por Keneth el 15/09/2026).
+**El ESP32-S3 del reproductor está en el UART COM16** (el CH340K reenumeró; COM17 ya no existe, confirmado en F5a it2).
 Antes de cada sesión, comprueba que sigue ahí (los puertos se reenumeran):
 ```powershell
 python -m serial.tools.list_ports -v
 ```
-Si COM17 no aparece o ha cambiado, **para y pregunta**. **Nunca uses COM8** (ese es el ESP32-S3 del
-`l_bridge` del banco S3G4). En todo este documento, `COMx` = `COM17`.
+Si COM16 no aparece o ha cambiado, **para y pregunta**. **Nunca uses COM8** (ese es el ESP32-S3 del
+`l_bridge` del banco S3G4). En todo este documento, `COMx` = `COM16`.
 Si la placa se queda en `boot:0x0 (DOWNLOAD)` tras flashear, ver la anomalía 5 del acta
 (`python -m esptool --port COMx run`).
 

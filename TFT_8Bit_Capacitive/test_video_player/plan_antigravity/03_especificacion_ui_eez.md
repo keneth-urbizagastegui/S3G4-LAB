@@ -209,3 +209,22 @@ refrescar la caché y el getter devuelve el puntero.
    `plan_antigravity/mediciones/eez_*.png`, para compararla con el canvas.
 4. Una lista de **cualquier diferencia** con este documento o con el canvas, sin «arreglarla» por su
    cuenta.
+
+---
+
+## 7. Hojas de sistema del canvas (añadidas el 15/09/2026)
+
+El canvas incluye ahora, además de las pantallas, dos tableros que no son pantallas del dispositivo:
+
+- **«Estados de componentes»**: cada control con sus estados reales — botón de icono (normal, pulsado,
+  activo, desactivado), botón principal (reproducir/pausa/pulsado), chips, barra de progreso (normal y
+  arrastrando, con el knob de 12 → 18 px), interruptor, filas de lista y tarjeta de video (normal y
+  actual). **Cada estado de esta hoja es un estilo de EEZ** con su parte (MAIN / INDICATOR / KNOB) y su
+  estado (DEFAULT / PRESSED / CHECKED / DISABLED). Constrúyelos una vez y reutilízalos.
+- **«Tokens»**: los 8 colores con su hex, la escala tipográfica (20/14/12 de Montserrat, las tres
+  integradas en LVGL), los radios, la zona táctil mínima de 44 × 44 y el recordatorio de que las barras
+  son opacas porque el video se pinta directo entre ellas.
+
+También se añadieron dos pantallas: **«Reproductor · sin controles»** (video a pantalla completa con la
+barra mínima de progreso de 3 px abajo) y **«Ajustes · Reproducción»** (repetir, aleatorio, continuar
+donde lo dejé y salto de ±10 s).
