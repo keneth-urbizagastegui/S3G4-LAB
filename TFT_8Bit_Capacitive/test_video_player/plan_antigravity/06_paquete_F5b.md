@@ -1,13 +1,16 @@
 # 06 — Paquete de trabajo F5b: biblioteca dinámica, metadatos y persistencia
 
 > Encargo listo para enviar a Antigravity **tal cual** (con `--print-timeout 120m`), en cuanto F5a esté
-> cerrada y etiquetada. Rama: `video-player/fase-5b` desde `vp-v0.5`.
+> cerrada y etiquetada. Rama: `video-player/fase-5b` desde `vp-v0.5` (**ya etiquetada el 16/09/2026**).
 > Sustituye a la «FASE 5» original de `02`, ya con las decisiones tomadas hasta el 15/09/2026.
 
 ## Contexto que el constructor no debe volver a averiguar
 
-- Los 4 AVI de la microSD están a **30 fps**, 480×320, 4:2:0, con `idx1`, y pesan 7,7–12,8 KB de media
-  por fotograma (máximo medido 35,1 KB). Medido en F0/F1, tabla en `informes/FASE_1.md`.
+- Desde F5d los 4 AVI de la microSD están **girados en origen: 320×480**, 30 fps, 4:2:0, con `idx1`, cada
+  uno con su `.jpg` y su `.json` (7,7–12,1 KB de media por fotograma, 34,3 KB el mayor). **Es el formato
+  recomendado**: sin él vuelve el corte diagonal. Ver `informes/FASE_5d.md`.
+- El panel trabaja en orientación nativa (`MADCTL 0x48`) y la vista pequeña ya gira sola los ficheros
+  320×480 (`ensure_studio_decoder`). **No toques la ruta de presentación ni la recuperación de la SD.**
 - La microSD va a **20 MHz** (26 y 40 MHz no montan, F4). El lector adelantado vive en el núcleo 0 con
   3 huecos en PSRAM; `q_wait_max` 0,1 ms.
 - El escaneo actual (`media_scan_sdcard` en `avi_player.c`) ya lista los `.avi` de `/sdcard` y publica
