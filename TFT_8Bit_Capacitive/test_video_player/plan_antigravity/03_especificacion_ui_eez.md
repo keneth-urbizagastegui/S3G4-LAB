@@ -228,3 +228,47 @@ El canvas incluye ahora, además de las pantallas, dos tableros que no son panta
 También se añadieron dos pantallas: **«Reproductor · sin controles»** (video a pantalla completa con la
 barra mínima de progreso de 3 px abajo) y **«Ajustes · Reproducción»** (repetir, aleatorio, continuar
 donde lo dejé y salto de ±10 s).
+
+---
+
+## 8. Regla de desplazamiento (scroll): SOLO DOS SITIOS
+
+En LVGL 9 **todo objeto nace con `LV_OBJ_FLAG_SCROLLABLE` activo**, con rebote elástico e inercia. Eso
+provoca que paneles y barras «se muevan» al arrastrar, que es el defecto que Keneth señala de la UI
+actual (15/09/2026). Regla del proyecto:
+
+**Solo pueden desplazarse dos objetos, y solo en vertical:**
+| Objeto | Cuándo aparece el desplazamiento |
+|---|---|
+| `lib_grid` (Biblioteca) | con **más de 6 videos** (2 filas de 3 caben enteras: 44 + 2×124 + 12 = 304 ≤ 320) |
+| `queue_list` (Cola) | con **más de 4 videos** (4 filas de 56 = 224 ≤ 232 de alto útil) |
+
+En esos dos: `LV_SCROLL_SNAP_NONE`, dirección `LV_DIR_VER`, `scrollbar_mode = LV_SCROLLBAR_MODE_AUTO`
+(barra de 4 px, `c_line`, sin fondo), y **sin rebote elástico**: `lv_obj_set_scroll_dir(obj, LV_DIR_VER)`
+más `lv_obj_clear_flag(obj, LV_OBJ_FLAG_SCROLL_ELASTIC | LV_OBJ_FLAG_SCROLL_MOMENTUM)` si el gesto de
+inercia estorba al arrastre horizontal de la barra de progreso.
+
+**En TODO lo demás** — `scr_player`, `osd_top`, `osd_bottom`, `player_touch`, las superposiciones de
+gestos, `ovl_stats`, `ovl_lock`, `queue_sheet`, `settings_panel`, la navegación de ajustes,
+`scr_no_media` y cada `uw_video_card` / `uw_queue_row` — hay que quitarlo explícitamente:
+```c
+lv_obj_remove_flag(obj, LV_OBJ_FLAG_SCROLLABLE);
+lv_obj_set_scrollbar_mode(obj, LV_SCROLLBAR_MODE_OFF);
+```
+En EEZ: desmarcar **SCROLLABLE** en las propiedades del widget y poner *Scrollbar mode* en **OFF**.
+Ninguna pantalla del diseño necesita desplazarse: todas caben en 480×320 por construcción, y las
+pestañas de ajustes tienen 4 filas de 56 px (224 px) dentro de 320.
+
+**Comprobación de F6:** arrastrar el dedo en cualquier zona que no sea la biblioteca, la cola o la barra
+de progreso **no debe mover nada**. Se añade a la verificación visual de Keneth.
+
+## 9. Lo que todavía NO está diseñado (pendiente antes de F6)
+
+1. **Iconos PNG 24×24** (⟲10, ⟳10, candado, cola, tarjeta SD) y el de 48×48 de «sin medios». Hoy en el
+   canvas son SVG de referencia; EEZ necesita PNG blancos con alfa para teñirlos.
+2. **Pestañas «Almacenamiento» y «Acerca de»** de ajustes: definidas por texto en §3.5, sin tablero.
+3. **Estado de escaneo** al arrancar o tras pulsar «Volver a escanear» (mientras se leen las miniaturas).
+4. **Variante de error** de `scr_no_media` («No se pudo leer la microSD» + código), descrita en §3.8.
+5. **Miniatura de marcador de posición** para los videos sin `.jpg`.
+6. **Comportamiento del título largo**: marquesina o corte con puntos suspensivos (hoy `LONG_DOT`).
+7. El propio **proyecto EEZ**, que es trabajo de F6.
