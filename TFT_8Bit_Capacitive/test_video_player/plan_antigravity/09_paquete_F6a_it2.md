@@ -34,7 +34,8 @@ Entrega fotos o capturas del simulador de las 3 pantallas junto a los tableros e
 | ‹ atrás (arriba izq.) | ir a `scr_library` | nada |
 | cola (arriba der.) | en F6a: ir a `scr_library` (la cola llega en F6b) | nada |
 | candado | bloquea; **mantener pulsado 1 s en cualquier sitio desbloquea** y lo indica | bloquea y no hay forma de salir |
-| pantalla completa | alterna vista completa / con barras | nada |
+| pantalla completa | **ELIMINAR el botón** (decisión de Keneth, 16/09/2026). En su hueco (x 56) va `btn_repeat`, como en el diseño. La vista sin controles se obtiene tocando el video | existe y no hace nada |
+| repetir | off → todo → uno; iconos `repeat` / `repeat_one`, color `c_muted` en off y `c_accent` en los otros; se guarda en NVS | no existe |
 | aleatorio | alterna `shuffle`, cambia el color del icono, se guarda en NVS | nada |
 | ajustes | en F6a: aviso «Próximamente» (llega en F6b) | nada |
 | tocar el video con la OSD oculta | mostrar la OSD | a veces no, y nunca estando bloqueado |

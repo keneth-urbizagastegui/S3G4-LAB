@@ -11,19 +11,19 @@ Sangría del contenido = anidamiento (hijo del elemento de arriba). Las coordena
 | 3 | texto | 220 | 16 | 200 | 14 |  | #8E929B |  |  |  | 11px 400 | right | · 4 videos · microSD 29,7 GB libres |
 | 4 | grupo | 428 | 0 | 44 | 44 |  |  |  |  |  |  |  | ·  |
 | 5 | icono | 440 | 12 | 20 | 20 |  | #EDEDEA |  |  |  |  |  | · · svg 20px |
-| 6 | grupo | 12 | 56 | 456 | 252 |  |  |  |  |  |  |  |  |
-| 7 | caja | 12 | 56 | 144 | 81 | degradado (imagen) |  |  | 6px |  |  |  | ·  |
+| 6 | grupo | 12 | 56 | 456 | 250 |  |  |  |  |  |  |  |  |
+| 7 | caja | 12 | 56 | 144 | 80 | degradado (imagen) |  |  | 6px |  |  |  | ·  |
 | 8 | texto | 18 | 62 | 96 | 18 | #15171C | #F2B33D |  | 9px |  | 10px 600 | start | · · Reproduciendo |
-| 9 | caja | 12 | 134 | 144 | 3 | #2A2D34 |  |  |  |  |  |  | · ·  |
-| 10 | caja | 12 | 134 | 60 | 3 | #F2B33D |  |  |  |  |  |  | · · ·  |
-| 11 | texto | 12 | 144 | 144 | 16 |  | #EDEDEA |  |  |  | 13px 600 | start | · Dance No More |
-| 12 | texto | 12 | 162 | 144 | 14 |  | #8E929B |  |  |  | 11px 400 | start | · Harry Styles · 3:21 |
-| 13 | caja | 168 | 56 | 144 | 81 | degradado (imagen) |  |  | 6px |  |  |  | ·  |
-| 14 | texto | 168 | 144 | 144 | 16 |  | #EDEDEA |  |  |  | 13px 600 | start | · hate that i made you love me |
-| 15 | texto | 168 | 162 | 144 | 14 |  | #8E929B |  |  |  | 11px 400 | start | · Ariana Grande · 3:02 |
-| 16 | caja | 324 | 56 | 144 | 81 | degradado (imagen) |  |  | 6px |  |  |  | ·  |
-| 17 | texto | 324 | 144 | 144 | 16 |  | #EDEDEA |  |  |  | 13px 600 | start | · ICONIC BY MISTAKE |
-| 18 | texto | 324 | 162 | 144 | 14 |  | #8E929B |  |  |  | 11px 400 | start | · LE SSERAFIM x ILLIT · 3:40 |
-| 19 | caja | 12 | 188 | 144 | 81 | degradado (imagen) |  |  | 6px |  |  |  | ·  |
-| 20 | texto | 12 | 276 | 144 | 16 |  | #EDEDEA |  |  |  | 13px 600 | start | · HANDS UP |
-| 21 | texto | 12 | 294 | 144 | 14 |  | #8E929B |  |  |  | 11px 400 | start | · MEOVV · 2:58 |
+| 9 | caja | 12 | 133 | 144 | 3 | #2A2D34 |  |  |  |  |  |  | · ·  |
+| 10 | caja | 12 | 133 | 60 | 3 | #F2B33D |  |  |  |  |  |  | · · ·  |
+| 11 | texto | 12 | 143 | 144 | 16 |  | #EDEDEA |  |  |  | 13px 600 | start | · Dance No More |
+| 12 | texto | 12 | 161 | 144 | 14 |  | #8E929B |  |  |  | 11px 400 | start | · Harry Styles · 3:21 |
+| 13 | caja | 168 | 56 | 144 | 80 | degradado (imagen) |  |  | 6px |  |  |  | ·  |
+| 14 | texto | 168 | 143 | 144 | 16 |  | #EDEDEA |  |  |  | 13px 600 | start | · hate that i made you love me |
+| 15 | texto | 168 | 161 | 144 | 14 |  | #8E929B |  |  |  | 11px 400 | start | · Ariana Grande · 3:02 |
+| 16 | caja | 324 | 56 | 144 | 80 | degradado (imagen) |  |  | 6px |  |  |  | ·  |
+| 17 | texto | 324 | 143 | 144 | 16 |  | #EDEDEA |  |  |  | 13px 600 | start | · ICONIC BY MISTAKE |
+| 18 | texto | 324 | 161 | 144 | 14 |  | #8E929B |  |  |  | 11px 400 | start | · LE SSERAFIM x ILLIT · 3:40 |
+| 19 | caja | 12 | 187 | 144 | 80 | degradado (imagen) |  |  | 6px |  |  |  | ·  |
+| 20 | texto | 12 | 274 | 144 | 16 |  | #EDEDEA |  |  |  | 13px 600 | start | · HANDS UP |
+| 21 | texto | 12 | 292 | 144 | 14 |  | #8E929B |  |  |  | 11px 400 | start | · MEOVV · 2:58 |
