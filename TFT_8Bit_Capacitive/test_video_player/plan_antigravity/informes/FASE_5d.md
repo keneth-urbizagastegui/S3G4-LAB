@@ -216,3 +216,11 @@ frontera quieta.
   C la espera dentro del bloqueo. Probables avisos de TE acumulados al volver a OFF.
 
 Iteración 4 encargada: recuperación de la SD con prueba de 20 reinicios aleatorios, y la corrección de E2.
+
+**Observaciones de Keneth durante la it4 (16/09/2026, 08:15):**
+- Con la USB desconectada y la microSD **reinsertada físicamente**, volvió a montar: el `0x107` tras el
+  último corte de alimentación fue un **mal contacto de la tarjeta en el zócalo**, además del cuelgue por
+  reinicio en caliente (E1).
+- Mientras Antigravity reproducía E2 (patrón C y luego OFF), **también la vista pequeña (Studio, camino
+  LVGL) mostró cortes** después del patrón. Por tanto E2 no es exclusivo de la pantalla completa: el
+  arreglo debe comprobarse en las dos vistas.
