@@ -25,6 +25,7 @@ typedef struct {
     bool compatible;       // Seccion 7: formato compatible
     char incompat[48];     // motivo mostrado si falla (sin comas)
     bool rotated;          // true si 320x480 (girado), false si 480x320 (clasico)
+    bool failed_playback;  // true si fallo la presentacion o el watchdog en esta sesion
 } media_item_t;
 
 typedef void (*media_scan_progress_cb_t)(int done, int total);
@@ -35,6 +36,7 @@ int  media_library_compatible_count(void);
 const media_item_t *media_library_get(int index);
 int  media_library_index_of(const char *path);
 void media_library_set_progress_cb(media_scan_progress_cb_t cb);
+void media_library_mark_failed(int index);
 
 #ifdef __cplusplus
 }

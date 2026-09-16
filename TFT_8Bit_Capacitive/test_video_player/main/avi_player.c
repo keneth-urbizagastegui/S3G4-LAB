@@ -94,9 +94,6 @@ static uint16_t *s_strip_bufs[2] = {NULL, NULL};
 static size_t s_strip_buf_len = 0;
 static uint16_t *s_clip_strip_bufs[2] = {NULL, NULL};
 
-static char **s_scanned_avi_files = NULL;
-static int s_scanned_avi_count = 0;
-
 static void avi_reader_task(void *arg) {
     ESP_LOGI(TAG, "Tarea avi_reader_task iniciada en Core 0.");
     while (1) {
@@ -689,15 +686,12 @@ esp_err_t avi_player_read_and_blit_direct(void) {
                 windows_count++;
             }
         } else {
-            // Video clásico 480x320
-            int clip_y1 = vy;
-            int clip_y2 = vy + vh - 1;
-            if (clip_y1 < 0) clip_y1 = 0;
-            if (clip_y2 >= 320) clip_y2 = 319;
-            if (clip_y1 <= clip_y2) {
-                lcd_bus_set_frame_window(0, (uint16_t)clip_y1, hdr_info.width - 1, (uint16_t)clip_y2);
-                windows_count++;
-            }
+            // Video clásico 480x320 en panel nativo 320x480
+            uint16_t x1_win = (uint16_t)x_start;
+            uint16_t x2_win = (uint16_t)x_end;
+            uint16_t y2_win = (hdr_info.height > 0 && hdr_info.height <= 480) ? (hdr_info.height - 1) : 319;
+            lcd_bus_set_frame_window(x1_win, 0, x2_win, y2_win);
+            windows_count++;
         }
     }
 
@@ -730,8 +724,6 @@ esp_err_t avi_player_read_and_blit_direct(void) {
         }
 
         int cur_lines = (hdr_info.width > 0) ? (io.out_size / (hdr_info.width * 2)) : 0;
-        int cur_y1 = line_y;
-        int cur_y2 = line_y + cur_lines - 1;
         line_y += cur_lines;
 
         // Diagnostico de tearing (T2)
@@ -780,17 +772,25 @@ esp_err_t avi_player_read_and_blit_direct(void) {
                     }
                 }
             } else {
-                // Video clasico 480x320
-                int clip_y1 = (cur_y1 > vy) ? cur_y1 : vy;
-                int clip_y2 = (cur_y2 < (vy + vh - 1)) ? cur_y2 : (vy + vh - 1);
-
-                if (clip_y1 <= clip_y2) {
-                    size_t offset_bytes = (size_t)(clip_y1 - cur_y1) * (hdr_info.width * 2);
-                    size_t visible_bytes = (size_t)(clip_y2 - clip_y1 + 1) * (hdr_info.width * 2);
-                    const uint16_t *strip_px = (const uint16_t *)((uint8_t *)s_strip_bufs[b & 1] + offset_bytes);
-
+                // Video clasico 480x320 ("sin girar"): transferir clip_w columnas nativas
+                int clip_cols = clip_w;
+                if (clip_cols > 320) clip_cols = 320;
+                if (clip_cols > 0 && cur_lines > 0) {
+                    if (!s_clip_strip_bufs[0]) {
+                        for (int i = 0; i < 2; i++) {
+                            s_clip_strip_bufs[i] = (uint16_t *)heap_caps_aligned_alloc(
+                                16, 320 * 16 * sizeof(uint16_t), MALLOC_CAP_DMA | MALLOC_CAP_INTERNAL);
+                            assert(s_clip_strip_bufs[i] != NULL);
+                        }
+                    }
+                    uint16_t *dst_strip = s_clip_strip_bufs[b & 1];
+                    const uint16_t *src_strip = s_strip_bufs[b & 1];
+                    for (int r = 0; r < cur_lines; r++) {
+                        memcpy(dst_strip + r * clip_cols, src_strip + r * hdr_info.width + x_start, clip_cols * sizeof(uint16_t));
+                    }
+                    size_t clip_bytes = (size_t)cur_lines * clip_cols * sizeof(uint16_t);
                     bool is_first = (strips_sent_count == 0);
-                    lcd_bus_draw_strip_continue_async(strip_px, visible_bytes, is_first);
+                    lcd_bus_draw_strip_continue_async(dst_strip, clip_bytes, is_first);
                     dma_in_flight = true;
                     strips_sent_count++;
                 }
@@ -1206,13 +1206,6 @@ void avi_player_log_media(const char *filepath) {
            (unsigned int)chunk_avg, (unsigned int)chunk_max,
            subsampling);
     fflush(stdout);
-}
-
-static bool is_avi_filename(const char *name) {
-    if (!name) return false;
-    size_t len = strlen(name);
-    if (len < 4) return false;
-    return (strcasecmp(name + len - 4, ".avi") == 0);
 }
 
 int media_scan_sdcard(void) {

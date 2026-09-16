@@ -37,7 +37,9 @@ static volatile uint8_t s_std_write_idx = 0;
 static volatile uint8_t s_std_read_idx = 1;
 
 static volatile bool s_new_frame_ready = false;
-static volatile uint8_t s_current_scale = 1; // 0 = fullscreen 480x320, 1 = studio 240x160 (UI arranca en STUDIO)
+static volatile uint8_t s_current_scale = 0; // 0 = direct blit (reproductor directo)
+static int64_t s_track_play_start_us = 0;
+static uint32_t s_track_presented_frames = 0;
 
 static TaskHandle_t s_player_task_handle = NULL;
 static int64_t s_pts_t0_us = 0;
@@ -172,8 +174,9 @@ static void player_open_track(int index) {
             return;
         }
         ESP_LOGE(TAG, "Fallo al abrir pista %d (%s): ret=%d", index, item->path, ret);
+        media_library_mark_failed(index);
         portENTER_CRITICAL(&s_player_mux);
-        s_status.state = PST_ERROR;
+        s_status.state = PST_ENDED;
         s_status.err_code = (uint32_t)ret;
         portEXIT_CRITICAL(&s_player_mux);
         return;
@@ -184,9 +187,8 @@ static void player_open_track(int index) {
 #ifndef CONFIG_APP_LCD_MADCTL_NATIVE
 #define CONFIG_APP_LCD_MADCTL_NATIVE 0x48
 #endif
-    uint8_t target_madctl = item->rotated ?
-                            (uint8_t)CONFIG_APP_LCD_MADCTL_NATIVE : 0x28;
-    ili9488_8080_set_madctl(target_madctl);
+    // Siempre mantener la orientación nativa del panel (0x48)
+    ili9488_8080_set_madctl((uint8_t)CONFIG_APP_LCD_MADCTL_NATIVE);
 
     portENTER_CRITICAL(&s_player_mux);
     s_status.track_index = index;
@@ -203,9 +205,9 @@ static void player_open_track(int index) {
     player_get_track_subtitle(index, s_status.subtitle, sizeof(s_status.subtitle));
     s_pts_started = false;
     s_pts_t0_us = 0;
+    s_track_play_start_us = esp_timer_get_time();
+    s_track_presented_frames = 0;
     portEXIT_CRITICAL(&s_player_mux);
-
-    settings_nvs_set_last_path(item->path);
 }
 
 static void player_handle_cmd(const player_cmd_t *cmd) {
@@ -237,6 +239,8 @@ static void player_handle_cmd(const player_cmd_t *cmd) {
                         s_status.pos_ms = 0;
                         s_status.dur_ms = ((uint64_t)info->total_frames * (uint64_t)info->us_per_frame) / 1000ULL;
                         snprintf(s_status.title, sizeof(s_status.title), "%.*s", (int)(sizeof(s_status.title) - 1), cmd->path);
+                        s_track_play_start_us = esp_timer_get_time();
+                        s_track_presented_frames = 0;
                         portEXIT_CRITICAL(&s_player_mux);
                     }
                 }
@@ -412,13 +416,15 @@ static void player_handle_eof(void) {
             return;
         }
 
-        if (s_status.repeat == REPEAT_OFF && next <= s_status.track_index) {
+        if (s_status.repeat == REPEAT_OFF) {
             portENTER_CRITICAL(&s_player_mux);
             s_status.state = PST_ENDED;
             portEXIT_CRITICAL(&s_player_mux);
-            avi_player_restart();
+            avi_player_close();
             s_pts_started = false;
             s_pts_t0_us = 0;
+            s_track_play_start_us = 0;
+            return;
         } else {
             player_open_track(next);
         }
@@ -441,18 +447,12 @@ static void player_task(void *arg) {
     if (nvs_cfg.last_path[0] != '\0') {
         int idx = media_library_index_of(nvs_cfg.last_path);
         const media_item_t *it = (idx >= 0) ? media_library_get(idx) : NULL;
-        if (it && it->compatible) {
+        if (it && it->compatible && !it->failed_playback) {
             initial_track = idx;
-        }
-    }
-    if (initial_track < 0) {
-        int total = media_library_count();
-        for (int i = 0; i < total; i++) {
-            const media_item_t *it = media_library_get(i);
-            if (it && it->compatible) {
-                initial_track = i;
-                break;
-            }
+        } else {
+            ESP_LOGW(TAG, "last_path '%s' invalido o incompatible, ignorando y abriendo biblioteca", nvs_cfg.last_path);
+            settings_nvs_set_last_path("");
+            initial_track = -1;
         }
     }
 
@@ -469,15 +469,8 @@ static void player_task(void *arg) {
         }
     } else {
         portENTER_CRITICAL(&s_player_mux);
-        s_status.state = PST_NO_MEDIA;
+        s_status.state = PST_IDLE;
         s_status.track_count = media_library_count();
-        if (s_status.track_count > 0) {
-            snprintf(s_status.title, sizeof(s_status.title), "Formato no compatible");
-            snprintf(s_status.subtitle, sizeof(s_status.subtitle), "Hay %d archivos, ninguno compatible", (int)s_status.track_count);
-        } else {
-            snprintf(s_status.title, sizeof(s_status.title), "Sin videos");
-            snprintf(s_status.subtitle, sizeof(s_status.subtitle), "Inserte tarjeta MicroSD con videos");
-        }
         portEXIT_CRITICAL(&s_player_mux);
     }
 
@@ -568,6 +561,32 @@ static void player_task(void *arg) {
             const avi_info_t *cur_info = avi_player_get_info();
             if (!cur_info->is_open) {
                 vTaskDelay(pdMS_TO_TICKS(20));
+                continue;
+            }
+
+            // Watchdog D5: Si transcurren >3 s en PST_PLAYING sin presentar ningun frame, abortar reproduccion
+            int64_t elapsed_play_us = esp_timer_get_time() - s_track_play_start_us;
+            if (s_track_play_start_us > 0 && elapsed_play_us > 3000000LL && s_track_presented_frames == 0) {
+                ESP_LOGE(TAG, "Watchdog D5: >3s sin presentar cuadros en pista %d (%s). Abortando reproduccion.",
+                         s_status.track_index, s_status.title);
+                if (s_status.track_index >= 0) {
+                    media_library_mark_failed(s_status.track_index);
+                }
+                avi_player_close();
+                settings_nvs_set_last_path("");
+
+                if (s_status.repeat != REPEAT_OFF) {
+                    int total = s_status.track_count;
+                    int next = player_find_compatible(s_status.track_index, total, 1);
+                    if (next >= 0 && next != s_status.track_index) {
+                        player_open_track(next);
+                        continue;
+                    }
+                }
+                portENTER_CRITICAL(&s_player_mux);
+                s_status.state = PST_ENDED;
+                s_status.err_code = ESP_ERR_TIMEOUT;
+                portEXIT_CRITICAL(&s_player_mux);
                 continue;
             }
 
@@ -717,12 +736,18 @@ static void player_task(void *arg) {
             }
 
             if (ret == ESP_OK) {
+                s_track_presented_frames++;
                 int64_t now_us = esp_timer_get_time();
                 if (now_us - last_nvs_pos_save_us >= 5000000) {
                     last_nvs_pos_save_us = now_us;
                     const media_item_t *cur_it = media_library_get(s_status.track_index);
-                    if (cur_it && cur_it->compatible && s_status.pos_ms >= 5000) {
-                        settings_nvs_set_pos(cur_it->path, (uint32_t)s_status.pos_ms);
+                    if (cur_it && cur_it->compatible && !cur_it->failed_playback && s_status.pos_ms >= 5000) {
+                        float dec_fps = 0, pres_fps = 0;
+                        perf_get_fps(&dec_fps, &pres_fps);
+                        if (pres_fps > 0.0f || s_track_presented_frames >= 30) {
+                            settings_nvs_set_last_path(cur_it->path);
+                            settings_nvs_set_pos(cur_it->path, (uint32_t)s_status.pos_ms);
+                        }
                     }
                 }
             }
@@ -740,7 +765,7 @@ esp_err_t player_start(void) {
     s_status.state = PST_IDLE;
     s_status.repeat = REPEAT_ALL;
     s_status.shuffle = false;
-    s_current_scale = 1;
+    s_current_scale = 0; // 0 = direct blit a pantalla completa
     portEXIT_CRITICAL(&s_player_mux);
 
     if (!s_cmd_queue) {

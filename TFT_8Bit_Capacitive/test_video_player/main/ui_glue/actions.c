@@ -27,7 +27,19 @@ void ui_glue_init(void) {
     s_last_touch_time = esp_timer_get_time() / 1000;
     s_osd_visible = true;
     s_hud_forced_mode = 0;
-    s_view_mode = VIEW_MODE_FULLSCREEN;
+    if (s_settings.last_path[0] != '\0') {
+        int idx = media_library_index_of(s_settings.last_path);
+        const media_item_t *it = (idx >= 0) ? media_library_get(idx) : NULL;
+        if (it && it->compatible && !it->failed_playback) {
+            s_view_mode = VIEW_MODE_FULLSCREEN;
+            player_cmd_t cmd = {.type = PCMD_SET_VIDEO_RECT, .rect = {0, 40, 480, 196}};
+            player_cmd_send(&cmd);
+            lcd_bus_set_video_rect(0, 40, 480, 196);
+            return;
+        }
+    }
+    s_view_mode = VIEW_MODE_STUDIO;
+    lcd_bus_set_video_rect(0, 0, 0, 0);
 }
 
 bool ui_glue_is_osd_visible(void) {
@@ -99,6 +111,13 @@ void ui_glue_tick(void) {
     player_status_t st;
     player_get_status(&st);
     s_current_track_idx = st.track_index;
+
+    // Si la reproduccion termino o no hay video activo y estamos en pantalla de reproductor -> volver a biblioteca
+    if ((st.state == PST_ENDED || st.state == PST_IDLE || st.state == PST_NO_MEDIA) && s_view_mode == VIEW_MODE_FULLSCREEN) {
+        ESP_LOGI(TAG, "Estado de reproduccion %d en modo fullscreen -> retornando a biblioteca", st.state);
+        action_open_library(NULL);
+        return;
+    }
 
     // Update play icon
     if (objects.lbl_play_icon) {

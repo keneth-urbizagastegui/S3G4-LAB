@@ -62,6 +62,14 @@ int media_library_index_of(const char *path) {
     return -1;
 }
 
+void media_library_mark_failed(int index) {
+    if (index >= 0 && index < s_item_count) {
+        s_items[index].failed_playback = true;
+        s_items[index].compatible = false;
+        snprintf(s_items[index].incompat, sizeof(s_items[index].incompat), "Fallo de presentacion");
+    }
+}
+
 static void free_library_items(void) {
     if (s_items) {
         for (int i = 0; i < s_item_count; i++) {

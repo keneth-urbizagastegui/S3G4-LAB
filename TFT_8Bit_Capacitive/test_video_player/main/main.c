@@ -353,6 +353,9 @@ static void gui_task(void *arg) {
     // Inicializar EEZ UI y pegamento
     ui_glue_init();
     ui_init();
+    if (ui_glue_get_view_mode() == VIEW_MODE_STUDIO) {
+        action_open_library(NULL);
+    }
 
     // Contar componentes UI según criterio de aceptación F6a
     printf("UI,screens=%d,widgets=%d,fonts=%d,images=%d\n", 3, 47, 3, 8);
