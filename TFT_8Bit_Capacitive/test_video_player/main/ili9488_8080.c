@@ -144,7 +144,7 @@ esp_err_t ili9488_8080_init(void) {
             TFT_D4, TFT_D5, TFT_D6, TFT_D7
         },
         .bus_width = 8,
-        .max_transfer_bytes = LCD_WIDTH * 40 * sizeof(uint16_t),
+        .max_transfer_bytes = LCD_WIDTH * 88 * sizeof(uint16_t),
         .dma_burst_size = 64,
     };
     ESP_ERROR_CHECK(esp_lcd_new_i80_bus(&bus_config, &s_i80_bus));

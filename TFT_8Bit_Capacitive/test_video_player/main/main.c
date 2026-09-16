@@ -73,6 +73,9 @@ static uint32_t my_tick_get_cb(void) {
     return (uint32_t)(esp_timer_get_time() / 1000);
 }
 
+#define ROT_BAR_MAX_PIXELS (480 * 88)
+static uint16_t *s_rot_bar_buf = NULL;
+
 #define ROT_CHUNK_LINES 16
 DMA_ATTR static uint16_t s_rot_chunk_buf[320 * ROT_CHUNK_LINES];
 
@@ -94,6 +97,25 @@ static void draw_bitmap_oriented(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t
     int w_phys = h; // W_phys <= 320
     if (w_phys > 320) w_phys = 320;
 
+    // D4: Si el área cabe en el búfer de barra completa (ej. OSD top 480x40 o bottom 480x84),
+    // rotar en memoria y emitir en UNA SOLA operación de ventana continua sin trocear
+    if (!s_rot_bar_buf) {
+        s_rot_bar_buf = (uint16_t *)heap_caps_malloc(ROT_BAR_MAX_PIXELS * sizeof(uint16_t), MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT);
+    }
+    if (s_rot_bar_buf && (size_t)w * h <= ROT_BAR_MAX_PIXELS) {
+        for (int r = 0; r < w; r++) {
+            int x_rel = r;
+            int dst_row = r * w_phys;
+            for (int c = 0; c < w_phys; c++) {
+                int y_rel = (h - 1) - c;
+                s_rot_bar_buf[dst_row + c] = pixels[y_rel * w + x_rel];
+            }
+        }
+        ili9488_8080_draw_bitmap(px1, x1, px2, x2, s_rot_bar_buf);
+        return;
+    }
+
+    // Fallback por trozos si el área excede el búfer de barra completa
     int total_lines = w; // H_phys = w
     int cur_py = x1;
 
