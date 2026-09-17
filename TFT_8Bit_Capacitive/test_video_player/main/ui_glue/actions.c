@@ -828,34 +828,42 @@ void ui_glue_run_uinav_test(void) {
     // 2. btn=card (x=84, y=110) en la biblioteca -> inicia reproductor
     ui_glue_set_view_mode(VIEW_MODE_STUDIO);
     wait_gui_ms(200);
+    const media_item_t *item0 = media_library_get(0);
+    if (item0) {
+        media_library_set_resume(item0->path, 0);
+    }
+    if (s_resume_overlay) {
+        lv_obj_add_flag(s_resume_overlay, LV_OBJ_FLAG_HIDDEN);
+    }
+    wait_gui_ms(150);
     sim_touch_click(84, 110);
-    wait_gui_ms(300);
+    wait_gui_ms(500);
     bool card_ok = (ui_glue_get_view_mode() == VIEW_MODE_FULLSCREEN);
     printf("UINAV,btn=card,result=%s\n", card_ok ? "PASS" : "FAIL");
 
     // 3. btn=queue (x=458, y=20) -> muestra aviso toast (L2)
     ui_glue_set_osd_visible(true);
-    wait_gui_ms(100);
-    sim_touch_click(458, 20);
     wait_gui_ms(200);
+    sim_touch_click(458, 20);
+    wait_gui_ms(300);
     bool queue_ok = (s_toast_box != NULL && !lv_obj_has_flag(s_toast_box, LV_OBJ_FLAG_HIDDEN));
     printf("UINAV,btn=queue,result=%s\n", queue_ok ? "PASS" : "FAIL");
     if (s_toast_box) lv_obj_add_flag(s_toast_box, LV_OBJ_FLAG_HIDDEN);
-    wait_gui_ms(50);
+    wait_gui_ms(100);
 
     // 4. btn=play (x=240, y=295) -> comprueba cambio de estado
     ui_glue_set_osd_visible(true);
-    wait_gui_ms(200);
+    wait_gui_ms(300);
     player_status_t st_b1;
     player_get_status(&st_b1);
     sim_touch_click(240, 295);
-    wait_gui_ms(250);
+    wait_gui_ms(350);
     player_status_t st_a1;
     player_get_status(&st_a1);
     bool play_ok = (st_a1.state != st_b1.state);
     printf("UINAV,btn=play,result=%s\n", play_ok ? "PASS" : "FAIL");
     sim_touch_click(240, 295); // restaurar a playing
-    wait_gui_ms(200);
+    wait_gui_ms(300);
 
     // 5. btn=fwd (x=288, y=295) -> pos_ms avanza
     ui_glue_set_osd_visible(true);

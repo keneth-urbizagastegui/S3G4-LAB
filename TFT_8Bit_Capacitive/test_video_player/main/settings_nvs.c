@@ -208,6 +208,13 @@ esp_err_t settings_nvs_set_last_path(const char *path) {
         esp_err_t err = settings_nvs_init();
         if (err != ESP_OK) return err;
     }
+    char cur[128];
+    size_t len = sizeof(cur);
+    if (nvs_get_str(s_handle, "last_path", cur, &len) == ESP_OK) {
+        if (strcmp(cur, path) == 0) {
+            return ESP_OK;
+        }
+    }
     esp_err_t err = nvs_set_str(s_handle, "last_path", path);
     if (err == ESP_OK) {
         err = nvs_commit(s_handle);
