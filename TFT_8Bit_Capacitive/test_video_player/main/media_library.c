@@ -244,7 +244,10 @@ static void load_jpeg_thumbnail(const char *jpg_path, media_item_t *item, int *t
     jpeg_dec_close(dec);
     free(jpg_buf);
 
-    lv_image_dsc_t *dsc = (lv_image_dsc_t *)heap_caps_malloc(sizeof(lv_image_dsc_t), MALLOC_CAP_SPIRAM);
+    /* LVGL v9 usa stride para avanzar de fila. El descriptor venía de malloc
+     * sin inicializar: un stride residual hacía que algunas miniaturas leyesen
+     * PSRAM ajena y apareciesen con ruido o negras. */
+    lv_image_dsc_t *dsc = (lv_image_dsc_t *)heap_caps_calloc(1, sizeof(lv_image_dsc_t), MALLOC_CAP_SPIRAM);
     if (!dsc) {
         heap_caps_free(rgb_psram);
         item->thumb_dsc = NULL;
@@ -254,6 +257,7 @@ static void load_jpeg_thumbnail(const char *jpg_path, media_item_t *item, int *t
     dsc->header.cf = LV_COLOR_FORMAT_RGB565;
     dsc->header.w = 144;
     dsc->header.h = hdr_info.height;
+    dsc->header.stride = 144 * sizeof(uint16_t);
     dsc->header.flags = 0;
     dsc->header.magic = LV_IMAGE_HEADER_MAGIC;
     dsc->data_size = outlen;
