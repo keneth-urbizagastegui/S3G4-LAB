@@ -4145,7 +4145,7 @@
                                             "type": "LVGLLabelWidget",
                                             "left": 16,
                                             "top": 16,
-                                            "width": 120,
+                                            "width": 145,
                                             "height": 16,
                                             "leftUnit": "px",
                                             "topUnit": "px",
@@ -4165,7 +4165,7 @@
                                                 "definition": {
                                                     "MAIN": {
                                                         "DEFAULT": {
-                                                            "text_font": "montserrat_14",
+                                                            "text_font": "montserrat_12",
                                                             "text_color": "c_accent"
                                                         }
                                                     }
@@ -4684,7 +4684,7 @@
                                             "type": "LVGLLabelWidget",
                                             "left": 16,
                                             "top": 130,
-                                            "width": 200,
+                                            "width": 224,
                                             "height": 16,
                                             "leftUnit": "px",
                                             "topUnit": "px",
@@ -4704,7 +4704,7 @@
                                                 "definition": {
                                                     "MAIN": {
                                                         "DEFAULT": {
-                                                            "text_font": "montserrat_14",
+                                                            "text_font": "montserrat_12",
                                                             "text_color": "c_text"
                                                         }
                                                     }
@@ -5051,7 +5051,7 @@
                                             "type": "LVGLLabelWidget",
                                             "left": 16,
                                             "top": 145,
-                                            "width": 220,
+                                            "width": 230,
                                             "height": 14,
                                             "leftUnit": "px",
                                             "topUnit": "px",
@@ -5309,9 +5309,9 @@
                                                 {
                                                     "objID": "ceeab1b1-e878-431f-9ccd-397652bfd4d3",
                                                     "type": "LVGLLabelWidget",
-                                                    "left": 56,
+                                                    "left": 46,
                                                     "top": 12,
-                                                    "width": 160,
+                                                    "width": 170,
                                                     "height": 16,
                                                     "leftUnit": "px",
                                                     "topUnit": "px",
@@ -5331,7 +5331,7 @@
                                                         "definition": {
                                                             "MAIN": {
                                                                 "DEFAULT": {
-                                                                    "text_font": "montserrat_14",
+                                                                    "text_font": "montserrat_12",
                                                                     "text_color": "c_text"
                                                                 }
                                                             }
@@ -5702,9 +5702,9 @@
                                                 {
                                                     "objID": "3ec5ecd8-ef1d-47c2-bb5c-9b7b081007c1",
                                                     "type": "LVGLLabelWidget",
-                                                    "left": 38,
+                                                    "left": 24,
                                                     "top": 14,
-                                                    "width": 115,
+                                                    "width": 130,
                                                     "height": 16,
                                                     "leftUnit": "px",
                                                     "topUnit": "px",
