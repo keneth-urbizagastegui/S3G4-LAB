@@ -16,7 +16,13 @@ demás de `04` (mediciones, umbrales, informes) sigue igual.
 ```
 - Seguimiento: `status <job-id>` y `result <job-id>` del mismo script. Continuación de un trabajo
   anterior: `task --resume-last`. Cancelar: `cancel <job-id>`.
-- Se ejecuta **desde `TFT_8Bit_Capacitive/test_video_player`**, que es la raíz del proyecto de firmware.
+- **Ojo con la carpeta:** Codex trabaja en la raíz del repositorio (`S3G4 LAB`), no en la del firmware.
+  En cada encargo hay que decirle que todo ocurre dentro de `TFT_8Bit_Capacitive/test_video_player` y
+  que empiece por ahí.
+- **Verificado el 17/09/2026:** el trabajo de prueba `task-mu5v0qcp-3h8suw` se ejecutó con
+  `model=gpt-5.6-terra` y `effort=medium`, y respondió correctamente. (Al preguntarle, Codex dice
+  llamarse «GPT-5»: los modelos no conocen su propio nombre de versión, así que lo que vale es el
+  registro del trabajo.)
 
 ## 2. Reparto de responsabilidades (igual que con Antigravity)
 | | Claude (auditor) | Codex (constructor) |
