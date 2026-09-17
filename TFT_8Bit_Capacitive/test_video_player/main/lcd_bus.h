@@ -18,6 +18,9 @@ typedef struct {
 } lcd_video_rect_t;
 
 #define LCD_OVERLAY_MAX_RECTS 4
+// Color clave RGB565 para las zonas transparentes de las capas LVGL.
+// Verde puro (0x07E0) no forma parte del diseño de la OSD.
+#define LCD_OVERLAY_COLOR_KEY 0x07E0u
 
 typedef struct {
     int16_t x;

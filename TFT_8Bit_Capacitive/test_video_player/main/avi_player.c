@@ -765,7 +765,8 @@ esp_err_t avi_player_read_and_blit_direct(void) {
         int cur_lines = (hdr_info.width > 0) ? (io.out_size / (hdr_info.width * 2)) : 0;
         line_y += cur_lines;
 
-        // Composición de capas opacas sobre el búfer nativo de la franja (Sección 0 F6b)
+        // Composición de capas sobre el búfer nativo de la franja (Sección 0 F6b).
+        // LCD_OVERLAY_COLOR_KEY representa transparencia: conserva el pixel de video.
         // Se ejecuta en CPU de forma concurrente mientras el DMA de la franja anterior sigue en vuelo
         if (num_overlays > 0 && overlay_buf != NULL && cur_lines > 0) {
             int strip_y_start = line_y - cur_lines;
@@ -780,7 +781,12 @@ esp_err_t avi_player_read_and_blit_direct(void) {
                         if (x_max >= x_min) {
                             uint16_t *dst = s_strip_bufs[b & 1] + r * 320 + x_min;
                             const uint16_t *src = overlay_buf + phys_y * 320 + x_min;
-                            memcpy(dst, src, (x_max - x_min + 1) * sizeof(uint16_t));
+                            for (int x = x_min; x <= x_max; x++) {
+                                uint16_t pixel = src[x - x_min];
+                                if (pixel != LCD_OVERLAY_COLOR_KEY) {
+                                    dst[x - x_min] = pixel;
+                                }
+                            }
                         }
                     }
                 }
@@ -961,7 +967,12 @@ esp_err_t avi_player_reblit_current_frame(void) {
                         if (x_max >= x_min) {
                             uint16_t *dst = s_strip_bufs[b & 1] + r * 320 + x_min;
                             const uint16_t *src = overlay_buf + phys_y * 320 + x_min;
-                            memcpy(dst, src, (x_max - x_min + 1) * sizeof(uint16_t));
+                            for (int x = x_min; x <= x_max; x++) {
+                                uint16_t pixel = src[x - x_min];
+                                if (pixel != LCD_OVERLAY_COLOR_KEY) {
+                                    dst[x - x_min] = pixel;
+                                }
+                            }
                         }
                     }
                 }

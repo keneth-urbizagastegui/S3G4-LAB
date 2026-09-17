@@ -20,6 +20,19 @@ static uint16_t *s_overlay_buf = NULL; // 320 x 480 RGB565 en PSRAM
 static int64_t s_strip_start_us = 0;
 static bool s_strip_in_flight = false;
 
+static void fill_overlay_rect_with_color_key(int16_t x, int16_t y, int16_t w, int16_t h) {
+    if (!s_overlay_buf || w <= 0 || h <= 0) return;
+
+    for (int ly = y; ly < y + h; ly++) {
+        int x_phys = 319 - ly;
+        if (x_phys < 0 || x_phys >= 320) continue;
+        for (int lx = x; lx < x + w; lx++) {
+            if (lx < 0 || lx >= 480) continue;
+            s_overlay_buf[lx * 320 + x_phys] = LCD_OVERLAY_COLOR_KEY;
+        }
+    }
+}
+
 void lcd_bus_init(void) {
     if (!s_bus_mutex) {
         s_bus_mutex = xSemaphoreCreateRecursiveMutex();
@@ -28,7 +41,10 @@ void lcd_bus_init(void) {
     if (!s_overlay_buf) {
         s_overlay_buf = (uint16_t *)heap_caps_malloc(320 * 480 * sizeof(uint16_t), MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT);
         assert(s_overlay_buf != NULL);
-        memset(s_overlay_buf, 0, 320 * 480 * sizeof(uint16_t));
+        // El verde puro RGB565 es el color clave: al componer, deja ver el video.
+        for (int i = 0; i < 320 * 480; i++) {
+            s_overlay_buf[i] = LCD_OVERLAY_COLOR_KEY;
+        }
         ESP_LOGI(TAG, "Buffer de overlay PSRAM (320x480 RGB565, %u bytes) inicializado.",
                  (unsigned int)(320 * 480 * sizeof(uint16_t)));
     }
@@ -55,6 +71,12 @@ void lcd_bus_set_overlay_rect(int id, int16_t x, int16_t y, int16_t w, int16_t h
         s_overlay_rects[id].nat_x_max = 0;
     }
     portEXIT_CRITICAL(&s_rect_mux);
+
+    // LVGL renderiza después de este cambio de estado; preparar antes la zona de
+    // su capa hace que los píxeles que no llegue a dibujar sigan siendo transparentes.
+    if (enabled) {
+        fill_overlay_rect_with_color_key(x, y, w, h);
+    }
 }
 
 void lcd_bus_clear_overlays(void) {
