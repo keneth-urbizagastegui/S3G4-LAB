@@ -37,6 +37,7 @@ const media_item_t *media_library_get(int index);
 int  media_library_index_of(const char *path);
 void media_library_set_progress_cb(media_scan_progress_cb_t cb);
 void media_library_mark_failed(int index);
+void media_library_set_resume(const char *path, uint32_t pos_ms);
 
 #ifdef __cplusplus
 }

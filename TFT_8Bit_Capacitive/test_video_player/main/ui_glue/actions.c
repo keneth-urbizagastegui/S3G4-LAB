@@ -231,15 +231,11 @@ void ui_glue_init(void) {
         int idx = media_library_index_of(s_settings.last_path);
         const media_item_t *it = (idx >= 0) ? media_library_get(idx) : NULL;
         if (it && it->compatible && !it->failed_playback) {
-            s_view_mode = VIEW_MODE_FULLSCREEN;
-            player_cmd_t cmd = {.type = PCMD_SET_VIDEO_RECT, .rect = {0, 40, 480, 196}};
-            player_cmd_send(&cmd);
-            lcd_bus_set_video_rect(0, 40, 480, 196);
+            ui_glue_set_view_mode(VIEW_MODE_FULLSCREEN);
             return;
         }
     }
-    s_view_mode = VIEW_MODE_STUDIO;
-    lcd_bus_set_video_rect(0, 0, 0, 0);
+    ui_glue_set_view_mode(VIEW_MODE_STUDIO);
 }
 
 bool ui_glue_is_osd_visible(void) {
@@ -248,20 +244,25 @@ bool ui_glue_is_osd_visible(void) {
 
 void ui_glue_set_osd_visible(bool visible) {
     s_osd_visible = visible;
-    if (visible) {
-        player_cmd_t cmd = {.type = PCMD_SET_VIDEO_RECT, .rect = {0, 40, 480, 196}};
-        player_cmd_send(&cmd);
-        lcd_bus_set_video_rect(0, 40, 480, 196);
-        if (objects.osd_top) lv_obj_remove_flag(objects.osd_top, LV_OBJ_FLAG_HIDDEN);
-        if (objects.osd_bottom) lv_obj_remove_flag(objects.osd_bottom, LV_OBJ_FLAG_HIDDEN);
-        if (objects.bar_mini_progress) lv_obj_add_flag(objects.bar_mini_progress, LV_OBJ_FLAG_HIDDEN);
+    if (s_view_mode == VIEW_MODE_FULLSCREEN) {
+        if (visible) {
+            player_cmd_t cmd = {.type = PCMD_SET_VIDEO_RECT, .rect = {0, 40, 480, 196}};
+            player_cmd_send(&cmd);
+            lcd_bus_set_video_rect(0, 40, 480, 196);
+            if (objects.osd_top) lv_obj_remove_flag(objects.osd_top, LV_OBJ_FLAG_HIDDEN);
+            if (objects.osd_bottom) lv_obj_remove_flag(objects.osd_bottom, LV_OBJ_FLAG_HIDDEN);
+            if (objects.bar_mini_progress) lv_obj_add_flag(objects.bar_mini_progress, LV_OBJ_FLAG_HIDDEN);
+        } else {
+            if (objects.osd_top) lv_obj_add_flag(objects.osd_top, LV_OBJ_FLAG_HIDDEN);
+            if (objects.osd_bottom) lv_obj_add_flag(objects.osd_bottom, LV_OBJ_FLAG_HIDDEN);
+            if (objects.bar_mini_progress) lv_obj_remove_flag(objects.bar_mini_progress, LV_OBJ_FLAG_HIDDEN);
+            player_cmd_t cmd = {.type = PCMD_SET_VIDEO_RECT, .rect = {0, 0, 480, 320}};
+            player_cmd_send(&cmd);
+            lcd_bus_set_video_rect(0, 0, 480, 320);
+        }
     } else {
-        if (objects.osd_top) lv_obj_add_flag(objects.osd_top, LV_OBJ_FLAG_HIDDEN);
-        if (objects.osd_bottom) lv_obj_add_flag(objects.osd_bottom, LV_OBJ_FLAG_HIDDEN);
-        if (objects.bar_mini_progress) lv_obj_remove_flag(objects.bar_mini_progress, LV_OBJ_FLAG_HIDDEN);
-        player_cmd_t cmd = {.type = PCMD_SET_VIDEO_RECT, .rect = {0, 0, 480, 320}};
-        player_cmd_send(&cmd);
-        lcd_bus_set_video_rect(0, 0, 480, 320);
+        // Fuera de scr_player el video nunca se pinta (rectangulo siempre {0,0,0,0})
+        lcd_bus_set_video_rect(0, 0, 0, 0);
     }
 }
 
@@ -279,17 +280,40 @@ int ui_glue_get_hud_forced(void) {
 }
 
 void ui_glue_set_view_mode(view_mode_t mode) {
+    view_mode_t old_mode = s_view_mode;
     s_view_mode = mode;
+    printf("VIEW,mode=%s,track=%d\n", (mode == VIEW_MODE_FULLSCREEN) ? "player" : "library", s_current_track_idx);
+    fflush(stdout);
+
     if (mode == VIEW_MODE_FULLSCREEN) {
         loadScreen(SCREEN_ID_SCR_PLAYER);
         if (s_osd_visible) {
             lcd_bus_set_video_rect(0, 40, 480, 196);
+            player_cmd_t cmd = {.type = PCMD_SET_VIDEO_RECT, .rect = {0, 40, 480, 196}};
+            player_cmd_send(&cmd);
         } else {
             lcd_bus_set_video_rect(0, 0, 480, 320);
+            player_cmd_t cmd = {.type = PCMD_SET_VIDEO_RECT, .rect = {0, 0, 480, 320}};
+            player_cmd_send(&cmd);
         }
     } else {
+        // Al salir de scr_player el video se pausa y se guarda la posicion
+        if (old_mode == VIEW_MODE_FULLSCREEN) {
+            player_status_t st;
+            player_get_status(&st);
+            if (st.state == PST_PLAYING) {
+                player_cmd_t cmd_pause = {.type = PCMD_PAUSE};
+                player_cmd_send(&cmd_pause);
+            }
+            const media_item_t *cur = media_library_get(s_current_track_idx);
+            if (cur && cur->compatible) {
+                media_library_set_resume(cur->path, (uint32_t)st.pos_ms);
+            }
+        }
         loadScreen(SCREEN_ID_SCR_LIBRARY);
         lcd_bus_set_video_rect(0, 0, 0, 0);
+        player_cmd_t cmd = {.type = PCMD_SET_VIDEO_RECT, .rect = {0, 0, 0, 0}};
+        player_cmd_send(&cmd);
     }
 }
 
@@ -324,8 +348,8 @@ void ui_glue_tick(void) {
         lv_image_set_src(objects.lbl_play_icon, (st.state == PST_PLAYING) ? &img_pause : &img_play);
     }
 
-    // Auto-hide OSD
-    if (s_hud_forced_mode == 0 && s_osd_visible && st.state == PST_PLAYING && !s_seeking) {
+    // Auto-hide OSD (solo en scr_player / modo fullscreen)
+    if (s_view_mode == VIEW_MODE_FULLSCREEN && s_hud_forced_mode == 0 && s_osd_visible && st.state == PST_PLAYING && !s_seeking) {
         int64_t now = esp_timer_get_time() / 1000;
         uint32_t timeout = s_settings.osd_ms ? s_settings.osd_ms : 3000;
         if (now - s_last_touch_time >= timeout) {
@@ -519,16 +543,8 @@ void action_toggle_osd(lv_event_t *e) {
 void action_open_library(lv_event_t *e) {
     s_last_touch_time = esp_timer_get_time() / 1000;
     if (s_locked) return;
-    s_view_mode = VIEW_MODE_STUDIO;
-    lcd_bus_set_video_rect(0, 0, 0, 0);
-    player_cmd_t cmd = {.type = PCMD_SET_VIDEO_RECT, .rect = {0, 0, 0, 0}};
-    player_cmd_send(&cmd);
     action_library_populate(NULL);
-    loadScreen(SCREEN_ID_SCR_LIBRARY);
-    if (objects.scr_library) {
-        lv_screen_load(objects.scr_library);
-        lv_obj_update_layout(objects.scr_library);
-    }
+    ui_glue_set_view_mode(VIEW_MODE_STUDIO);
     ESP_LOGI(TAG, "Action: open_library");
 }
 
@@ -766,21 +782,7 @@ void action_play_index(lv_event_t *e) {
                  (unsigned long)resume_pos, (unsigned long)item->resume_ms);
     }
 
-    s_view_mode = VIEW_MODE_FULLSCREEN;
-    loadScreen(SCREEN_ID_SCR_PLAYER);
-    if (objects.scr_player) {
-        lv_screen_load(objects.scr_player);
-        lv_obj_update_layout(objects.scr_player);
-    }
-    if (s_osd_visible) {
-        player_cmd_t cmd_rect = {.type = PCMD_SET_VIDEO_RECT, .rect = {0, 40, 480, 196}};
-        player_cmd_send(&cmd_rect);
-        lcd_bus_set_video_rect(0, 40, 480, 196);
-    } else {
-        player_cmd_t cmd_rect = {.type = PCMD_SET_VIDEO_RECT, .rect = {0, 0, 480, 320}};
-        player_cmd_send(&cmd_rect);
-        lcd_bus_set_video_rect(0, 0, 480, 320);
-    }
+    ui_glue_set_view_mode(VIEW_MODE_FULLSCREEN);
 }
 
 void action_rescan(lv_event_t *e) {

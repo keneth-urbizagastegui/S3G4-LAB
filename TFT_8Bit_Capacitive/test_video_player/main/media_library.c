@@ -739,3 +739,20 @@ esp_err_t media_library_scan(void) {
 
     return ESP_OK;
 }
+
+void media_library_set_resume(const char *path, uint32_t pos_ms) {
+    if (!path) return;
+    int idx = media_library_index_of(path);
+    if (idx < 0) return;
+    media_item_t *it = &s_items[idx];
+
+    uint32_t effective_pos = pos_ms;
+    if (pos_ms < 5000 || (it->dur_ms > 10000 && pos_ms > it->dur_ms - 10000)) {
+        effective_pos = 0;
+    }
+
+    it->resume_ms = effective_pos;
+    settings_nvs_set_pos(path, effective_pos);
+    ESP_LOGI(TAG, "media_library_set_resume: track %d (%s) -> %lu ms (effective %lu ms)",
+             idx, path, (unsigned long)pos_ms, (unsigned long)effective_pos);
+}
