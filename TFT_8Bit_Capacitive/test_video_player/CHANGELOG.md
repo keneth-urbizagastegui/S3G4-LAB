@@ -8,6 +8,19 @@ reloj de reproducción salta por llegar tarde, sobre el total · ambos con la pa
 
 ---
 
+## `vp-v0.7` — Interfaz nueva en EEZ Studio (F6a) · 17/09/2026
+- **Interfaz rehecha en EEZ Studio** (reemplaza a la UI provisional): reproductor, biblioteca y
+  pantalla sin videos, con los 25 iconos del diseño, tildes en las fuentes y 0 errores en EEZ.
+- Botones del reproductor probados con el dedo por Keneth: reproducir/pausa, anterior/siguiente,
+  ±10 s, barra de progreso, repetir (off/todo/uno), aleatorio, atrás (pausa y va a la biblioteca).
+- Biblioteca con miniaturas, tarjetas no compatibles y hoja «Continuar / Desde el principio».
+- Los controles aparecen de golpe (una sola ventana de envío sincronizada con TE).
+- Ya no se queda colgada con un video que no se ve: vuelve a la biblioteca.
+- Rendimiento: **descartes 0,18 % / 0,19 %** (controles ocultos / visibles), ~30 fps.
+- Corregido en auditoría: un cambio que anulaba los descartes (el 0 % era falso).
+- **Pendiente para F6b:** cola, fin de video sin repetir, tarjeta de bloqueo, mejoras de repetir uno,
+  y la línea vertical al final.
+
 ## `vp-v0.6` — Biblioteca dinámica y posición guardada · 16/09/2026
 - **Los videos se leen de la tarjeta**, sin lista en el código: título y subtítulo del `.json`,
   miniatura del `.jpg`. Escaneo de 4 videos en 0,8 s. Un quinto video aparece sin recompilar.
@@ -66,4 +79,4 @@ reloj de reproducción salta por llegar tarde, sobre el total · ambos con la pa
 
 ## En curso (sin etiquetar)
 
-- **F6** — interfaz nueva en EEZ Studio.
+- **F6b** — cola, ajustes, gestos, estadísticas, bloqueo y marquesina.
