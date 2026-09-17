@@ -67,6 +67,23 @@ static lv_obj_t *s_btn_resume_close = NULL;
 static int s_resume_target_idx = -1;
 static void show_resume_sheet(int idx);
 
+/* Reutiliza una única pista de salto: nunca quedan rectángulos activos a ambos lados. */
+static void show_seek_hint(int16_t x, const lv_image_dsc_t *icon, const char *text) {
+    if (!objects.ovl_seek_hint) return;
+
+    /* Primero retirar el rectángulo y el objeto de su posición anterior.  Así el
+     * flush de LVGL no puede dejar una tarjeta vacía en el lado opuesto. */
+    lcd_bus_set_overlay_rect(2, 0, 0, 0, 0, false);
+    lv_obj_add_flag(objects.ovl_seek_hint, LV_OBJ_FLAG_HIDDEN);
+
+    lv_obj_set_pos(objects.ovl_seek_hint, x, 116);
+    if (objects.img_seek_hint) lv_image_set_src(objects.img_seek_hint, icon);
+    if (objects.lbl_seek_hint) lv_label_set_text(objects.lbl_seek_hint, text);
+
+    lcd_bus_set_overlay_rect(2, x, 116, 100, 88, true);
+    lv_obj_remove_flag(objects.ovl_seek_hint, LV_OBJ_FLAG_HIDDEN);
+}
+
 #define BRIGHTNESS_REAL_MIN 25
 #define BRIGHTNESS_REAL_MAX 100
 
@@ -468,7 +485,7 @@ static void player_touch_gesture_event_cb(lv_event_t *e) {
                 snprintf(buf, sizeof(buf), "%d%%", new_bri);
                 lv_label_set_text(objects.lbl_set_bri_val, buf);
             }
-            s_brightness_hide_ms = now + 1200;
+            s_brightness_hide_ms = now + 600;
         }
     } else if (code == LV_EVENT_RELEASED) {
         s_last_touch_time = now;
@@ -499,17 +516,9 @@ static void player_touch_gesture_event_cb(lv_event_t *e) {
                     s_seek_in_flight = true;
                     s_seek_hint_hide_ms = now + 600;
 
-                    if (objects.ovl_seek_hint) {
-                        lv_obj_set_pos(objects.ovl_seek_hint, 64, 116);
-                        if (objects.img_seek_hint) lv_image_set_src(objects.img_seek_hint, &img_seek_back);
-                        if (objects.lbl_seek_hint) {
-                            char buf[16];
-                            snprintf(buf, sizeof(buf), "%ld s", (long)s_accum_seek_s);
-                            lv_label_set_text(objects.lbl_seek_hint, buf);
-                        }
-                        lv_obj_remove_flag(objects.ovl_seek_hint, LV_OBJ_FLAG_HIDDEN);
-                        lcd_bus_set_overlay_rect(2, 64, 116, 100, 88, true);
-                    }
+                    char buf[16];
+                    snprintf(buf, sizeof(buf), "%ld s", (long)s_accum_seek_s);
+                    show_seek_hint(64, &img_seek_back, buf);
                     ESP_LOGI(TAG, "Gestos: Doble toque izquierdo -> acum %ld s", (long)s_accum_seek_s);
                 } else if (s_touch_down_pos.x > 320) {
                     // Tercio derecho: avanzar
@@ -521,17 +530,9 @@ static void player_touch_gesture_event_cb(lv_event_t *e) {
                     s_seek_in_flight = true;
                     s_seek_hint_hide_ms = now + 600;
 
-                    if (objects.ovl_seek_hint) {
-                        lv_obj_set_pos(objects.ovl_seek_hint, 316, 116);
-                        if (objects.img_seek_hint) lv_image_set_src(objects.img_seek_hint, &img_seek_fwd);
-                        if (objects.lbl_seek_hint) {
-                            char buf[16];
-                            snprintf(buf, sizeof(buf), "+%ld s", (long)s_accum_seek_s);
-                            lv_label_set_text(objects.lbl_seek_hint, buf);
-                        }
-                        lv_obj_remove_flag(objects.ovl_seek_hint, LV_OBJ_FLAG_HIDDEN);
-                        lcd_bus_set_overlay_rect(2, 316, 116, 100, 88, true);
-                    }
+                    char buf[16];
+                    snprintf(buf, sizeof(buf), "+%ld s", (long)s_accum_seek_s);
+                    show_seek_hint(316, &img_seek_fwd, buf);
                     ESP_LOGI(TAG, "Gestos: Doble toque derecho -> acum +%ld s", (long)s_accum_seek_s);
                 } else {
                     // Tercio central: reproducir / pausar
@@ -1355,7 +1356,7 @@ void ui_glue_tick(void) {
         }
     }
 
-    // Gestos: auto-ocultar indicador de brillo tras 1.2 s
+    // Gestos: auto-ocultar indicador de brillo tras 600 ms
     if (s_brightness_hide_ms > 0 && (now_gest >= s_brightness_hide_ms)) {
         s_brightness_hide_ms = 0;
         if (objects.ovl_brightness) lv_obj_add_flag(objects.ovl_brightness, LV_OBJ_FLAG_HIDDEN);
@@ -1366,7 +1367,7 @@ void ui_glue_tick(void) {
         if (st_b.state != PST_PLAYING) {
             avi_player_reblit_current_frame();
         }
-        ESP_LOGI(TAG, "Gestos: Brillo auto-ocultado tras 1.2s");
+        ESP_LOGI(TAG, "Gestos: Brillo auto-ocultado tras 600ms");
     }
 
     // B5: Actualización de métricas en vivo en ovl_stats (<= 2 Hz)
