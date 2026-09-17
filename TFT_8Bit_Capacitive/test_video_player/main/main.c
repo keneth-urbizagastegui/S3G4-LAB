@@ -416,6 +416,7 @@ static void gui_task(void *arg) {
 
     // Inicializar EEZ UI y pegamento
     ui_init();
+    ui_glue_apply_fonts();
     ui_glue_init();
     ui_glue_dump_all();
     if (ui_glue_get_view_mode() == VIEW_MODE_STUDIO) {

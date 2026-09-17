@@ -11,6 +11,9 @@ idf_component_register(
          "ui/ui_image_seek_back.c" "ui/ui_image_seek_fwd.c" "ui/ui_image_settings.c"
          "ui/ui_image_shuffle.c" "ui/ui_image_warning.c"
          "ui_glue/actions.c" "ui_glue/vars.c"
-    INCLUDE_DIRS "." "ui" "ui_glue"
+         "ui_fonts/ui_font_montserrat_12.c" "ui_fonts/ui_font_montserrat_14.c" "ui_fonts/ui_font_montserrat_20.c"
+    INCLUDE_DIRS "." "ui" "ui_glue" "ui_fonts"
     REQUIRES esp_lcd driver esp_driver_gpio esp_driver_i2c esp_driver_spi fatfs vfs esp_timer freertos heap lvgl esp_driver_ledc espressif__esp_new_jpeg esp_system nvs_flash espressif__cjson
 )
+
+target_compile_definitions(${COMPONENT_LIB} PRIVATE LV_LVGL_H_INCLUDE_SIMPLE)

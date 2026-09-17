@@ -5,6 +5,7 @@
 #include "ui/ui.h"
 #include "ui/styles.h"
 #include "ui_glue.h"
+#include "ui_fonts.h"
 #include "player.h"
 #include "perf.h"
 #include "settings_nvs.h"
@@ -24,6 +25,47 @@
 #include <string.h>
 
 static const char *TAG = "UI_ACTIONS";
+
+static const lv_font_t *ui_glue_replacement_font(const lv_font_t *font) {
+    if (font == &lv_font_montserrat_12) return &ui_font_montserrat_12;
+    if (font == &lv_font_montserrat_14) return &ui_font_montserrat_14;
+    if (font == &lv_font_montserrat_20) return &ui_font_montserrat_20;
+    return NULL;
+}
+
+static void ui_glue_apply_fonts_recursive(lv_obj_t *obj) {
+    const lv_font_t *replacement = ui_glue_replacement_font(
+        lv_obj_get_style_text_font(obj, LV_PART_MAIN));
+    if (replacement) {
+        lv_obj_set_style_text_font(obj, replacement, LV_PART_MAIN);
+    }
+
+    uint32_t child_count = lv_obj_get_child_count(obj);
+    for (uint32_t i = 0; i < child_count; ++i) {
+        ui_glue_apply_fonts_recursive(lv_obj_get_child(obj, i));
+    }
+}
+
+void ui_glue_apply_fonts(void) {
+    lv_obj_t *screens[] = {
+        objects.scr_player,
+        objects.scr_library,
+        objects.scr_no_media,
+        objects.scr_queue,
+        objects.scr_settings,
+    };
+
+    for (size_t i = 0; i < sizeof(screens) / sizeof(screens[0]); ++i) {
+        if (screens[i]) ui_glue_apply_fonts_recursive(screens[i]);
+    }
+
+    for (lv_display_t *display = lv_display_get_next(NULL); display;
+         display = lv_display_get_next(display)) {
+        ui_glue_apply_fonts_recursive(lv_display_get_layer_bottom(display));
+        ui_glue_apply_fonts_recursive(lv_display_get_layer_top(display));
+        ui_glue_apply_fonts_recursive(lv_display_get_layer_sys(display));
+    }
+}
 
 static bool s_osd_visible = true;
 static int s_hud_forced_mode = 0; // 0=auto, 1=forced hidden, 2=forced visible
