@@ -26,6 +26,7 @@ static view_mode_t s_view_mode = VIEW_MODE_FULLSCREEN;
 static app_settings_t s_settings;
 
 static bool s_locked = false;
+static bool s_consume_touch_until_release = false;
 static lv_obj_t *s_ovl_lock = NULL;
 static lv_obj_t *s_lock_card = NULL;
 static lv_obj_t *s_arc_unlock = NULL;
@@ -210,7 +211,15 @@ static void lock_overlay_event_cb(lv_event_t *e) {
     if (code == LV_EVENT_PRESSED) {
         s_lock_touch_start_us = esp_timer_get_time();
         if (s_lock_card) {
+            bool was_hidden = lv_obj_has_flag(s_lock_card, LV_OBJ_FLAG_HIDDEN);
             lv_obj_remove_flag(s_lock_card, LV_OBJ_FLAG_HIDDEN);
+            if (was_hidden) {
+                // Pausar direct blit mientras la tarjeta esté visible para no sobreescribirla
+                lcd_bus_set_video_rect(0, 0, 0, 0);
+                player_cmd_t cmd = {.type = PCMD_SET_VIDEO_RECT, .rect = {0, 0, 0, 0}};
+                player_cmd_send(&cmd);
+                ESP_LOGI(TAG, "Toque en pantalla bloqueada -> tarjeta mostrada con blit pausado");
+            }
         }
         s_lock_show_time = esp_timer_get_time() / 1000;
         if (s_arc_unlock) {
@@ -302,9 +311,9 @@ static void init_lock_overlay(void) {
     lv_obj_remove_flag(icon, LV_OBJ_FLAG_CLICKABLE);
     lv_obj_add_flag(icon, LV_OBJ_FLAG_EVENT_BUBBLE);
 
-    // Title: x=0, y=84, w=200, h=16
+    // Title: x=0, y=86, w=200, h=16
     lv_obj_t *lbl_title = lv_label_create(s_lock_card);
-    lv_obj_set_pos(lbl_title, 0, 84);
+    lv_obj_set_pos(lbl_title, 0, 86);
     lv_obj_set_size(lbl_title, 200, 16);
     lv_label_set_text(lbl_title, "Pantalla bloqueada");
     lv_obj_set_style_text_font(lbl_title, &lv_font_montserrat_14, 0);
@@ -328,6 +337,8 @@ static void init_lock_overlay(void) {
 void ui_glue_unlock(void) {
     s_locked = false;
     s_lock_touch_start_us = 0;
+    s_consume_touch_until_release = true;
+    s_last_touch_time = esp_timer_get_time() / 1000;
     if (s_ovl_lock) {
         lv_obj_add_flag(s_ovl_lock, LV_OBJ_FLAG_HIDDEN);
     }
@@ -337,7 +348,7 @@ void ui_glue_unlock(void) {
     ui_glue_set_osd_visible(true);
     printf("UINAV,btn=unlock,result=PASS\n");
     fflush(stdout);
-    ESP_LOGI(TAG, "Action: unlock -> pantalla desbloqueada");
+    ESP_LOGI(TAG, "Action: unlock -> pantalla desbloqueada. OSD visible y toque residual consumido.");
 }
 
 void ui_glue_init(void) {
@@ -507,8 +518,17 @@ void ui_glue_tick(void) {
         lv_image_set_src(objects.lbl_play_icon, (st.state == PST_PLAYING) ? &img_pause : &img_play);
     }
 
+    // Si se acaba de desbloquear y el usuario sigue tocando, esperar a que suelte
+    if (s_consume_touch_until_release) {
+        if (!touch_is_pressed()) {
+            s_consume_touch_until_release = false;
+            s_last_touch_time = esp_timer_get_time() / 1000;
+            ESP_LOGI(TAG, "Toque de desbloqueo liberado. Auto-ocultar OSD reiniciado a 3000 ms.");
+        }
+    }
+
     // Auto-hide OSD (solo en scr_player / modo fullscreen)
-    if (s_view_mode == VIEW_MODE_FULLSCREEN && s_hud_forced_mode == 0 && s_osd_visible && st.state == PST_PLAYING && !s_seeking) {
+    if (s_view_mode == VIEW_MODE_FULLSCREEN && s_hud_forced_mode == 0 && s_osd_visible && st.state == PST_PLAYING && !s_seeking && !s_consume_touch_until_release) {
         int64_t now = esp_timer_get_time() / 1000;
         uint32_t timeout = s_settings.osd_ms ? s_settings.osd_ms : 3000;
         if (now - s_last_touch_time >= timeout) {
@@ -521,6 +541,11 @@ void ui_glue_tick(void) {
         int64_t now = esp_timer_get_time() / 1000;
         if (now - s_lock_show_time >= 2000 && s_lock_touch_start_us == 0) {
             lv_obj_add_flag(s_lock_card, LV_OBJ_FLAG_HIDDEN);
+            // Reanudar el blit directo de video a pantalla completa
+            lcd_bus_set_video_rect(0, 0, 480, 320);
+            player_cmd_t cmd = {.type = PCMD_SET_VIDEO_RECT, .rect = {0, 0, 480, 320}};
+            player_cmd_send(&cmd);
+            ESP_LOGI(TAG, "Tarjeta de bloqueo auto-ocultada tras 2s -> blit directo reanudado");
         }
     }
 }
@@ -685,14 +710,23 @@ void action_lock(lv_event_t *e) {
     s_lock_show_time = esp_timer_get_time() / 1000;
     s_lock_touch_start_us = 0;
 
+    // Pausar blit directo (video_rect = 0) mientras la tarjeta esté visible (2s) para no sobreescribirla
+    lcd_bus_set_video_rect(0, 0, 0, 0);
+    player_cmd_t cmd = {.type = PCMD_SET_VIDEO_RECT, .rect = {0, 0, 0, 0}};
+    player_cmd_send(&cmd);
+
     printf("UINAV,btn=lock,result=PASS\n");
     fflush(stdout);
-    ESP_LOGI(TAG, "Action: lock -> pantalla bloqueada");
+    ESP_LOGI(TAG, "Action: lock -> pantalla bloqueada con tarjeta visible 2s");
 }
 
 void action_toggle_osd(lv_event_t *e) {
     s_last_touch_time = esp_timer_get_time() / 1000;
     if (s_locked) return;
+    if (s_consume_touch_until_release) {
+        ESP_LOGI(TAG, "action_toggle_osd ignorado: consumiendo toque residual de desbloqueo");
+        return;
+    }
     if (s_hud_forced_mode != 0) return;
     ui_glue_set_osd_visible(!s_osd_visible);
     ESP_LOGI(TAG, "Action: toggle_osd -> visible=%d", s_osd_visible);
@@ -975,6 +1009,11 @@ void ui_glue_run_uinav_test(void) {
     wait_gui_ms(150);
     bool unlock_ok = !s_locked;
     printf("UINAV,btn=unlock,result=%s\n", unlock_ok ? "PASS" : "FAIL");
+
+    // A1: OSD debe seguir visible 1 s después de soltar
+    wait_gui_ms(1000);
+    bool osd_persist_ok = s_osd_visible;
+    printf("UINAV,btn=unlock_osd_persist,result=%s\n", osd_persist_ok ? "PASS" : "FAIL");
 
     fflush(stdout);
     ESP_LOGI(TAG, "=== FIN PRUEBA UINAV ===");

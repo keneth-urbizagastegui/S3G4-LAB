@@ -219,6 +219,13 @@ static void lvgl_touch_read_cb(lv_indev_t *indev, lv_indev_data_t *data) {
     }
 }
 
+bool touch_is_pressed(void) {
+    portENTER_CRITICAL(&s_touch_mux);
+    bool p = s_shared_touch.pressed;
+    portEXIT_CRITICAL(&s_touch_mux);
+    return p;
+}
+
 // -------------------------------------------------------------
 // Tarea táctil desacoplada (Núcleo 0, prioridad 6 > gui_task, cada 10 ms)
 // -------------------------------------------------------------

@@ -35,6 +35,7 @@ bool ui_glue_is_uinav_running(void);
 void ui_glue_dump_all(void);
 void ui_glue_show_toast(const char *title, const char *msg, bool is_error);
 void ui_glue_fix_all_button_flags(void);
+bool touch_is_pressed(void);
 
 #ifdef __cplusplus
 }
