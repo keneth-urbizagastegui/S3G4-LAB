@@ -3643,7 +3643,7 @@
                                     "left": 0,
                                     "top": 44,
                                     "width": 260,
-                                    "height": 232,
+                                    "height": 276,
                                     "leftUnit": "px",
                                     "topUnit": "px",
                                     "widthUnit": "px",
@@ -3693,7 +3693,7 @@
                                     "widgetFlags": "PRESS_LOCK|CLICK_FOCUSABLE|GESTURE_BUBBLE|SNAPPABLE",
                                     "flagScrollbarMode": "off",
                                     "hiddenFlagType": "literal",
-                                    "hiddenFlag": false,
+                                    "hiddenFlag": true,
                                     "localStyles": {
                                         "objID": "12b1de7b-ef4c-43a9-997a-96e581035bb1",
                                         "definition": {

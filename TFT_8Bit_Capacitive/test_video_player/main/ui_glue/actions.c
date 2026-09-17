@@ -194,8 +194,6 @@ void ui_glue_fix_all_button_flags(void) {
     fix_button_events(objects.btn_retry);
     fix_button_events(objects.btn_settings_alt);
     fix_button_events(objects.btn_queue_close);
-    fix_button_events(objects.btn_q_repeat);
-    fix_button_events(objects.btn_q_shuffle);
     fix_button_events(objects.btn_back_settings);
     fix_button_events(objects.btn_tab_0);
     fix_button_events(objects.btn_tab_1);
@@ -209,11 +207,8 @@ void ui_glue_fix_all_button_flags(void) {
 void ui_glue_dump_all(void) {
     ui_glue_fix_all_button_flags();
     dump_widget("btn_queue_close", objects.btn_queue_close);
-    dump_widget("btn_q_repeat", objects.btn_q_repeat);
-    dump_widget("btn_q_shuffle", objects.btn_q_shuffle);
     dump_widget("queue_list", objects.queue_list);
     dump_widget("lbl_queue_title", objects.lbl_queue_title);
-    dump_widget("lbl_q_mode", objects.lbl_q_mode);
     dump_widget("btn_back", objects.btn_back);
     dump_widget("lbl_title", objects.lbl_title);
     dump_widget("lbl_subtitle", objects.lbl_subtitle);
@@ -695,42 +690,6 @@ static void queue_row_click_cb(lv_event_t *e) {
     ui_glue_set_view_mode(VIEW_MODE_FULLSCREEN);
 }
 
-void update_queue_footer(void) {
-    if (!objects.lbl_q_mode) return;
-    player_status_t pst;
-    player_get_status(&pst);
-
-    if (objects.img_q_repeat) {
-        if (pst.repeat != REPEAT_OFF) {
-            lv_obj_set_style_image_recolor(objects.img_q_repeat, lv_color_hex(theme_colors[active_theme_index][6]), 0);
-            lv_obj_set_style_image_recolor_opa(objects.img_q_repeat, 255, 0);
-        } else {
-            lv_obj_set_style_image_recolor(objects.img_q_repeat, lv_color_hex(theme_colors[active_theme_index][5]), 0);
-            lv_obj_set_style_image_recolor_opa(objects.img_q_repeat, 255, 0);
-        }
-    }
-
-    if (objects.img_q_shuffle) {
-        if (pst.shuffle) {
-            lv_obj_set_style_image_recolor(objects.img_q_shuffle, lv_color_hex(theme_colors[active_theme_index][6]), 0);
-            lv_obj_set_style_image_recolor_opa(objects.img_q_shuffle, 255, 0);
-        } else {
-            lv_obj_set_style_image_recolor(objects.img_q_shuffle, lv_color_hex(theme_colors[active_theme_index][5]), 0);
-            lv_obj_set_style_image_recolor_opa(objects.img_q_shuffle, 255, 0);
-        }
-    }
-
-    if (pst.shuffle) {
-        lv_label_set_text_static(objects.lbl_q_mode, "Aleatorio");
-    } else if (pst.repeat == REPEAT_ALL) {
-        lv_label_set_text_static(objects.lbl_q_mode, "Repetir todo");
-    } else if (pst.repeat == REPEAT_ONE) {
-        lv_label_set_text_static(objects.lbl_q_mode, "Repetir uno");
-    } else {
-        lv_label_set_text_static(objects.lbl_q_mode, "Repetir desc.");
-    }
-}
-
 static lv_obj_t *create_queue_row_widget(lv_obj_t *parent, int idx) {
     const media_item_t *item = media_library_get(idx);
     if (!item) return NULL;
@@ -849,7 +808,6 @@ void ui_glue_populate_queue(void) {
     if (cur_row_obj) {
         lv_obj_scroll_to_view(cur_row_obj, LV_ANIM_OFF);
     }
-    update_queue_footer();
 }
 
 static int s_active_settings_tab = 0;
@@ -2707,7 +2665,6 @@ void action_set_repeat(lv_event_t *e) {
             lv_obj_add_state(objects.btn_repeat, LV_STATE_CHECKED);
         }
     }
-    update_queue_footer();
     ESP_LOGI(TAG, "Action: set_repeat -> %d", s_settings.repeat);
 }
 
@@ -2730,7 +2687,6 @@ void action_set_shuffle(lv_event_t *e) {
             lv_obj_remove_state(objects.btn_shuffle, LV_STATE_CHECKED);
         }
     }
-    update_queue_footer();
     ESP_LOGI(TAG, "Action: set_shuffle -> %d", s_settings.shuffle);
 }
 
