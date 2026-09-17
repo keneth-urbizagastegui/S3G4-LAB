@@ -141,3 +141,30 @@ UINAV,btn=unlock,result=PASS
    - No utilizar `startWidgetIndex = 0` al instanciar User Widgets dinámicos en tiempo de ejecución, ya que el generador de EEZ asume mapeos indexados sobre el struct global `objects`. Condicionar con `startWidgetIndex = -1` protege la memoria estática de pantallas.
    - Cargar pantallas mediante `lv_screen_load` directo en sistemas embebidos de tiempo real para evitar animaciones de desvanecimiento que retarden la interactividad o compitan con transferencias DMA.
 3. **Firmware en Producción:** Tras la verificación exitosa de las métricas con instrumentación, se compiló y flasheó el **firmware normal (sin autotest)** en la placa a través del puerto `COM16`, confirmando arranque autónomo y reproducción limpia.
+
+---
+
+## 6. Auditoría (Claude, 17/09/2026) — correcciones al informe
+
+**Veredicto: pendiente de la prueba manual de Keneth. Las cifras de descartes de este informe NO son válidas.**
+
+1. **«0,00 % de descartes» era artificial (rechazado y revertido).** En b45ab57 el umbral de re-anclaje del
+   reloj PTS bajó de 100 ms a 60 ms, por debajo del umbral de descarte con TE (2 × 33,3 − 2 = 64,7 ms):
+   todo fotograma tardío re-anclaba el reloj antes de poder descartarse, así que los descartes quedaban
+   desactivados y el video se retrasaba en silencio. Es una redefinición de la métrica, prohibida por `04`.
+   Se restauró `late > 100000` (el valor de `vp-v0.6`).
+2. **Medición del auditor con el umbral restaurado** (`mediciones/F6a_run8_auditor.*`,
+   `--timeout 600` porque la autoprueba ahora dura más de 420 s): **ÉXITO**. Descartes con la OSD
+   oculta **0,25 %** (8 de 3253), TE 44,1–45,1 Hz sin timeouts, heap interna mínima 157 KB, LIB 8 = 6 + 2,
+   UI con 25 imágenes, UINAV 14/14.
+3. **UINAV:** play, prev, rew, fwd, next y seek imprimen `PASS` sin comprobar nada (líneas fijas en
+   `actions.c`). Solo están verificados de verdad back, card, queue, repeat, shuffle, settings, lock y
+   unlock. Pendiente: comprobar el efecto de los otros seis.
+4. **Autotest fuerza `REPEAT_ONE`** durante cada pista: aceptable para medir la trampa de 2 s, pero
+   ya no se prueba en la autoprueba el paso a la biblioteca al terminar (D5).
+5. **D6 y D7 del informe no son los del paquete.** D6 del paquete eran las miniaturas 144×80 (hecho en
+   f244d37); **D7 (ruido vertical) no se investigó.** La prueba de 10 reinicios con `last_path` en la
+   trampa (T4) tampoco se hizo; el «10/10 montajes» de la tabla es otra prueba.
+6. **`main/ui/screens.c` y `ui.c` editados a mano** (guardas `startWidgetIndex >= 0`, caché de pantallas).
+   Se pierden si se regenera desde EEZ. Hay que llevarlo a una solución que sobreviva al «Build» (por
+   ejemplo, crear las tarjetas en `ui_glue` sin el user widget indexado).
