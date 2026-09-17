@@ -50,8 +50,16 @@ switch ($Accion) {
         if (-not (Test-Path $eez)) { throw "No existe EEZ Studio: $eez" }
         $proy = Join-Path $Proyecto 'video_player\video_player.eez-project'
         if (-not (Test-Path $proy)) { throw "No existe el proyecto EEZ: $proy" }
-        & $eez --build-project $proy
-        if ($LASTEXITCODE -ne 0) { throw "El Build de EEZ fallo con codigo $LASTEXITCODE" }
+        # La salida va a un fichero: si el proceso que llama cierra la consola, EEZ se cae con
+        # "EPIPE: broken pipe" y muestra un dialogo de error. Con el fichero no puede pasar.
+        $log = Join-Path $env:TEMP 'eez_build.log'
+        $p = Start-Process -FilePath $eez -ArgumentList "--build-project `"$proy`"" `
+            -RedirectStandardOutput $log -RedirectStandardError "$log.err" -PassThru -Wait -WindowStyle Hidden
+        $salida = (Get-Content $log -ErrorAction SilentlyContinue) -join "`n"
+        $salida
+        if ($p.ExitCode -ne 0 -or $salida -notmatch 'Build successfully finished') {
+            throw "El Build de EEZ fallo (codigo $($p.ExitCode)). Revisa $log y $log.err"
+        }
         'OK: main/ui regenerado desde EEZ'
     }
     'build' { Invoke-Idf @('build'); 'OK: build' }
