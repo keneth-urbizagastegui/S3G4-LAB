@@ -25,9 +25,11 @@ static view_mode_t s_view_mode = VIEW_MODE_FULLSCREEN;
 static app_settings_t s_settings;
 
 static bool s_locked = false;
-static lv_obj_t *s_obj_lock_overlay = NULL;
-static lv_obj_t *s_lbl_lock_msg = NULL;
+static lv_obj_t *s_ovl_lock = NULL;
+static lv_obj_t *s_lock_card = NULL;
+static lv_obj_t *s_arc_unlock = NULL;
 static int64_t s_lock_touch_start_us = 0;
+static int64_t s_lock_show_time = 0;
 
 extern void touch_inject_synthetic(uint16_t x, uint16_t y, bool pressed);
 
@@ -190,36 +192,139 @@ bool ui_glue_is_locked(void) {
     return s_locked;
 }
 
-void ui_glue_unlock(void) {
-    s_locked = false;
-    s_lock_touch_start_us = 0;
-    if (s_obj_lock_overlay) {
-        lv_obj_add_flag(s_obj_lock_overlay, LV_OBJ_FLAG_HIDDEN);
-    }
-    ui_glue_set_osd_visible(true);
-    ESP_LOGI(TAG, "Pantalla desbloqueada con exito");
-}
-
 static void lock_overlay_event_cb(lv_event_t *e) {
     lv_event_code_t code = lv_event_get_code(e);
     if (code == LV_EVENT_PRESSED) {
         s_lock_touch_start_us = esp_timer_get_time();
-        if (s_lbl_lock_msg) {
-            lv_label_set_text(s_lbl_lock_msg, "Mantén pulsado 1 s para desbloquear...");
+        if (s_lock_card) {
+            lv_obj_remove_flag(s_lock_card, LV_OBJ_FLAG_HIDDEN);
+        }
+        s_lock_show_time = esp_timer_get_time() / 1000;
+        if (s_arc_unlock) {
+            lv_arc_set_value(s_arc_unlock, 0);
         }
     } else if (code == LV_EVENT_PRESSING) {
+        s_lock_show_time = esp_timer_get_time() / 1000;
         if (s_lock_touch_start_us > 0) {
             int64_t held_us = esp_timer_get_time() - s_lock_touch_start_us;
+            int32_t val = (int32_t)((held_us * 100) / 1000000LL);
+            if (val > 100) val = 100;
+            if (s_arc_unlock) {
+                lv_arc_set_value(s_arc_unlock, val);
+            }
             if (held_us >= 1000000LL) {
                 ui_glue_unlock();
             }
         }
     } else if (code == LV_EVENT_RELEASED) {
         s_lock_touch_start_us = 0;
-        if (s_lbl_lock_msg && s_locked) {
-            lv_label_set_text(s_lbl_lock_msg, "Pantalla bloqueada — mantén pulsado 1 s para desbloquear");
+        s_lock_show_time = esp_timer_get_time() / 1000;
+        if (s_arc_unlock) {
+            lv_arc_set_value(s_arc_unlock, 0);
         }
     }
+}
+
+static void init_lock_overlay(void) {
+    if (s_ovl_lock || !objects.scr_player) return;
+
+    // Root overlay: 0, 0, 480, 320, transparent, clickable
+    s_ovl_lock = lv_obj_create(objects.scr_player);
+    lv_obj_set_pos(s_ovl_lock, 0, 0);
+    lv_obj_set_size(s_ovl_lock, 480, 320);
+    lv_obj_set_style_bg_opa(s_ovl_lock, 0, 0);
+    lv_obj_set_style_border_width(s_ovl_lock, 0, 0);
+    lv_obj_set_style_pad_all(s_ovl_lock, 0, 0);
+    lv_obj_remove_flag(s_ovl_lock, LV_OBJ_FLAG_SCROLLABLE);
+    lv_obj_add_flag(s_ovl_lock, LV_OBJ_FLAG_CLICKABLE);
+    lv_obj_add_event_cb(s_ovl_lock, lock_overlay_event_cb, LV_EVENT_ALL, NULL);
+
+    // Card: x=140, y=104, w=200, h=116, bg #0B0C0F, radius 8, border 1px #2A2D34
+    s_lock_card = lv_obj_create(s_ovl_lock);
+    lv_obj_set_pos(s_lock_card, 140, 104);
+    lv_obj_set_size(s_lock_card, 200, 116);
+    lv_obj_set_style_bg_color(s_lock_card, lv_color_hex(0x0B0C0F), 0);
+    lv_obj_set_style_bg_opa(s_lock_card, 255, 0);
+    lv_obj_set_style_border_color(s_lock_card, lv_color_hex(0x2A2D34), 0);
+    lv_obj_set_style_border_width(s_lock_card, 1, 0);
+    lv_obj_set_style_radius(s_lock_card, 8, 0);
+    lv_obj_set_style_pad_all(s_lock_card, 0, 0);
+    lv_obj_remove_flag(s_lock_card, LV_OBJ_FLAG_SCROLLABLE | LV_OBJ_FLAG_CLICKABLE);
+    lv_obj_add_flag(s_lock_card, LV_OBJ_FLAG_EVENT_BUBBLE);
+
+    // Arc unlock: centered horizontally at top: x=60, y=0, w=80, h=80
+    s_arc_unlock = lv_arc_create(s_lock_card);
+    lv_obj_set_pos(s_arc_unlock, 60, 0);
+    lv_obj_set_size(s_arc_unlock, 80, 80);
+    lv_arc_set_range(s_arc_unlock, 0, 100);
+    lv_arc_set_value(s_arc_unlock, 0);
+    lv_arc_set_bg_angles(s_arc_unlock, 0, 360);
+    lv_arc_set_rotation(s_arc_unlock, 270);
+    lv_obj_set_style_arc_color(s_arc_unlock, lv_color_hex(0x2A2D34), LV_PART_MAIN);
+    lv_obj_set_style_arc_width(s_arc_unlock, 4, LV_PART_MAIN);
+    lv_obj_set_style_arc_color(s_arc_unlock, lv_color_hex(0xF2B33D), LV_PART_INDICATOR);
+    lv_obj_set_style_arc_width(s_arc_unlock, 4, LV_PART_INDICATOR);
+    lv_obj_set_style_opa(s_arc_unlock, LV_OPA_0, LV_PART_KNOB);
+    lv_obj_remove_flag(s_arc_unlock, LV_OBJ_FLAG_CLICKABLE);
+    lv_obj_add_flag(s_arc_unlock, LV_OBJ_FLAG_EVENT_BUBBLE);
+
+    // Circle container: x=68, y=8, w=64, h=64, bg #15171C, radius 32
+    lv_obj_t *circle = lv_obj_create(s_lock_card);
+    lv_obj_set_pos(circle, 68, 8);
+    lv_obj_set_size(circle, 64, 64);
+    lv_obj_set_style_bg_color(circle, lv_color_hex(0x15171C), 0);
+    lv_obj_set_style_bg_opa(circle, 255, 0);
+    lv_obj_set_style_radius(circle, 32, 0);
+    lv_obj_set_style_border_width(circle, 0, 0);
+    lv_obj_set_style_pad_all(circle, 0, 0);
+    lv_obj_remove_flag(circle, LV_OBJ_FLAG_SCROLLABLE | LV_OBJ_FLAG_CLICKABLE);
+    lv_obj_add_flag(circle, LV_OBJ_FLAG_EVENT_BUBBLE);
+
+    // Lock icon inside circle
+    lv_obj_t *icon = lv_image_create(circle);
+    lv_image_set_src(icon, &img_lock_big);
+    lv_obj_set_style_image_recolor(icon, lv_color_hex(0xEDEDEA), 0);
+    lv_obj_set_style_image_recolor_opa(icon, 255, 0);
+    lv_obj_center(icon);
+    lv_obj_remove_flag(icon, LV_OBJ_FLAG_CLICKABLE);
+    lv_obj_add_flag(icon, LV_OBJ_FLAG_EVENT_BUBBLE);
+
+    // Title: x=0, y=84, w=200, h=16
+    lv_obj_t *lbl_title = lv_label_create(s_lock_card);
+    lv_obj_set_pos(lbl_title, 0, 84);
+    lv_obj_set_size(lbl_title, 200, 16);
+    lv_label_set_text(lbl_title, "Pantalla bloqueada");
+    lv_obj_set_style_text_font(lbl_title, &lv_font_montserrat_14, 0);
+    lv_obj_set_style_text_color(lbl_title, lv_color_hex(0xEDEDEA), 0);
+    lv_obj_set_style_text_align(lbl_title, LV_TEXT_ALIGN_CENTER, 0);
+    lv_obj_remove_flag(lbl_title, LV_OBJ_FLAG_CLICKABLE);
+    lv_obj_add_flag(lbl_title, LV_OBJ_FLAG_EVENT_BUBBLE);
+
+    // Subtitle / hint: x=0, y=100, w=200, h=14
+    lv_obj_t *lbl_hint = lv_label_create(s_lock_card);
+    lv_obj_set_pos(lbl_hint, 0, 100);
+    lv_obj_set_size(lbl_hint, 200, 14);
+    lv_label_set_text(lbl_hint, "Mantén pulsado para desbloquear");
+    lv_obj_set_style_text_font(lbl_hint, &lv_font_montserrat_12, 0);
+    lv_obj_set_style_text_color(lbl_hint, lv_color_hex(0x8E929B), 0);
+    lv_obj_set_style_text_align(lbl_hint, LV_TEXT_ALIGN_CENTER, 0);
+    lv_obj_remove_flag(lbl_hint, LV_OBJ_FLAG_CLICKABLE);
+    lv_obj_add_flag(lbl_hint, LV_OBJ_FLAG_EVENT_BUBBLE);
+}
+
+void ui_glue_unlock(void) {
+    s_locked = false;
+    s_lock_touch_start_us = 0;
+    if (s_ovl_lock) {
+        lv_obj_add_flag(s_ovl_lock, LV_OBJ_FLAG_HIDDEN);
+    }
+    if (s_arc_unlock) {
+        lv_arc_set_value(s_arc_unlock, 0);
+    }
+    ui_glue_set_osd_visible(true);
+    printf("UINAV,btn=unlock,result=PASS\n");
+    fflush(stdout);
+    ESP_LOGI(TAG, "Action: unlock -> pantalla desbloqueada");
 }
 
 void ui_glue_init(void) {
@@ -390,6 +495,14 @@ void ui_glue_tick(void) {
             ui_glue_set_osd_visible(false);
         }
     }
+
+    // Auto-ocultar tarjeta de bloqueo a los 2 s (dejando el video limpio con ovl_lock transparente)
+    if (s_locked && s_lock_card && !lv_obj_has_flag(s_lock_card, LV_OBJ_FLAG_HIDDEN)) {
+        int64_t now = esp_timer_get_time() / 1000;
+        if (now - s_lock_show_time >= 2000 && s_lock_touch_start_us == 0) {
+            lv_obj_add_flag(s_lock_card, LV_OBJ_FLAG_HIDDEN);
+        }
+    }
 }
 
 // ----------------- EEZ Studio Action Handlers -----------------
@@ -533,36 +646,27 @@ void action_toggle_shuffle(lv_event_t *e) {
 
 void action_lock(lv_event_t *e) {
     s_last_touch_time = esp_timer_get_time() / 1000;
+    if (s_locked) return;
     s_locked = true;
     ui_glue_set_osd_visible(false);
 
-    if (!s_obj_lock_overlay && objects.scr_player) {
-        s_obj_lock_overlay = lv_obj_create(objects.scr_player);
-        lv_obj_set_pos(s_obj_lock_overlay, 0, 0);
-        lv_obj_set_size(s_obj_lock_overlay, 480, 320);
-        lv_obj_set_style_bg_opa(s_obj_lock_overlay, LV_OPA_30, LV_PART_MAIN | LV_STATE_DEFAULT);
-        lv_obj_set_style_bg_color(s_obj_lock_overlay, lv_color_hex(0x000000), LV_PART_MAIN | LV_STATE_DEFAULT);
-        lv_obj_set_style_border_width(s_obj_lock_overlay, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-        lv_obj_set_style_pad_all(s_obj_lock_overlay, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-        lv_obj_add_flag(s_obj_lock_overlay, LV_OBJ_FLAG_CLICKABLE);
-        lv_obj_add_event_cb(s_obj_lock_overlay, lock_overlay_event_cb, LV_EVENT_ALL, NULL);
+    init_lock_overlay();
 
-        s_lbl_lock_msg = lv_label_create(s_obj_lock_overlay);
-        lv_obj_set_style_text_font(s_lbl_lock_msg, &lv_font_montserrat_14, LV_PART_MAIN | LV_STATE_DEFAULT);
-        lv_obj_set_style_text_color(s_lbl_lock_msg, lv_color_hex(0xF0F6FC), LV_PART_MAIN | LV_STATE_DEFAULT);
-        lv_obj_set_style_bg_opa(s_lbl_lock_msg, LV_OPA_80, LV_PART_MAIN | LV_STATE_DEFAULT);
-        lv_obj_set_style_bg_color(s_lbl_lock_msg, lv_color_hex(0x15171C), LV_PART_MAIN | LV_STATE_DEFAULT);
-        lv_obj_set_style_pad_all(s_lbl_lock_msg, 8, LV_PART_MAIN | LV_STATE_DEFAULT);
-        lv_obj_set_style_radius(s_lbl_lock_msg, 6, LV_PART_MAIN | LV_STATE_DEFAULT);
-        lv_label_set_text(s_lbl_lock_msg, "Pantalla bloqueada — mantén pulsado 1 s para desbloquear");
-        lv_obj_center(s_lbl_lock_msg);
+    if (s_ovl_lock) {
+        lv_obj_remove_flag(s_ovl_lock, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_move_foreground(s_ovl_lock);
     }
-    if (s_obj_lock_overlay) {
-        lv_obj_remove_flag(s_obj_lock_overlay, LV_OBJ_FLAG_HIDDEN);
-        if (s_lbl_lock_msg) {
-            lv_label_set_text(s_lbl_lock_msg, "Pantalla bloqueada — mantén pulsado 1 s para desbloquear");
-        }
+    if (s_lock_card) {
+        lv_obj_remove_flag(s_lock_card, LV_OBJ_FLAG_HIDDEN);
     }
+    if (s_arc_unlock) {
+        lv_arc_set_value(s_arc_unlock, 0);
+    }
+    s_lock_show_time = esp_timer_get_time() / 1000;
+    s_lock_touch_start_us = 0;
+
+    printf("UINAV,btn=lock,result=PASS\n");
+    fflush(stdout);
     ESP_LOGI(TAG, "Action: lock -> pantalla bloqueada");
 }
 
