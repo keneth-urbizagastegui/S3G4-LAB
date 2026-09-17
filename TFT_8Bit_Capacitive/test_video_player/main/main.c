@@ -301,6 +301,7 @@ typedef enum {
     UI_REQ_SET_HUD,
     UI_REQ_UINAV,
     UI_REQ_SET_OVERLAYS,
+    UI_REQ_TEXTFIT,
 } ui_req_type_t;
 
 typedef struct {
@@ -309,6 +310,7 @@ typedef struct {
 } ui_req_t;
 
 static QueueHandle_t s_ui_req_queue = NULL;
+static void textfit_run(void);
 
 __attribute__((unused)) static bool ui_req_send(ui_req_type_t type, int arg) {
     if (!s_ui_req_queue) return false;
@@ -523,6 +525,8 @@ static void gui_task(void *arg) {
                     }
                     ui_glue_unlock();
                 }
+            } else if (req.type == UI_REQ_TEXTFIT) {
+                textfit_run();
             }
             publish_ui_state();
         }
@@ -542,6 +546,47 @@ static void gui_task(void *arg) {
 static TaskHandle_t s_touch_task_handle = NULL;
 static TaskHandle_t s_gui_task_handle = NULL;
 static TaskHandle_t s_autotest_task_handle = NULL;
+
+/* Runs only on the GUI task: LVGL objects must never be inspected from the
+ * autotest task.  A scrolling label is deliberately excluded, because it has
+ * an explicit, readable overflow policy. */
+static void textfit_check_tree(lv_obj_t *obj, int *offenders) {
+    if (lv_obj_check_type(obj, &lv_label_class)) {
+        lv_label_long_mode_t mode = lv_label_get_long_mode(obj);
+        const char *text = lv_label_get_text(obj);
+        lv_point_t text_size;
+        const lv_font_t *font = lv_obj_get_style_text_font(obj, LV_PART_MAIN);
+        lv_text_get_size(&text_size, text, font,
+                         lv_obj_get_style_text_letter_space(obj, LV_PART_MAIN),
+                         lv_obj_get_style_text_line_space(obj, LV_PART_MAIN),
+                         LV_COORD_MAX, LV_TEXT_FLAG_NONE);
+        int32_t box_w = lv_obj_get_content_width(obj);
+        if (text_size.x > box_w && mode != LV_LABEL_LONG_SCROLL_CIRCULAR) {
+            printf("TEXTFIT_BAD,id=label@%p,text_w=%ld,box_w=%ld\n",
+                   (void *)obj, (long)text_size.x, (long)box_w);
+            (*offenders)++;
+        }
+    }
+
+    uint32_t child_count = lv_obj_get_child_count(obj);
+    for (uint32_t i = 0; i < child_count; ++i) {
+        textfit_check_tree(lv_obj_get_child(obj, i), offenders);
+    }
+}
+
+static void textfit_run(void) {
+    lv_obj_t *const roots[] = {
+        objects.scr_player, objects.scr_library, objects.scr_no_media,
+        objects.scr_queue, objects.scr_settings, lv_layer_bottom(),
+        lv_layer_top(), lv_layer_sys()
+    };
+    int offenders = 0;
+    for (size_t i = 0; i < sizeof(roots) / sizeof(roots[0]); ++i) {
+        if (roots[i]) textfit_check_tree(roots[i], &offenders);
+    }
+    printf("TEXTFIT,offenders=%d\n", offenders);
+    fflush(stdout);
+}
 
 static void log_stack_and_heap_diag(const char *phase_tag) {
     UBaseType_t touch_free = s_touch_task_handle ? uxTaskGetStackHighWaterMark(s_touch_task_handle) : 0;
@@ -920,6 +965,10 @@ static void autotest_task(void *arg) {
         printf("SDPULL,skipped=1\n");
     }
     fflush(stdout);
+
+    // TEXTFIT must run after every scenario while the GUI task owns LVGL.
+    ui_req_send(UI_REQ_TEXTFIT, 0);
+    vTaskDelay(pdMS_TO_TICKS(250));
 
     log_stack_and_heap_diag("AUTOTEST_END");
 
