@@ -24,45 +24,92 @@ typedef struct {
 
 typedef struct {
     lcd_overlay_span_t spans[LCD_OVERLAY_MAX_SPANS_PER_ROW];
-    uint32_t opaque_bits[10]; // 320 bits; ruta exacta si una fila supera la lista corta.
     uint8_t count;
     bool spans_complete;
 } lcd_overlay_row_cache_t;
 
-// Metadatos en DRAM interna: el vídeo no vuelve a inspeccionar píxeles PSRAM.
-// Sólo existen mientras una capa está abierta; sin capas no aportan nada.
-static lcd_overlay_row_cache_t *s_overlay_rows = NULL;
+/* Metadatos compactos en DRAM interna. Cada capa reserva únicamente sus filas
+ * nativas (una fila por píxel de ancho de la capa), nunca las 480 de pantalla.
+ * La representación corta sólo acelera las filas simples; las complejas caen
+ * al recorrido exacto por píxel, sin una máscara de 320 bits por fila. */
+typedef struct {
+    int16_t first_phys_y;
+    int16_t row_count;
+    lcd_overlay_row_cache_t *rows;
+} lcd_overlay_cache_t;
+
+static lcd_overlay_cache_t s_overlay_caches[LCD_OVERLAY_MAX_RECTS] = {0};
 
 static int64_t s_strip_start_us = 0;
 static bool s_strip_in_flight = false;
 
-static void rebuild_overlay_row_cache(int phys_y) {
-    if (!s_overlay_buf || !s_overlay_rows || phys_y < 0 || phys_y >= 480) return;
-
-    lcd_overlay_row_cache_t *row = &s_overlay_rows[phys_y];
-    const uint16_t *src = s_overlay_buf + phys_y * 320;
-    memset(row->opaque_bits, 0, sizeof(row->opaque_bits));
-    row->count = 0;
-    row->spans_complete = true;
-
-    int x = 0;
-    while (x < 320) {
-        while (x < 320 && src[x] == LCD_OVERLAY_COLOR_KEY) x++;
-        if (x == 320) break;
-        int start = x;
-        do {
-            row->opaque_bits[x >> 5] |= 1u << (x & 31);
-            x++;
-        } while (x < 320 && src[x] != LCD_OVERLAY_COLOR_KEY);
-
-        if (row->count < LCD_OVERLAY_MAX_SPANS_PER_ROW) {
-            row->spans[row->count].start = start;
-            row->spans[row->count].end = x - 1;
-            row->count++;
-        } else {
-            row->spans_complete = false;
+static lcd_overlay_row_cache_t *find_overlay_row_cache(int phys_y) {
+    for (int i = 0; i < LCD_OVERLAY_MAX_RECTS; i++) {
+        const lcd_overlay_cache_t *cache = &s_overlay_caches[i];
+        if (cache->rows && phys_y >= cache->first_phys_y &&
+            phys_y < cache->first_phys_y + cache->row_count) {
+            return &cache->rows[phys_y - cache->first_phys_y];
         }
     }
+    return NULL;
+}
+
+static void rebuild_overlay_row_cache(int phys_y) {
+    if (!s_overlay_buf || phys_y < 0 || phys_y >= 480) return;
+
+    const uint16_t *src = s_overlay_buf + phys_y * 320;
+    for (int i = 0; i < LCD_OVERLAY_MAX_RECTS; i++) {
+        lcd_overlay_cache_t *cache = &s_overlay_caches[i];
+        if (!cache->rows || phys_y < cache->first_phys_y ||
+            phys_y >= cache->first_phys_y + cache->row_count) {
+            continue;
+        }
+        lcd_overlay_row_cache_t *row = &cache->rows[phys_y - cache->first_phys_y];
+        row->count = 0;
+        row->spans_complete = true;
+
+        int x = 0;
+        while (x < 320) {
+            while (x < 320 && src[x] == LCD_OVERLAY_COLOR_KEY) x++;
+            if (x == 320) break;
+            int start = x;
+            do {
+                x++;
+            } while (x < 320 && src[x] != LCD_OVERLAY_COLOR_KEY);
+
+            if (row->count < LCD_OVERLAY_MAX_SPANS_PER_ROW) {
+                row->spans[row->count].start = start;
+                row->spans[row->count].end = x - 1;
+                row->count++;
+            } else {
+                row->spans_complete = false;
+            }
+        }
+    }
+}
+
+static void free_overlay_cache(int id) {
+    if (id < 0 || id >= LCD_OVERLAY_MAX_RECTS) return;
+    if (s_overlay_caches[id].rows) {
+        heap_caps_free(s_overlay_caches[id].rows);
+    }
+    s_overlay_caches[id] = (lcd_overlay_cache_t){0};
+}
+
+static void allocate_overlay_cache(int id, int16_t first_phys_y, int16_t row_count) {
+    free_overlay_cache(id);
+    if (row_count <= 0) return;
+
+    lcd_overlay_row_cache_t *rows = heap_caps_calloc((size_t)row_count, sizeof(*rows),
+                                                       MALLOC_CAP_INTERNAL | MALLOC_CAP_8BIT);
+    if (!rows) {
+        ESP_LOGW(TAG, "Sin %u B para cache overlay %d (%d filas); usando composicion por pixel",
+                 (unsigned int)((size_t)row_count * sizeof(*rows)), id, row_count);
+        return;
+    }
+    s_overlay_caches[id].first_phys_y = first_phys_y;
+    s_overlay_caches[id].row_count = row_count;
+    s_overlay_caches[id].rows = rows;
 }
 
 static void fill_overlay_rect_with_color_key(int16_t x, int16_t y, int16_t w, int16_t h) {
@@ -127,15 +174,10 @@ void lcd_bus_set_overlay_rect(int id, int16_t x, int16_t y, int16_t w, int16_t h
     // LVGL renderiza después de este cambio de estado; preparar antes la zona de
     // su capa hace que los píxeles que no llegue a dibujar sigan siendo transparentes.
     if (enabled) {
-        if (!s_overlay_rows) {
-            s_overlay_rows = heap_caps_calloc(480, sizeof(*s_overlay_rows),
-                                               MALLOC_CAP_INTERNAL | MALLOC_CAP_8BIT);
-            assert(s_overlay_rows != NULL);
-        }
+        allocate_overlay_cache(id, x, w);
         fill_overlay_rect_with_color_key(x, y, w, h);
-    } else if (!lcd_bus_has_active_overlays() && s_overlay_rows) {
-        heap_caps_free(s_overlay_rows);
-        s_overlay_rows = NULL;
+    } else {
+        free_overlay_cache(id);
     }
     lcd_bus_unlock();
 }
@@ -147,9 +189,8 @@ void lcd_bus_clear_overlays(void) {
         s_overlay_rects[i].enabled = false;
     }
     portEXIT_CRITICAL(&s_rect_mux);
-    if (s_overlay_rows) {
-        heap_caps_free(s_overlay_rows);
-        s_overlay_rows = NULL;
+    for (int i = 0; i < LCD_OVERLAY_MAX_RECTS; i++) {
+        free_overlay_cache(i);
     }
     lcd_bus_unlock();
 }
@@ -185,14 +226,14 @@ const uint16_t *lcd_bus_get_overlay_buffer(void) {
 }
 
 void lcd_bus_overlay_copy_row(uint16_t *dst_row, int phys_y, int x_min, int x_max) {
-    if (!dst_row || !s_overlay_buf || !s_overlay_rows || phys_y < 0 || phys_y >= 480) return;
+    if (!dst_row || !s_overlay_buf || phys_y < 0 || phys_y >= 480) return;
     if (x_min < 0) x_min = 0;
     if (x_max > 319) x_max = 319;
     if (x_min > x_max) return;
 
-    const lcd_overlay_row_cache_t *row = &s_overlay_rows[phys_y];
+    const lcd_overlay_row_cache_t *row = find_overlay_row_cache(phys_y);
     const uint16_t *src = s_overlay_buf + phys_y * 320;
-    if (row->spans_complete) {
+    if (row && row->spans_complete) {
         for (uint8_t i = 0; i < row->count; i++) {
             int start = row->spans[i].start > x_min ? row->spans[i].start : x_min;
             int end = row->spans[i].end < x_max ? row->spans[i].end : x_max;
@@ -203,15 +244,11 @@ void lcd_bus_overlay_copy_row(uint16_t *dst_row, int phys_y, int x_min, int x_ma
         return;
     }
 
-    // Caso infrecuente de una fila con más de 32 tramos: la máscara interna
-    // conserva transparencia exacta sin volver a leer/comparar el buffer PSRAM.
-    int x = x_min;
-    while (x <= x_max) {
-        while (x <= x_max && !(row->opaque_bits[x >> 5] & (1u << (x & 31)))) x++;
-        int start = x;
-        while (x <= x_max && (row->opaque_bits[x >> 5] & (1u << (x & 31)))) x++;
-        if (start < x) {
-            memcpy(dst_row + start, src + start, (size_t)(x - start) * sizeof(uint16_t));
+    // Sin caché (memoria fragmentada) o más de cuatro tramos: ruta exacta y
+    // segura. Abrir una capa nunca depende de que una reserva tenga éxito.
+    for (int x = x_min; x <= x_max; x++) {
+        if (src[x] != LCD_OVERLAY_COLOR_KEY) {
+            dst_row[x] = src[x];
         }
     }
 }
