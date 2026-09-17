@@ -26,13 +26,25 @@ $env:IDF_PATH = 'C:\esp\v6.0.1\esp-idf'
 $env:IDF_TOOLS_PATH = 'C:\Users\Keneth\.espressif'
 $IdfPython = Join-Path $env:IDF_TOOLS_PATH 'python_env\idf6.0_py3.12_env\Scripts\python.exe'
 if (-not (Test-Path $IdfPython)) { throw "No existe el Python de ESP-IDF: $IdfPython" }
-# export.ps1 invoca `python` durante su inicialización; publíquese antes de cargarlo.
-$env:Path = "$(Split-Path -Parent $IdfPython);$env:Path"
 
 Set-Location $Proyecto
-. (Join-Path $env:IDF_PATH 'export.ps1') | Out-Null
+
+# Un entorno heredado de MSYS/MinGW (Git Bash) hace fallar a export.ps1; se limpia aqui.
+foreach ($v in 'MSYSTEM', 'MINGW_PREFIX', 'MSYSTEM_PREFIX', 'MSYS2_PATH_TYPE') {
+    Remove-Item "env:$v" -ErrorAction SilentlyContinue
+}
+
+$script:IdfListo = $false
+function Enable-Idf {
+    if ($script:IdfListo) { return }
+    # export.ps1 invoca `python` durante su inicializacion: se publica antes de cargarlo.
+    $env:Path = "$(Split-Path -Parent $IdfPython);$env:Path"
+    . (Join-Path $env:IDF_PATH 'export.ps1') | Out-Null
+    $script:IdfListo = $true
+}
 
 function Invoke-Idf([string[]]$Argumentos) {
+    Enable-Idf
     & idf.py @Argumentos
     if ($LASTEXITCODE -ne 0) { throw "idf.py $($Argumentos -join ' ') fallo con codigo $LASTEXITCODE" }
 }
@@ -71,7 +83,7 @@ switch ($Accion) {
     }
     'flash-perf' { Invoke-Idf @('-B', 'build_perf', '-p', $Puerto, 'flash'); 'OK: autoprueba flasheada' }
     'medir' {
-        & $IdfPython 'tools/perf_capture.py' '--port' $Puerto '--out' $Salida '--phase' $Fase '--timeout' $Timeout
+        Enable-Idf; & $IdfPython 'tools/perf_capture.py' '--port' $Puerto '--out' $Salida '--phase' $Fase '--timeout' $Timeout
         "perf_capture exit=$LASTEXITCODE"
     }
 }

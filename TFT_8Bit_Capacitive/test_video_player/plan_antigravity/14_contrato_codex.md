@@ -29,7 +29,8 @@ demás de `04` (mediciones, umbrales, informes) sigue igual.
 |---|---|---|
 | Escribe el paquete de trabajo con criterios medibles | ✔ | |
 | Implementa y hace commit por punto | | ✔ |
-| Compila, flashea y mide | ✔ (verificación) | ✔ (durante el trabajo) |
+| Compila (`-Accion build`) | ✔ (verificación) | ✔ |
+| **Flashea y mide** (órdenes largas: la sesión de Codex se corta) | ✔ **siempre el auditor** | ✘ |
 | Verifica los datos en bruto y aprueba o rechaza | ✔ | |
 | Etiqueta la versión | ✔ | |
 | Prueba con el dedo en la placa | Keneth | |
@@ -55,7 +56,10 @@ pwsh -NoProfile -ExecutionPolicy Bypass -File tools/banco.ps1 -Accion medir -Sal
 - Medición: `python tools/perf_capture.py --port COM16 --out plan_antigravity/mediciones/<nombre> --phase <fase> --timeout 900`.
   Los ficheros van **siempre** a `plan_antigravity/mediciones/`.
 - Rutas con espacio (**«S3G4 LAB»**) siempre entre comillas.
-- Al terminar: **firmware normal flasheado** (sin autoprueba) para que Keneth pruebe.
+- **Codex no flashea ni mide**: sus sesiones se cortan en órdenes largas (se comprobó el 17/09/2026: se
+  interrumpió a mitad de un flasheo). Codex escribe código, regenera la UI, compila y hace commit;
+  el auditor flashea, mide y deja el firmware normal para Keneth.
+- El script limpia el entorno heredado de MSYS/Git Bash, que rompía `export.ps1` en la terminal de Codex.
 
 ## 4. Prohibiciones (motivo: ya pasó con Antigravity)
 1. Desactivar perros guardianes o alargar sus tiempos.
