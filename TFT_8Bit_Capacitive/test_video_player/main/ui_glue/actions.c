@@ -72,6 +72,8 @@ static lv_obj_t *s_toast_title = NULL;
 static lv_obj_t *s_toast_desc = NULL;
 static lv_timer_t *s_toast_timer = NULL;
 
+static bool s_pending_library_return = false;
+
 static void toast_timer_cb(lv_timer_t *t) {
     if (s_toast_box) {
         lv_obj_add_flag(s_toast_box, LV_OBJ_FLAG_HIDDEN);
@@ -79,6 +81,10 @@ static void toast_timer_cb(lv_timer_t *t) {
     if (s_toast_timer) {
         lv_timer_delete(s_toast_timer);
         s_toast_timer = NULL;
+    }
+    if (s_pending_library_return) {
+        s_pending_library_return = false;
+        action_open_library(NULL);
     }
 }
 
@@ -1150,8 +1156,20 @@ void ui_glue_tick(void) {
     player_get_status(&st);
     s_current_track_idx = st.track_index;
 
-    // Si la reproduccion termino (transicion PLAYING -> ENDED) y estamos en modo fullscreen -> volver a biblioteca
     static player_state_t s_prev_player_state = PST_IDLE;
+
+    // B10: Aviso del vigilante: «No se pudo reproducir» al fallar un video, 3 s, y vuelta a la biblioteca.
+    if (st.state == PST_ERROR && s_view_mode == VIEW_MODE_FULLSCREEN) {
+        ESP_LOGW(TAG, "Fallo de reproduccion detectado (PST_ERROR) -> mostrando aviso 3s y volviendo a biblioteca");
+        ui_glue_show_toast("No se pudo reproducir", "El video no muestra imagen. Volviendo a la biblioteca…", true);
+        s_pending_library_return = true;
+        s_prev_player_state = PST_ERROR;
+        player_cmd_t cmd = {.type = PCMD_STOP};
+        player_cmd_send(&cmd);
+        return;
+    }
+
+    // Si la reproduccion termino (transicion PLAYING -> ENDED) y estamos en modo fullscreen -> volver a biblioteca
     if (s_prev_player_state == PST_PLAYING && st.state == PST_ENDED && s_view_mode == VIEW_MODE_FULLSCREEN) {
         ESP_LOGI(TAG, "Reproduccion finalizada en modo fullscreen -> retornando a biblioteca");
         action_open_library(NULL);
@@ -1508,6 +1526,10 @@ void action_toggle_osd(lv_event_t *e) {
 
 void action_open_library(lv_event_t *e) {
     s_last_touch_time = esp_timer_get_time() / 1000;
+    if (s_toast_box && !lv_obj_has_flag(s_toast_box, LV_OBJ_FLAG_HIDDEN)) {
+        lv_obj_add_flag(s_toast_box, LV_OBJ_FLAG_HIDDEN);
+    }
+    s_pending_library_return = false;
     if (s_locked) return;
     if (s_view_mode == VIEW_MODE_SETTINGS) {
         ESP_LOGI(TAG, "Action: back from settings -> returning to origin mode %d", s_settings_origin_mode);

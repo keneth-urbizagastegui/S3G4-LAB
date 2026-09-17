@@ -177,7 +177,7 @@ static void player_open_track(int index) {
         ESP_LOGE(TAG, "Fallo al abrir pista %d (%s): ret=%d", index, item->path, ret);
         media_library_mark_failed(index);
         portENTER_CRITICAL(&s_player_mux);
-        s_status.state = PST_ENDED;
+        s_status.state = PST_ERROR;
         s_status.err_code = (uint32_t)ret;
         portEXIT_CRITICAL(&s_player_mux);
         return;
@@ -594,16 +594,8 @@ static void player_task(void *arg) {
                 avi_player_close();
                 settings_nvs_set_last_path("");
 
-                if (s_status.repeat != REPEAT_OFF) {
-                    int total = s_status.track_count;
-                    int next = player_find_compatible(s_status.track_index, total, 1);
-                    if (next >= 0 && next != s_status.track_index) {
-                        player_open_track(next);
-                        continue;
-                    }
-                }
                 portENTER_CRITICAL(&s_player_mux);
-                s_status.state = PST_ENDED;
+                s_status.state = PST_ERROR;
                 s_status.err_code = ESP_ERR_TIMEOUT;
                 portEXIT_CRITICAL(&s_player_mux);
                 continue;
