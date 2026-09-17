@@ -1260,6 +1260,17 @@ void ui_glue_get_published_info(char *title_buf, size_t max_len, int *track_idx,
     }
 }
 
+/* lv_label_set_text invalida aun cuando el texto no cambia.  En una capa que
+ * se compone sobre el video, esas invalidaciones hacen que LVGL vuelva a
+ * recorrer toda la tarjeta; comparar aqui conserva la capa estatica. */
+static void set_label_text_if_changed(lv_obj_t *label, const char *text) {
+    if (!label || !text) return;
+    const char *current = lv_label_get_text(label);
+    if (!current || strcmp(current, text) != 0) {
+        lv_label_set_text(label, text);
+    }
+}
+
 void ui_glue_update_stats_labels(void) {
     if (!objects.ovl_stats || lv_obj_has_flag(objects.ovl_stats, LV_OBJ_FLAG_HIDDEN)) return;
     perf_live_metrics_t m;
@@ -1272,37 +1283,37 @@ void ui_glue_update_stats_labels(void) {
     if (objects.lbl_stat_pres) {
         char buf[32];
         snprintf(buf, sizeof(buf), "%0.1f fps", pres_fps);
-        lv_label_set_text(objects.lbl_stat_pres, buf);
+        set_label_text_if_changed(objects.lbl_stat_pres, buf);
     }
     if (objects.lbl_stat_dec) {
         char buf[32];
         snprintf(buf, sizeof(buf), "%0.1f fps", dec_fps);
-        lv_label_set_text(objects.lbl_stat_dec, buf);
+        set_label_text_if_changed(objects.lbl_stat_dec, buf);
     }
     if (objects.lbl_stat_drop) {
         char buf[32];
         snprintf(buf, sizeof(buf), "%lu", (unsigned long)m.dropped);
-        lv_label_set_text(objects.lbl_stat_drop, buf);
+        set_label_text_if_changed(objects.lbl_stat_drop, buf);
     }
     if (objects.lbl_stat_rd) {
         char buf[32];
         snprintf(buf, sizeof(buf), "%0.1f / %0.1f ms", m.rd_avg_ms, m.rd_max_ms);
-        lv_label_set_text(objects.lbl_stat_rd, buf);
+        set_label_text_if_changed(objects.lbl_stat_rd, buf);
     }
     if (objects.lbl_stat_dec_time) {
         char buf[32];
         snprintf(buf, sizeof(buf), "%0.1f / %0.1f ms", m.dec_avg_ms, m.dec_max_ms);
-        lv_label_set_text(objects.lbl_stat_dec_time, buf);
+        set_label_text_if_changed(objects.lbl_stat_dec_time, buf);
     }
     if (objects.lbl_stat_blit) {
         char buf[32];
         snprintf(buf, sizeof(buf), "%0.1f ms (%lu Hz)", m.blit_ms, (unsigned long)m.te_hz);
-        lv_label_set_text(objects.lbl_stat_blit, buf);
+        set_label_text_if_changed(objects.lbl_stat_blit, buf);
     }
     if (objects.lbl_stat_file) {
         const media_item_t *cur = media_library_get(s_current_track_idx);
         if (cur && cur->title[0] != '\0') {
-            lv_label_set_text(objects.lbl_stat_file, cur->title);
+            set_label_text_if_changed(objects.lbl_stat_file, cur->title);
         }
     }
 }
@@ -1334,9 +1345,13 @@ void ui_glue_tick(void) {
     }
     s_prev_player_state = st.state;
 
-    // Update play icon
-    if (objects.lbl_play_icon) {
-        lv_image_set_src(objects.lbl_play_icon, (st.state == PST_PLAYING) ? &img_pause : &img_play);
+    // No invalidar el icono del HUD en cada tick: el setter de LVGL redibuja
+    // incluso si la imagen no cambia (y el HUD puede estar oculto).
+    static int s_last_play_icon_playing = -1;
+    int is_playing = (st.state == PST_PLAYING) ? 1 : 0;
+    if (objects.lbl_play_icon && s_last_play_icon_playing != is_playing) {
+        lv_image_set_src(objects.lbl_play_icon, is_playing ? &img_pause : &img_play);
+        s_last_play_icon_playing = is_playing;
     }
 
     // Si se acaba de desbloquear y el usuario sigue tocando, esperar a que suelte
