@@ -244,7 +244,34 @@ def estados_osd():
     return root(inner=inner)
 
 
+I_PLAY_SMALL = svg('<path d="M7 4v16l13-8z"></path>', 16, fill=True)
+I_RESTART = svg('<path d="M4 12a8 8 0 1 0 2.4-5.7"></path><path d="M4 3v4h4"></path>', 16)
+
+
+def biblioteca_reanudar():
+    """Al tocar una tarjeta con posición guardada: hoja inferior con dos opciones."""
+    cards = [
+        card(12, 56, "Dance No More", "Harry Styles · 3:21", GRADS[0]),
+        card(168, 56, "hate that i made you love me", "Ariana Grande · 3:02", GRADS[1]),
+        card(324, 56, "ICONIC BY MISTAKE", "LE SSERAFIM x ILLIT · 3:40", GRADS[2]),
+    ]
+    inner = lib_header("4 videos · 29,7 GB libres") + "".join(cards)
+    inner += f'  <div style="{abs_(168, 133, 60, 3)} background: {ACCENT};"></div>\n'
+    inner += f'  <div style="{abs_(166, 54, 148, 84)} border-radius: 8px; border: 2px solid {ACCENT}; box-sizing: border-box;"></div>\n'
+    inner += f'  <div style="{abs_(0, 0, 480, 320)} background: rgba(11,12,15,0.60); z-index: 3;"></div>\n'
+    inner += f"""  <div style="{abs_(0, 176, 480, 144)} background: {SURF}; border-top: 1px solid {LINE}; border-radius: 12px 12px 0 0; box-sizing: border-box; z-index: 4;">
+    <div style="{abs_(16, 14, 380)} font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">hate that i made you love me</div>
+    <div style="{abs_(16, 34, 380)} font-size: 11px; color: {MUTED};">Visto hasta 1:15 de 3:02</div>
+    {icon_btn(424, 4, svg('<path d="M6 6l12 12M18 6L6 18"></path>', 18), MUTED)}
+    <div style="{abs_(16, 64, 216, 56)} border-radius: 8px; background: {ACCENT}; color: #1A1204; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 14px; font-weight: 600;">{I_PLAY_SMALL}Continuar en 1:13</div>
+    <div style="{abs_(248, 64, 216, 56)} border-radius: 8px; background: {SURF_HI}; border: 1px solid {LINE}; box-sizing: border-box; color: {TEXT}; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 14px; font-weight: 600;">{I_RESTART}Desde el principio</div>
+  </div>
+"""
+    return root(inner=inner)
+
+
 BOARDS = {
+    "BibliotecaReanudar": biblioteca_reanudar,
     "BibliotecaLlena": biblioteca_llena,
     "BibliotecaAviso": biblioteca_aviso,
     "PlayerAviso": player_aviso,

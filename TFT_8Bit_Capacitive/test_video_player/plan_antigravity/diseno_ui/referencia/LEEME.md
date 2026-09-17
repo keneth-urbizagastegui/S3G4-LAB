@@ -32,6 +32,7 @@ y los iconos de `../iconos/generar_iconos.py`.
 | Cola | `scr_queue` | cola (F6b) |
 | SinMedios | `scr_no_media` | no hay ningún `.avi` |
 | **SinMediosIncompatibles** | `scr_no_media` | hay archivos pero ninguno compatible: icono en #E5484D, `btn_retry` y `btn_settings` |
+| **BibliotecaReanudar** | `scr_library` + hoja | al tocar una tarjeta con posición guardada: «Continuar en m:ss» / «Desde el principio» |
 | ErrorSD | `scr_no_media` (estado error) | no se puede leer la microSD |
 | Ajustes, AjustesReproduccion, AjustesAlmacenamiento, AjustesAcercaDe | `scr_settings` | las 4 pestañas (F6b) |
 
@@ -57,10 +58,10 @@ y los iconos de `../iconos/generar_iconos.py`.
 
 | Tablero · fila | Nombre EEZ | Icono PNG (tamaño) · color | Acción |
 |---|---|---|---|
-| Main #4 | `btn_back` | `back` (20) · #EDEDEA | ir a `scr_library` |
+| Main #4 | `btn_back` | `back` (20) · #EDEDEA | pausar y ir a `scr_library` |
 | Main #6 / #7 | `lbl_title` / `lbl_subtitle` | — | título (marquesina en F6b) y «NN / MM · artista» |
 | Main #8 | `chip_fps` | — | `pres_fps`; oculto si `stats=0` |
-| Main #9 | `btn_queue` | `queue` (22) · #EDEDEA | F6a: `scr_library` · F6b: `scr_queue` |
+| Main #9 | `btn_queue` | `queue` (22) · #EDEDEA | F6a: aviso «Próximamente» · F6b: `scr_queue` |
 | Main #12 / #16 | `lbl_pos` / `lbl_dur` | — | posición y duración |
 | Main #13–#15 | `sld_seek` | pista #2A2D34, relleno y pulgar #F2B33D | saltar |
 | Main #17 | `btn_lock` | `lock` (20) · #EDEDEA | `ovl_lock`; se desbloquea manteniendo 1 s |

@@ -121,6 +121,14 @@
       "h": 320
     },
     {
+      "file": "BibliotecaReanudar.dc.html",
+      "title": "Biblioteca · continuar o empezar",
+      "x": 2800,
+      "y": 1340,
+      "w": 480,
+      "h": 320
+    },
+    {
       "file": "PlayerAviso.dc.html",
       "title": "Reproductor · avisos emergentes",
       "x": 1680,
