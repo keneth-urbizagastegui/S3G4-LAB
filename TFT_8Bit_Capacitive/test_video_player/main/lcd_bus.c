@@ -30,13 +30,14 @@ typedef struct {
 } lcd_overlay_row_cache_t;
 
 // Metadatos en DRAM interna: el vídeo no vuelve a inspeccionar píxeles PSRAM.
-static lcd_overlay_row_cache_t s_overlay_rows[480];
+// Sólo existen mientras una capa está abierta; sin capas no aportan nada.
+static lcd_overlay_row_cache_t *s_overlay_rows = NULL;
 
 static int64_t s_strip_start_us = 0;
 static bool s_strip_in_flight = false;
 
 static void rebuild_overlay_row_cache(int phys_y) {
-    if (!s_overlay_buf || phys_y < 0 || phys_y >= 480) return;
+    if (!s_overlay_buf || !s_overlay_rows || phys_y < 0 || phys_y >= 480) return;
 
     lcd_overlay_row_cache_t *row = &s_overlay_rows[phys_y];
     const uint16_t *src = s_overlay_buf + phys_y * 320;
@@ -101,6 +102,9 @@ void lcd_bus_init(void) {
 
 void lcd_bus_set_overlay_rect(int id, int16_t x, int16_t y, int16_t w, int16_t h, bool enabled) {
     if (id < 0 || id >= LCD_OVERLAY_MAX_RECTS) return;
+    /* Esperar a que termine cualquier composición que ya haya tomado una
+     * instantánea de las capas antes de liberar sus metadatos. */
+    lcd_bus_lock();
     portENTER_CRITICAL(&s_rect_mux);
     s_overlay_rects[id].x = x;
     s_overlay_rects[id].y = y;
@@ -123,16 +127,31 @@ void lcd_bus_set_overlay_rect(int id, int16_t x, int16_t y, int16_t w, int16_t h
     // LVGL renderiza después de este cambio de estado; preparar antes la zona de
     // su capa hace que los píxeles que no llegue a dibujar sigan siendo transparentes.
     if (enabled) {
+        if (!s_overlay_rows) {
+            s_overlay_rows = heap_caps_calloc(480, sizeof(*s_overlay_rows),
+                                               MALLOC_CAP_INTERNAL | MALLOC_CAP_8BIT);
+            assert(s_overlay_rows != NULL);
+        }
         fill_overlay_rect_with_color_key(x, y, w, h);
+    } else if (!lcd_bus_has_active_overlays() && s_overlay_rows) {
+        heap_caps_free(s_overlay_rows);
+        s_overlay_rows = NULL;
     }
+    lcd_bus_unlock();
 }
 
 void lcd_bus_clear_overlays(void) {
+    lcd_bus_lock();
     portENTER_CRITICAL(&s_rect_mux);
     for (int i = 0; i < LCD_OVERLAY_MAX_RECTS; i++) {
         s_overlay_rects[i].enabled = false;
     }
     portEXIT_CRITICAL(&s_rect_mux);
+    if (s_overlay_rows) {
+        heap_caps_free(s_overlay_rows);
+        s_overlay_rows = NULL;
+    }
+    lcd_bus_unlock();
 }
 
 int lcd_bus_get_active_overlays(lcd_overlay_rect_t out_rects[LCD_OVERLAY_MAX_RECTS]) {
@@ -166,7 +185,7 @@ const uint16_t *lcd_bus_get_overlay_buffer(void) {
 }
 
 void lcd_bus_overlay_copy_row(uint16_t *dst_row, int phys_y, int x_min, int x_max) {
-    if (!dst_row || !s_overlay_buf || phys_y < 0 || phys_y >= 480) return;
+    if (!dst_row || !s_overlay_buf || !s_overlay_rows || phys_y < 0 || phys_y >= 480) return;
     if (x_min < 0) x_min = 0;
     if (x_max > 319) x_max = 319;
     if (x_min > x_max) return;
