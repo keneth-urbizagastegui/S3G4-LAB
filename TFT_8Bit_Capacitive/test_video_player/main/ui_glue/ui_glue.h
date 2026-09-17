@@ -33,6 +33,7 @@ void ui_glue_unlock(void);
 void ui_glue_run_uinav_test(void);
 void ui_glue_dump_all(void);
 void ui_glue_show_toast(const char *title, const char *msg, bool is_error);
+void ui_glue_fix_all_button_flags(void);
 
 #ifdef __cplusplus
 }

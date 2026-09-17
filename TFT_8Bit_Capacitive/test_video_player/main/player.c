@@ -605,7 +605,7 @@ static void player_task(void *arg) {
             int64_t late = now_us - due_us;
 
             // Deteccion de desincronia PTS / saltos temporales bruscos (SEEK frecuente o cambio de flujo)
-            if (late < -50000 || late > 100000) {
+            if (late < -50000 || late > 60000) {
                 int64_t pos_us = (int64_t)cur_info->current_frame * (int64_t)cur_info->us_per_frame;
                 s_pts_t0_us = now_us - pos_us;
                 due_us = s_pts_t0_us + pos_us;

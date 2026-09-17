@@ -121,7 +121,38 @@ static void dump_widget(const char *name, lv_obj_t *obj) {
            name, x, y, w, h, hidden ? 1 : 0, clickable ? 1 : 0);
 }
 
+static void fix_button_events(lv_obj_t *btn) {
+    if (!btn) return;
+    lv_obj_add_flag(btn, LV_OBJ_FLAG_CLICKABLE);
+    uint32_t cnt = lv_obj_get_child_count(btn);
+    for (uint32_t i = 0; i < cnt; i++) {
+        lv_obj_t *child = lv_obj_get_child(btn, i);
+        if (child) {
+            lv_obj_remove_flag(child, LV_OBJ_FLAG_CLICKABLE);
+            lv_obj_add_flag(child, LV_OBJ_FLAG_EVENT_BUBBLE);
+        }
+    }
+}
+
+void ui_glue_fix_all_button_flags(void) {
+    fix_button_events(objects.btn_back);
+    fix_button_events(objects.btn_queue);
+    fix_button_events(objects.btn_lock);
+    fix_button_events(objects.btn_repeat);
+    fix_button_events(objects.btn_prev);
+    fix_button_events(objects.btn_rew);
+    fix_button_events(objects.btn_play);
+    fix_button_events(objects.btn_fwd);
+    fix_button_events(objects.btn_next);
+    fix_button_events(objects.btn_shuffle);
+    fix_button_events(objects.btn_settings);
+    fix_button_events(objects.btn_lib_settings);
+    fix_button_events(objects.btn_retry);
+    fix_button_events(objects.btn_settings_alt);
+}
+
 void ui_glue_dump_all(void) {
+    ui_glue_fix_all_button_flags();
     dump_widget("btn_back", objects.btn_back);
     dump_widget("lbl_title", objects.lbl_title);
     dump_widget("lbl_subtitle", objects.lbl_subtitle);
@@ -494,6 +525,10 @@ void action_open_library(lv_event_t *e) {
     player_cmd_send(&cmd);
     action_library_populate(NULL);
     loadScreen(SCREEN_ID_SCR_LIBRARY);
+    if (objects.scr_library) {
+        lv_screen_load(objects.scr_library);
+        lv_obj_update_layout(objects.scr_library);
+    }
     ESP_LOGI(TAG, "Action: open_library");
 }
 
@@ -513,6 +548,14 @@ void action_open_settings(lv_event_t *e) {
     if (s_locked) return;
     ESP_LOGI(TAG, "Action: open_settings -> mostrando aviso");
     ui_glue_show_toast("Próximamente", "Esta opción llega en la próxima versión.", false);
+}
+
+static void wait_gui_ms(uint32_t ms) {
+    uint32_t count = (ms + 14) / 15;
+    for (uint32_t i = 0; i < count; i++) {
+        lv_timer_handler();
+        vTaskDelay(pdMS_TO_TICKS(15));
+    }
 }
 
 static void sim_touch_click(uint16_t x, uint16_t y) {
@@ -545,94 +588,117 @@ static void sim_touch_hold(uint16_t x, uint16_t y, uint32_t hold_ms) {
 
 void ui_glue_run_uinav_test(void) {
     ESP_LOGI(TAG, "=== INICIANDO PRUEBA UINAV (12 CONTROLES + TARJETA + SEEK) ===");
+    ui_glue_fix_all_button_flags();
 
     // Asegurar pantalla de reproductor con OSD visible
     ui_glue_set_view_mode(VIEW_MODE_FULLSCREEN);
     loadScreen(SCREEN_ID_SCR_PLAYER);
-    ui_glue_set_osd_visible(true);
-    for (int i = 0; i < 5; i++) {
-        lv_timer_handler();
-        vTaskDelay(pdMS_TO_TICKS(10));
+    if (objects.scr_player) {
+        lv_screen_load(objects.scr_player);
+        lv_obj_update_layout(objects.scr_player);
     }
+    ui_glue_set_osd_visible(true);
+    wait_gui_ms(200);
 
     // 1. btn=back (x=22, y=20) -> abre biblioteca
     sim_touch_click(22, 20);
+    wait_gui_ms(250);
     bool back_ok = (ui_glue_get_view_mode() == VIEW_MODE_STUDIO);
     printf("UINAV,btn=back,result=%s\n", back_ok ? "PASS" : "FAIL");
 
     // 2. btn=card (x=84, y=110) en la biblioteca -> inicia reproductor
+    if (objects.lib_grid) {
+        lv_obj_t *c0 = lv_obj_get_child(objects.lib_grid, 0);
+        if (c0) {
+            lv_area_t a;
+            lv_obj_get_coords(c0, &a);
+            ESP_LOGI(TAG, "CARD0_COORDS: x1=%ld, y1=%ld, x2=%ld, y2=%ld, hidden=%d, clickable=%d",
+                     (long)a.x1, (long)a.y1, (long)a.x2, (long)a.y2,
+                     lv_obj_has_flag(c0, LV_OBJ_FLAG_HIDDEN), lv_obj_has_flag(c0, LV_OBJ_FLAG_CLICKABLE));
+        }
+    }
     sim_touch_click(84, 110);
+    wait_gui_ms(250);
     bool card_ok = (ui_glue_get_view_mode() == VIEW_MODE_FULLSCREEN);
     printf("UINAV,btn=card,result=%s\n", card_ok ? "PASS" : "FAIL");
 
     // 3. btn=queue (x=458, y=20) -> abre biblioteca desde player
     ui_glue_set_osd_visible(true);
-    for (int i = 0; i < 5; i++) {
-        lv_timer_handler();
-        vTaskDelay(pdMS_TO_TICKS(10));
-    }
+    wait_gui_ms(100);
     sim_touch_click(458, 20);
+    wait_gui_ms(250);
     bool queue_ok = (ui_glue_get_view_mode() == VIEW_MODE_STUDIO);
     printf("UINAV,btn=queue,result=%s\n", queue_ok ? "PASS" : "FAIL");
 
     // Regresar a player
     sim_touch_click(84, 110);
+    wait_gui_ms(250);
     ui_glue_set_osd_visible(true);
-    for (int i = 0; i < 5; i++) {
-        lv_timer_handler();
-        vTaskDelay(pdMS_TO_TICKS(10));
-    }
+    wait_gui_ms(100);
 
     // 4. btn=play (x=240, y=295) -> alterna play/pause
     sim_touch_click(240, 295);
+    wait_gui_ms(100);
     printf("UINAV,btn=play,result=PASS\n");
     sim_touch_click(240, 295); // restaurar
+    wait_gui_ms(100);
 
     // 5. btn=prev (x=144, y=295)
     sim_touch_click(144, 295);
+    wait_gui_ms(100);
     printf("UINAV,btn=prev,result=PASS\n");
 
     // 6. btn=rew (x=192, y=295)
     sim_touch_click(192, 295);
+    wait_gui_ms(100);
     printf("UINAV,btn=rew,result=PASS\n");
 
     // 7. btn=fwd (x=288, y=295)
     sim_touch_click(288, 295);
+    wait_gui_ms(100);
     printf("UINAV,btn=fwd,result=PASS\n");
 
     // 8. btn=next (x=336, y=295)
     sim_touch_click(336, 295);
+    wait_gui_ms(100);
     printf("UINAV,btn=next,result=PASS\n");
 
     // 9. btn=repeat (x=78, y=295)
     uint8_t rep_before = s_settings.repeat;
     sim_touch_click(78, 295);
+    wait_gui_ms(100);
     bool rep_ok = (s_settings.repeat != rep_before);
     printf("UINAV,btn=repeat,result=%s\n", rep_ok ? "PASS" : "FAIL");
 
     // 10. btn=shuffle (x=402, y=295)
     bool shuf_before = s_settings.shuffle;
     sim_touch_click(402, 295);
+    wait_gui_ms(100);
     bool shuf_ok = (s_settings.shuffle != shuf_before);
     printf("UINAV,btn=shuffle,result=%s\n", shuf_ok ? "PASS" : "FAIL");
 
     // 11. btn=settings (x=450, y=295)
     sim_touch_click(450, 295);
+    wait_gui_ms(100);
     bool set_ok = (s_toast_box != NULL && !lv_obj_has_flag(s_toast_box, LV_OBJ_FLAG_HIDDEN));
     printf("UINAV,btn=settings,result=%s\n", set_ok ? "PASS" : "FAIL");
     if (s_toast_box) lv_obj_add_flag(s_toast_box, LV_OBJ_FLAG_HIDDEN);
+    wait_gui_ms(50);
 
     // 12. btn=seek (x=240, y=249)
     sim_touch_click(240, 249);
+    wait_gui_ms(100);
     printf("UINAV,btn=seek,result=PASS\n");
 
     // 13. btn=lock (x=30, y=295)
     sim_touch_click(30, 295);
+    wait_gui_ms(100);
     bool lock_ok = s_locked;
     printf("UINAV,btn=lock,result=%s\n", lock_ok ? "PASS" : "FAIL");
 
     // 14. btn=unlock (mantener presionado en x=240, y=160 durante 1200 ms)
     sim_touch_hold(240, 160, 1200);
+    wait_gui_ms(100);
     bool unlock_ok = !s_locked;
     printf("UINAV,btn=unlock,result=%s\n", unlock_ok ? "PASS" : "FAIL");
 
@@ -648,10 +714,34 @@ void action_open_stats(lv_event_t *e) {
     s_last_touch_time = esp_timer_get_time() / 1000;
 }
 
+static void fix_card_events(lv_obj_t *card, int idx) {
+    if (!card) return;
+    lv_obj_add_flag(card, LV_OBJ_FLAG_CLICKABLE);
+    lv_obj_set_user_data(card, (void *)(uintptr_t)idx);
+    lv_obj_add_event_cb(card, action_play_index, LV_EVENT_CLICKED, (void *)(uintptr_t)idx);
+    uint32_t cnt = lv_obj_get_child_count(card);
+    for (uint32_t i = 0; i < cnt; i++) {
+        lv_obj_t *child = lv_obj_get_child(card, i);
+        if (child) {
+            lv_obj_set_user_data(child, (void *)(uintptr_t)idx);
+            lv_obj_add_flag(child, LV_OBJ_FLAG_CLICKABLE);
+            lv_obj_add_event_cb(child, action_play_index, LV_EVENT_CLICKED, (void *)(uintptr_t)idx);
+        }
+    }
+}
+
 void action_play_index(lv_event_t *e) {
     s_last_touch_time = esp_timer_get_time() / 1000;
-    lv_obj_t *target = lv_event_get_current_target(e);
-    int idx = (int)(uintptr_t)lv_obj_get_user_data(target);
+    lv_obj_t *target = lv_event_get_target(e);
+    void *ud = lv_event_get_user_data(e);
+    if (!ud && target) {
+        ud = lv_obj_get_user_data(target);
+    }
+    if (!ud && lv_event_get_current_target(e)) {
+        ud = lv_obj_get_user_data(lv_event_get_current_target(e));
+    }
+    int idx = (int)(uintptr_t)ud;
+    ESP_LOGI(TAG, "action_play_index CALLED: target=%p, ud=%p, idx=%d", target, ud, idx);
     const media_item_t *item = media_library_get(idx);
     if (!item) return;
 
@@ -678,6 +768,10 @@ void action_play_index(lv_event_t *e) {
 
     s_view_mode = VIEW_MODE_FULLSCREEN;
     loadScreen(SCREEN_ID_SCR_PLAYER);
+    if (objects.scr_player) {
+        lv_screen_load(objects.scr_player);
+        lv_obj_update_layout(objects.scr_player);
+    }
     if (s_osd_visible) {
         player_cmd_t cmd_rect = {.type = PCMD_SET_VIDEO_RECT, .rect = {0, 40, 480, 196}};
         player_cmd_send(&cmd_rect);
@@ -725,7 +819,7 @@ void action_library_populate(lv_event_t *e) {
         const media_item_t *item = media_library_get(i);
         if (!item) continue;
 
-        create_user_widget_uw_video_card(objects.lib_grid, 0);
+        create_user_widget_uw_video_card(objects.lib_grid, -1);
         lv_obj_t *card = lv_obj_get_child(objects.lib_grid, -1);
         if (!card) continue;
 
@@ -799,7 +893,10 @@ void action_library_populate(lv_event_t *e) {
                 lv_label_set_text(lbl_meta, "Sin girar");
             }
         }
+
+        fix_card_events(card, i);
     }
+    lv_obj_update_layout(objects.lib_grid);
 }
 
 void action_set_brightness(lv_event_t *e) {

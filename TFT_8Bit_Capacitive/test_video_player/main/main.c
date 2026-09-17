@@ -455,6 +455,11 @@ static void autotest_task(void *arg) {
     if (sec_per_track < 3) sec_per_track = 3;
     int sec_per_scenario = sec_per_track / 3;
 
+    app_settings_t orig_settings;
+    settings_nvs_load(&orig_settings);
+    player_cmd_t cmd_rep1 = {.type = PCMD_SET_REPEAT, .arg = REPEAT_ONE};
+    player_cmd_send(&cmd_rep1);
+
     const char *scenarios[3] = {"hidden", "osd", "seek"};
 
     for (int track_idx = 0; track_idx < total_tracks; track_idx++) {
@@ -534,6 +539,10 @@ static void autotest_task(void *arg) {
         }
     }
 
+    // Restaurar política original de repetición
+    player_cmd_t cmd_rest_rep = {.type = PCMD_SET_REPEAT, .arg = orig_settings.repeat};
+    player_cmd_send(&cmd_rest_rep);
+
     // Escenario TAP de verificacion Bug T2
     ESP_LOGI(TAG, "Iniciando escenario TAP (Bug T2)...");
     perf_set_scenario(0, "tap");
@@ -568,7 +577,7 @@ static void autotest_task(void *arg) {
     // Escenario UINAV: verificación automatizada de navegación de botones
     ESP_LOGI(TAG, "Iniciando escenario UINAV (verificación de botones y navegación)...");
     ui_req_send(UI_REQ_UINAV, 0);
-    vTaskDelay(pdMS_TO_TICKS(1500));
+    vTaskDelay(pdMS_TO_TICKS(5000));
 
     // Escenario TOGGLE (Fase 3): alternar HUD cada 500 ms durante 10 s para verificar estabilidad de direct blit
     ESP_LOGI(TAG, "Iniciando escenario TOGGLE (10 s, alterna cada 500 ms)...");
