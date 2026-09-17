@@ -1705,10 +1705,13 @@ static void wait_gui_ms(uint32_t ms) {
 }
 
 static bool sim_touch_wait_consumed(uint32_t sequence) {
-    for (int i = 0; i < 8; i++) {
+    /* El read timer del indev no se ejecuta en cada llamada inmediata a
+     * lv_timer_handler(). Esperar ciclos completos evita reemplazar PRESS por
+     * RELEASE antes de que LVGL haya visto el primer flanco. */
+    for (int i = 0; i < 6; i++) {
         lv_timer_handler();
         if (touch_synthetic_was_consumed(sequence)) return true;
-        vTaskDelay(pdMS_TO_TICKS(1));
+        vTaskDelay(pdMS_TO_TICKS(15));
     }
     ESP_LOGW(TAG, "Autotest: transicion tactil sintetica %lu no consumida", (unsigned long)sequence);
     return false;
