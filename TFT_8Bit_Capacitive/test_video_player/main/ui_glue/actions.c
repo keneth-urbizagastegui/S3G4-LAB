@@ -32,6 +32,7 @@ static bool s_seeking = false;
 static int s_current_track_idx = 0;
 static view_mode_t s_view_mode = VIEW_MODE_FULLSCREEN;
 static app_settings_t s_settings;
+static bool s_was_playing_before_settings = false;
 
 static bool s_locked = false;
 static bool s_consume_touch_until_release = false;
@@ -436,7 +437,7 @@ static void player_touch_gesture_event_cb(lv_event_t *e) {
             // 1 % cada 2 px (hacia arriba aumenta, hacia abajo disminuye)
             int delta_pct = (s_touch_down_pos.y - p.y) / 2;
             int new_bri = s_drag_start_brightness + delta_pct;
-            if (new_bri < 10) new_bri = 10;
+            if (new_bri < 20) new_bri = 20;
             if (new_bri > 100) new_bri = 100;
 
             s_settings.bright = (uint8_t)new_bri;
@@ -450,6 +451,11 @@ static void player_touch_gesture_event_cb(lv_event_t *e) {
                 lv_label_set_text(objects.lbl_bri, buf);
             }
             if (objects.sld_brightness) lv_slider_set_value(objects.sld_brightness, new_bri, LV_ANIM_OFF);
+            if (objects.lbl_set_bri_val) {
+                char buf[16];
+                snprintf(buf, sizeof(buf), "%d%%", new_bri);
+                lv_label_set_text(objects.lbl_set_bri_val, buf);
+            }
             s_brightness_hide_ms = now + 1200;
         }
     } else if (code == LV_EVENT_RELEASED) {
@@ -535,13 +541,46 @@ static void player_touch_gesture_event_cb(lv_event_t *e) {
 
 void ui_glue_init(void) {
     settings_nvs_load(&s_settings);
+    if (s_settings.bright < 20) s_settings.bright = 20;
+    if (s_settings.bright > 100) s_settings.bright = 100;
     ili9488_8080_set_backlight(s_settings.bright);
+
+    if (objects.sld_brightness) {
+        lv_slider_set_range(objects.sld_brightness, 20, 100);
+        lv_slider_set_value(objects.sld_brightness, s_settings.bright, LV_ANIM_OFF);
+    }
+    if (objects.bar_brightness) {
+        lv_bar_set_range(objects.bar_brightness, 20, 100);
+        lv_bar_set_value(objects.bar_brightness, s_settings.bright, LV_ANIM_OFF);
+    }
     if (objects.player_touch) {
         lv_obj_add_event_cb(objects.player_touch, player_touch_gesture_event_cb, LV_EVENT_ALL, NULL);
     }
     if (objects.chip_fps) {
         lv_obj_add_flag(objects.chip_fps, LV_OBJ_FLAG_CLICKABLE);
         lv_obj_add_event_cb(objects.chip_fps, action_open_stats, LV_EVENT_LONG_PRESSED, NULL);
+    }
+    if (objects.obj0) {
+        lv_obj_remove_flag(objects.obj0, LV_OBJ_FLAG_CLICKABLE);
+        lv_obj_add_flag(objects.obj0, LV_OBJ_FLAG_EVENT_BUBBLE);
+    }
+    if (objects.btn_open_stats && objects.obj32) {
+        lv_obj_center(objects.obj32);
+        lv_obj_set_style_text_align(objects.obj32, LV_TEXT_ALIGN_CENTER, 0);
+    }
+    if (objects.ovl_stats) {
+        lv_obj_add_flag(objects.ovl_stats, LV_OBJ_FLAG_CLICKABLE);
+        lv_obj_add_event_cb(objects.ovl_stats, action_open_stats, LV_EVENT_CLICKED, NULL);
+        lv_obj_set_style_bg_color(objects.ovl_stats, lv_color_hex(0x15171C), LV_PART_MAIN);
+        lv_obj_set_style_bg_opa(objects.ovl_stats, 255, LV_PART_MAIN);
+        uint32_t c_cnt = lv_obj_get_child_count(objects.ovl_stats);
+        for (uint32_t i = 0; i < c_cnt; i++) {
+            lv_obj_t *ch = lv_obj_get_child(objects.ovl_stats, i);
+            if (ch && ch != objects.btn_stats_close) {
+                lv_obj_remove_flag(ch, LV_OBJ_FLAG_CLICKABLE);
+                lv_obj_add_flag(ch, LV_OBJ_FLAG_EVENT_BUBBLE);
+            }
+        }
     }
     if (objects.lbl_title) {
         lv_obj_set_style_anim_duration(objects.lbl_title, 8000, 0);
@@ -929,7 +968,12 @@ void ui_glue_select_settings_tab(int tab) {
 }
 
 void ui_glue_sync_settings_controls(void) {
+    if (objects.btn_open_stats && objects.obj32) {
+        lv_obj_center(objects.obj32);
+        lv_obj_set_style_text_align(objects.obj32, LV_TEXT_ALIGN_CENTER, 0);
+    }
     if (objects.sld_brightness) {
+        lv_slider_set_range(objects.sld_brightness, 20, 100);
         lv_slider_set_value(objects.sld_brightness, s_settings.bright, LV_ANIM_OFF);
     }
     if (objects.lbl_set_bri_val) {
@@ -1100,18 +1144,24 @@ void ui_glue_set_view_mode(view_mode_t mode) {
             player_status_t st;
             player_get_status(&st);
             if (st.state == PST_PLAYING) {
+                s_was_playing_before_settings = true;
                 player_cmd_t cmd_pause = {.type = PCMD_PAUSE};
                 player_cmd_send(&cmd_pause);
                 const media_item_t *cur = media_library_get(s_current_track_idx);
                 if (cur && cur->compatible) {
                     media_library_set_resume(cur->path, (uint32_t)st.pos_ms);
                 }
-            } else if (st.state == PST_ENDED) {
-                const media_item_t *cur = media_library_get(s_current_track_idx);
-                if (cur) {
-                    media_library_set_resume(cur->path, 0);
+            } else {
+                s_was_playing_before_settings = false;
+                if (st.state == PST_ENDED) {
+                    const media_item_t *cur = media_library_get(s_current_track_idx);
+                    if (cur) {
+                        media_library_set_resume(cur->path, 0);
+                    }
                 }
             }
+        } else {
+            s_was_playing_before_settings = false;
         }
         if (objects.scr_settings) {
             loadScreen(SCREEN_ID_SCR_SETTINGS);
@@ -1177,6 +1227,53 @@ void ui_glue_get_published_info(char *title_buf, size_t max_len, int *track_idx,
     if (title_buf && max_len > 0) {
         const char *txt = (objects.lbl_title) ? lv_label_get_text(objects.lbl_title) : "";
         snprintf(title_buf, max_len, "%s", txt ? txt : "");
+    }
+}
+
+void ui_glue_update_stats_labels(void) {
+    if (!objects.ovl_stats || lv_obj_has_flag(objects.ovl_stats, LV_OBJ_FLAG_HIDDEN)) return;
+    perf_live_metrics_t m;
+    perf_get_live_metrics(&m);
+    player_status_t st_cur;
+    player_get_status(&st_cur);
+    float pres_fps = (st_cur.state == PST_PLAYING) ? m.pres_fps : 0.0f;
+    float dec_fps = (st_cur.state == PST_PLAYING) ? m.dec_fps : 0.0f;
+
+    if (objects.lbl_stat_pres) {
+        char buf[32];
+        snprintf(buf, sizeof(buf), "%0.1f fps", pres_fps);
+        lv_label_set_text(objects.lbl_stat_pres, buf);
+    }
+    if (objects.lbl_stat_dec) {
+        char buf[32];
+        snprintf(buf, sizeof(buf), "%0.1f fps", dec_fps);
+        lv_label_set_text(objects.lbl_stat_dec, buf);
+    }
+    if (objects.lbl_stat_drop) {
+        char buf[32];
+        snprintf(buf, sizeof(buf), "%lu", (unsigned long)m.dropped);
+        lv_label_set_text(objects.lbl_stat_drop, buf);
+    }
+    if (objects.lbl_stat_rd) {
+        char buf[32];
+        snprintf(buf, sizeof(buf), "%0.1f / %0.1f ms", m.rd_avg_ms, m.rd_max_ms);
+        lv_label_set_text(objects.lbl_stat_rd, buf);
+    }
+    if (objects.lbl_stat_dec_time) {
+        char buf[32];
+        snprintf(buf, sizeof(buf), "%0.1f / %0.1f ms", m.dec_avg_ms, m.dec_max_ms);
+        lv_label_set_text(objects.lbl_stat_dec_time, buf);
+    }
+    if (objects.lbl_stat_blit) {
+        char buf[32];
+        snprintf(buf, sizeof(buf), "%0.1f ms (%lu Hz)", m.blit_ms, (unsigned long)m.te_hz);
+        lv_label_set_text(objects.lbl_stat_blit, buf);
+    }
+    if (objects.lbl_stat_file) {
+        const media_item_t *cur = media_library_get(s_current_track_idx);
+        if (cur && cur->title[0] != '\0') {
+            lv_label_set_text(objects.lbl_stat_file, cur->title);
+        }
     }
 }
 
@@ -1298,45 +1395,7 @@ void ui_glue_tick(void) {
     if (objects.ovl_stats && !lv_obj_has_flag(objects.ovl_stats, LV_OBJ_FLAG_HIDDEN)) {
         if (now_gest - s_last_stats_update_ms >= 500) {
             s_last_stats_update_ms = now_gest;
-            perf_live_metrics_t m;
-            perf_get_live_metrics(&m);
-
-            if (objects.lbl_stat_pres) {
-                char buf[32];
-                snprintf(buf, sizeof(buf), "%0.1f fps", m.pres_fps);
-                lv_label_set_text(objects.lbl_stat_pres, buf);
-            }
-            if (objects.lbl_stat_dec) {
-                char buf[32];
-                snprintf(buf, sizeof(buf), "%0.1f fps", m.dec_fps);
-                lv_label_set_text(objects.lbl_stat_dec, buf);
-            }
-            if (objects.lbl_stat_drop) {
-                char buf[32];
-                snprintf(buf, sizeof(buf), "%lu", (unsigned long)m.dropped);
-                lv_label_set_text(objects.lbl_stat_drop, buf);
-            }
-            if (objects.lbl_stat_rd) {
-                char buf[32];
-                snprintf(buf, sizeof(buf), "%0.1f / %0.1f ms", m.rd_avg_ms, m.rd_max_ms);
-                lv_label_set_text(objects.lbl_stat_rd, buf);
-            }
-            if (objects.lbl_stat_dec_time) {
-                char buf[32];
-                snprintf(buf, sizeof(buf), "%0.1f / %0.1f ms", m.dec_avg_ms, m.dec_max_ms);
-                lv_label_set_text(objects.lbl_stat_dec_time, buf);
-            }
-            if (objects.lbl_stat_blit) {
-                char buf[32];
-                snprintf(buf, sizeof(buf), "%0.1f ms (%lu Hz)", m.blit_ms, (unsigned long)m.te_hz);
-                lv_label_set_text(objects.lbl_stat_blit, buf);
-            }
-            if (objects.lbl_stat_file) {
-                const media_item_t *cur = media_library_get(s_current_track_idx);
-                if (cur && cur->title[0] != '\0') {
-                    lv_label_set_text(objects.lbl_stat_file, cur->title);
-                }
-            }
+            ui_glue_update_stats_labels();
         }
     }
 
@@ -1549,8 +1608,14 @@ void action_open_library(lv_event_t *e) {
     s_pending_library_return = false;
     if (s_locked) return;
     if (s_view_mode == VIEW_MODE_SETTINGS) {
-        ESP_LOGI(TAG, "Action: back from settings -> returning to origin mode %d", s_settings_origin_mode);
-        ui_glue_set_view_mode(s_settings_origin_mode);
+        ESP_LOGI(TAG, "Action: back from settings -> returning to origin mode %d (was_playing=%d)", s_settings_origin_mode, s_was_playing_before_settings);
+        view_mode_t orig = s_settings_origin_mode;
+        ui_glue_set_view_mode(orig);
+        if (orig == VIEW_MODE_FULLSCREEN && s_was_playing_before_settings) {
+            s_was_playing_before_settings = false;
+            player_cmd_t cmd = {.type = PCMD_PLAY};
+            player_cmd_send(&cmd);
+        }
         return;
     }
     action_library_populate(NULL);
@@ -1575,7 +1640,14 @@ void action_open_settings(lv_event_t *e) {
     s_last_touch_time = esp_timer_get_time() / 1000;
     if (s_locked) return;
     s_settings_origin_mode = s_view_mode;
-    ESP_LOGI(TAG, "Action: open_settings from mode %d", s_settings_origin_mode);
+    player_status_t st;
+    player_get_status(&st);
+    if (s_view_mode == VIEW_MODE_FULLSCREEN && st.state == PST_PLAYING) {
+        s_was_playing_before_settings = true;
+    } else {
+        s_was_playing_before_settings = false;
+    }
+    ESP_LOGI(TAG, "Action: open_settings from mode %d (was_playing=%d)", s_settings_origin_mode, s_was_playing_before_settings);
     ui_glue_set_view_mode(VIEW_MODE_SETTINGS);
 }
 
@@ -1868,10 +1940,47 @@ void ui_glue_run_uinav_test(void) {
         ui_glue_set_view_mode(VIEW_MODE_FULLSCREEN);
         wait_gui_ms(200);
     }
+    player_status_t st_after_set;
+    player_get_status(&st_after_set);
+    bool set_resumed = (st_after_set.state == PST_PLAYING);
 
-    bool set_ok = (set_opened && tab1_ok && tab2_ok && tab3_ok && tab0_ok && set_closed);
+    bool set_ok = (set_opened && tab1_ok && tab2_ok && tab3_ok && tab0_ok && set_closed && set_resumed);
     printf("UINAV,btn=settings,result=%s\n", set_ok ? "PASS" : "FAIL");
+    printf("UINAV,btn=settings_resume,result=%s\n", set_resumed ? "PASS" : "FAIL");
     wait_gui_ms(50);
+
+    // Prueba Ajustes -> "Ver rendimiento" -> vuelve al reproductor reanudando y muestra ovl_stats
+    ui_glue_set_osd_visible(true);
+    wait_gui_ms(100);
+    sim_touch_click(450, 295); // btn=settings
+    wait_gui_ms(300);
+    sim_touch_click(75, 200); // tab 3: Acerca de
+    wait_gui_ms(200);
+    sim_touch_click(86, 242); // btn_open_stats ("Ver rendimiento")
+    wait_gui_ms(350);
+    player_status_t st_after_perf;
+    player_get_status(&st_after_perf);
+    bool perf_screen_ok = (ui_glue_get_view_mode() == VIEW_MODE_FULLSCREEN);
+    bool perf_resumed = (st_after_perf.state == PST_PLAYING);
+    bool ovl_stats_shown = (objects.ovl_stats && !lv_obj_has_flag(objects.ovl_stats, LV_OBJ_FLAG_HIDDEN));
+    // Cerrar ovl_stats con toque sobre ella (x=100, y=100)
+    sim_touch_click(100, 100);
+    wait_gui_ms(250);
+    bool ovl_stats_closed = (objects.ovl_stats && lv_obj_has_flag(objects.ovl_stats, LV_OBJ_FLAG_HIDDEN));
+    bool perf_flow_ok = (perf_screen_ok && perf_resumed && ovl_stats_shown && ovl_stats_closed);
+    printf("UINAV,btn=settings_ver_rendimiento,result=%s\n", perf_flow_ok ? "PASS" : "FAIL");
+    wait_gui_ms(50);
+
+    // Probar límite inferior de brillo (no baja de 20%)
+    if (objects.sld_brightness) {
+        lv_slider_set_value(objects.sld_brightness, 10, LV_ANIM_OFF);
+        action_set_brightness(NULL);
+        bool bri_min_ok = (s_settings.bright >= 20);
+        // Restaurar a 70%
+        lv_slider_set_value(objects.sld_brightness, 70, LV_ANIM_OFF);
+        action_set_brightness(NULL);
+        printf("UINAV,btn=brightness_clamp20,result=%s\n", bri_min_ok ? "PASS" : "FAIL");
+    }
 
     // 12. btn=seek (x=340, y=249) -> barra de seek
     ui_glue_set_osd_visible(true);
@@ -2033,13 +2142,25 @@ void action_open_stats(lv_event_t *e) {
     if (!objects.ovl_stats) return;
 
     if (s_view_mode == VIEW_MODE_SETTINGS) {
+        ESP_LOGI(TAG, "Action: open_stats from settings -> returning to player (resume=%d)", s_was_playing_before_settings);
         ui_glue_set_view_mode(VIEW_MODE_FULLSCREEN);
+        if (s_was_playing_before_settings) {
+            s_was_playing_before_settings = false;
+            player_cmd_t cmd = {.type = PCMD_PLAY};
+            player_cmd_send(&cmd);
+        }
+        lv_obj_remove_flag(objects.ovl_stats, LV_OBJ_FLAG_HIDDEN);
+        lcd_bus_set_overlay_rect(1, 12, 52, 212, 172, true);
+        ui_glue_update_stats_labels();
+        ESP_LOGI(TAG, "Action: ovl_stats abierta desde ajustes (overlay 1 activo)");
+        return;
     }
 
     bool is_hidden = lv_obj_has_flag(objects.ovl_stats, LV_OBJ_FLAG_HIDDEN);
     if (is_hidden) {
         lv_obj_remove_flag(objects.ovl_stats, LV_OBJ_FLAG_HIDDEN);
         lcd_bus_set_overlay_rect(1, 12, 52, 212, 172, true);
+        ui_glue_update_stats_labels();
         ESP_LOGI(TAG, "Action: ovl_stats mostrada (overlay 1 activo)");
     } else {
         lv_obj_add_flag(objects.ovl_stats, LV_OBJ_FLAG_HIDDEN);
@@ -2500,7 +2621,10 @@ void action_set_brightness(lv_event_t *e) {
     s_last_touch_time = esp_timer_get_time() / 1000;
     if (!objects.sld_brightness) return;
     int32_t val = lv_slider_get_value(objects.sld_brightness);
-    if (val < 10) val = 10;
+    if (val < 20) {
+        val = 20;
+        lv_slider_set_value(objects.sld_brightness, 20, LV_ANIM_OFF);
+    }
     if (val > 100) val = 100;
     s_settings.bright = (uint8_t)val;
     settings_nvs_set_u8("bright", s_settings.bright);

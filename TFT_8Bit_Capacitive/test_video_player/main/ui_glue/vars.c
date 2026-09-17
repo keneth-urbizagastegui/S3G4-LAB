@@ -157,7 +157,11 @@ const char *get_var_library_summary() { return s_cache.library_summary; }
 void set_var_library_summary(const char *value) { if (value) snprintf(s_cache.library_summary, sizeof(s_cache.library_summary), "%s", value); }
 
 int32_t get_var_brightness() { return s_cache.brightness; }
-void set_var_brightness(int32_t value) { s_cache.brightness = value; }
+void set_var_brightness(int32_t value) {
+    if (value < 20) value = 20;
+    if (value > 100) value = 100;
+    s_cache.brightness = value;
+}
 
 const char *get_var_stats_pres_fps() { return s_cache.stats_pres_fps; }
 void set_var_stats_pres_fps(const char *value) { if (value) snprintf(s_cache.stats_pres_fps, sizeof(s_cache.stats_pres_fps), "%s", value); }

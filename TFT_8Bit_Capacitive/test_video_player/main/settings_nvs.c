@@ -71,7 +71,14 @@ esp_err_t settings_nvs_load(app_settings_t *out) {
     uint16_t u16_val = 0;
 
     if (nvs_get_u8(s_handle, "bright", &u8_val) == ESP_OK) {
-        if (u8_val >= 10 && u8_val <= 100) out->bright = u8_val;
+        if (u8_val < 20) {
+            u8_val = 20;
+            nvs_set_u8(s_handle, "bright", 20);
+            nvs_commit(s_handle);
+        } else if (u8_val > 100) {
+            u8_val = 100;
+        }
+        out->bright = u8_val;
     }
     if (nvs_get_u16(s_handle, "osd_ms", &u16_val) == ESP_OK) {
         out->osd_ms = u16_val;
@@ -112,7 +119,10 @@ esp_err_t settings_nvs_save(const app_settings_t *s) {
         if (err != ESP_OK) return err;
     }
 
-    nvs_set_u8(s_handle, "bright", s->bright);
+    uint8_t br = s->bright;
+    if (br < 20) br = 20;
+    if (br > 100) br = 100;
+    nvs_set_u8(s_handle, "bright", br);
     nvs_set_u16(s_handle, "osd_ms", s->osd_ms);
     nvs_set_u8(s_handle, "stats", s->stats);
     nvs_set_u8(s_handle, "miniprog", s->miniprog);
@@ -243,6 +253,10 @@ esp_err_t settings_nvs_set_u8(const char *key, uint8_t val) {
     if (!s_initialized) {
         esp_err_t err = settings_nvs_init();
         if (err != ESP_OK) return err;
+    }
+    if (strcmp(key, "bright") == 0) {
+        if (val < 20) val = 20;
+        if (val > 100) val = 100;
     }
     esp_err_t err = nvs_set_u8(s_handle, key, val);
     if (err == ESP_OK) {

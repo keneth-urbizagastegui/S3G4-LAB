@@ -11,7 +11,7 @@ extern "C" {
 #endif
 
 typedef struct {
-    uint8_t bright;      // 10-100, default 70
+    uint8_t bright;      // 20-100, default 70
     uint16_t osd_ms;     // default 3000 (0 = nunca)
     uint8_t stats;       // 0/1, default 0
     uint8_t miniprog;    // 0/1, default 1
