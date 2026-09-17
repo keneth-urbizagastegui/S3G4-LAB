@@ -366,6 +366,7 @@ void ui_glue_unlock(void) {
 
 void ui_glue_init(void) {
     settings_nvs_load(&s_settings);
+    ili9488_8080_set_backlight(s_settings.bright);
     s_last_touch_time = esp_timer_get_time() / 1000;
     s_osd_visible = true;
     s_hud_forced_mode = 0;
