@@ -546,7 +546,10 @@ static void autotest_task(void *arg) {
     // Escenario TAP de verificacion Bug T2
     ESP_LOGI(TAG, "Iniciando escenario TAP (Bug T2)...");
     perf_set_scenario(0, "tap");
+    player_cmd_t cmd_open_tap = {.type = PCMD_OPEN, .arg = 0};
+    player_cmd_send(&cmd_open_tap);
     ui_req_send(UI_REQ_SET_VIEW, VIEW_MODE_FULLSCREEN);
+    vTaskDelay(pdMS_TO_TICKS(500));
     ui_req_send(UI_REQ_SET_HUD, 1); // forzar oculto
     vTaskDelay(pdMS_TO_TICKS(300));
 

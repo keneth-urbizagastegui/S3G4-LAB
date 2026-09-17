@@ -492,12 +492,15 @@ void ui_glue_tick(void) {
     player_get_status(&st);
     s_current_track_idx = st.track_index;
 
-    // Si la reproduccion termino o no hay video activo y estamos en pantalla de reproductor -> volver a biblioteca
-    if ((st.state == PST_ENDED || st.state == PST_IDLE || st.state == PST_NO_MEDIA) && s_view_mode == VIEW_MODE_FULLSCREEN) {
-        ESP_LOGI(TAG, "Estado de reproduccion %d en modo fullscreen -> retornando a biblioteca", st.state);
+    // Si la reproduccion termino (transicion PLAYING -> ENDED) y estamos en modo fullscreen -> volver a biblioteca
+    static player_state_t s_prev_player_state = PST_IDLE;
+    if (s_prev_player_state == PST_PLAYING && st.state == PST_ENDED && s_view_mode == VIEW_MODE_FULLSCREEN) {
+        ESP_LOGI(TAG, "Reproduccion finalizada en modo fullscreen -> retornando a biblioteca");
         action_open_library(NULL);
+        s_prev_player_state = st.state;
         return;
     }
+    s_prev_player_state = st.state;
 
     // Update play icon
     if (objects.lbl_play_icon) {
@@ -807,7 +810,7 @@ void ui_glue_run_uinav_test(void) {
 
         // Boton Continuar (x=124, y=269)
         sim_touch_click(124, 269);
-        wait_gui_ms(300);
+        wait_gui_ms(500);
         bool cont_ok = (ui_glue_get_view_mode() == VIEW_MODE_FULLSCREEN);
         printf("UINAV,btn=L3_resume_cont,result=%s\n", (sheet_vis && cont_ok) ? "PASS" : "FAIL");
 
@@ -820,7 +823,7 @@ void ui_glue_run_uinav_test(void) {
 
         // Boton Desde el principio (x=356, y=269)
         sim_touch_click(356, 269);
-        wait_gui_ms(300);
+        wait_gui_ms(500);
         bool start_ok = (item1->resume_ms == 0 && ui_glue_get_view_mode() == VIEW_MODE_FULLSCREEN);
         printf("UINAV,btn=L3_resume_start,result=%s\n", start_ok ? "PASS" : "FAIL");
     }
