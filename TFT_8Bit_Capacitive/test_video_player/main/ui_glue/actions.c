@@ -437,7 +437,9 @@ void ui_glue_set_view_mode(view_mode_t mode) {
     fflush(stdout);
 
     if (mode == VIEW_MODE_FULLSCREEN) {
-        loadScreen(SCREEN_ID_SCR_PLAYER);
+        if (objects.scr_player) {
+            loadScreen(SCREEN_ID_SCR_PLAYER);
+        }
         if (s_osd_visible) {
             lcd_bus_set_video_rect(0, 40, 480, 196);
             player_cmd_t cmd = {.type = PCMD_SET_VIDEO_RECT, .rect = {0, 40, 480, 196}};
@@ -461,7 +463,9 @@ void ui_glue_set_view_mode(view_mode_t mode) {
                 media_library_set_resume(cur->path, (uint32_t)st.pos_ms);
             }
         }
-        loadScreen(SCREEN_ID_SCR_LIBRARY);
+        if (objects.scr_library) {
+            loadScreen(SCREEN_ID_SCR_LIBRARY);
+        }
         ui_glue_refresh_cards();
         lcd_bus_set_video_rect(0, 0, 0, 0);
         player_cmd_t cmd = {.type = PCMD_SET_VIDEO_RECT, .rect = {0, 0, 0, 0}};

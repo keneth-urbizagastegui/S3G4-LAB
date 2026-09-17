@@ -374,8 +374,8 @@ static void gui_task(void *arg) {
     lv_indev_set_read_cb(indev, lvgl_touch_read_cb);
 
     // Inicializar EEZ UI y pegamento
-    ui_glue_init();
     ui_init();
+    ui_glue_init();
     ui_glue_dump_all();
     if (ui_glue_get_view_mode() == VIEW_MODE_STUDIO) {
         action_open_library(NULL);
