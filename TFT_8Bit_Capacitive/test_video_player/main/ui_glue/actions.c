@@ -528,6 +528,9 @@ void ui_glue_init(void) {
         lv_obj_add_flag(objects.chip_fps, LV_OBJ_FLAG_CLICKABLE);
         lv_obj_add_event_cb(objects.chip_fps, action_open_stats, LV_EVENT_LONG_PRESSED, NULL);
     }
+    if (objects.lbl_title) {
+        lv_obj_set_style_anim_duration(objects.lbl_title, 8000, 0);
+    }
     s_last_touch_time = esp_timer_get_time() / 1000;
     s_osd_visible = true;
     s_hud_forced_mode = 0;
@@ -715,6 +718,7 @@ static void create_queue_row_widget(lv_obj_t *parent, int idx) {
     if (is_current) {
         lv_obj_set_style_text_color(lbl, lv_color_hex(theme_colors[active_theme_index][6]), 0);
         lv_label_set_long_mode(lbl, LV_LABEL_LONG_SCROLL_CIRCULAR);
+        lv_obj_set_style_anim_duration(lbl, 6000, 0);
     } else {
         lv_obj_set_style_text_color(lbl, lv_color_hex(theme_colors[active_theme_index][4]), 0);
         lv_label_set_long_mode(lbl, LV_LABEL_LONG_DOT);
