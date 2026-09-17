@@ -337,6 +337,7 @@ void perf_set_scenario(int track, const char *scn) {
         strncpy(s_scn, scn, sizeof(s_scn) - 1);
         s_scn[sizeof(s_scn) - 1] = '\0';
     }
+    s_last_report_us = esp_timer_get_time();
     portEXIT_CRITICAL(&s_perf_mux);
 }
 

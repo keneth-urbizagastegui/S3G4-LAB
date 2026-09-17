@@ -490,6 +490,8 @@ static void autotest_task(void *arg) {
         for (int s = 0; s < 3; s++) {
             const char *scn_name = scenarios[s];
 
+            perf_set_scenario(track_idx, "init");
+
             ui_req_send(UI_REQ_SET_VIEW, VIEW_MODE_FULLSCREEN);
             // X1 & X3: hidden = HUD forzado oculto (1); osd = HUD forzado visible (2); seek = oculto (1)
             int hud_req = (s == 1) ? 2 : 1;
