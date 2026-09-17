@@ -146,7 +146,7 @@ static void lvgl_disp_flush_cb(lv_display_t *disp, const lv_area_t *area, uint8_
     uint16_t *pixels = (uint16_t *)px_map;
     view_mode_t vmode = ui_glue_get_view_mode();
 
-    if (vmode == VIEW_MODE_FULLSCREEN) {
+    if (vmode == VIEW_MODE_FULLSCREEN || vmode == VIEW_MODE_QUEUE) {
         // Si hay capas de superposición activas registradas en lcd_bus,
         // actualizar el búfer de capas en PSRAM con los píxeles renderizados por LVGL
         if (lcd_bus_has_active_overlays()) {
@@ -158,10 +158,20 @@ static void lvgl_disp_flush_cb(lv_display_t *disp, const lv_area_t *area, uint8_
         player_status_t st;
         player_get_status(&st);
         if (st.state != PST_PLAYING) {
-            int64_t t0 = esp_timer_get_time();
-            draw_bitmap_oriented(area->x1, area->y1, area->x2, area->y2, pixels);
-            int64_t blit_us = esp_timer_get_time() - t0;
-            perf_mark_blit((uint32_t)blit_us);
+            if (vmode == VIEW_MODE_QUEUE) {
+                avi_player_reblit_current_frame();
+            } else {
+                int64_t t0 = esp_timer_get_time();
+                draw_bitmap_oriented(area->x1, area->y1, area->x2, area->y2, pixels);
+                int64_t blit_us = esp_timer_get_time() - t0;
+                perf_mark_blit((uint32_t)blit_us);
+            }
+            lv_display_flush_ready(disp);
+            return;
+        }
+
+        if (vmode == VIEW_MODE_QUEUE) {
+            // En cola reproduciendo, la hoja (220..479) se compone en la franja via slot 3
             lv_display_flush_ready(disp);
             return;
         }

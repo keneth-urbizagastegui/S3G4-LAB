@@ -582,8 +582,11 @@ void ui_glue_set_osd_visible(bool visible) {
             player_cmd_send(&cmd);
             lcd_bus_set_video_rect(0, 0, 480, 320);
         }
+    } else if (s_view_mode == VIEW_MODE_QUEUE) {
+        // En la cola el video permanece visible a la izquierda
+        lcd_bus_set_video_rect(0, 0, 480, 320);
     } else {
-        // Fuera de scr_player el video nunca se pinta (rectangulo siempre {0,0,0,0})
+        // Fuera de scr_player y scr_queue el video nunca se pinta (rectangulo siempre {0,0,0,0})
         lcd_bus_set_video_rect(0, 0, 0, 0);
     }
 }
@@ -689,24 +692,31 @@ void update_queue_footer(void) {
     }
 }
 
-static void create_queue_row_widget(lv_obj_t *parent, int idx) {
+static lv_obj_t *create_queue_row_widget(lv_obj_t *parent, int idx) {
     const media_item_t *item = media_library_get(idx);
-    if (!item) return;
+    if (!item) return NULL;
 
     bool is_current = (idx == s_current_track_idx);
 
     lv_obj_t *row = lv_obj_create(parent);
     lv_obj_set_size(row, 260, 56);
-    lv_obj_set_style_bg_opa(row, 0, LV_STATE_DEFAULT);
     lv_obj_set_style_border_width(row, 1, LV_STATE_DEFAULT);
     lv_obj_set_style_border_side(row, LV_BORDER_SIDE_BOTTOM, LV_STATE_DEFAULT);
     lv_obj_set_style_border_color(row, lv_color_hex(theme_colors[active_theme_index][3]), LV_STATE_DEFAULT);
     lv_obj_set_style_pad_all(row, 0, LV_STATE_DEFAULT);
-    lv_obj_remove_flag(row, LV_OBJ_FLAG_SCROLLABLE | LV_OBJ_FLAG_SCROLL_CHAIN_HOR | LV_OBJ_FLAG_SCROLL_CHAIN_VER | LV_OBJ_FLAG_SCROLL_ELASTIC | LV_OBJ_FLAG_SCROLL_MOMENTUM | LV_OBJ_FLAG_SCROLL_WITH_ARROW);
+    lv_obj_remove_flag(row, LV_OBJ_FLAG_SCROLLABLE | LV_OBJ_FLAG_SCROLL_CHAIN_HOR | LV_OBJ_FLAG_SCROLL_ELASTIC | LV_OBJ_FLAG_SCROLL_MOMENTUM | LV_OBJ_FLAG_SCROLL_WITH_ARROW);
     lv_obj_set_scrollbar_mode(row, LV_SCROLLBAR_MODE_OFF);
-    lv_obj_add_flag(row, LV_OBJ_FLAG_CLICKABLE);
+    lv_obj_add_flag(row, LV_OBJ_FLAG_CLICKABLE | LV_OBJ_FLAG_SCROLL_CHAIN_VER);
     lv_obj_set_user_data(row, (void *)(intptr_t)idx);
-    lv_obj_add_event_cb(row, queue_row_click_cb, LV_EVENT_CLICKED, (void *)(intptr_t)idx);
+    lv_obj_add_event_cb(row, queue_row_click_cb, LV_EVENT_SHORT_CLICKED, (void *)(intptr_t)idx);
+
+    // Resaltado visual de la fila actual
+    if (is_current) {
+        lv_obj_set_style_bg_color(row, lv_color_hex(theme_colors[active_theme_index][1]), 0);
+        lv_obj_set_style_bg_opa(row, 120, 0);
+    } else {
+        lv_obj_set_style_bg_opa(row, 0, LV_STATE_DEFAULT);
+    }
 
     // Thumbnail: 12, 10, 64, 36
     lv_obj_t *img = lv_image_create(row);
@@ -773,24 +783,33 @@ static void create_queue_row_widget(lv_obj_t *parent, int idx) {
         lv_obj_remove_flag(icon_now, LV_OBJ_FLAG_CLICKABLE | LV_OBJ_FLAG_SCROLLABLE);
         lv_obj_add_flag(icon_now, LV_OBJ_FLAG_EVENT_BUBBLE);
     }
+
+    return row;
 }
 
 void ui_glue_populate_queue(void) {
     if (!objects.queue_list) return;
     lv_obj_clean(objects.queue_list);
-    lv_obj_add_flag(objects.queue_list, LV_OBJ_FLAG_SCROLLABLE);
+    lv_obj_add_flag(objects.queue_list, LV_OBJ_FLAG_SCROLLABLE | LV_OBJ_FLAG_SCROLL_CHAIN_VER);
     lv_obj_set_scroll_dir(objects.queue_list, LV_DIR_VER);
-    lv_obj_clear_flag(objects.queue_list, LV_OBJ_FLAG_SCROLL_ELASTIC | LV_OBJ_FLAG_SCROLL_MOMENTUM | LV_OBJ_FLAG_SCROLL_CHAIN_HOR | LV_OBJ_FLAG_SCROLL_CHAIN_VER | LV_OBJ_FLAG_SCROLL_WITH_ARROW);
+    lv_obj_clear_flag(objects.queue_list, LV_OBJ_FLAG_SCROLL_ELASTIC | LV_OBJ_FLAG_SCROLL_MOMENTUM | LV_OBJ_FLAG_SCROLL_CHAIN_HOR | LV_OBJ_FLAG_SCROLL_WITH_ARROW);
     lv_obj_set_scrollbar_mode(objects.queue_list, LV_SCROLLBAR_MODE_AUTO);
     lv_obj_set_flex_flow(objects.queue_list, LV_FLEX_FLOW_COLUMN);
     lv_obj_set_style_pad_all(objects.queue_list, 0, 0);
     lv_obj_set_style_pad_row(objects.queue_list, 0, 0);
 
     int count = media_library_count();
+    lv_obj_t *cur_row_obj = NULL;
     for (int i = 0; i < count; i++) {
-        create_queue_row_widget(objects.queue_list, i);
+        lv_obj_t *r = create_queue_row_widget(objects.queue_list, i);
+        if (i == s_current_track_idx) {
+            cur_row_obj = r;
+        }
     }
     lv_obj_update_layout(objects.queue_list);
+    if (cur_row_obj) {
+        lv_obj_scroll_to_view(cur_row_obj, LV_ANIM_OFF);
+    }
     update_queue_footer();
 }
 
@@ -1053,6 +1072,7 @@ void ui_glue_set_view_mode(view_mode_t mode) {
     fflush(stdout);
 
     if (mode == VIEW_MODE_FULLSCREEN) {
+        lcd_bus_set_overlay_rect(3, 0, 0, 0, 0, false); // Cerrar capa de cola
         if (objects.scr_player) {
             loadScreen(SCREEN_ID_SCR_PLAYER);
         }
@@ -1069,10 +1089,11 @@ void ui_glue_set_view_mode(view_mode_t mode) {
         if (objects.scr_queue) {
             loadScreen(SCREEN_ID_SCR_QUEUE);
         }
-        // En la cola pausamos el blit directo de video pero NO pausamos la reproduccion del player
-        lcd_bus_set_video_rect(0, 0, 0, 0);
-        player_cmd_t cmd = {.type = PCMD_SET_VIDEO_RECT, .rect = {0, 0, 0, 0}};
+        // En la cola el video permanece visible a la izquierda y la hoja de cola se compone a la derecha (slot 3)
+        lcd_bus_set_video_rect(0, 0, 480, 320);
+        player_cmd_t cmd = {.type = PCMD_SET_VIDEO_RECT, .rect = {0, 0, 480, 320}};
         player_cmd_send(&cmd);
+        lcd_bus_set_overlay_rect(3, 220, 0, 260, 320, true);
         ui_glue_populate_queue();
     } else if (mode == VIEW_MODE_SETTINGS) {
         if (old_mode == VIEW_MODE_FULLSCREEN) {
