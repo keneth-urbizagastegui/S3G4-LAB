@@ -44,7 +44,8 @@ static uint32_t s_track_presented_frames = 0;
 static TaskHandle_t s_player_task_handle = NULL;
 static int64_t s_pts_t0_us = 0;
 static bool s_pts_started = false;
-static int64_t s_repeat_restart_eof_us = 0;
+static int64_t s_repeat_last_present_us = 0;
+static volatile uint32_t s_repeat_loop_count = 0;
 
 static void player_open_track(int index);
 
@@ -398,11 +399,16 @@ static void player_handle_eof(void) {
 
     if (s_status.repeat == REPEAT_ONE) {
         int64_t t_eof_us = esp_timer_get_time();
-        s_repeat_restart_eof_us = t_eof_us;
         const char *next_path = cur ? cur->path : "desconocido";
         ESP_LOGI(TAG, "EOF,track=%d,repeat=%d,next_frame_from=%s",
                  s_status.track_index, (int)s_status.repeat, next_path);
         avi_player_restart();
+        s_repeat_loop_count++;
+        /* Publicar 0 antes de que ui_glue_tick componga el primer frame de la
+         * vuelta: barra y video cambian en el mismo refresco. */
+        portENTER_CRITICAL(&s_player_mux);
+        s_status.pos_ms = 0;
+        portEXIT_CRITICAL(&s_player_mux);
         s_pts_started = false;
         s_pts_t0_us = 0;
         s_track_presented_frames = 0;
@@ -750,13 +756,15 @@ static void player_task(void *arg) {
 
             if (ret == ESP_OK) {
                 s_track_presented_frames++;
-                if (s_repeat_restart_eof_us > 0 && s_track_presented_frames == 1) {
-                    uint32_t restart_delay_ms = (uint32_t)((esp_timer_get_time() - s_repeat_restart_eof_us) / 1000);
-                    ESP_LOGI(TAG, "REPEAT_ONE_RESTART,delay_ms=%lu", (unsigned long)restart_delay_ms);
-                    printf("REPEAT_ONE_RESTART,delay_ms=%lu\n", (unsigned long)restart_delay_ms);
+                int64_t present_us = esp_timer_get_time();
+                if (s_repeat_last_present_us > 0 && s_track_presented_frames == 1) {
+                    uint32_t gap_ms = (uint32_t)((present_us - s_repeat_last_present_us) / 1000);
+                    ESP_LOGI(TAG, "LOOP,gap_ms=%lu", (unsigned long)gap_ms);
+                    printf("LOOP,gap_ms=%lu\n", (unsigned long)gap_ms);
                     fflush(stdout);
-                    s_repeat_restart_eof_us = 0;
+                    s_repeat_last_present_us = 0;
                 }
+                s_repeat_last_present_us = present_us;
                 int64_t now_us = esp_timer_get_time();
                 if (now_us - last_nvs_pos_save_us >= 15000000) {
                     last_nvs_pos_save_us = now_us;
@@ -829,6 +837,10 @@ void player_get_status(player_status_t *out) {
     portENTER_CRITICAL(&s_player_mux);
     memcpy(out, &s_status, sizeof(player_status_t));
     portEXIT_CRITICAL(&s_player_mux);
+}
+
+uint32_t player_get_repeat_loop_count(void) {
+    return s_repeat_loop_count;
 }
 
 bool player_check_and_clear_new_frame(uint16_t **out_frame_buf, int *out_w, int *out_h) {

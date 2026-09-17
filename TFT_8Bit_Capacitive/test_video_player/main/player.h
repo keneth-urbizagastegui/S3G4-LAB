@@ -67,6 +67,7 @@ typedef struct {
 esp_err_t player_start(void);                       // crea la tarea en el núcleo 1
 bool player_cmd_send(const player_cmd_t *c);        // no bloqueante (timeout 0); devuelve false si la cola está llena
 void player_get_status(player_status_t *out);       // copia bajo spinlock
+uint32_t player_get_repeat_loop_count(void);        // contador para la autoprueba S8
 
 // Metadata auxiliar para consistencia UI y autotest
 void player_get_track_title(int track_index, char *out_title, size_t max_len);

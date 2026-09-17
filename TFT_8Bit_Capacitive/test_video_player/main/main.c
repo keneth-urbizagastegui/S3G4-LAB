@@ -707,6 +707,42 @@ static void autotest_task(void *arg) {
         }
     }
 
+    // S8: provocar cinco EOF reales cerca del final. El reinicio y la medida
+    // LOOP siguen la ruta normal del reproductor; no simulamos la métrica.
+    int loop_track = -1;
+    for (int i = 0; i < total_tracks; i++) {
+        const media_item_t *item = media_library_get(i);
+        if (item && item->compatible) {
+            loop_track = i;
+            break;
+        }
+    }
+    if (loop_track >= 0) {
+        ESP_LOGI(TAG, "Iniciando escenario LOOP (5 reinicios REPEAT_ONE)...");
+        player_cmd_t cmd_loop_open = {.type = PCMD_OPEN, .arg = loop_track};
+        player_cmd_send(&cmd_loop_open);
+        ui_req_send(UI_REQ_SET_VIEW, VIEW_MODE_FULLSCREEN);
+        ui_req_send(UI_REQ_SET_HUD, 1);
+        vTaskDelay(pdMS_TO_TICKS(2000));
+
+        uint32_t loops_before = player_get_repeat_loop_count();
+        for (int sample = 0; sample < 5; sample++) {
+            player_status_t loop_status;
+            player_get_status(&loop_status);
+            int32_t near_end_ms = loop_status.dur_ms > 100 ? loop_status.dur_ms - 100 : 0;
+            player_cmd_t cmd_loop_seek = {.type = PCMD_SEEK_MS, .arg = near_end_ms};
+            player_cmd_send(&cmd_loop_seek);
+
+            int64_t wait_start_us = esp_timer_get_time();
+            while (player_get_repeat_loop_count() < loops_before + (uint32_t)(sample + 1) &&
+                   esp_timer_get_time() - wait_start_us < 5000000LL) {
+                vTaskDelay(pdMS_TO_TICKS(20));
+            }
+        }
+        printf("LOOP_TEST,loops=%lu\n", (unsigned long)(player_get_repeat_loop_count() - loops_before));
+        fflush(stdout);
+    }
+
     // Restaurar política original de repetición
     player_cmd_t cmd_rest_rep = {.type = PCMD_SET_REPEAT, .arg = orig_settings.repeat};
     player_cmd_send(&cmd_rest_rep);

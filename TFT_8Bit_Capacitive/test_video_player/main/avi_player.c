@@ -1149,7 +1149,10 @@ void avi_player_seek_percent(int percent) {
 void avi_player_restart(void) {
     if (!s_file) return;
 
-    s_reader_run = false;
+    /* El lector ya se ha detenido al publicar EOF. No se reabre el AVI ni se
+     * reconstruye idx1: vaciamos únicamente el slot EOF y lo reanudamos sobre
+     * la primera entrada indexada. Esperar aquí a que llegue un JPEG introduce
+     * una pausa visible entre dos vueltas. */
     if (s_file_mutex) {
         xSemaphoreTake(s_file_mutex, portMAX_DELAY);
     }
@@ -1165,7 +1168,12 @@ void avi_player_restart(void) {
         }
     }
 
-    lseek(fileno(s_file), s_movi_start_offset, SEEK_SET);
+    int fd = fileno(s_file);
+    if (s_index_table && s_info.total_frames > 0) {
+        lseek(fd, s_index_table[0], SEEK_SET);
+    } else {
+        lseek(fd, s_movi_start_offset, SEEK_SET);
+    }
     s_info.current_frame = 0;
     s_reader_frame_idx = 0;
     s_info.elapsed_sec = 0;
@@ -1181,10 +1189,6 @@ void avi_player_restart(void) {
         xTaskNotifyGive(s_reader_task_handle);
     }
 
-    for (int w = 0; w < 30; w++) {
-        if (uxQueueMessagesWaiting(s_q_ready) >= 1 || s_info.is_eof) break;
-        vTaskDelay(pdMS_TO_TICKS(5));
-    }
 }
 
 const avi_info_t *avi_player_get_info(void) {
