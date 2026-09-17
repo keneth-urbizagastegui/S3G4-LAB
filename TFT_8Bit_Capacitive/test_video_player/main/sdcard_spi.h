@@ -23,8 +23,8 @@ void sdcard_list_files(const char *dirpath);
 void sdcard_spi_set_freq_khz(int freq_khz);
 int sdcard_spi_get_freq_khz(void);
 int sdcard_spi_test_mount_cycles(int cycles, int freq_khz);
-struct sdmmc_card_t;
-const struct sdmmc_card_t *sdcard_get_card(void);
+#include "sdmmc_cmd.h"
+const sdmmc_card_t *sdcard_get_card(void);
 
 #ifdef __cplusplus
 }

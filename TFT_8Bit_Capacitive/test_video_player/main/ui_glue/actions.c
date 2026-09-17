@@ -8,6 +8,10 @@
 #include "settings_nvs.h"
 #include "media_library.h"
 #include "lcd_bus.h"
+#include "ili9488_8080.h"
+#include "sdcard_spi.h"
+#include "esp_system.h"
+#include <sys/statvfs.h>
 #include "esp_timer.h"
 #include "esp_log.h"
 #include "freertos/FreeRTOS.h"
@@ -609,6 +613,166 @@ void ui_glue_populate_queue(void) {
     update_queue_footer();
 }
 
+static int s_active_settings_tab = 0;
+static view_mode_t s_settings_origin_mode = VIEW_MODE_FULLSCREEN;
+
+void ui_glue_refresh_storage_tab(void) {
+    const sdmmc_card_t *card = sdcard_get_card();
+    if (card && objects.lbl_sd_name) {
+        char name_buf[64];
+        uint64_t cap_bytes = ((uint64_t)card->csd.capacity) * card->csd.sector_size;
+        double cap_gb = (double)cap_bytes / (1024.0 * 1024.0 * 1024.0);
+        snprintf(name_buf, sizeof(name_buf), "microSD %s %.1f GB", (card->is_mmc ? "MMC" : "SDHC"), cap_gb);
+        lv_label_set_text(objects.lbl_sd_name, name_buf);
+    }
+    if (objects.lbl_sd_fs) {
+        lv_label_set_text_static(objects.lbl_sd_fs, "FAT32");
+    }
+
+    struct statvfs vfs;
+    if (statvfs("/sdcard", &vfs) == 0) {
+        uint64_t total_bytes = (uint64_t)vfs.f_blocks * vfs.f_frsize;
+        uint64_t free_bytes = (uint64_t)vfs.f_bfree * vfs.f_frsize;
+        uint64_t used_bytes = (total_bytes > free_bytes) ? (total_bytes - free_bytes) : 0;
+        double free_gb = (double)free_bytes / (1024.0 * 1024.0 * 1024.0);
+        double used_gb = (double)used_bytes / (1024.0 * 1024.0 * 1024.0);
+
+        int32_t permil = (total_bytes > 0) ? (int32_t)((used_bytes * 1000) / total_bytes) : 0;
+        if (objects.bar_sd_usage) {
+            lv_bar_set_value(objects.bar_sd_usage, permil, LV_ANIM_OFF);
+        }
+        if (objects.lbl_sd_free) {
+            char free_buf[64];
+            snprintf(free_buf, sizeof(free_buf), "%.1f GB usados · %.1f GB libres", used_gb, free_gb);
+            lv_label_set_text(objects.lbl_sd_free, free_buf);
+        }
+    } else {
+        if (objects.bar_sd_usage) lv_bar_set_value(objects.bar_sd_usage, 0, LV_ANIM_OFF);
+        if (objects.lbl_sd_free) lv_label_set_text_static(objects.lbl_sd_free, "Espacio no disponible");
+    }
+
+    if (objects.lbl_sd_speed) {
+        char speed_buf[32];
+        snprintf(speed_buf, sizeof(speed_buf), "SPI · %d MHz", sdcard_spi_get_freq_khz() / 1000);
+        lv_label_set_text(objects.lbl_sd_speed, speed_buf);
+    }
+    if (objects.lbl_sd_count) {
+        char count_buf[32];
+        snprintf(count_buf, sizeof(count_buf), "%d videos", media_library_count());
+        lv_label_set_text(objects.lbl_sd_count, count_buf);
+    }
+}
+
+void ui_glue_refresh_about_tab(void) {
+    if (objects.lbl_about_fw) {
+        lv_label_set_text_static(objects.lbl_about_fw, "vp-v0.8");
+    }
+    if (objects.lbl_about_idf) {
+        lv_label_set_text(objects.lbl_about_idf, esp_get_idf_version());
+    }
+    if (objects.lbl_about_lvgl) {
+        char lv_buf[32];
+        snprintf(lv_buf, sizeof(lv_buf), "%d.%d.%d", lv_version_major(), lv_version_minor(), lv_version_patch());
+        lv_label_set_text(objects.lbl_about_lvgl, lv_buf);
+    }
+    if (objects.lbl_about_panel) {
+        lv_label_set_text_static(objects.lbl_about_panel, "ILI9488 · 8080 8 bits · 16 MHz");
+    }
+    if (objects.lbl_about_te) {
+        uint32_t te_pulses = 0;
+        float te_hz = 0.0f;
+        float te_jitter_ms = 0.0f;
+        bool te_present = false;
+        lcd_bus_te_perf_sample(&te_pulses, &te_hz, &te_jitter_ms, &te_present);
+        char te_buf[48];
+        if (te_present && te_hz > 10.0f) {
+            snprintf(te_buf, sizeof(te_buf), "TE en GPIO 7 · %.1f Hz", te_hz);
+        } else {
+            snprintf(te_buf, sizeof(te_buf), "TE ausente");
+        }
+        lv_label_set_text(objects.lbl_about_te, te_buf);
+    }
+}
+
+void ui_glue_select_settings_tab(int tab) {
+    s_active_settings_tab = tab;
+
+    if (objects.panel_tab_0) {
+        if (tab == 0) lv_obj_remove_flag(objects.panel_tab_0, LV_OBJ_FLAG_HIDDEN);
+        else lv_obj_add_flag(objects.panel_tab_0, LV_OBJ_FLAG_HIDDEN);
+    }
+    if (objects.panel_tab_1) {
+        if (tab == 1) lv_obj_remove_flag(objects.panel_tab_1, LV_OBJ_FLAG_HIDDEN);
+        else lv_obj_add_flag(objects.panel_tab_1, LV_OBJ_FLAG_HIDDEN);
+    }
+    if (objects.panel_tab_2) {
+        if (tab == 2) lv_obj_remove_flag(objects.panel_tab_2, LV_OBJ_FLAG_HIDDEN);
+        else lv_obj_add_flag(objects.panel_tab_2, LV_OBJ_FLAG_HIDDEN);
+    }
+    if (objects.panel_tab_3) {
+        if (tab == 3) lv_obj_remove_flag(objects.panel_tab_3, LV_OBJ_FLAG_HIDDEN);
+        else lv_obj_add_flag(objects.panel_tab_3, LV_OBJ_FLAG_HIDDEN);
+    }
+
+    lv_color_t c_act = lv_color_hex(theme_colors[active_theme_index][6]);
+    lv_color_t c_inact = lv_color_hex(theme_colors[active_theme_index][4]);
+    if (objects.lbl_tab_0) lv_obj_set_style_text_color(objects.lbl_tab_0, (tab == 0) ? c_act : c_inact, 0);
+    if (objects.lbl_tab_1) lv_obj_set_style_text_color(objects.lbl_tab_1, (tab == 1) ? c_act : c_inact, 0);
+    if (objects.lbl_tab_2) lv_obj_set_style_text_color(objects.lbl_tab_2, (tab == 2) ? c_act : c_inact, 0);
+    if (objects.lbl_tab_3) lv_obj_set_style_text_color(objects.lbl_tab_3, (tab == 3) ? c_act : c_inact, 0);
+
+    if (tab == 2) {
+        ui_glue_refresh_storage_tab();
+    } else if (tab == 3) {
+        ui_glue_refresh_about_tab();
+    }
+}
+
+void ui_glue_sync_settings_controls(void) {
+    if (objects.sld_brightness) {
+        lv_slider_set_value(objects.sld_brightness, s_settings.bright, LV_ANIM_OFF);
+    }
+    if (objects.lbl_set_bri_val) {
+        char bbuf[16];
+        snprintf(bbuf, sizeof(bbuf), "%d%%", s_settings.bright);
+        lv_label_set_text(objects.lbl_set_bri_val, bbuf);
+    }
+    if (objects.dd_osd_timeout) {
+        int sel = 1;
+        if (s_settings.osd_ms == 2000) sel = 0;
+        else if (s_settings.osd_ms == 3000) sel = 1;
+        else if (s_settings.osd_ms == 5000) sel = 2;
+        else if (s_settings.osd_ms == 0) sel = 3;
+        lv_dropdown_set_selected(objects.dd_osd_timeout, sel);
+    }
+    if (objects.sw_show_stats) {
+        if (s_settings.stats) lv_obj_add_state(objects.sw_show_stats, LV_STATE_CHECKED);
+        else lv_obj_remove_state(objects.sw_show_stats, LV_STATE_CHECKED);
+    }
+    if (objects.sw_mini_progress) {
+        if (s_settings.miniprog) lv_obj_add_state(objects.sw_mini_progress, LV_STATE_CHECKED);
+        else lv_obj_remove_state(objects.sw_mini_progress, LV_STATE_CHECKED);
+    }
+    if (objects.dd_repeat) {
+        lv_dropdown_set_selected(objects.dd_repeat, s_settings.repeat);
+    }
+    if (objects.sw_shuffle) {
+        if (s_settings.shuffle) lv_obj_add_state(objects.sw_shuffle, LV_STATE_CHECKED);
+        else lv_obj_remove_state(objects.sw_shuffle, LV_STATE_CHECKED);
+    }
+    if (objects.sw_resume) {
+        if (s_settings.resume) lv_obj_add_state(objects.sw_resume, LV_STATE_CHECKED);
+        else lv_obj_remove_state(objects.sw_resume, LV_STATE_CHECKED);
+    }
+    if (objects.dd_seek_step) {
+        int sel = 1;
+        if (s_settings.seekstep == 5) sel = 0;
+        else if (s_settings.seekstep == 10) sel = 1;
+        else if (s_settings.seekstep == 30) sel = 2;
+        lv_dropdown_set_selected(objects.dd_seek_step, sel);
+    }
+}
+
 void ui_glue_set_view_mode(view_mode_t mode) {
     view_mode_t old_mode = s_view_mode;
     s_view_mode = mode;
@@ -642,6 +806,32 @@ void ui_glue_set_view_mode(view_mode_t mode) {
         player_cmd_t cmd = {.type = PCMD_SET_VIDEO_RECT, .rect = {0, 0, 0, 0}};
         player_cmd_send(&cmd);
         ui_glue_populate_queue();
+    } else if (mode == VIEW_MODE_SETTINGS) {
+        if (old_mode == VIEW_MODE_FULLSCREEN) {
+            player_status_t st;
+            player_get_status(&st);
+            if (st.state == PST_PLAYING) {
+                player_cmd_t cmd_pause = {.type = PCMD_PAUSE};
+                player_cmd_send(&cmd_pause);
+                const media_item_t *cur = media_library_get(s_current_track_idx);
+                if (cur && cur->compatible) {
+                    media_library_set_resume(cur->path, (uint32_t)st.pos_ms);
+                }
+            } else if (st.state == PST_ENDED) {
+                const media_item_t *cur = media_library_get(s_current_track_idx);
+                if (cur) {
+                    media_library_set_resume(cur->path, 0);
+                }
+            }
+        }
+        if (objects.scr_settings) {
+            loadScreen(SCREEN_ID_SCR_SETTINGS);
+        }
+        lcd_bus_set_video_rect(0, 0, 0, 0);
+        player_cmd_t cmd = {.type = PCMD_SET_VIDEO_RECT, .rect = {0, 0, 0, 0}};
+        player_cmd_send(&cmd);
+        ui_glue_sync_settings_controls();
+        ui_glue_select_settings_tab(s_active_settings_tab);
     } else {
         // Al salir de scr_player el video se pausa y se guarda la posicion
         if (old_mode == VIEW_MODE_FULLSCREEN || old_mode == VIEW_MODE_QUEUE) {
@@ -922,6 +1112,11 @@ void action_toggle_osd(lv_event_t *e) {
 void action_open_library(lv_event_t *e) {
     s_last_touch_time = esp_timer_get_time() / 1000;
     if (s_locked) return;
+    if (s_view_mode == VIEW_MODE_SETTINGS) {
+        ESP_LOGI(TAG, "Action: back from settings -> returning to origin mode %d", s_settings_origin_mode);
+        ui_glue_set_view_mode(s_settings_origin_mode);
+        return;
+    }
     action_library_populate(NULL);
     ui_glue_set_view_mode(VIEW_MODE_STUDIO);
     ESP_LOGI(TAG, "Action: open_library");
@@ -943,8 +1138,9 @@ void action_close_queue(lv_event_t *e) {
 void action_open_settings(lv_event_t *e) {
     s_last_touch_time = esp_timer_get_time() / 1000;
     if (s_locked) return;
-    ESP_LOGI(TAG, "Action: open_settings -> mostrando aviso");
-    ui_glue_show_toast("Próximamente", "Esta opción llega en la próxima versión.", false);
+    s_settings_origin_mode = s_view_mode;
+    ESP_LOGI(TAG, "Action: open_settings from mode %d", s_settings_origin_mode);
+    ui_glue_set_view_mode(VIEW_MODE_SETTINGS);
 }
 
 static void wait_gui_ms(uint32_t ms) {
@@ -1171,14 +1367,40 @@ void ui_glue_run_uinav_test(void) {
     bool shuf_ok = (s_settings.shuffle != shuf_before);
     printf("UINAV,btn=shuffle,result=%s\n", shuf_ok ? "PASS" : "FAIL");
 
-    // 11. btn=settings (x=450, y=295)
+    // 11. btn=settings (x=450, y=295) -> abre scr_settings con pestañas (B2)
     ui_glue_set_osd_visible(true);
     wait_gui_ms(100);
     sim_touch_click(450, 295);
-    wait_gui_ms(150);
-    bool set_ok = (s_toast_box != NULL && !lv_obj_has_flag(s_toast_box, LV_OBJ_FLAG_HIDDEN));
+    wait_gui_ms(300);
+    bool set_opened = (ui_glue_get_view_mode() == VIEW_MODE_SETTINGS);
+
+    // Cambiar a pestaña 1 (Reproducción: x=75, y=100)
+    sim_touch_click(75, 100);
+    wait_gui_ms(200);
+    bool tab1_ok = (s_active_settings_tab == 1);
+
+    // Cambiar a pestaña 2 (Almacenamiento: x=75, y=150)
+    sim_touch_click(75, 150);
+    wait_gui_ms(200);
+    bool tab2_ok = (s_active_settings_tab == 2);
+
+    // Cambiar a pestaña 3 (Acerca de: x=75, y=200)
+    sim_touch_click(75, 200);
+    wait_gui_ms(200);
+    bool tab3_ok = (s_active_settings_tab == 3);
+
+    // Cambiar a pestaña 0 (Pantalla: x=75, y=60)
+    sim_touch_click(75, 60);
+    wait_gui_ms(200);
+    bool tab0_ok = (s_active_settings_tab == 0);
+
+    // Volver al reproductor (btn_back_settings: x=22, y=22)
+    sim_touch_click(22, 22);
+    wait_gui_ms(300);
+    bool set_closed = (ui_glue_get_view_mode() == VIEW_MODE_FULLSCREEN);
+
+    bool set_ok = (set_opened && tab1_ok && tab2_ok && tab3_ok && tab0_ok && set_closed);
     printf("UINAV,btn=settings,result=%s\n", set_ok ? "PASS" : "FAIL");
-    if (s_toast_box) lv_obj_add_flag(s_toast_box, LV_OBJ_FLAG_HIDDEN);
     wait_gui_ms(50);
 
     // 12. btn=seek (x=340, y=249) -> barra de seek
@@ -1221,10 +1443,6 @@ void ui_glue_run_uinav_test(void) {
     fflush(stdout);
     ESP_LOGI(TAG, "=== FIN PRUEBA UINAV ===");
     s_uinav_running = false;
-}
-
-void action_settings_tab(lv_event_t *e) {
-    s_last_touch_time = esp_timer_get_time() / 1000;
 }
 
 void action_open_stats(lv_event_t *e) {
@@ -1613,34 +1831,146 @@ void action_library_populate(lv_event_t *e) {
     lv_obj_update_layout(objects.lib_grid);
 }
 
+void action_settings_tab(lv_event_t *e) {
+    s_last_touch_time = esp_timer_get_time() / 1000;
+    lv_obj_t *target = lv_event_get_target(e);
+    int tab = 0;
+    if (target == objects.btn_tab_1 || target == objects.lbl_tab_1) tab = 1;
+    else if (target == objects.btn_tab_2 || target == objects.lbl_tab_2) tab = 2;
+    else if (target == objects.btn_tab_3 || target == objects.lbl_tab_3) tab = 3;
+    ESP_LOGI(TAG, "Action: settings_tab -> %d", tab);
+    ui_glue_select_settings_tab(tab);
+}
+
 void action_set_brightness(lv_event_t *e) {
     s_last_touch_time = esp_timer_get_time() / 1000;
+    if (!objects.sld_brightness) return;
+    int32_t val = lv_slider_get_value(objects.sld_brightness);
+    if (val < 10) val = 10;
+    if (val > 100) val = 100;
+    s_settings.bright = (uint8_t)val;
+    settings_nvs_set_u8("bright", s_settings.bright);
+    ili9488_8080_set_backlight(s_settings.bright);
+    if (objects.lbl_set_bri_val) {
+        char bbuf[16];
+        snprintf(bbuf, sizeof(bbuf), "%d%%", s_settings.bright);
+        lv_label_set_text(objects.lbl_set_bri_val, bbuf);
+    }
+    if (objects.bar_brightness) {
+        lv_bar_set_value(objects.bar_brightness, s_settings.bright, LV_ANIM_OFF);
+    }
+    if (objects.lbl_bri) {
+        char bbuf[16];
+        snprintf(bbuf, sizeof(bbuf), "%d%%", s_settings.bright);
+        lv_label_set_text(objects.lbl_bri, bbuf);
+    }
+    ESP_LOGI(TAG, "Action: set_brightness -> %d%%", s_settings.bright);
 }
 
 void action_set_osd_timeout(lv_event_t *e) {
     s_last_touch_time = esp_timer_get_time() / 1000;
+    if (!objects.dd_osd_timeout) return;
+    int sel = lv_dropdown_get_selected(objects.dd_osd_timeout);
+    uint16_t ms = (sel == 0) ? 2000 : ((sel == 1) ? 3000 : ((sel == 2) ? 5000 : 0));
+    s_settings.osd_ms = ms;
+    settings_nvs_set_u16("osd_ms", ms);
+    ESP_LOGI(TAG, "Action: set_osd_timeout -> %u ms", (unsigned)ms);
 }
 
 void action_set_show_stats(lv_event_t *e) {
     s_last_touch_time = esp_timer_get_time() / 1000;
+    if (!objects.sw_show_stats) return;
+    bool checked = lv_obj_has_state(objects.sw_show_stats, LV_STATE_CHECKED);
+    s_settings.stats = checked ? 1 : 0;
+    settings_nvs_set_u8("stats", s_settings.stats);
+    if (objects.chip_fps) {
+        if (checked) lv_obj_remove_flag(objects.chip_fps, LV_OBJ_FLAG_HIDDEN);
+        else lv_obj_add_flag(objects.chip_fps, LV_OBJ_FLAG_HIDDEN);
+    }
+    ESP_LOGI(TAG, "Action: set_show_stats -> %d", s_settings.stats);
 }
 
 void action_set_mini_progress(lv_event_t *e) {
     s_last_touch_time = esp_timer_get_time() / 1000;
+    if (!objects.sw_mini_progress) return;
+    bool checked = lv_obj_has_state(objects.sw_mini_progress, LV_STATE_CHECKED);
+    s_settings.miniprog = checked ? 1 : 0;
+    settings_nvs_set_u8("miniprog", s_settings.miniprog);
+    if (!checked && objects.bar_mini_progress) {
+        lv_obj_add_flag(objects.bar_mini_progress, LV_OBJ_FLAG_HIDDEN);
+    }
+    ESP_LOGI(TAG, "Action: set_mini_progress -> %d", s_settings.miniprog);
 }
 
 void action_set_repeat(lv_event_t *e) {
     s_last_touch_time = esp_timer_get_time() / 1000;
+    if (!objects.dd_repeat) return;
+    int sel = lv_dropdown_get_selected(objects.dd_repeat);
+    if (sel < 0 || sel > 2) sel = 1;
+    s_settings.repeat = (uint8_t)sel;
+    settings_nvs_set_u8("repeat", s_settings.repeat);
+    player_cmd_t cmd = {.type = PCMD_SET_REPEAT, .arg = s_settings.repeat};
+    player_cmd_send(&cmd);
+    if (objects.btn_repeat && objects.img_repeat_icon) {
+        if (s_settings.repeat == 0) {
+            lv_image_set_src(objects.img_repeat_icon, &img_repeat);
+            lv_obj_set_style_image_recolor(objects.img_repeat_icon, lv_color_hex(theme_colors[active_theme_index][5]), 0);
+            lv_obj_set_style_image_recolor_opa(objects.img_repeat_icon, 255, 0);
+            lv_obj_remove_state(objects.btn_repeat, LV_STATE_CHECKED);
+        } else if (s_settings.repeat == 1) {
+            lv_image_set_src(objects.img_repeat_icon, &img_repeat);
+            lv_obj_set_style_image_recolor(objects.img_repeat_icon, lv_color_hex(theme_colors[active_theme_index][6]), 0);
+            lv_obj_set_style_image_recolor_opa(objects.img_repeat_icon, 255, 0);
+            lv_obj_add_state(objects.btn_repeat, LV_STATE_CHECKED);
+        } else {
+            lv_image_set_src(objects.img_repeat_icon, &img_repeat_one);
+            lv_obj_set_style_image_recolor(objects.img_repeat_icon, lv_color_hex(theme_colors[active_theme_index][6]), 0);
+            lv_obj_set_style_image_recolor_opa(objects.img_repeat_icon, 255, 0);
+            lv_obj_add_state(objects.btn_repeat, LV_STATE_CHECKED);
+        }
+    }
+    update_queue_footer();
+    ESP_LOGI(TAG, "Action: set_repeat -> %d", s_settings.repeat);
 }
 
 void action_set_shuffle(lv_event_t *e) {
     s_last_touch_time = esp_timer_get_time() / 1000;
+    if (!objects.sw_shuffle) return;
+    bool checked = lv_obj_has_state(objects.sw_shuffle, LV_STATE_CHECKED);
+    s_settings.shuffle = checked ? 1 : 0;
+    settings_nvs_set_u8("shuffle", s_settings.shuffle);
+    player_cmd_t cmd = {.type = PCMD_SET_SHUFFLE, .arg = s_settings.shuffle};
+    player_cmd_send(&cmd);
+    if (objects.btn_shuffle && objects.img_shuffle_icon) {
+        if (s_settings.shuffle) {
+            lv_obj_set_style_image_recolor(objects.img_shuffle_icon, lv_color_hex(theme_colors[active_theme_index][6]), 0);
+            lv_obj_set_style_image_recolor_opa(objects.img_shuffle_icon, 255, 0);
+            lv_obj_add_state(objects.btn_shuffle, LV_STATE_CHECKED);
+        } else {
+            lv_obj_set_style_image_recolor(objects.img_shuffle_icon, lv_color_hex(theme_colors[active_theme_index][5]), 0);
+            lv_obj_set_style_image_recolor_opa(objects.img_shuffle_icon, 255, 0);
+            lv_obj_remove_state(objects.btn_shuffle, LV_STATE_CHECKED);
+        }
+    }
+    update_queue_footer();
+    ESP_LOGI(TAG, "Action: set_shuffle -> %d", s_settings.shuffle);
 }
 
 void action_set_resume(lv_event_t *e) {
     s_last_touch_time = esp_timer_get_time() / 1000;
+    if (!objects.sw_resume) return;
+    bool checked = lv_obj_has_state(objects.sw_resume, LV_STATE_CHECKED);
+    s_settings.resume = checked ? 1 : 0;
+    settings_nvs_set_u8("resume", s_settings.resume);
+    ESP_LOGI(TAG, "Action: set_resume -> %d", s_settings.resume);
 }
 
 void action_set_seek_step(lv_event_t *e) {
     s_last_touch_time = esp_timer_get_time() / 1000;
+    if (!objects.dd_seek_step) return;
+    int sel = lv_dropdown_get_selected(objects.dd_seek_step);
+    uint8_t step = (sel == 0) ? 5 : ((sel == 1) ? 10 : 30);
+    s_settings.seekstep = step;
+    settings_nvs_set_u8("seekstep", step);
+    ESP_LOGI(TAG, "Action: set_seek_step -> %d s", step);
 }

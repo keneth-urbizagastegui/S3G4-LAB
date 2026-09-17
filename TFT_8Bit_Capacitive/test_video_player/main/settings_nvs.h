@@ -35,6 +35,8 @@ esp_err_t settings_nvs_get_last_path(char *out_path, size_t max_len);
 
 esp_err_t settings_nvs_set_u8(const char *key, uint8_t val);
 esp_err_t settings_nvs_get_u8(const char *key, uint8_t *out_val);
+esp_err_t settings_nvs_set_u16(const char *key, uint16_t val);
+esp_err_t settings_nvs_get_u16(const char *key, uint16_t *out_val);
 
 #ifdef __cplusplus
 }

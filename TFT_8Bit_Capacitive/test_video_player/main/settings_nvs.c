@@ -259,3 +259,25 @@ esp_err_t settings_nvs_get_u8(const char *key, uint8_t *out_val) {
     }
     return nvs_get_u8(s_handle, key, out_val);
 }
+
+esp_err_t settings_nvs_set_u16(const char *key, uint16_t val) {
+    if (!key) return ESP_ERR_INVALID_ARG;
+    if (!s_initialized) {
+        esp_err_t err = settings_nvs_init();
+        if (err != ESP_OK) return err;
+    }
+    esp_err_t err = nvs_set_u16(s_handle, key, val);
+    if (err == ESP_OK) {
+        err = nvs_commit(s_handle);
+    }
+    return err;
+}
+
+esp_err_t settings_nvs_get_u16(const char *key, uint16_t *out_val) {
+    if (!key || !out_val) return ESP_ERR_INVALID_ARG;
+    if (!s_initialized) {
+        esp_err_t err = settings_nvs_init();
+        if (err != ESP_OK) return err;
+    }
+    return nvs_get_u16(s_handle, key, out_val);
+}
