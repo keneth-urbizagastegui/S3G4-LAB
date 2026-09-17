@@ -1,0 +1,43 @@
+CRASH REASON: Crash / excepcion detectada: Backtrace: 0x40380739:0x3fcc2240 0x40380705:0x3fcc2260 0x4037f5c5:0x3fcc2280 0x42011f81:0x3fcc23a0 0x4201ed04:0x3fcc23c0 0x420205c9:0x3fcc2540 0x4204436d:0x3fcc2560 0x42044467:0x3fcc25b0 0x420337f8:0x3fcc25d0 0x42033908:0x3fcc2600 0x4203fa16:0x3fcc2640 0x420405f5:0x3fcc2670 0x42040960:0x3fcc2710 0x4204138d:0x3fcc27a0 0x42045ef2:0x3fcc27c0 0x42046051:0x3fcc27f0 0x4201d058:0x3fcc2810 0x420218b3:0x3fcc2830 0x420104eb:0x3fcc3550
+
+ULTIMAS 40 LINEAS PREVIAS:
+I (474010) AVI_PLAYER_SIMD: idx1 hallado en O(1) tras LIST movi en offset 71388236 (tam: 144048 B)
+I (474132) AVI_PLAYER_SIMD: Tabla idx1 cargada: 9003 cuadros indexados en PSRAM
+I (474138) AVI_PLAYER_SIMD: AVI Abierto: 320x480 @ 30 FPS, 9003 cuadros (5:00), preroll listo (3 frames)
+I (474170) PLAYER: LOOP,gap_ms=788
+LOOP,gap_ms=788
+UINAV,btn=card,result=PASS
+OVL,rects=0,px=0
+PERF,t_ms=473821,dec_fps=14.2,pres_fps=14.2,drop=0,over=0,frame_mismatch=0,rd_avg=4.1,rd_max=7.8,rd_p50=3.2,rd_p95=7.8,rd_slow=0,reader_rd_avg=4.1,reader_rd_max=7.8,reader_rd_p50=3.2,reader_rd_p95=7.8,slots_ready_avg=2.4,q_wait_avg=0.0,q_wait_max=0.0,q_wait_p50=0.0,q_wait_p95=0.0,te_present=1,te_hz=44.7,te_jitter_ms=0.00,te_wait_ms_avg=7.36,te_wait_ms_max=18.46,te_timeout=0,dec_avg=0.4,dec_max=0.8,dec_frame_ms_avg=12.8,dec_frame_ms_max=16.6,blit_avg=6.5,blit_max=16.6,late_max=0.0,drift_ms=15,touch_read_ms_avg=0.6,touch_read_ms_max=1.2,touch_age_ms_max=9.8,heap_int=129139,heap_psram=7465868,track=0,scn=tap,view=full,hud=1,present_path=direct,rot=90,madctl=0x48,vrect=40-235,strips_per_frame=28,windows_per_frame=0,strip_ms_avg=0.65,frame_blit_ms_avg=18.9,lvgl_rows_clipped=9,dec_frames=29
+I (474881) UI_ACTIONS: Action: open_queue -> abriendo cola
+VIEW,mode=queue,track=0
+
+assert failed: lcd_bus_set_overlay_rect lcd_bus.c:133 (s_overlay_rows != NULL)
+
+
+Backtrace: 0x40380739:0x3fcc2240 0x40380705:0x3fcc2260 0x4037f5c5:0x3fcc2280 0x42011f81:0x3fcc23a0 0x4201ed04:0x3fcc23c0 0x420205c9:0x3fcc2540 0x4204436d:0x3fcc2560 0x42044467:0x3fcc25b0 0x420337f8:0x3fcc25d0 0x42033908:0x3fcc2600 0x4203fa16:0x3fcc2640 0x420405f5:0x3fcc2670 0x42040960:0x3fcc2710 0x4204138d:0x3fcc27a0 0x42045ef2:0x3fcc27c0 0x42046051:0x3fcc27f0 0x4201d058:0x3fcc2810 0x420218b3:0x3fcc2830 0x420104eb:0x3fcc3550
+
+
+
+
+ELF file SHA256: 6b08b1ea7
+
+Rebooting...
+���ESP-ROM:esp32s3-20210327
+Build:Mar 27 2021
+rst:0xc (RTC_SW_CPU_RST),boot:0xa (SPI_FAST_FLASH_BOOT)
+Saved PC:0x403808c4
+SPIWP:0xee
+mode:DIO, clock div:1
+load:0x3fce2820,len:0x14f0
+load:0x403c8700,len:0xda0
+load:0x403cb700,len:0x2f58
+entry 0x403c8908
+I (29) boot: ESP-IDF v6.0.1 2nd stage bootloader
+I (29) boot: compile time Sep 15 2026 14:05:47
+I (29) boot: Multicore bootloader
+I (29) boot: chip revision: v0.2
+I (32) boot: efuse block revision: v1.4
+I (36) boot.esp32s3: Boot SPI Speed : 80MHz
+I (40) boot.esp32s3: SPI Mode       : DIO
+I (43) boot.esp32s3: SPI Flash Size : 16MB
