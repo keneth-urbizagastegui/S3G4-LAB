@@ -393,12 +393,18 @@ static void player_handle_eof(void) {
     const media_item_t *cur = media_library_get(s_status.track_index);
     if (cur) {
         settings_nvs_set_pos(cur->path, 0);
+        media_library_set_resume(s_status.track_index, 0);
     }
 
     if (s_status.repeat == REPEAT_ONE) {
+        const char *next_path = cur ? cur->path : "desconocido";
+        ESP_LOGI(TAG, "EOF,track=%d,repeat=%d,next_frame_from=%s",
+                 s_status.track_index, (int)s_status.repeat, next_path);
         avi_player_restart();
         s_pts_started = false;
         s_pts_t0_us = 0;
+        s_track_presented_frames = 0;
+        s_track_play_start_us = esp_timer_get_time();
     } else {
         int total = s_status.track_count;
         int next = -1;
@@ -416,10 +422,14 @@ static void player_handle_eof(void) {
             avi_player_restart();
             s_pts_started = false;
             s_pts_t0_us = 0;
+            s_track_presented_frames = 0;
+            s_track_play_start_us = esp_timer_get_time();
             return;
         }
 
         if (s_status.repeat == REPEAT_OFF) {
+            ESP_LOGI(TAG, "EOF,track=%d,repeat=%d,next_frame_from=none",
+                     s_status.track_index, (int)s_status.repeat);
             portENTER_CRITICAL(&s_player_mux);
             s_status.state = PST_ENDED;
             portEXIT_CRITICAL(&s_player_mux);
@@ -429,6 +439,10 @@ static void player_handle_eof(void) {
             s_track_play_start_us = 0;
             return;
         } else {
+            const media_item_t *next_it = media_library_get(next);
+            const char *next_path = next_it ? next_it->path : "desconocido";
+            ESP_LOGI(TAG, "EOF,track=%d,repeat=%d,next_frame_from=%s",
+                     s_status.track_index, (int)s_status.repeat, next_path);
             player_open_track(next);
         }
     }
@@ -695,6 +709,7 @@ static void player_task(void *arg) {
                     perf_mark_drift(drift_ms);
                 } else if (ret == ESP_ERR_NOT_FOUND) {
                     player_handle_eof();
+                    continue;
                 } else if (ret == ESP_ERR_INVALID_RESPONSE || ret == ESP_FAIL) {
                     player_handle_sd_error();
                 } else {
@@ -731,6 +746,7 @@ static void player_task(void *arg) {
                     perf_mark_drift(drift_ms);
                 } else if (ret == ESP_ERR_NOT_FOUND) {
                     player_handle_eof();
+                    continue;
                 } else if (ret == ESP_ERR_INVALID_RESPONSE || ret == ESP_FAIL) {
                     player_handle_sd_error();
                 } else {

@@ -518,6 +518,10 @@ void avi_player_close(void) {
     if (s_q_ready && s_q_free) {
         avi_slot_t *s;
         while (xQueueReceive(s_q_ready, &s, 0) == pdTRUE) {
+            s->chunk_len = 0;
+            s->frame_idx = 0;
+            s->err = ESP_OK;
+            s->is_eof = false;
             xQueueSend(s_q_free, &s, 0);
         }
     }
@@ -890,6 +894,10 @@ void avi_player_seek_frame(uint32_t target_frame) {
     if (s_q_ready && s_q_free) {
         avi_slot_t *s;
         while (xQueueReceive(s_q_ready, &s, 0) == pdTRUE) {
+            s->chunk_len = 0;
+            s->frame_idx = 0;
+            s->err = ESP_OK;
+            s->is_eof = false;
             xQueueSend(s_q_free, &s, 0);
         }
     }
@@ -961,6 +969,10 @@ void avi_player_restart(void) {
     if (s_q_ready && s_q_free) {
         avi_slot_t *s;
         while (xQueueReceive(s_q_ready, &s, 0) == pdTRUE) {
+            s->chunk_len = 0;
+            s->frame_idx = 0;
+            s->err = ESP_OK;
+            s->is_eof = false;
             xQueueSend(s_q_free, &s, 0);
         }
     }
