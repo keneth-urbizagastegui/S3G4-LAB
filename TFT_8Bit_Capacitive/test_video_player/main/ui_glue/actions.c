@@ -32,6 +32,18 @@ static lv_obj_t *s_arc_unlock = NULL;
 static int64_t s_lock_touch_start_us = 0;
 static int64_t s_lock_show_time = 0;
 
+static lv_obj_t *s_resume_overlay = NULL;
+static lv_obj_t *s_resume_sheet = NULL;
+static lv_obj_t *s_resume_title = NULL;
+static lv_obj_t *s_resume_sub = NULL;
+static lv_obj_t *s_btn_resume_cont = NULL;
+static lv_obj_t *s_lbl_resume_cont = NULL;
+static lv_obj_t *s_btn_resume_start = NULL;
+static lv_obj_t *s_lbl_resume_start = NULL;
+static lv_obj_t *s_btn_resume_close = NULL;
+static int s_resume_target_idx = -1;
+static void show_resume_sheet(int idx);
+
 extern void touch_inject_synthetic(uint16_t x, uint16_t y, bool pressed);
 
 static lv_obj_t *s_toast_box = NULL;
@@ -742,7 +754,7 @@ static void sim_touch_hold(uint16_t x, uint16_t y, uint32_t hold_ms) {
 }
 
 void ui_glue_run_uinav_test(void) {
-    ESP_LOGI(TAG, "=== INICIANDO PRUEBA UINAV (12 CONTROLES + TARJETA + SEEK) ===");
+    ESP_LOGI(TAG, "=== INICIANDO PRUEBA UINAV (12 CONTROLES + TARJETA + SEEK + L1, L2, L3, L8) ===");
     ui_glue_fix_all_button_flags();
 
     // Asegurar pantalla de reproductor con OSD visible
@@ -761,99 +773,184 @@ void ui_glue_run_uinav_test(void) {
     bool back_ok = (ui_glue_get_view_mode() == VIEW_MODE_STUDIO);
     printf("UINAV,btn=back,result=%s\n", back_ok ? "PASS" : "FAIL");
 
-    // 2. btn=card (x=84, y=110) en la biblioteca -> inicia reproductor
-    if (objects.lib_grid) {
-        lv_obj_t *c0 = lv_obj_get_child(objects.lib_grid, 0);
-        if (c0) {
-            lv_area_t a;
-            lv_obj_get_coords(c0, &a);
-            ESP_LOGI(TAG, "CARD0_COORDS: x1=%ld, y1=%ld, x2=%ld, y2=%ld, hidden=%d, clickable=%d",
-                     (long)a.x1, (long)a.y1, (long)a.x2, (long)a.y2,
-                     lv_obj_has_flag(c0, LV_OBJ_FLAG_HIDDEN), lv_obj_has_flag(c0, LV_OBJ_FLAG_CLICKABLE));
+    // L1: Quedarse en biblioteca verificando que el video no vuelve a pintarse
+    bool l1_ok = true;
+    for (int sec = 0; sec < 60; sec++) {
+        wait_gui_ms(1000);
+        int16_t vx = 0, vy = 0, vw = 0, vh = 0;
+        lcd_bus_get_video_rect(&vx, &vy, &vw, &vh);
+        if (ui_glue_get_view_mode() != VIEW_MODE_STUDIO || vw != 0 || vh != 0) {
+            l1_ok = false;
+            break;
         }
     }
+    printf("UINAV,btn=L1_lib_stay,result=%s\n", l1_ok ? "PASS" : "FAIL");
+
+    // L3: Hoja BibliotecaReanudar (Continuar y Desde el principio)
+    const media_item_t *item1 = media_library_get(1);
+    if (item1 && item1->compatible) {
+        media_library_set_resume(item1->path, 15000);
+        show_resume_sheet(1);
+        wait_gui_ms(200);
+        bool sheet_vis = (s_resume_overlay != NULL && !lv_obj_has_flag(s_resume_overlay, LV_OBJ_FLAG_HIDDEN));
+
+        // Boton Continuar (x=124, y=269)
+        sim_touch_click(124, 269);
+        wait_gui_ms(300);
+        bool cont_ok = (ui_glue_get_view_mode() == VIEW_MODE_FULLSCREEN);
+        printf("UINAV,btn=L3_resume_cont,result=%s\n", (sheet_vis && cont_ok) ? "PASS" : "FAIL");
+
+        // Volver a biblioteca
+        ui_glue_set_view_mode(VIEW_MODE_STUDIO);
+        wait_gui_ms(200);
+        media_library_set_resume(item1->path, 15000);
+        show_resume_sheet(1);
+        wait_gui_ms(200);
+
+        // Boton Desde el principio (x=356, y=269)
+        sim_touch_click(356, 269);
+        wait_gui_ms(300);
+        bool start_ok = (item1->resume_ms == 0 && ui_glue_get_view_mode() == VIEW_MODE_FULLSCREEN);
+        printf("UINAV,btn=L3_resume_start,result=%s\n", start_ok ? "PASS" : "FAIL");
+    }
+
+    // 2. btn=card (x=84, y=110) en la biblioteca -> inicia reproductor
+    ui_glue_set_view_mode(VIEW_MODE_STUDIO);
+    wait_gui_ms(200);
     sim_touch_click(84, 110);
-    wait_gui_ms(250);
+    wait_gui_ms(300);
     bool card_ok = (ui_glue_get_view_mode() == VIEW_MODE_FULLSCREEN);
     printf("UINAV,btn=card,result=%s\n", card_ok ? "PASS" : "FAIL");
 
-    // 3. btn=queue (x=458, y=20) -> abre biblioteca desde player
+    // 3. btn=queue (x=458, y=20) -> muestra aviso toast (L2)
     ui_glue_set_osd_visible(true);
     wait_gui_ms(100);
     sim_touch_click(458, 20);
-    wait_gui_ms(250);
-    bool queue_ok = (ui_glue_get_view_mode() == VIEW_MODE_STUDIO);
+    wait_gui_ms(200);
+    bool queue_ok = (s_toast_box != NULL && !lv_obj_has_flag(s_toast_box, LV_OBJ_FLAG_HIDDEN));
     printf("UINAV,btn=queue,result=%s\n", queue_ok ? "PASS" : "FAIL");
+    if (s_toast_box) lv_obj_add_flag(s_toast_box, LV_OBJ_FLAG_HIDDEN);
+    wait_gui_ms(50);
 
-    // Regresar a player
-    sim_touch_click(84, 110);
+    // 4. btn=play (x=240, y=295) -> comprueba cambio de estado
+    ui_glue_set_osd_visible(true);
+    wait_gui_ms(200);
+    player_status_t st_b1;
+    player_get_status(&st_b1);
+    sim_touch_click(240, 295);
     wait_gui_ms(250);
+    player_status_t st_a1;
+    player_get_status(&st_a1);
+    bool play_ok = (st_a1.state != st_b1.state);
+    printf("UINAV,btn=play,result=%s\n", play_ok ? "PASS" : "FAIL");
+    sim_touch_click(240, 295); // restaurar a playing
+    wait_gui_ms(200);
+
+    // 5. btn=fwd (x=288, y=295) -> pos_ms avanza
     ui_glue_set_osd_visible(true);
     wait_gui_ms(100);
-
-    // 4. btn=play (x=240, y=295) -> alterna play/pause
-    sim_touch_click(240, 295);
-    wait_gui_ms(100);
-    printf("UINAV,btn=play,result=PASS\n");
-    sim_touch_click(240, 295); // restaurar
-    wait_gui_ms(100);
-
-    // 5. btn=prev (x=144, y=295)
-    sim_touch_click(144, 295);
-    wait_gui_ms(100);
-    printf("UINAV,btn=prev,result=PASS\n");
-
-    // 6. btn=rew (x=192, y=295)
-    sim_touch_click(192, 295);
-    wait_gui_ms(100);
-    printf("UINAV,btn=rew,result=PASS\n");
-
-    // 7. btn=fwd (x=288, y=295)
+    player_status_t st_b_fwd;
+    player_get_status(&st_b_fwd);
     sim_touch_click(288, 295);
-    wait_gui_ms(100);
-    printf("UINAV,btn=fwd,result=PASS\n");
+    wait_gui_ms(300);
+    player_status_t st_a_fwd;
+    player_get_status(&st_a_fwd);
+    bool fwd_ok = (st_a_fwd.pos_ms > st_b_fwd.pos_ms);
+    printf("UINAV,btn=fwd,result=%s\n", fwd_ok ? "PASS" : "FAIL");
 
-    // 8. btn=next (x=336, y=295)
-    sim_touch_click(336, 295);
+    // 6. btn=rew (x=192, y=295) -> pos_ms retrocede
+    ui_glue_set_osd_visible(true);
     wait_gui_ms(100);
-    printf("UINAV,btn=next,result=PASS\n");
+    player_status_t st_b_rew;
+    player_get_status(&st_b_rew);
+    sim_touch_click(192, 295);
+    wait_gui_ms(300);
+    player_status_t st_a_rew;
+    player_get_status(&st_a_rew);
+    bool rew_ok = (st_a_rew.pos_ms < st_b_rew.pos_ms || st_a_rew.pos_ms <= 2000);
+    printf("UINAV,btn=rew,result=%s\n", rew_ok ? "PASS" : "FAIL");
+
+    // 7. btn=next (x=336, y=295) -> pista avanza
+    ui_glue_set_osd_visible(true);
+    wait_gui_ms(100);
+    player_status_t st_b_nxt;
+    player_get_status(&st_b_nxt);
+    sim_touch_click(336, 295);
+    wait_gui_ms(500);
+    player_status_t st_a_nxt;
+    player_get_status(&st_a_nxt);
+    bool next_ok = (st_a_nxt.track_index != st_b_nxt.track_index);
+    printf("UINAV,btn=next,result=%s\n", next_ok ? "PASS" : "FAIL");
+
+    // 8. btn=prev (x=144, y=295) -> pista retrocede o pos a 0
+    ui_glue_set_osd_visible(true);
+    wait_gui_ms(100);
+    player_status_t st_b_prv;
+    player_get_status(&st_b_prv);
+    sim_touch_click(144, 295);
+    wait_gui_ms(500);
+    player_status_t st_a_prv;
+    player_get_status(&st_a_prv);
+    bool prev_ok = (st_a_prv.track_index != st_b_prv.track_index || st_a_prv.pos_ms < st_b_prv.pos_ms);
+    printf("UINAV,btn=prev,result=%s\n", prev_ok ? "PASS" : "FAIL");
 
     // 9. btn=repeat (x=78, y=295)
+    ui_glue_set_osd_visible(true);
+    wait_gui_ms(100);
     uint8_t rep_before = s_settings.repeat;
     sim_touch_click(78, 295);
-    wait_gui_ms(100);
+    wait_gui_ms(150);
     bool rep_ok = (s_settings.repeat != rep_before);
     printf("UINAV,btn=repeat,result=%s\n", rep_ok ? "PASS" : "FAIL");
 
     // 10. btn=shuffle (x=402, y=295)
+    ui_glue_set_osd_visible(true);
+    wait_gui_ms(100);
     bool shuf_before = s_settings.shuffle;
     sim_touch_click(402, 295);
-    wait_gui_ms(100);
+    wait_gui_ms(150);
     bool shuf_ok = (s_settings.shuffle != shuf_before);
     printf("UINAV,btn=shuffle,result=%s\n", shuf_ok ? "PASS" : "FAIL");
 
     // 11. btn=settings (x=450, y=295)
-    sim_touch_click(450, 295);
+    ui_glue_set_osd_visible(true);
     wait_gui_ms(100);
+    sim_touch_click(450, 295);
+    wait_gui_ms(150);
     bool set_ok = (s_toast_box != NULL && !lv_obj_has_flag(s_toast_box, LV_OBJ_FLAG_HIDDEN));
     printf("UINAV,btn=settings,result=%s\n", set_ok ? "PASS" : "FAIL");
     if (s_toast_box) lv_obj_add_flag(s_toast_box, LV_OBJ_FLAG_HIDDEN);
     wait_gui_ms(50);
 
-    // 12. btn=seek (x=240, y=249)
-    sim_touch_click(240, 249);
+    // 12. btn=seek (x=340, y=249) -> barra de seek
+    ui_glue_set_osd_visible(true);
     wait_gui_ms(100);
-    printf("UINAV,btn=seek,result=PASS\n");
+    player_status_t st_b_seek;
+    player_get_status(&st_b_seek);
+    sim_touch_click(340, 249);
+    wait_gui_ms(350);
+    player_status_t st_a_seek;
+    player_get_status(&st_a_seek);
+    bool seek_ok = (abs((int32_t)st_a_seek.pos_ms - (int32_t)st_b_seek.pos_ms) > 1000);
+    printf("UINAV,btn=seek,result=%s\n", seek_ok ? "PASS" : "FAIL");
 
     // 13. btn=lock (x=30, y=295)
-    sim_touch_click(30, 295);
+    ui_glue_set_osd_visible(true);
     wait_gui_ms(100);
+    sim_touch_click(30, 295);
+    wait_gui_ms(150);
     bool lock_ok = s_locked;
     printf("UINAV,btn=lock,result=%s\n", lock_ok ? "PASS" : "FAIL");
 
-    // 14. btn=unlock (mantener presionado en x=240, y=160 durante 1200 ms)
-    sim_touch_hold(240, 160, 1200);
+    // L8: Pulsacion corta (300 ms) no debe desbloquear
+    sim_touch_hold(240, 160, 300);
     wait_gui_ms(100);
+    bool short_ok = s_locked;
+    printf("UINAV,btn=lock_short_touch,result=%s\n", short_ok ? "PASS" : "FAIL");
+
+    // 14. btn=unlock (pulsacion larga 1200 ms debe desbloquear)
+    sim_touch_hold(240, 160, 1200);
+    wait_gui_ms(150);
     bool unlock_ok = !s_locked;
     printf("UINAV,btn=unlock,result=%s\n", unlock_ok ? "PASS" : "FAIL");
 
@@ -868,17 +965,6 @@ void action_settings_tab(lv_event_t *e) {
 void action_open_stats(lv_event_t *e) {
     s_last_touch_time = esp_timer_get_time() / 1000;
 }
-
-static lv_obj_t *s_resume_overlay = NULL;
-static lv_obj_t *s_resume_sheet = NULL;
-static lv_obj_t *s_resume_title = NULL;
-static lv_obj_t *s_resume_sub = NULL;
-static lv_obj_t *s_btn_resume_cont = NULL;
-static lv_obj_t *s_lbl_resume_cont = NULL;
-static lv_obj_t *s_btn_resume_start = NULL;
-static lv_obj_t *s_lbl_resume_start = NULL;
-static lv_obj_t *s_btn_resume_close = NULL;
-static int s_resume_target_idx = -1;
 
 static void resume_overlay_event_cb(lv_event_t *e) {
     lv_point_t p;
