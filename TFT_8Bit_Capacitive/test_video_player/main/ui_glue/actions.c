@@ -333,14 +333,13 @@ static void init_lock_overlay(void) {
     lv_obj_add_flag(s_ovl_lock, LV_OBJ_FLAG_CLICKABLE);
     lv_obj_add_event_cb(s_ovl_lock, lock_overlay_event_cb, LV_EVENT_ALL, NULL);
 
-    // Card: x=140, y=104, w=200, h=116, bg #0B0C0F, radius 8, border 1px #2A2D34
+    // Tarjeta Bloqueo: x=140, y=104, w=200, h=116, fondo #0B0C0F, radio 8.
     s_lock_card = lv_obj_create(s_ovl_lock);
     lv_obj_set_pos(s_lock_card, 140, 104);
     lv_obj_set_size(s_lock_card, 200, 116);
     lv_obj_set_style_bg_color(s_lock_card, lv_color_hex(0x0B0C0F), 0);
     lv_obj_set_style_bg_opa(s_lock_card, 255, 0);
-    lv_obj_set_style_border_color(s_lock_card, lv_color_hex(0x2A2D34), 0);
-    lv_obj_set_style_border_width(s_lock_card, 1, 0);
+    lv_obj_set_style_border_width(s_lock_card, 0, 0);
     lv_obj_set_style_radius(s_lock_card, 8, 0);
     lv_obj_set_style_pad_all(s_lock_card, 0, 0);
     lv_obj_remove_flag(s_lock_card, LV_OBJ_FLAG_SCROLLABLE | LV_OBJ_FLAG_CLICKABLE);
@@ -391,6 +390,7 @@ static void init_lock_overlay(void) {
     lv_obj_set_style_text_font(lbl_title, &lv_font_montserrat_14, 0);
     lv_obj_set_style_text_color(lbl_title, lv_color_hex(0xEDEDEA), 0);
     lv_obj_set_style_text_align(lbl_title, LV_TEXT_ALIGN_CENTER, 0);
+    lv_obj_set_style_bg_opa(lbl_title, LV_OPA_TRANSP, 0);
     lv_obj_remove_flag(lbl_title, LV_OBJ_FLAG_CLICKABLE);
     lv_obj_add_flag(lbl_title, LV_OBJ_FLAG_EVENT_BUBBLE);
 
@@ -402,6 +402,7 @@ static void init_lock_overlay(void) {
     lv_obj_set_style_text_font(lbl_hint, &lv_font_montserrat_12, 0);
     lv_obj_set_style_text_color(lbl_hint, lv_color_hex(0x8E929B), 0);
     lv_obj_set_style_text_align(lbl_hint, LV_TEXT_ALIGN_CENTER, 0);
+    lv_obj_set_style_bg_opa(lbl_hint, LV_OPA_TRANSP, 0);
     lv_obj_remove_flag(lbl_hint, LV_OBJ_FLAG_CLICKABLE);
     lv_obj_add_flag(lbl_hint, LV_OBJ_FLAG_EVENT_BUBBLE);
 }
