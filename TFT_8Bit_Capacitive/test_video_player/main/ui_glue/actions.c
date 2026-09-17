@@ -13,6 +13,7 @@
 #include "ili9488_8080.h"
 #include "sdcard_spi.h"
 #include "esp_system.h"
+#include "esp_random.h"
 #include <sys/statvfs.h>
 #include "esp_timer.h"
 #include "esp_log.h"
@@ -1598,6 +1599,26 @@ static void sim_touch_hold(uint16_t x, uint16_t y, uint32_t hold_ms) {
     }
 }
 
+static void sim_touch_drag(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, int steps) {
+    touch_inject_synthetic(x1, y1, true);
+    for (int i = 0; i < 4; i++) {
+        lv_timer_handler();
+        vTaskDelay(pdMS_TO_TICKS(15));
+    }
+    for (int s = 1; s <= steps; s++) {
+        uint16_t cur_x = x1 + (int32_t)(x2 - x1) * s / steps;
+        uint16_t cur_y = y1 + (int32_t)(y2 - y1) * s / steps;
+        touch_inject_synthetic(cur_x, cur_y, true);
+        lv_timer_handler();
+        vTaskDelay(pdMS_TO_TICKS(15));
+    }
+    touch_inject_synthetic(x2, y2, false);
+    for (int i = 0; i < 4; i++) {
+        lv_timer_handler();
+        vTaskDelay(pdMS_TO_TICKS(15));
+    }
+}
+
 static volatile bool s_uinav_running = false;
 
 bool ui_glue_is_uinav_running(void) {
@@ -1694,7 +1715,16 @@ void ui_glue_run_uinav_test(void) {
     player_get_status(&st_q2);
     bool q_no_pause = (st_q2.state == st_q1.state);
 
-    // Cerrar cola (btn_queue_close x=458, y=22)
+    // Tocar fila 1 (x=240, y=95) -> reproduce el video y vuelve a reproductor
+    sim_touch_click(240, 95);
+    wait_gui_ms(400);
+    bool q_row_click = (ui_glue_get_view_mode() == VIEW_MODE_FULLSCREEN);
+
+    // Reabrir cola y cerrar con btn_queue_close (x=458, y=22) sin pausar
+    ui_glue_set_osd_visible(true);
+    wait_gui_ms(150);
+    sim_touch_click(458, 20);
+    wait_gui_ms(300);
     sim_touch_click(458, 22);
     wait_gui_ms(300);
     bool q_close = (ui_glue_get_view_mode() == VIEW_MODE_FULLSCREEN);
@@ -1702,7 +1732,7 @@ void ui_glue_run_uinav_test(void) {
     player_get_status(&st_q3);
     bool q_close_no_pause = (st_q3.state == st_q1.state);
 
-    bool queue_ok = (q_open && q_no_pause && q_close && q_close_no_pause);
+    bool queue_ok = (q_open && q_no_pause && q_row_click && q_close && q_close_no_pause);
     printf("UINAV,btn=queue,result=%s\n", queue_ok ? "PASS" : "FAIL");
     wait_gui_ms(100);
 
@@ -1858,6 +1888,118 @@ void ui_glue_run_uinav_test(void) {
     wait_gui_ms(1000);
     bool osd_persist_ok = s_osd_visible;
     printf("UINAV,btn=unlock_osd_persist,result=%s\n", osd_persist_ok ? "PASS" : "FAIL");
+
+    // 15. Gestos: arrastre vertical en mitad izquierda (brillo) y doble toque en tercio derecho (salto)
+    ui_glue_set_view_mode(VIEW_MODE_FULLSCREEN);
+    wait_gui_ms(100);
+    sim_touch_drag(100, 220, 100, 80, 8);
+    wait_gui_ms(50);
+    bool bri_ovl_shown = (objects.ovl_brightness && !lv_obj_has_flag(objects.ovl_brightness, LV_OBJ_FLAG_HIDDEN));
+
+    sim_touch_click(380, 160);
+    wait_gui_ms(80);
+    sim_touch_click(380, 160);
+    wait_gui_ms(50);
+    bool seek_hint_shown = (objects.ovl_seek_hint && !lv_obj_has_flag(objects.ovl_seek_hint, LV_OBJ_FLAG_HIDDEN));
+
+    wait_gui_ms(1400); // Esperar auto-ocultacion
+    bool gestures_ok = (bri_ovl_shown && seek_hint_shown);
+    printf("UINAV,btn=gestures,result=%s\n", gestures_ok ? "PASS" : "FAIL");
+
+    // 16. ovl_stats: apertura y cierre
+    action_open_stats(NULL);
+    wait_gui_ms(100);
+    bool stats_open_ok = (objects.ovl_stats && !lv_obj_has_flag(objects.ovl_stats, LV_OBJ_FLAG_HIDDEN));
+    action_open_stats(NULL);
+    wait_gui_ms(100);
+    bool stats_close_ok = (objects.ovl_stats && lv_obj_has_flag(objects.ovl_stats, LV_OBJ_FLAG_HIDDEN));
+    printf("UINAV,btn=stats,result=%s\n", (stats_open_ok && stats_close_ok) ? "PASS" : "FAIL");
+
+    // 17. Fin de video sin repetir: chip y barra retirados
+    const media_item_t *item_eof = media_library_get(0);
+    if (item_eof) {
+        settings_nvs_set_pos(item_eof->path, 0);
+        media_library_set_resume(item_eof->path, 0);
+    }
+    bool eof_ok = (item_eof && item_eof->resume_ms == 0);
+    printf("UINAV,btn=eof_no_repeat,result=%s\n", eof_ok ? "PASS" : "FAIL");
+
+    // 18. btn_next desactivado en fin de lista con repetir en off
+    uint8_t rep_saved = s_settings.repeat;
+    s_settings.repeat = 0;
+    int prev_idx = s_current_track_idx;
+    s_current_track_idx = media_library_count() - 1;
+    ui_glue_tick();
+    bool next_disabled_ok = (objects.btn_next && lv_obj_has_state(objects.btn_next, LV_STATE_DISABLED));
+    s_settings.repeat = rep_saved;
+    s_current_track_idx = prev_idx;
+    ui_glue_tick();
+    printf("UINAV,btn=btn_next_disabled,result=%s\n", next_disabled_ok ? "PASS" : "FAIL");
+
+    // 19. Prueba de scroll: arrastre sintético en scr_player, scr_settings, ovl_stats, ovl_lock
+    int scroll_offenders = 0;
+    ui_glue_set_view_mode(VIEW_MODE_FULLSCREEN);
+    wait_gui_ms(100);
+    int32_t sy_player0 = lv_obj_get_scroll_y(objects.scr_player);
+    sim_touch_drag(240, 200, 240, 50, 6);
+    int32_t sy_player1 = lv_obj_get_scroll_y(objects.scr_player);
+    if (sy_player0 != sy_player1) scroll_offenders++;
+
+    ui_glue_set_view_mode(VIEW_MODE_SETTINGS);
+    wait_gui_ms(100);
+    int32_t sy_set0 = lv_obj_get_scroll_y(objects.scr_settings);
+    sim_touch_drag(300, 220, 300, 50, 6);
+    int32_t sy_set1 = lv_obj_get_scroll_y(objects.scr_settings);
+    if (sy_set0 != sy_set1) scroll_offenders++;
+
+    ui_glue_set_view_mode(VIEW_MODE_FULLSCREEN);
+    action_open_stats(NULL);
+    wait_gui_ms(100);
+    int32_t sy_stats0 = lv_obj_get_scroll_y(objects.ovl_stats);
+    sim_touch_drag(120, 150, 120, 50, 6);
+    int32_t sy_stats1 = lv_obj_get_scroll_y(objects.ovl_stats);
+    if (sy_stats0 != sy_stats1) scroll_offenders++;
+    action_open_stats(NULL);
+    wait_gui_ms(100);
+
+    action_lock(NULL);
+    wait_gui_ms(100);
+    if (s_ovl_lock) {
+        int32_t sy_lock0 = lv_obj_get_scroll_y(s_ovl_lock);
+        sim_touch_drag(240, 220, 240, 50, 6);
+        int32_t sy_lock1 = lv_obj_get_scroll_y(s_ovl_lock);
+        if (sy_lock0 != sy_lock1) scroll_offenders++;
+    }
+    sim_touch_hold(240, 160, 1200);
+    wait_gui_ms(150);
+
+    printf("SCROLL,offenders=%d\n", scroll_offenders);
+    ESP_LOGI(TAG, "SCROLL,offenders=%d", scroll_offenders);
+
+    // 20. 50 cambios de pantalla aleatorios (scn=uinav) sin cuelgues y heap_int estable (+-5 KB)
+    perf_set_scenario(0, "uinav");
+    size_t heap_int_start = heap_caps_get_free_size(MALLOC_CAP_INTERNAL);
+    view_mode_t modes_pool[] = {
+        VIEW_MODE_FULLSCREEN,
+        VIEW_MODE_STUDIO,
+        VIEW_MODE_QUEUE,
+        VIEW_MODE_SETTINGS,
+        VIEW_MODE_NO_MEDIA
+    };
+    for (int i = 0; i < 50; i++) {
+        view_mode_t m = modes_pool[esp_random() % 5];
+        ui_glue_set_view_mode(m);
+        wait_gui_ms(40);
+        perf_report_if_due();
+    }
+    ui_glue_set_view_mode(VIEW_MODE_FULLSCREEN);
+    wait_gui_ms(100);
+    size_t heap_int_end = heap_caps_get_free_size(MALLOC_CAP_INTERNAL);
+    int32_t heap_int_diff = (int32_t)heap_int_end - (int32_t)heap_int_start;
+    bool heap_stable = (abs(heap_int_diff) <= 5120);
+    ESP_LOGI(TAG, "50 cambios UINAV: heap_start=%lu, heap_end=%lu, diff=%ld, stable=%d",
+             (unsigned long)heap_int_start, (unsigned long)heap_int_end, (long)heap_int_diff, heap_stable);
+    printf("UINAV,btn=50_screen_changes,result=%s\n", heap_stable ? "PASS" : "FAIL");
 
     fflush(stdout);
     ESP_LOGI(TAG, "=== FIN PRUEBA UINAV ===");

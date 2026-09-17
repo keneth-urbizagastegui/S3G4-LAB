@@ -126,6 +126,7 @@ def main():
     lib_data = None
     ui_data = None
     uinav_records = []
+    scroll_data = None
     crashed = False
     crash_reason = ""
 
@@ -175,6 +176,12 @@ def main():
                 kv = parse_kv_line(line_str, "UINAV")
                 if kv:
                     uinav_records.append(kv)
+
+            # Deteccion de SCROLL
+            if line_str.startswith("SCROLL,"):
+                kv = parse_kv_line(line_str, "SCROLL")
+                if kv:
+                    scroll_data = kv
 
             # Deteccion de LIB
             if line_str.startswith("LIB,"):
@@ -451,7 +458,7 @@ def main():
         print("=" * 94)
 
     # Evaluacion de criterios segun la fase
-    if args.phase.upper() in ("F5", "F5A", "F5B", "F5D", "F6", "F6A"):
+    if args.phase.upper() in ("F5", "F5A", "F5B", "F5D", "F6", "F6A", "F6B"):
         f5a_passed = True
         print("\n" + "=" * 80)
         print(f"EVALUACION DE CRITERIOS FASE {args.phase.upper()}")
@@ -709,8 +716,8 @@ def main():
         else:
             print(f"[CRITERIO F5a OK]: heap_int minimo = {min_heap_int} >= 30000 B.")
 
-        # 14. Criterios especificos F5b / F6a: Biblioteca dinamica, metadatos y NVS (linea LIB)
-        if args.phase.upper() in ("F5B", "F6", "F6A"):
+        # 14. Criterios especificos F5b / F6a / F6b: Biblioteca dinamica, metadatos y NVS (linea LIB)
+        if args.phase.upper() in ("F5B", "F6", "F6A", "F6B"):
             print("\n" + "-" * 80)
             print(f"EVALUACION CRITERIOS ESPECIFICOS FASE {args.phase.upper()} (BIBLIOTECA Y NVS)")
             print("-" * 80)
@@ -761,8 +768,8 @@ def main():
                 else:
                     print(f"[CRITERIO {args.phase.upper()} OK]: PSRAM libre minima = {min_psram} B >= 6 MB.")
 
-        # 15. Criterios especificos F6/F6a: UI EEZ y navegacion de botones (UINAV)
-        if args.phase.upper() in ("F6", "F6A"):
+        # 15. Criterios especificos F6/F6a/F6b: UI EEZ y navegacion de botones (UINAV)
+        if args.phase.upper() in ("F6", "F6A", "F6B"):
             print("\n" + "-" * 80)
             print("EVALUACION CRITERIOS ESPECIFICOS FASE F6a (UI EEZ + NAVEGACION UINAV)")
             print("-" * 80)
@@ -781,12 +788,26 @@ def main():
                     if res != "PASS":
                         all_uinav_pass = False
                 if all_uinav_pass:
-                    print("[CRITERIO F6a OK]: Todos los botones verificados con PASS en UINAV.")
+                    print(f"[CRITERIO {args.phase.upper()} OK]: Todos los botones verificados con PASS en UINAV.")
                 else:
-                    print("[CRITERIO F6a FALLIDO]: Al menos un boton fallo en UINAV.", file=sys.stderr)
+                    print(f"[CRITERIO {args.phase.upper()} FALLIDO]: Al menos un boton fallo en UINAV.", file=sys.stderr)
                     f5a_passed = False
             else:
-                print("[INFO UINAV]: No se recibieron registros UINAV en este run.")
+                print(f"[INFO {args.phase.upper()}]: No se recibieron registros UINAV en este run.")
+
+            if scroll_data:
+                try:
+                    offenders = int(scroll_data.get("offenders", -1))
+                except ValueError:
+                    offenders = -1
+                print(f"[EVALUACION SCROLL]: offenders={offenders}")
+                if offenders == 0:
+                    print(f"[CRITERIO {args.phase.upper()} OK]: Prueba de scroll exitosa (offenders=0).")
+                else:
+                    print(f"[CRITERIO {args.phase.upper()} FALLIDO]: Prueba de scroll fallo (offenders={offenders} != 0).", file=sys.stderr)
+                    f5a_passed = False
+            else:
+                print(f"[INFO {args.phase.upper()}]: Linea SCROLL no recibida en este run.")
 
         print("=" * 80)
         if f5a_passed:

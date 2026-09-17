@@ -19,6 +19,8 @@
 #include "player.h"
 #include "ui/ui.h"
 #include "ui/screens.h"
+#include "ui/images.h"
+#include "ui/fonts.h"
 #include "ui/vars.h"
 #include "ui/actions.h"
 #include "ui_glue.h"
@@ -388,9 +390,76 @@ static void gui_task(void *arg) {
         action_open_library(NULL);
     }
 
-    // Contar componentes UI según criterio de aceptación F6a
-    printf("UI,screens=%d,widgets=%d,fonts=%d,images=%d\n", 3, 47, 3, 25);
-    ESP_LOGI(TAG, "UI,screens=%d,widgets=%d,fonts=%d,images=%d", 3, 47, 3, 25);
+    // Contar componentes UI según criterio de aceptación F6b (contado dinámicamente del proyecto generado)
+    int n_screens = _SCREEN_ID_LAST;
+    int n_widgets = (int)(sizeof(objects_t) / sizeof(lv_obj_t *));
+    int n_fonts = 0;
+#if LV_FONT_MONTSERRAT_8
+    n_fonts++;
+#endif
+#if LV_FONT_MONTSERRAT_10
+    n_fonts++;
+#endif
+#if LV_FONT_MONTSERRAT_12
+    n_fonts++;
+#endif
+#if LV_FONT_MONTSERRAT_14
+    n_fonts++;
+#endif
+#if LV_FONT_MONTSERRAT_16
+    n_fonts++;
+#endif
+#if LV_FONT_MONTSERRAT_18
+    n_fonts++;
+#endif
+#if LV_FONT_MONTSERRAT_20
+    n_fonts++;
+#endif
+#if LV_FONT_MONTSERRAT_22
+    n_fonts++;
+#endif
+#if LV_FONT_MONTSERRAT_24
+    n_fonts++;
+#endif
+#if LV_FONT_MONTSERRAT_26
+    n_fonts++;
+#endif
+#if LV_FONT_MONTSERRAT_28
+    n_fonts++;
+#endif
+#if LV_FONT_MONTSERRAT_30
+    n_fonts++;
+#endif
+#if LV_FONT_MONTSERRAT_32
+    n_fonts++;
+#endif
+#if LV_FONT_MONTSERRAT_34
+    n_fonts++;
+#endif
+#if LV_FONT_MONTSERRAT_36
+    n_fonts++;
+#endif
+#if LV_FONT_MONTSERRAT_38
+    n_fonts++;
+#endif
+#if LV_FONT_MONTSERRAT_40
+    n_fonts++;
+#endif
+#if LV_FONT_MONTSERRAT_42
+    n_fonts++;
+#endif
+#if LV_FONT_MONTSERRAT_44
+    n_fonts++;
+#endif
+#if LV_FONT_MONTSERRAT_46
+    n_fonts++;
+#endif
+#if LV_FONT_MONTSERRAT_48
+    n_fonts++;
+#endif
+    int n_images = (int)(sizeof(images) / sizeof(images[0]));
+    printf("UI,screens=%d,widgets=%d,fonts=%d,images=%d\n", n_screens, n_widgets, n_fonts, n_images);
+    ESP_LOGI(TAG, "UI,screens=%d,widgets=%d,fonts=%d,images=%d", n_screens, n_widgets, n_fonts, n_images);
 
     // Publicar estado inicial
     publish_ui_state();
