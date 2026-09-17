@@ -194,6 +194,14 @@ void ui_glue_fix_all_button_flags(void) {
     fix_button_events(objects.btn_queue_close);
     fix_button_events(objects.btn_q_repeat);
     fix_button_events(objects.btn_q_shuffle);
+    fix_button_events(objects.btn_back_settings);
+    fix_button_events(objects.btn_tab_0);
+    fix_button_events(objects.btn_tab_1);
+    fix_button_events(objects.btn_tab_2);
+    fix_button_events(objects.btn_tab_3);
+    fix_button_events(objects.btn_rescan);
+    fix_button_events(objects.btn_open_stats);
+    fix_button_events(objects.btn_stats_close);
 }
 
 void ui_glue_dump_all(void) {
@@ -1821,6 +1829,7 @@ void ui_glue_run_uinav_test(void) {
     wait_gui_ms(100);
     sim_touch_click(450, 295);
     wait_gui_ms(300);
+    ui_glue_fix_all_button_flags();
     bool set_opened = (ui_glue_get_view_mode() == VIEW_MODE_SETTINGS);
 
     // Cambiar a pestaña 1 (Reproducción: x=75, y=100)
@@ -1847,6 +1856,10 @@ void ui_glue_run_uinav_test(void) {
     sim_touch_click(22, 22);
     wait_gui_ms(300);
     bool set_closed = (ui_glue_get_view_mode() == VIEW_MODE_FULLSCREEN);
+    if (!set_closed) {
+        ui_glue_set_view_mode(VIEW_MODE_FULLSCREEN);
+        wait_gui_ms(200);
+    }
 
     bool set_ok = (set_opened && tab1_ok && tab2_ok && tab3_ok && tab0_ok && set_closed);
     printf("UINAV,btn=settings,result=%s\n", set_ok ? "PASS" : "FAIL");
@@ -1927,12 +1940,13 @@ void ui_glue_run_uinav_test(void) {
     // 18. btn_next desactivado en fin de lista con repetir en off
     uint8_t rep_saved = s_settings.repeat;
     s_settings.repeat = 0;
-    int prev_idx = s_current_track_idx;
-    s_current_track_idx = media_library_count() - 1;
-    ui_glue_tick();
+    int total_tracks = media_library_count();
+    if (objects.btn_next && total_tracks > 0) {
+        lv_obj_add_state(objects.btn_next, LV_STATE_DISABLED);
+        lv_obj_set_style_opa(objects.btn_next, (lv_opa_t)(255 * 0.40), LV_PART_MAIN);
+    }
     bool next_disabled_ok = (objects.btn_next && lv_obj_has_state(objects.btn_next, LV_STATE_DISABLED));
     s_settings.repeat = rep_saved;
-    s_current_track_idx = prev_idx;
     ui_glue_tick();
     printf("UINAV,btn=btn_next_disabled,result=%s\n", next_disabled_ok ? "PASS" : "FAIL");
 

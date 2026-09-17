@@ -582,6 +582,8 @@ static void autotest_task(void *arg) {
                 vTaskDelay(pdMS_TO_TICKS(10));
             }
 
+            vTaskDelay(pdMS_TO_TICKS(600));
+
             perf_set_scenario(track_idx, scn_name);
             ESP_LOGI(TAG, "Track %d -> Escenario '%s' (%d s, view=full, hud=%d)",
                      track_idx, scn_name, sec_per_scenario, expected_hud);
