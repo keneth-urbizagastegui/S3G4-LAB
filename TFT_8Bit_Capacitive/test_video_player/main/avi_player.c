@@ -34,6 +34,10 @@ static bool s_need_index_seek = true;
 static uint8_t *s_last_jpeg_chunk = NULL;
 static size_t s_last_jpeg_len = 0;
 static size_t s_last_jpeg_cap = 0;
+// Primer JPEG de la vuelta, conservado para presentarlo inmediatamente en EOF.
+static uint8_t *s_loop_first_jpeg_chunk = NULL;
+static size_t s_loop_first_jpeg_len = 0;
+static size_t s_loop_first_jpeg_cap = 0;
 
 #define JPEG_INBUF_INIT_SIZE (48 * 1024)
 #define JPEG_INBUF_MAX_SIZE  (128 * 1024)
@@ -549,6 +553,12 @@ void avi_player_close(void) {
         s_last_jpeg_cap = 0;
         s_last_jpeg_len = 0;
     }
+    if (s_loop_first_jpeg_chunk) {
+        free(s_loop_first_jpeg_chunk);
+        s_loop_first_jpeg_chunk = NULL;
+        s_loop_first_jpeg_cap = 0;
+        s_loop_first_jpeg_len = 0;
+    }
     s_info.is_open = false;
     s_info.is_eof = true;
     s_need_index_seek = true;
@@ -642,6 +652,18 @@ esp_err_t avi_player_read_and_blit_direct(void) {
         if (s_last_jpeg_chunk) {
             memcpy(s_last_jpeg_chunk, slot->buf, slot->chunk_len);
             s_last_jpeg_len = slot->chunk_len;
+        }
+        if (slot->frame_idx == 0) {
+            if (slot->chunk_len > s_loop_first_jpeg_cap) {
+                if (s_loop_first_jpeg_chunk) free(s_loop_first_jpeg_chunk);
+                s_loop_first_jpeg_chunk = (uint8_t *)heap_caps_malloc(
+                    slot->chunk_len + 4096, MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT);
+                s_loop_first_jpeg_cap = s_loop_first_jpeg_chunk ? (slot->chunk_len + 4096) : 0;
+            }
+            if (s_loop_first_jpeg_chunk) {
+                memcpy(s_loop_first_jpeg_chunk, slot->buf, slot->chunk_len);
+                s_loop_first_jpeg_len = slot->chunk_len;
+            }
         }
     }
 
@@ -1177,6 +1199,56 @@ void avi_player_restart(void) {
         xTaskNotifyGive(s_reader_task_handle);
     }
 
+}
+
+esp_err_t avi_player_restart_with_cached_first(void) {
+    if (!s_file || !s_loop_first_jpeg_chunk || s_loop_first_jpeg_len == 0 ||
+        !s_index_table || s_info.total_frames < 2) {
+        avi_player_restart();
+        return ESP_ERR_NOT_FOUND;
+    }
+
+    /* El JPEG 0 se leyó y guardó durante el arranque normal. Mientras se
+     * presenta desde PSRAM, el lector retoma el JPEG 1: no se reabre el AVI ni
+     * se espera I/O en el cruce de vuelta. */
+    if (s_file_mutex) {
+        xSemaphoreTake(s_file_mutex, portMAX_DELAY);
+    }
+    if (s_q_ready && s_q_free) {
+        avi_slot_t *s;
+        while (xQueueReceive(s_q_ready, &s, 0) == pdTRUE) {
+            s->chunk_len = 0;
+            s->frame_idx = 0;
+            s->err = ESP_OK;
+            s->is_eof = false;
+            xQueueSend(s_q_free, &s, 0);
+        }
+    }
+    lseek(fileno(s_file), s_index_table[1], SEEK_SET);
+    s_info.current_frame = 1;
+    s_reader_frame_idx = 1;
+    s_info.elapsed_sec = 0;
+    s_info.is_eof = false;
+    s_need_index_seek = false;
+    s_reader_run = true;
+    if (s_file_mutex) {
+        xSemaphoreGive(s_file_mutex);
+    }
+    if (s_reader_task_handle) {
+        xTaskNotifyGive(s_reader_task_handle);
+    }
+
+    uint8_t *saved_last = s_last_jpeg_chunk;
+    size_t saved_last_len = s_last_jpeg_len;
+    size_t saved_last_cap = s_last_jpeg_cap;
+    s_last_jpeg_chunk = s_loop_first_jpeg_chunk;
+    s_last_jpeg_len = s_loop_first_jpeg_len;
+    s_last_jpeg_cap = s_loop_first_jpeg_cap;
+    esp_err_t ret = avi_player_reblit_current_frame();
+    s_last_jpeg_chunk = saved_last;
+    s_last_jpeg_len = saved_last_len;
+    s_last_jpeg_cap = saved_last_cap;
+    return ret;
 }
 
 const avi_info_t *avi_player_get_info(void) {

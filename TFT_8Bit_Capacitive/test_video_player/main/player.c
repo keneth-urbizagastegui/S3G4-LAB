@@ -406,7 +406,7 @@ static void player_handle_eof(void) {
         const char *next_path = cur ? cur->path : "desconocido";
         ESP_LOGI(TAG, "EOF,track=%d,repeat=%d,next_frame_from=%s",
                  s_status.track_index, (int)s_status.repeat, next_path);
-        avi_player_restart();
+        esp_err_t cached_first_ret = avi_player_restart_with_cached_first();
         s_repeat_loop_count++;
         /* El cruce se mide exclusivamente entre el último fotograma realmente
          * presentado antes de este EOF y el primero de la vuelta reiniciada.
@@ -423,8 +423,31 @@ static void player_handle_eof(void) {
         portEXIT_CRITICAL(&s_player_mux);
         s_pts_started = false;
         s_pts_t0_us = 0;
-        s_track_presented_frames = 0;
+        s_track_presented_frames = (cached_first_ret == ESP_OK) ? 1 : 0;
         s_track_play_start_us = t_eof_us;
+        if (cached_first_ret == ESP_OK) {
+            int64_t present_us = esp_timer_get_time();
+            bool measure_gap = false;
+            int64_t eof_last_present_us = 0;
+            portENTER_CRITICAL(&s_player_mux);
+            if (s_repeat_gap_pending) {
+                measure_gap = true;
+                eof_last_present_us = s_repeat_eof_last_present_us;
+                s_repeat_gap_pending = false;
+            }
+            portEXIT_CRITICAL(&s_player_mux);
+            if (measure_gap) {
+                uint32_t gap_ms = (uint32_t)((present_us - eof_last_present_us) / 1000);
+                ESP_LOGI(TAG, "LOOP,gap_ms=%lu", (unsigned long)gap_ms);
+                printf("LOOP,gap_ms=%lu\n", (unsigned long)gap_ms);
+                fflush(stdout);
+                portENTER_CRITICAL(&s_player_mux);
+                s_repeat_gap_samples++;
+                if (gap_ms > s_repeat_gap_ms_max) s_repeat_gap_ms_max = gap_ms;
+                portEXIT_CRITICAL(&s_player_mux);
+            }
+            s_repeat_last_present_us = present_us;
+        }
     } else {
         int total = s_status.track_count;
         int next = -1;

@@ -43,6 +43,9 @@ void avi_player_seek_percent(int percent);
 void avi_player_seek_frame(uint32_t target_frame);
 void avi_player_seek_ms(uint32_t ms);
 void avi_player_restart(void);
+// Reinicia sin reabrir el archivo y presenta el primer JPEG ya precargado.
+// Devuelve ESP_ERR_NOT_FOUND si la caché todavía no está disponible.
+esp_err_t avi_player_restart_with_cached_first(void);
 
 const avi_info_t *avi_player_get_info(void);
 
