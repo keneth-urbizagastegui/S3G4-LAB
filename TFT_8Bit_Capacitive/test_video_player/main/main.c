@@ -658,6 +658,11 @@ static void log_stack_and_heap_diag(const char *phase_tag) {
 // -------------------------------------------------------------
 #if CONFIG_APP_PERF_AUTOTEST
 
+#define AUTOTEST_MAX_DURATION_SEC 900
+/* Reserva para apertura de pistas, LOOP, TAP/UINAV, OVERLAY, STRESS, SDPULL
+ * y el cierre. Así el barrido por pista no puede consumir la ventana completa. */
+#define AUTOTEST_FIXED_BUDGET_SEC 300
+
 static void autotest_task(void *arg) {
     ESP_LOGI(TAG, "Tarea de autotest F2 iniciada (usa cola de comandos y peticiones UI).");
 
@@ -667,6 +672,15 @@ static void autotest_task(void *arg) {
     int total_tracks = media_library_count();
     int sec_per_track = CONFIG_APP_PERF_SECONDS_PER_TRACK;
     if (sec_per_track < 3) sec_per_track = 3;
+    if (total_tracks > 0) {
+        int max_sec_per_track = (AUTOTEST_MAX_DURATION_SEC - AUTOTEST_FIXED_BUDGET_SEC) / total_tracks;
+        if (max_sec_per_track < 3) max_sec_per_track = 3;
+        if (sec_per_track > max_sec_per_track) {
+            ESP_LOGW(TAG, "Autotest: limitando pista a %d s para completar antes de %d s",
+                     max_sec_per_track, AUTOTEST_MAX_DURATION_SEC);
+            sec_per_track = max_sec_per_track;
+        }
+    }
     int sec_per_scenario = sec_per_track / 3;
 
     app_settings_t orig_settings;
@@ -769,11 +783,15 @@ static void autotest_task(void *arg) {
     }
     if (loop_track >= 0) {
         ESP_LOGI(TAG, "Iniciando escenario LOOP (5 reinicios REPEAT_ONE)...");
+        /* LOOP no pertenece a hidden/osd/seek de ninguna pista: sus descartes
+         * se publican bajo scn=loop y quedan fuera de los criterios por pista
+         * y globales de la medición de reproducción. */
+        perf_set_scenario(loop_track, "loop");
         player_cmd_t cmd_loop_open = {.type = PCMD_OPEN, .arg = loop_track};
         player_cmd_send(&cmd_loop_open);
         ui_req_send(UI_REQ_SET_VIEW, VIEW_MODE_FULLSCREEN);
         ui_req_send(UI_REQ_SET_HUD, 1);
-        vTaskDelay(pdMS_TO_TICKS(2000));
+        vTaskDelay(pdMS_TO_TICKS(500));
 
         player_reset_repeat_loop_metrics();
         for (int sample = 0; sample < 5; sample++) {
@@ -786,7 +804,7 @@ static void autotest_task(void *arg) {
             int64_t wait_start_us = esp_timer_get_time();
             uint32_t samples = 0;
             while (samples < (uint32_t)(sample + 1) &&
-                   esp_timer_get_time() - wait_start_us < 5000000LL) {
+                   esp_timer_get_time() - wait_start_us < 2000000LL) {
                 player_get_repeat_loop_metrics(&samples, NULL);
                 vTaskDelay(pdMS_TO_TICKS(20));
             }
