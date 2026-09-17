@@ -111,8 +111,15 @@ void ui_glue_update_cache(const player_status_t *st) {
     }
 
     int vcount = media_library_count();
-    snprintf(s_cache.library_summary, sizeof(s_cache.library_summary),
-             "%d videos", vcount);
+    int ccount = media_library_compatible_count();
+    int incount = vcount - ccount;
+    if (incount > 0) {
+        snprintf(s_cache.library_summary, sizeof(s_cache.library_summary),
+                 "%d videos · %d no compatible%s", vcount, incount, incount > 1 ? "s" : "");
+    } else {
+        snprintf(s_cache.library_summary, sizeof(s_cache.library_summary),
+                 "%d videos · todos compatibles", vcount);
+    }
 }
 
 // ----------------- EEZ Native Getters -----------------

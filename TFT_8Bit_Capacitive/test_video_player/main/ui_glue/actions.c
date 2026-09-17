@@ -217,7 +217,7 @@ static void lock_overlay_event_cb(lv_event_t *e) {
     } else if (code == LV_EVENT_RELEASED) {
         s_lock_touch_start_us = 0;
         if (s_lbl_lock_msg && s_locked) {
-            lv_label_set_text(s_lbl_lock_msg, "🔒 Pantalla bloqueada — mantén pulsado 1 s para desbloquear");
+            lv_label_set_text(s_lbl_lock_msg, "Pantalla bloqueada — mantén pulsado 1 s para desbloquear");
         }
     }
 }
@@ -554,13 +554,13 @@ void action_lock(lv_event_t *e) {
         lv_obj_set_style_bg_color(s_lbl_lock_msg, lv_color_hex(0x15171C), LV_PART_MAIN | LV_STATE_DEFAULT);
         lv_obj_set_style_pad_all(s_lbl_lock_msg, 8, LV_PART_MAIN | LV_STATE_DEFAULT);
         lv_obj_set_style_radius(s_lbl_lock_msg, 6, LV_PART_MAIN | LV_STATE_DEFAULT);
-        lv_label_set_text(s_lbl_lock_msg, "🔒 Pantalla bloqueada — mantén pulsado 1 s para desbloquear");
+        lv_label_set_text(s_lbl_lock_msg, "Pantalla bloqueada — mantén pulsado 1 s para desbloquear");
         lv_obj_center(s_lbl_lock_msg);
     }
     if (s_obj_lock_overlay) {
         lv_obj_remove_flag(s_obj_lock_overlay, LV_OBJ_FLAG_HIDDEN);
         if (s_lbl_lock_msg) {
-            lv_label_set_text(s_lbl_lock_msg, "🔒 Pantalla bloqueada — mantén pulsado 1 s para desbloquear");
+            lv_label_set_text(s_lbl_lock_msg, "Pantalla bloqueada — mantén pulsado 1 s para desbloquear");
         }
     }
     ESP_LOGI(TAG, "Action: lock -> pantalla bloqueada");
