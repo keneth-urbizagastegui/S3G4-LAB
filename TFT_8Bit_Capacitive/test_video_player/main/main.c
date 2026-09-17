@@ -775,7 +775,7 @@ static void autotest_task(void *arg) {
         ui_req_send(UI_REQ_SET_HUD, 1);
         vTaskDelay(pdMS_TO_TICKS(2000));
 
-        uint32_t loops_before = player_get_repeat_loop_count();
+        player_reset_repeat_loop_metrics();
         for (int sample = 0; sample < 5; sample++) {
             player_status_t loop_status;
             player_get_status(&loop_status);
@@ -784,12 +784,20 @@ static void autotest_task(void *arg) {
             player_cmd_send(&cmd_loop_seek);
 
             int64_t wait_start_us = esp_timer_get_time();
-            while (player_get_repeat_loop_count() < loops_before + (uint32_t)(sample + 1) &&
+            uint32_t samples = 0;
+            while (samples < (uint32_t)(sample + 1) &&
                    esp_timer_get_time() - wait_start_us < 5000000LL) {
+                player_get_repeat_loop_metrics(&samples, NULL);
                 vTaskDelay(pdMS_TO_TICKS(20));
             }
         }
-        printf("LOOP_TEST,loops=%lu\n", (unsigned long)(player_get_repeat_loop_count() - loops_before));
+        uint32_t loop_samples = 0;
+        uint32_t loop_gap_max_ms = 0;
+        player_get_repeat_loop_metrics(&loop_samples, &loop_gap_max_ms);
+        bool loop_ok = (loop_samples == 5 && loop_gap_max_ms <= 67);
+        printf("LOOP_TEST,samples=%lu,gap_ms_max=%lu,result=%s\n",
+               (unsigned long)loop_samples, (unsigned long)loop_gap_max_ms,
+               loop_ok ? "PASS" : "FAIL");
         fflush(stdout);
     }
 

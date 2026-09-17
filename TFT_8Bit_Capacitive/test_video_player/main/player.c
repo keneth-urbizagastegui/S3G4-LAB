@@ -46,6 +46,8 @@ static int64_t s_pts_t0_us = 0;
 static bool s_pts_started = false;
 static int64_t s_repeat_last_present_us = 0;
 static volatile uint32_t s_repeat_loop_count = 0;
+static uint32_t s_repeat_gap_samples = 0;
+static uint32_t s_repeat_gap_ms_max = 0;
 
 static void player_open_track(int index);
 
@@ -765,6 +767,10 @@ static void player_task(void *arg) {
                         ESP_LOGI(TAG, "LOOP,gap_ms=%lu", (unsigned long)gap_ms);
                         printf("LOOP,gap_ms=%lu\n", (unsigned long)gap_ms);
                         fflush(stdout);
+                        portENTER_CRITICAL(&s_player_mux);
+                        s_repeat_gap_samples++;
+                        if (gap_ms > s_repeat_gap_ms_max) s_repeat_gap_ms_max = gap_ms;
+                        portEXIT_CRITICAL(&s_player_mux);
                         s_repeat_last_present_us = 0;
                     }
                     s_repeat_last_present_us = present_us;
@@ -845,6 +851,20 @@ void player_get_status(player_status_t *out) {
 
 uint32_t player_get_repeat_loop_count(void) {
     return s_repeat_loop_count;
+}
+
+void player_reset_repeat_loop_metrics(void) {
+    portENTER_CRITICAL(&s_player_mux);
+    s_repeat_gap_samples = 0;
+    s_repeat_gap_ms_max = 0;
+    portEXIT_CRITICAL(&s_player_mux);
+}
+
+void player_get_repeat_loop_metrics(uint32_t *out_samples, uint32_t *out_gap_ms_max) {
+    portENTER_CRITICAL(&s_player_mux);
+    if (out_samples) *out_samples = s_repeat_gap_samples;
+    if (out_gap_ms_max) *out_gap_ms_max = s_repeat_gap_ms_max;
+    portEXIT_CRITICAL(&s_player_mux);
 }
 
 bool player_check_and_clear_new_frame(uint16_t **out_frame_buf, int *out_w, int *out_h) {

@@ -94,6 +94,11 @@ refresco. Mide y reporta `LOOP,gap_ms=<n>` (del último fotograma presentado al 
 bucles; objetivo ≤ 2 periodos de fotograma (≤ 67 ms). Si hay reapertura del fichero, evítala
 (`avi_player_restart` debe reutilizar el índice y el lector).
 
+Implementado: el reproductor conserva la marca del último fotograma sólo durante `REPEAT_ONE` y emite
+un `LOOP,gap_ms=<n>` al presentar el primer fotograma de cada vuelta. La autoprueba provoca cinco EOF
+reales con seek cerca del final y verifica `LOOP_TEST,samples=5,gap_ms_max=<n>,result=PASS`; falla si
+falta una muestra o si el máximo supera 67 ms. `avi_player_restart` reutiliza el fichero y su índice.
+
 ## 9. Revisión de uso (anticiparse al usuario)
 Implementa y prueba estas reglas en toda la interfaz:
 1. **Una capa a la vez** sobre el reproductor (cola, estadísticas, bloqueo, pistas de gesto, aviso). Abrir
