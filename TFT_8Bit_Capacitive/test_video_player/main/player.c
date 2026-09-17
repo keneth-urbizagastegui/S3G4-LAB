@@ -45,6 +45,8 @@ static TaskHandle_t s_player_task_handle = NULL;
 static int64_t s_pts_t0_us = 0;
 static bool s_pts_started = false;
 static int64_t s_repeat_last_present_us = 0;
+static int64_t s_repeat_eof_last_present_us = 0;
+static bool s_repeat_gap_pending = false;
 static volatile uint32_t s_repeat_loop_count = 0;
 static uint32_t s_repeat_gap_samples = 0;
 static uint32_t s_repeat_gap_ms_max = 0;
@@ -406,6 +408,14 @@ static void player_handle_eof(void) {
                  s_status.track_index, (int)s_status.repeat, next_path);
         avi_player_restart();
         s_repeat_loop_count++;
+        /* El cruce se mide exclusivamente entre el último fotograma realmente
+         * presentado antes de este EOF y el primero de la vuelta reiniciada.
+         * No usamos el contador de frames: un seek no debe poder convertir un
+         * frame cualquiera en una muestra LOOP. */
+        portENTER_CRITICAL(&s_player_mux);
+        s_repeat_eof_last_present_us = s_repeat_last_present_us;
+        s_repeat_gap_pending = (s_repeat_eof_last_present_us > 0);
+        portEXIT_CRITICAL(&s_player_mux);
         /* Publicar 0 antes de que ui_glue_tick componga el primer frame de la
          * vuelta: barra y video cambian en el mismo refresco. */
         portENTER_CRITICAL(&s_player_mux);
@@ -762,8 +772,17 @@ static void player_task(void *arg) {
                  * cada presentación normal añadía trabajo a la ruta crítica. */
                 if (s_status.repeat == REPEAT_ONE) {
                     int64_t present_us = esp_timer_get_time();
-                    if (s_repeat_last_present_us > 0 && s_track_presented_frames == 1) {
-                        uint32_t gap_ms = (uint32_t)((present_us - s_repeat_last_present_us) / 1000);
+                    bool measure_gap = false;
+                    int64_t eof_last_present_us = 0;
+                    portENTER_CRITICAL(&s_player_mux);
+                    if (s_repeat_gap_pending) {
+                        measure_gap = true;
+                        eof_last_present_us = s_repeat_eof_last_present_us;
+                        s_repeat_gap_pending = false;
+                    }
+                    portEXIT_CRITICAL(&s_player_mux);
+                    if (measure_gap) {
+                        uint32_t gap_ms = (uint32_t)((present_us - eof_last_present_us) / 1000);
                         ESP_LOGI(TAG, "LOOP,gap_ms=%lu", (unsigned long)gap_ms);
                         printf("LOOP,gap_ms=%lu\n", (unsigned long)gap_ms);
                         fflush(stdout);
@@ -771,7 +790,6 @@ static void player_task(void *arg) {
                         s_repeat_gap_samples++;
                         if (gap_ms > s_repeat_gap_ms_max) s_repeat_gap_ms_max = gap_ms;
                         portEXIT_CRITICAL(&s_player_mux);
-                        s_repeat_last_present_us = 0;
                     }
                     s_repeat_last_present_us = present_us;
                 }
@@ -857,6 +875,9 @@ void player_reset_repeat_loop_metrics(void) {
     portENTER_CRITICAL(&s_player_mux);
     s_repeat_gap_samples = 0;
     s_repeat_gap_ms_max = 0;
+    s_repeat_last_present_us = 0;
+    s_repeat_eof_last_present_us = 0;
+    s_repeat_gap_pending = false;
     portEXIT_CRITICAL(&s_player_mux);
 }
 
