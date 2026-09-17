@@ -757,7 +757,14 @@ static void sim_touch_hold(uint16_t x, uint16_t y, uint32_t hold_ms) {
     }
 }
 
+static volatile bool s_uinav_running = false;
+
+bool ui_glue_is_uinav_running(void) {
+    return s_uinav_running;
+}
+
 void ui_glue_run_uinav_test(void) {
+    s_uinav_running = true;
     ESP_LOGI(TAG, "=== INICIANDO PRUEBA UINAV (12 CONTROLES + TARJETA + SEEK + L1, L2, L3, L8) ===");
     ui_glue_fix_all_button_flags();
 
@@ -960,6 +967,7 @@ void ui_glue_run_uinav_test(void) {
 
     fflush(stdout);
     ESP_LOGI(TAG, "=== FIN PRUEBA UINAV ===");
+    s_uinav_running = false;
 }
 
 void action_settings_tab(lv_event_t *e) {

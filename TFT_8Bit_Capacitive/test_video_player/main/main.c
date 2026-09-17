@@ -577,7 +577,11 @@ static void autotest_task(void *arg) {
     // Escenario UINAV: verificación automatizada de navegación de botones
     ESP_LOGI(TAG, "Iniciando escenario UINAV (verificación de botones y navegación)...");
     ui_req_send(UI_REQ_UINAV, 0);
-    vTaskDelay(pdMS_TO_TICKS(5000));
+    vTaskDelay(pdMS_TO_TICKS(1000));
+    while (ui_glue_is_uinav_running()) {
+        vTaskDelay(pdMS_TO_TICKS(500));
+    }
+    vTaskDelay(pdMS_TO_TICKS(1000));
 
     // Escenario TOGGLE (Fase 3): alternar HUD cada 500 ms durante 10 s para verificar estabilidad de direct blit
     ESP_LOGI(TAG, "Iniciando escenario TOGGLE (10 s, alterna cada 500 ms)...");
@@ -828,7 +832,7 @@ void app_main(void) {
     assert(t_touch == pdPASS);
 
     // 6. Lanzar tarea GUI en Core 0 (prioridad 4)
-    BaseType_t t_gui = xTaskCreatePinnedToCore(gui_task, "gui_task", 8192, NULL, 4, &s_gui_task_handle, 0);
+    BaseType_t t_gui = xTaskCreatePinnedToCore(gui_task, "gui_task", 16384, NULL, 4, &s_gui_task_handle, 0);
     assert(t_gui == pdPASS);
 
 #if CONFIG_APP_PERF_AUTOTEST

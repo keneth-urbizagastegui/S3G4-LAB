@@ -31,6 +31,7 @@ void ui_glue_get_published_info(char *title_buf, size_t max_len, int *track_idx,
 bool ui_glue_is_locked(void);
 void ui_glue_unlock(void);
 void ui_glue_run_uinav_test(void);
+bool ui_glue_is_uinav_running(void);
 void ui_glue_dump_all(void);
 void ui_glue_show_toast(const char *title, const char *msg, bool is_error);
 void ui_glue_fix_all_button_flags(void);
