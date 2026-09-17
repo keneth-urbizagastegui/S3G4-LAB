@@ -36,7 +36,18 @@ demás de `04` (mediciones, umbrales, informes) sigue igual.
 
 ## 3. Reglas del banco (idénticas)
 - Placa en **COM16** (a veces reenumera a COM17). **NUNCA COM8.**
-- Entorno de compilación, en PowerShell:
+- **Usa siempre `tools/banco.ps1`** (fija el entorno de ESP-IDF sin depender del PATH ni de la política
+  de ejecución; en algunos terminales `python` no está y `export.ps1` no se puede cargar):
+
+```
+pwsh -NoProfile -ExecutionPolicy Bypass -File tools/banco.ps1 -Accion entorno
+pwsh -NoProfile -ExecutionPolicy Bypass -File tools/banco.ps1 -Accion build
+pwsh -NoProfile -ExecutionPolicy Bypass -File tools/banco.ps1 -Accion flash            # firmware normal
+pwsh -NoProfile -ExecutionPolicy Bypass -File tools/banco.ps1 -Accion build-perf
+pwsh -NoProfile -ExecutionPolicy Bypass -File tools/banco.ps1 -Accion flash-perf       # autoprueba
+pwsh -NoProfile -ExecutionPolicy Bypass -File tools/banco.ps1 -Accion medir -Salida plan_antigravity/mediciones/<nombre> -Fase <fase>
+```
+- Equivalente manual, en PowerShell:
   `$env:IDF_PATH="C:\esp\v6.0.1\esp-idf"; $env:IDF_TOOLS_PATH="C:\Users\Keneth\.espressif"; . $env:IDF_PATH\export.ps1`
 - Firmware normal: `idf.py -p COM16 build flash`.
   Firmware de autoprueba: `idf.py -B build_perf -D SDKCONFIG=sdkconfig.perf -D "SDKCONFIG_DEFAULTS=sdkconfig.defaults;sdkconfig.perf.defaults" build` y `idf.py -B build_perf -p COM16 flash`.
