@@ -31,6 +31,19 @@ static app_settings_t s_settings;
 
 static bool s_locked = false;
 static bool s_consume_touch_until_release = false;
+static bool s_consume_next_click = false;
+static int64_t s_touch_down_ms = 0;
+static lv_point_t s_touch_down_pos = {0, 0};
+static bool s_is_vertical_drag = false;
+static int s_drag_start_brightness = 70;
+static int64_t s_last_tap_ms = 0;
+static lv_point_t s_last_tap_pos = {0, 0};
+static int64_t s_seek_hint_hide_ms = 0;
+static int64_t s_brightness_hide_ms = 0;
+static int32_t s_accum_seek_s = 0;
+static bool s_seek_in_flight = false;
+static bool s_single_tap_pending = false;
+static int64_t s_single_tap_time_ms = 0;
 static lv_obj_t *s_ovl_lock = NULL;
 static lv_obj_t *s_lock_card = NULL;
 static lv_obj_t *s_arc_unlock = NULL;
@@ -364,9 +377,152 @@ void ui_glue_unlock(void) {
     ESP_LOGI(TAG, "Action: unlock -> pantalla desbloqueada. OSD visible y toque residual consumido.");
 }
 
+static void player_touch_gesture_event_cb(lv_event_t *e) {
+    lv_event_code_t code = lv_event_get_code(e);
+    if (s_locked) return;
+
+    int64_t now = esp_timer_get_time() / 1000;
+    lv_indev_t *indev = lv_indev_active();
+    lv_point_t p = {0, 0};
+    if (indev) lv_indev_get_point(indev, &p);
+
+    if (code == LV_EVENT_PRESSED) {
+        s_touch_down_ms = now;
+        s_touch_down_pos = p;
+        s_is_vertical_drag = false;
+        s_drag_start_brightness = s_settings.bright ? s_settings.bright : 70;
+        s_last_touch_time = now;
+    } else if (code == LV_EVENT_PRESSING) {
+        s_last_touch_time = now;
+        int dx = p.x - s_touch_down_pos.x;
+        int dy = p.y - s_touch_down_pos.y;
+
+        if (!s_is_vertical_drag) {
+            // Mitad izquierda (x < 240) y arrastre vertical prominente
+            if (s_touch_down_pos.x < 240 && (abs(dy) > 10) && (abs(dy) > abs(dx) * 2)) {
+                s_is_vertical_drag = true;
+                s_single_tap_pending = false;
+                s_consume_next_click = true;
+                if (objects.ovl_brightness) {
+                    lv_obj_remove_flag(objects.ovl_brightness, LV_OBJ_FLAG_HIDDEN);
+                    lcd_bus_set_video_rect(0, 0, 0, 0);
+                    player_cmd_t cmd = {.type = PCMD_SET_VIDEO_RECT, .rect = {0, 0, 0, 0}};
+                    player_cmd_send(&cmd);
+                }
+            }
+        }
+
+        if (s_is_vertical_drag) {
+            // 1 % cada 2 px (hacia arriba aumenta, hacia abajo disminuye)
+            int delta_pct = (s_touch_down_pos.y - p.y) / 2;
+            int new_bri = s_drag_start_brightness + delta_pct;
+            if (new_bri < 10) new_bri = 10;
+            if (new_bri > 100) new_bri = 100;
+
+            s_settings.bright = (uint8_t)new_bri;
+            settings_nvs_set_u8("bright", s_settings.bright);
+            ili9488_8080_set_backlight(new_bri);
+
+            if (objects.bar_brightness) lv_bar_set_value(objects.bar_brightness, new_bri, LV_ANIM_OFF);
+            if (objects.lbl_bri) {
+                char buf[16];
+                snprintf(buf, sizeof(buf), "%d%%", new_bri);
+                lv_label_set_text(objects.lbl_bri, buf);
+            }
+            if (objects.sld_brightness) lv_slider_set_value(objects.sld_brightness, new_bri, LV_ANIM_OFF);
+            s_brightness_hide_ms = now + 1200;
+        }
+    } else if (code == LV_EVENT_RELEASED) {
+        s_last_touch_time = now;
+        if (s_is_vertical_drag) {
+            s_is_vertical_drag = false;
+            s_consume_next_click = true;
+            return;
+        }
+
+        int64_t dur = now - s_touch_down_ms;
+        if (dur <= 400) {
+            int tap_dx = s_touch_down_pos.x - s_last_tap_pos.x;
+            int tap_dy = s_touch_down_pos.y - s_last_tap_pos.y;
+            bool is_double_tap = (now - s_last_tap_ms < 300) && (abs(tap_dx) < 40) && (abs(tap_dy) < 40);
+
+            if (is_double_tap) {
+                s_single_tap_pending = false;
+                s_consume_next_click = true;
+                int step = s_settings.seekstep ? s_settings.seekstep : 10;
+
+                if (s_touch_down_pos.x < 160) {
+                    // Tercio izquierdo: rebobinar
+                    if (!s_seek_in_flight || s_accum_seek_s > 0) {
+                        s_accum_seek_s = -step;
+                    } else {
+                        s_accum_seek_s -= step;
+                    }
+                    s_seek_in_flight = true;
+                    s_seek_hint_hide_ms = now + 600;
+
+                    if (objects.ovl_seek_hint) {
+                        lv_obj_set_pos(objects.ovl_seek_hint, 64, 116);
+                        if (objects.img_seek_hint) lv_image_set_src(objects.img_seek_hint, &img_seek_back);
+                        if (objects.lbl_seek_hint) {
+                            char buf[16];
+                            snprintf(buf, sizeof(buf), "%ld s", (long)s_accum_seek_s);
+                            lv_label_set_text(objects.lbl_seek_hint, buf);
+                        }
+                        lv_obj_remove_flag(objects.ovl_seek_hint, LV_OBJ_FLAG_HIDDEN);
+                        lcd_bus_set_video_rect(0, 0, 0, 0);
+                        player_cmd_t cmd = {.type = PCMD_SET_VIDEO_RECT, .rect = {0, 0, 0, 0}};
+                        player_cmd_send(&cmd);
+                    }
+                    ESP_LOGI(TAG, "Gestos: Doble toque izquierdo -> acum %ld s", (long)s_accum_seek_s);
+                } else if (s_touch_down_pos.x > 320) {
+                    // Tercio derecho: avanzar
+                    if (!s_seek_in_flight || s_accum_seek_s < 0) {
+                        s_accum_seek_s = step;
+                    } else {
+                        s_accum_seek_s += step;
+                    }
+                    s_seek_in_flight = true;
+                    s_seek_hint_hide_ms = now + 600;
+
+                    if (objects.ovl_seek_hint) {
+                        lv_obj_set_pos(objects.ovl_seek_hint, 316, 116);
+                        if (objects.img_seek_hint) lv_image_set_src(objects.img_seek_hint, &img_seek_fwd);
+                        if (objects.lbl_seek_hint) {
+                            char buf[16];
+                            snprintf(buf, sizeof(buf), "+%ld s", (long)s_accum_seek_s);
+                            lv_label_set_text(objects.lbl_seek_hint, buf);
+                        }
+                        lv_obj_remove_flag(objects.ovl_seek_hint, LV_OBJ_FLAG_HIDDEN);
+                        lcd_bus_set_video_rect(0, 0, 0, 0);
+                        player_cmd_t cmd = {.type = PCMD_SET_VIDEO_RECT, .rect = {0, 0, 0, 0}};
+                        player_cmd_send(&cmd);
+                    }
+                    ESP_LOGI(TAG, "Gestos: Doble toque derecho -> acum +%ld s", (long)s_accum_seek_s);
+                } else {
+                    // Tercio central: reproducir / pausar
+                    action_toggle_play(NULL);
+                    ESP_LOGI(TAG, "Gestos: Doble toque central -> reproducir/pausar");
+                }
+                s_last_tap_ms = 0;
+            } else {
+                // Primer toque: registrar y esperar confirmacion de 280 ms
+                s_last_tap_ms = now;
+                s_last_tap_pos = s_touch_down_pos;
+                s_single_tap_pending = true;
+                s_single_tap_time_ms = now;
+                s_consume_next_click = true;
+            }
+        }
+    }
+}
+
 void ui_glue_init(void) {
     settings_nvs_load(&s_settings);
     ili9488_8080_set_backlight(s_settings.bright);
+    if (objects.player_touch) {
+        lv_obj_add_event_cb(objects.player_touch, player_touch_gesture_event_cb, LV_EVENT_ALL, NULL);
+    }
     s_last_touch_time = esp_timer_get_time() / 1000;
     s_osd_visible = true;
     s_hud_forced_mode = 0;
@@ -926,6 +1082,66 @@ void ui_glue_tick(void) {
             ESP_LOGI(TAG, "Tarjeta de bloqueo auto-ocultada tras 2s -> blit directo reanudado");
         }
     }
+
+    int64_t now_gest = esp_timer_get_time() / 1000;
+
+    // Gestos: confirmar toque único si transcurrieron 280 ms sin segundo toque
+    if (s_single_tap_pending && (now_gest - s_single_tap_time_ms >= 280)) {
+        s_single_tap_pending = false;
+        if (!s_locked && s_view_mode == VIEW_MODE_FULLSCREEN) {
+            ui_glue_set_osd_visible(!s_osd_visible);
+            s_last_touch_time = now_gest;
+            ESP_LOGI(TAG, "Gestos: Toque unico confirmado -> OSD %s", s_osd_visible ? "visible" : "oculta");
+        }
+    }
+
+    // Gestos: finalizar ráfaga de seek hint acumulado tras 600 ms
+    if (s_seek_in_flight && (now_gest >= s_seek_hint_hide_ms)) {
+        s_seek_in_flight = false;
+        if (objects.ovl_seek_hint) lv_obj_add_flag(objects.ovl_seek_hint, LV_OBJ_FLAG_HIDDEN);
+
+        player_status_t st_seek;
+        player_get_status(&st_seek);
+        int64_t target = (int64_t)st_seek.pos_ms + ((int64_t)s_accum_seek_s * 1000LL);
+        if (target < 0) target = 0;
+        if (st_seek.dur_ms > 0 && (uint64_t)target > st_seek.dur_ms) target = (int64_t)st_seek.dur_ms;
+
+        player_cmd_t cmd_seek = {.type = PCMD_SEEK_MS, .arg = (int32_t)target};
+        player_cmd_send(&cmd_seek);
+        ESP_LOGI(TAG, "Gestos: Seek hint expirado -> seek commit %ld ms (acum %ld s)", (long)target, (long)s_accum_seek_s);
+        s_accum_seek_s = 0;
+
+        if (s_brightness_hide_ms == 0 && (!s_locked || (s_lock_card && lv_obj_has_flag(s_lock_card, LV_OBJ_FLAG_HIDDEN)))) {
+            if (s_osd_visible) {
+                lcd_bus_set_video_rect(0, 40, 480, 196);
+                player_cmd_t cmd_r = {.type = PCMD_SET_VIDEO_RECT, .rect = {0, 40, 480, 196}};
+                player_cmd_send(&cmd_r);
+            } else {
+                lcd_bus_set_video_rect(0, 0, 480, 320);
+                player_cmd_t cmd_r = {.type = PCMD_SET_VIDEO_RECT, .rect = {0, 0, 480, 320}};
+                player_cmd_send(&cmd_r);
+            }
+        }
+    }
+
+    // Gestos: auto-ocultar indicador de brillo tras 1.2 s
+    if (s_brightness_hide_ms > 0 && (now_gest >= s_brightness_hide_ms)) {
+        s_brightness_hide_ms = 0;
+        if (objects.ovl_brightness) lv_obj_add_flag(objects.ovl_brightness, LV_OBJ_FLAG_HIDDEN);
+
+        if (!s_seek_in_flight && (!s_locked || (s_lock_card && lv_obj_has_flag(s_lock_card, LV_OBJ_FLAG_HIDDEN)))) {
+            if (s_osd_visible) {
+                lcd_bus_set_video_rect(0, 40, 480, 196);
+                player_cmd_t cmd_r = {.type = PCMD_SET_VIDEO_RECT, .rect = {0, 40, 480, 196}};
+                player_cmd_send(&cmd_r);
+            } else {
+                lcd_bus_set_video_rect(0, 0, 480, 320);
+                player_cmd_t cmd_r = {.type = PCMD_SET_VIDEO_RECT, .rect = {0, 0, 480, 320}};
+                player_cmd_send(&cmd_r);
+            }
+        }
+        ESP_LOGI(TAG, "Gestos: Brillo auto-ocultado tras 1.2s");
+    }
 }
 
 // ----------------- EEZ Studio Action Handlers -----------------
@@ -1101,8 +1317,9 @@ void action_lock(lv_event_t *e) {
 void action_toggle_osd(lv_event_t *e) {
     s_last_touch_time = esp_timer_get_time() / 1000;
     if (s_locked) return;
-    if (s_consume_touch_until_release) {
-        ESP_LOGI(TAG, "action_toggle_osd ignorado: consumiendo toque residual de desbloqueo");
+    if (s_consume_touch_until_release || s_consume_next_click) {
+        s_consume_next_click = false;
+        ESP_LOGI(TAG, "action_toggle_osd ignorado: consumiendo toque de gesto o desbloqueo");
         return;
     }
     if (s_hud_forced_mode != 0) return;
