@@ -17,6 +17,7 @@
 #include "esp_system.h"
 #include "esp_random.h"
 #include <sys/statvfs.h>
+#include "ff.h"
 #include "esp_timer.h"
 #include "esp_log.h"
 #include "freertos/FreeRTOS.h"
@@ -916,8 +917,25 @@ void ui_glue_refresh_storage_tab(void) {
             lv_label_set_text(objects.lbl_sd_free, free_buf);
         }
     } else {
-        if (objects.bar_sd_usage) lv_bar_set_value(objects.bar_sd_usage, 0, LV_ANIM_OFF);
-        if (objects.lbl_sd_free) lv_label_set_text_static(objects.lbl_sd_free, "Espacio no disponible");
+        /* statvfs no siempre está conectado al VFS FAT de ESP-IDF. Consultar
+         * FatFs directamente para que Ajustes muestre el espacio real. */
+        FATFS *fs = NULL;
+        DWORD free_clusters = 0;
+        FRESULT fr = f_getfree("0:", &free_clusters, &fs);
+        if (fr == FR_OK && fs && fs->n_fatent > 2) {
+            uint64_t total_bytes = (uint64_t)(fs->n_fatent - 2) * fs->csize * 512;
+            uint64_t free_bytes = (uint64_t)free_clusters * fs->csize * 512;
+            uint64_t used_bytes = total_bytes - free_bytes;
+            if (objects.bar_sd_usage) lv_bar_set_value(objects.bar_sd_usage, (int32_t)(used_bytes * 1000 / total_bytes), LV_ANIM_OFF);
+            if (objects.lbl_sd_free) {
+                char free_buf[64];
+                snprintf(free_buf, sizeof(free_buf), "%.1f GB usados · %.1f GB libres", (double)used_bytes / (1024.0 * 1024.0 * 1024.0), (double)free_bytes / (1024.0 * 1024.0 * 1024.0));
+                lv_label_set_text(objects.lbl_sd_free, free_buf);
+            }
+        } else {
+            if (objects.bar_sd_usage) lv_bar_set_value(objects.bar_sd_usage, 0, LV_ANIM_OFF);
+            if (objects.lbl_sd_free) lv_label_set_text_static(objects.lbl_sd_free, "No se pudo leer FAT de la microSD");
+        }
     }
 
     if (objects.lbl_sd_speed) {
