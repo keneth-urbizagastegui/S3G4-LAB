@@ -38,6 +38,7 @@ void ui_glue_run_uinav_test(void);
 bool ui_glue_is_uinav_running(void);
 void ui_glue_dump_all(void);
 void ui_glue_show_toast(const char *title, const char *msg, bool is_error);
+void ui_glue_update_no_media_screen(esp_err_t sd_err);
 void ui_glue_fix_all_button_flags(void);
 bool touch_is_pressed(void);
 

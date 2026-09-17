@@ -940,6 +940,93 @@ void ui_glue_sync_settings_controls(void) {
     }
 }
 
+void ui_glue_update_no_media_screen(esp_err_t sd_err) {
+    if (!objects.scr_no_media) return;
+
+    bool is_sd_err = (sd_err != ESP_OK) || (sdcard_get_card() == NULL);
+    int total_cnt = media_library_count();
+    int comp_cnt = media_library_compatible_count();
+
+    if (is_sd_err) {
+        // Variante 3: ErrorSD
+        ESP_LOGI(TAG, "scr_no_media: Variante ErrorSD (err=0x%x)", sd_err);
+        if (objects.img_nomedia) {
+            lv_image_set_src(objects.img_nomedia, &img_sdcard_error_big);
+            lv_obj_set_style_image_recolor_opa(objects.img_nomedia, 0, 0);
+        }
+        if (objects.lbl_nomedia_title) lv_label_set_text_static(objects.lbl_nomedia_title, "No se pudo leer la microSD");
+        if (objects.lbl_nomedia_sub) lv_label_set_text_static(objects.lbl_nomedia_sub, "Sacala, limpiala y vuelve a insertarla");
+        if (objects.chip_err) {
+            lv_obj_remove_flag(objects.chip_err, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_t *lbl = lv_obj_get_child(objects.chip_err, 0);
+            if (lbl) {
+                char ebuf[48];
+                snprintf(ebuf, sizeof(ebuf), "Error 0x%x · tiempo de espera agotado", sd_err ? sd_err : 0x107);
+                lv_label_set_text(lbl, ebuf);
+            }
+        }
+        if (objects.btn_retry) {
+            lv_obj_set_pos(objects.btn_retry, 114, 216);
+            lv_obj_remove_flag(objects.btn_retry, LV_OBJ_FLAG_HIDDEN);
+        }
+        if (objects.btn_settings_alt) {
+            lv_obj_set_pos(objects.btn_settings_alt, 246, 216);
+            lv_obj_remove_flag(objects.btn_settings_alt, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_t *lbl = lv_obj_get_child(objects.btn_settings_alt, 0);
+            if (lbl) lv_label_set_text_static(lbl, "Ver ajustes");
+        }
+        if (objects.lbl_retry_hint) {
+            lv_obj_remove_flag(objects.lbl_retry_hint, LV_OBJ_FLAG_HIDDEN);
+            lv_label_set_text_static(objects.lbl_retry_hint, "Reintentando cada segundo...");
+        }
+    } else if (total_cnt > 0 && comp_cnt == 0) {
+        // Variante 2: SinMediosIncompatibles
+        ESP_LOGI(TAG, "scr_no_media: Variante SinMediosIncompatibles (%d archivos)", total_cnt);
+        if (objects.img_nomedia) {
+            lv_image_set_src(objects.img_nomedia, &img_sdcard_error_big);
+            lv_obj_set_style_image_recolor_opa(objects.img_nomedia, 0, 0);
+        }
+        if (objects.lbl_nomedia_title) lv_label_set_text_static(objects.lbl_nomedia_title, "Ningun video compatible");
+        if (objects.lbl_nomedia_sub) {
+            char sub[140];
+            snprintf(sub, sizeof(sub), "Hay %d archivos, ninguno compatible. Conviertelos con convert_videos.py (MJPEG 320x480, 30 fps)", total_cnt);
+            lv_label_set_text(objects.lbl_nomedia_sub, sub);
+        }
+        if (objects.chip_err) lv_obj_add_flag(objects.chip_err, LV_OBJ_FLAG_HIDDEN);
+        if (objects.lbl_retry_hint) lv_obj_add_flag(objects.lbl_retry_hint, LV_OBJ_FLAG_HIDDEN);
+
+        if (objects.btn_retry) {
+            lv_obj_set_pos(objects.btn_retry, 114, 212);
+            lv_obj_remove_flag(objects.btn_retry, LV_OBJ_FLAG_HIDDEN);
+        }
+        if (objects.btn_settings_alt) {
+            lv_obj_set_pos(objects.btn_settings_alt, 246, 212);
+            lv_obj_remove_flag(objects.btn_settings_alt, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_t *lbl = lv_obj_get_child(objects.btn_settings_alt, 0);
+            if (lbl) lv_label_set_text_static(lbl, "Ajustes");
+        }
+    } else {
+        // Variante 1: SinMedios
+        ESP_LOGI(TAG, "scr_no_media: Variante SinMedios (0 archivos)");
+        if (objects.img_nomedia) {
+            lv_image_set_src(objects.img_nomedia, &img_sdcard_big);
+            lv_obj_set_style_image_recolor_opa(objects.img_nomedia, 0, 0);
+        }
+        if (objects.lbl_nomedia_title) lv_label_set_text_static(objects.lbl_nomedia_title, "No hay videos");
+        if (objects.lbl_nomedia_sub) lv_label_set_text_static(objects.lbl_nomedia_sub, "Copia archivos .avi en /videos de la microSD");
+        if (objects.chip_err) lv_obj_add_flag(objects.chip_err, LV_OBJ_FLAG_HIDDEN);
+        if (objects.lbl_retry_hint) lv_obj_add_flag(objects.lbl_retry_hint, LV_OBJ_FLAG_HIDDEN);
+
+        if (objects.btn_retry) {
+            lv_obj_set_pos(objects.btn_retry, 180, 204);
+            lv_obj_remove_flag(objects.btn_retry, LV_OBJ_FLAG_HIDDEN);
+        }
+        if (objects.btn_settings_alt) {
+            lv_obj_add_flag(objects.btn_settings_alt, LV_OBJ_FLAG_HIDDEN);
+        }
+    }
+}
+
 void ui_glue_set_view_mode(view_mode_t mode) {
     view_mode_t old_mode = s_view_mode;
     s_view_mode = mode;
@@ -999,6 +1086,22 @@ void ui_glue_set_view_mode(view_mode_t mode) {
         player_cmd_send(&cmd);
         ui_glue_sync_settings_controls();
         ui_glue_select_settings_tab(s_active_settings_tab);
+    } else if (mode == VIEW_MODE_NO_MEDIA) {
+        if (old_mode == VIEW_MODE_FULLSCREEN || old_mode == VIEW_MODE_QUEUE) {
+            player_status_t st;
+            player_get_status(&st);
+            if (st.state == PST_PLAYING) {
+                player_cmd_t cmd_pause = {.type = PCMD_PAUSE};
+                player_cmd_send(&cmd_pause);
+            }
+        }
+        if (objects.scr_no_media) {
+            loadScreen(SCREEN_ID_SCR_NO_MEDIA);
+        }
+        ui_glue_update_no_media_screen(ESP_OK);
+        lcd_bus_set_video_rect(0, 0, 0, 0);
+        player_cmd_t cmd = {.type = PCMD_SET_VIDEO_RECT, .rect = {0, 0, 0, 0}};
+        player_cmd_send(&cmd);
     } else {
         // Al salir de scr_player el video se pausa y se guarda la posicion
         if (old_mode == VIEW_MODE_FULLSCREEN || old_mode == VIEW_MODE_QUEUE) {
