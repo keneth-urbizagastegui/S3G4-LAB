@@ -816,7 +816,7 @@ void create_user_widget_uw_video_card(lv_obj_t *parent_obj, int startWidgetIndex
         {
             // card_root
             lv_obj_t *obj = lv_obj_create(parent_obj);
-            if (startWidgetIndex >= 0) ((lv_obj_t **)&objects)[startWidgetIndex + 0] = obj;
+            ((lv_obj_t **)&objects)[startWidgetIndex + 0] = obj;
             lv_obj_set_pos(obj, 0, 0);
             lv_obj_set_size(obj, 144, 124);
             lv_obj_add_event_cb(obj, action_play_index, LV_EVENT_CLICKED, (void *)0);
@@ -828,7 +828,7 @@ void create_user_widget_uw_video_card(lv_obj_t *parent_obj, int startWidgetIndex
                 {
                     // img_thumb
                     lv_obj_t *obj = lv_image_create(parent_obj);
-                    if (startWidgetIndex >= 0) ((lv_obj_t **)&objects)[startWidgetIndex + 1] = obj;
+                    ((lv_obj_t **)&objects)[startWidgetIndex + 1] = obj;
                     lv_obj_set_pos(obj, 0, 0);
                     lv_obj_set_size(obj, 144, 80);
                     lv_image_set_src(obj, &img_film);
@@ -840,7 +840,7 @@ void create_user_widget_uw_video_card(lv_obj_t *parent_obj, int startWidgetIndex
                 {
                     // badge_now
                     lv_obj_t *obj = lv_obj_create(parent_obj);
-                    if (startWidgetIndex >= 0) ((lv_obj_t **)&objects)[startWidgetIndex + 2] = obj;
+                    ((lv_obj_t **)&objects)[startWidgetIndex + 2] = obj;
                     lv_obj_set_pos(obj, 6, 6);
                     lv_obj_set_size(obj, 90, 18);
                     lv_obj_add_flag(obj, LV_OBJ_FLAG_HIDDEN);
@@ -851,7 +851,7 @@ void create_user_widget_uw_video_card(lv_obj_t *parent_obj, int startWidgetIndex
                         lv_obj_t *parent_obj = obj;
                         {
                             lv_obj_t *obj = lv_label_create(parent_obj);
-                            if (startWidgetIndex >= 0) ((lv_obj_t **)&objects)[startWidgetIndex + 3] = obj;
+                            ((lv_obj_t **)&objects)[startWidgetIndex + 3] = obj;
                             lv_obj_set_pos(obj, 0, 1);
                             lv_obj_set_size(obj, 90, 16);
                             lv_obj_add_flag(obj, LV_OBJ_FLAG_CLICKABLE);
@@ -867,7 +867,7 @@ void create_user_widget_uw_video_card(lv_obj_t *parent_obj, int startWidgetIndex
                 {
                     // bar_resume
                     lv_obj_t *obj = lv_bar_create(parent_obj);
-                    if (startWidgetIndex >= 0) ((lv_obj_t **)&objects)[startWidgetIndex + 4] = obj;
+                    ((lv_obj_t **)&objects)[startWidgetIndex + 4] = obj;
                     lv_obj_set_pos(obj, 0, 77);
                     lv_obj_set_size(obj, 144, 3);
                     lv_bar_set_range(obj, 0, 1000);
@@ -882,7 +882,7 @@ void create_user_widget_uw_video_card(lv_obj_t *parent_obj, int startWidgetIndex
                 {
                     // lbl_card_title
                     lv_obj_t *obj = lv_label_create(parent_obj);
-                    if (startWidgetIndex >= 0) ((lv_obj_t **)&objects)[startWidgetIndex + 5] = obj;
+                    ((lv_obj_t **)&objects)[startWidgetIndex + 5] = obj;
                     lv_obj_set_pos(obj, 0, 86);
                     lv_obj_set_size(obj, 144, 18);
                     lv_label_set_long_mode(obj, LV_LABEL_LONG_DOT);
@@ -896,7 +896,7 @@ void create_user_widget_uw_video_card(lv_obj_t *parent_obj, int startWidgetIndex
                 {
                     // lbl_card_meta
                     lv_obj_t *obj = lv_label_create(parent_obj);
-                    if (startWidgetIndex >= 0) ((lv_obj_t **)&objects)[startWidgetIndex + 6] = obj;
+                    ((lv_obj_t **)&objects)[startWidgetIndex + 6] = obj;
                     lv_obj_set_pos(obj, 0, 104);
                     lv_obj_set_size(obj, 144, 14);
                     lv_label_set_long_mode(obj, LV_LABEL_LONG_DOT);

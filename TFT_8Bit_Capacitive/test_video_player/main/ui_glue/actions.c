@@ -2,6 +2,7 @@
 #include "ui/screens.h"
 #include "ui/images.h"
 #include "ui/ui.h"
+#include "ui/styles.h"
 #include "ui_glue.h"
 #include "player.h"
 #include "settings_nvs.h"
@@ -868,22 +869,6 @@ void action_open_stats(lv_event_t *e) {
     s_last_touch_time = esp_timer_get_time() / 1000;
 }
 
-static void fix_card_events(lv_obj_t *card, int idx) {
-    if (!card) return;
-    lv_obj_add_flag(card, LV_OBJ_FLAG_CLICKABLE);
-    lv_obj_set_user_data(card, (void *)(uintptr_t)idx);
-    lv_obj_add_event_cb(card, action_play_index, LV_EVENT_CLICKED, (void *)(uintptr_t)idx);
-    uint32_t cnt = lv_obj_get_child_count(card);
-    for (uint32_t i = 0; i < cnt; i++) {
-        lv_obj_t *child = lv_obj_get_child(card, i);
-        if (child) {
-            lv_obj_set_user_data(child, (void *)(uintptr_t)idx);
-            lv_obj_add_flag(child, LV_OBJ_FLAG_CLICKABLE);
-            lv_obj_add_event_cb(child, action_play_index, LV_EVENT_CLICKED, (void *)(uintptr_t)idx);
-        }
-    }
-}
-
 static lv_obj_t *s_resume_overlay = NULL;
 static lv_obj_t *s_resume_sheet = NULL;
 static lv_obj_t *s_resume_title = NULL;
@@ -1146,6 +1131,120 @@ void action_rescan(lv_event_t *e) {
     }
 }
 
+static lv_obj_t *create_card_widget(lv_obj_t *parent_obj, int idx) {
+    const media_item_t *item = media_library_get(idx);
+    if (!item) return NULL;
+
+    // card_root
+    lv_obj_t *card = lv_obj_create(parent_obj);
+    lv_obj_set_pos(card, 0, 0);
+    lv_obj_set_size(card, 144, 124);
+    lv_obj_set_user_data(card, (void *)(uintptr_t)idx);
+    lv_obj_add_flag(card, LV_OBJ_FLAG_CLICKABLE);
+    lv_obj_add_event_cb(card, action_play_index, LV_EVENT_CLICKED, (void *)(uintptr_t)idx);
+    lv_obj_remove_flag(card, LV_OBJ_FLAG_SCROLLABLE|LV_OBJ_FLAG_SCROLL_CHAIN_HOR|LV_OBJ_FLAG_SCROLL_CHAIN_VER|LV_OBJ_FLAG_SCROLL_ELASTIC|LV_OBJ_FLAG_SCROLL_MOMENTUM|LV_OBJ_FLAG_SCROLL_WITH_ARROW);
+    lv_obj_set_scrollbar_mode(card, LV_SCROLLBAR_MODE_OFF);
+    add_style_st_card(card);
+
+    // img_thumb (child 0)
+    lv_obj_t *img_thumb = lv_image_create(card);
+    lv_obj_set_pos(img_thumb, 0, 0);
+    lv_obj_set_size(img_thumb, 144, 80);
+    if (item->thumb_dsc) {
+        lv_image_set_src(img_thumb, item->thumb_dsc);
+    } else {
+        lv_image_set_src(img_thumb, &img_film);
+    }
+    lv_obj_remove_flag(img_thumb, LV_OBJ_FLAG_CLICKABLE|LV_OBJ_FLAG_ADV_HITTEST|LV_OBJ_FLAG_SCROLLABLE|LV_OBJ_FLAG_SCROLL_CHAIN_HOR|LV_OBJ_FLAG_SCROLL_CHAIN_VER|LV_OBJ_FLAG_SCROLL_ELASTIC|LV_OBJ_FLAG_SCROLL_MOMENTUM|LV_OBJ_FLAG_SCROLL_WITH_ARROW);
+    lv_obj_add_flag(img_thumb, LV_OBJ_FLAG_EVENT_BUBBLE);
+    lv_obj_set_scrollbar_mode(img_thumb, LV_SCROLLBAR_MODE_OFF);
+    lv_obj_set_style_radius(img_thumb, 6, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+    // badge_now (child 1)
+    lv_obj_t *badge = lv_obj_create(card);
+    lv_obj_set_pos(badge, 6, 6);
+    lv_obj_set_size(badge, 90, 18);
+    if (idx != s_current_track_idx) {
+        lv_obj_add_flag(badge, LV_OBJ_FLAG_HIDDEN);
+    }
+    lv_obj_remove_flag(badge, LV_OBJ_FLAG_CLICKABLE|LV_OBJ_FLAG_SCROLLABLE|LV_OBJ_FLAG_SCROLL_CHAIN_HOR|LV_OBJ_FLAG_SCROLL_CHAIN_VER|LV_OBJ_FLAG_SCROLL_ELASTIC|LV_OBJ_FLAG_SCROLL_MOMENTUM|LV_OBJ_FLAG_SCROLL_WITH_ARROW);
+    lv_obj_add_flag(badge, LV_OBJ_FLAG_EVENT_BUBBLE);
+    lv_obj_set_scrollbar_mode(badge, LV_SCROLLBAR_MODE_OFF);
+    add_style_st_chip(badge);
+
+    lv_obj_t *lbl_badge = lv_label_create(badge);
+    lv_obj_set_pos(lbl_badge, 0, 1);
+    lv_obj_set_size(lbl_badge, 90, 16);
+    lv_obj_remove_flag(lbl_badge, LV_OBJ_FLAG_CLICKABLE|LV_OBJ_FLAG_SCROLLABLE|LV_OBJ_FLAG_SCROLL_CHAIN_HOR|LV_OBJ_FLAG_SCROLL_CHAIN_VER|LV_OBJ_FLAG_SCROLL_ELASTIC|LV_OBJ_FLAG_SCROLL_MOMENTUM|LV_OBJ_FLAG_SCROLL_WITH_ARROW);
+    lv_obj_add_flag(lbl_badge, LV_OBJ_FLAG_EVENT_BUBBLE);
+    lv_obj_set_scrollbar_mode(lbl_badge, LV_SCROLLBAR_MODE_OFF);
+    lv_obj_set_style_text_font(lbl_badge, &lv_font_montserrat_12, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_color(lbl_badge, lv_color_hex(theme_colors[active_theme_index][6]), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_align(lbl_badge, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_label_set_text_static(lbl_badge, "Reproduciendo");
+
+    // bar_resume (child 2)
+    lv_obj_t *bar_res = lv_bar_create(card);
+    lv_obj_set_pos(bar_res, 0, 77);
+    lv_obj_set_size(bar_res, 144, 3);
+    lv_bar_set_range(bar_res, 0, 1000);
+    if (item->resume_ms > 0 && item->dur_ms > 0) {
+        int32_t pct = (int32_t)(((uint64_t)item->resume_ms * 1000) / item->dur_ms);
+        lv_bar_set_value(bar_res, pct, LV_ANIM_OFF);
+    } else {
+        lv_obj_add_flag(bar_res, LV_OBJ_FLAG_HIDDEN);
+    }
+    lv_obj_remove_flag(bar_res, LV_OBJ_FLAG_CLICKABLE|LV_OBJ_FLAG_SCROLL_CHAIN_HOR|LV_OBJ_FLAG_SCROLL_CHAIN_VER|LV_OBJ_FLAG_SCROLL_ELASTIC|LV_OBJ_FLAG_SCROLL_MOMENTUM|LV_OBJ_FLAG_SCROLL_WITH_ARROW);
+    lv_obj_add_flag(bar_res, LV_OBJ_FLAG_EVENT_BUBBLE);
+    lv_obj_set_scrollbar_mode(bar_res, LV_SCROLLBAR_MODE_OFF);
+    lv_obj_set_style_bg_color(bar_res, lv_color_hex(theme_colors[active_theme_index][3]), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(bar_res, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_color(bar_res, lv_color_hex(theme_colors[active_theme_index][6]), LV_PART_INDICATOR | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(bar_res, 255, LV_PART_INDICATOR | LV_STATE_DEFAULT);
+
+    // lbl_card_title (child 3)
+    lv_obj_t *lbl_title = lv_label_create(card);
+    lv_obj_set_pos(lbl_title, 0, 86);
+    lv_obj_set_size(lbl_title, 144, 18);
+    lv_label_set_long_mode(lbl_title, LV_LABEL_LONG_DOT);
+    lv_obj_remove_flag(lbl_title, LV_OBJ_FLAG_CLICKABLE|LV_OBJ_FLAG_SCROLLABLE|LV_OBJ_FLAG_SCROLL_CHAIN_HOR|LV_OBJ_FLAG_SCROLL_CHAIN_VER|LV_OBJ_FLAG_SCROLL_ELASTIC|LV_OBJ_FLAG_SCROLL_MOMENTUM|LV_OBJ_FLAG_SCROLL_WITH_ARROW);
+    lv_obj_add_flag(lbl_title, LV_OBJ_FLAG_EVENT_BUBBLE);
+    lv_obj_set_scrollbar_mode(lbl_title, LV_SCROLLBAR_MODE_OFF);
+    lv_obj_set_style_text_font(lbl_title, &lv_font_montserrat_14, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_color(lbl_title, lv_color_hex(theme_colors[active_theme_index][4]), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_label_set_text(lbl_title, item->title[0] ? item->title : item->path);
+
+    // lbl_card_meta (child 4)
+    lv_obj_t *lbl_meta = lv_label_create(card);
+    lv_obj_set_pos(lbl_meta, 0, 104);
+    lv_obj_set_size(lbl_meta, 144, 14);
+    lv_label_set_long_mode(lbl_meta, LV_LABEL_LONG_DOT);
+    lv_obj_remove_flag(lbl_meta, LV_OBJ_FLAG_CLICKABLE|LV_OBJ_FLAG_SCROLLABLE|LV_OBJ_FLAG_SCROLL_CHAIN_HOR|LV_OBJ_FLAG_SCROLL_CHAIN_VER|LV_OBJ_FLAG_SCROLL_ELASTIC|LV_OBJ_FLAG_SCROLL_MOMENTUM|LV_OBJ_FLAG_SCROLL_WITH_ARROW);
+    lv_obj_add_flag(lbl_meta, LV_OBJ_FLAG_EVENT_BUBBLE);
+    lv_obj_set_scrollbar_mode(lbl_meta, LV_SCROLLBAR_MODE_OFF);
+    lv_obj_set_style_text_font(lbl_meta, &lv_font_montserrat_12, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_color(lbl_meta, lv_color_hex(theme_colors[active_theme_index][5]), LV_PART_MAIN | LV_STATE_DEFAULT);
+    if (item->dur_ms > 0) {
+        uint32_t s = item->dur_ms / 1000;
+        char meta_buf[32];
+        snprintf(meta_buf, sizeof(meta_buf), "%lu:%02lu", (unsigned long)(s / 60), (unsigned long)(s % 60));
+        lv_label_set_text(lbl_meta, meta_buf);
+    } else {
+        lv_label_set_text(lbl_meta, "0:00");
+    }
+
+    if (!item->compatible) {
+        lv_obj_set_style_opa(card, LV_OPA_50, 0);
+        if (item->incompat[0]) {
+            lv_label_set_text(lbl_meta, item->incompat);
+        }
+    } else if (!item->rotated) {
+        lv_label_set_text(lbl_meta, "Sin girar");
+    }
+
+    return card;
+}
+
 void action_library_populate(lv_event_t *e) {
     if (!objects.lib_grid) return;
     lv_obj_clean(objects.lib_grid);
@@ -1154,85 +1253,7 @@ void action_library_populate(lv_event_t *e) {
     ESP_LOGI(TAG, "Populating library grid: %d items", count);
 
     for (int i = 0; i < count; i++) {
-        const media_item_t *item = media_library_get(i);
-        if (!item) continue;
-
-        create_user_widget_uw_video_card(objects.lib_grid, -1);
-        lv_obj_t *card = lv_obj_get_child(objects.lib_grid, -1);
-        if (!card) continue;
-
-        lv_obj_set_user_data(card, (void *)(uintptr_t)i);
-        lv_obj_add_flag(card, LV_OBJ_FLAG_CLICKABLE);
-
-        // Children of card_root:
-        // Child 0: img_thumb
-        // Child 1: badge_now
-        // Child 2: bar_resume
-        // Child 3: lbl_card_title
-        // Child 4: lbl_card_meta
-        lv_obj_t *img_thumb = lv_obj_get_child(card, 0);
-        lv_obj_t *badge = lv_obj_get_child(card, 1);
-        lv_obj_t *bar_res = lv_obj_get_child(card, 2);
-        lv_obj_t *lbl_title = lv_obj_get_child(card, 3);
-        lv_obj_t *lbl_meta = lv_obj_get_child(card, 4);
-
-        if (img_thumb) {
-            lv_obj_set_user_data(img_thumb, (void *)(uintptr_t)i);
-            lv_obj_add_event_cb(img_thumb, action_play_index, LV_EVENT_CLICKED, (void *)(uintptr_t)i);
-            if (item->thumb_dsc) {
-                lv_image_set_src(img_thumb, item->thumb_dsc);
-            } else {
-                lv_image_set_src(img_thumb, &img_film);
-            }
-        }
-
-        if (lbl_title) {
-            lv_obj_set_user_data(lbl_title, (void *)(uintptr_t)i);
-            lv_obj_add_event_cb(lbl_title, action_play_index, LV_EVENT_CLICKED, (void *)(uintptr_t)i);
-            lv_label_set_text(lbl_title, item->title[0] ? item->title : item->path);
-        }
-
-        if (lbl_meta) {
-            if (item->dur_ms > 0) {
-                uint32_t s = item->dur_ms / 1000;
-                char meta_buf[32];
-                snprintf(meta_buf, sizeof(meta_buf), "%lu:%02lu", (unsigned long)(s / 60), (unsigned long)(s % 60));
-                lv_label_set_text(lbl_meta, meta_buf);
-            }
-        }
-
-        if (badge) {
-            if (i == s_current_track_idx) {
-                lv_obj_remove_flag(badge, LV_OBJ_FLAG_HIDDEN);
-            } else {
-                lv_obj_add_flag(badge, LV_OBJ_FLAG_HIDDEN);
-            }
-        }
-
-        if (bar_res) {
-            if (item->resume_ms > 0 && item->dur_ms > 0) {
-                lv_obj_remove_flag(bar_res, LV_OBJ_FLAG_HIDDEN);
-                int32_t pct = (int32_t)(((uint64_t)item->resume_ms * 1000) / item->dur_ms);
-                lv_bar_set_value(bar_res, pct, LV_ANIM_OFF);
-            } else {
-                lv_obj_add_flag(bar_res, LV_OBJ_FLAG_HIDDEN);
-            }
-        }
-
-        // Dimmed card for incompatible videos (06 §7.2)
-        if (!item->compatible) {
-            lv_obj_set_style_opa(card, LV_OPA_50, 0);
-            if (lbl_meta && item->incompat[0]) {
-                lv_label_set_text(lbl_meta, item->incompat);
-            }
-        } else if (!item->rotated) {
-            // Classic 480x320 video notice
-            if (lbl_meta) {
-                lv_label_set_text(lbl_meta, "Sin girar");
-            }
-        }
-
-        fix_card_events(card, i);
+        create_card_widget(objects.lib_grid, i);
     }
     lv_obj_update_layout(objects.lib_grid);
 }
