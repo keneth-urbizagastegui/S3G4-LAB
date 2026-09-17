@@ -623,11 +623,18 @@
                                     "flagScrollbarMode": "off",
                                     "hiddenFlagType": "literal",
                                     "hiddenFlag": false,
-                                    "localStyles": {
-                                        "objID": "b3c6adc3-d73d-4d90-bb9c-0893e4146eac",
-                                        "definition": {}
-                                    },
-                                    "eventHandlers": [],
+      "localStyles": {
+        "objID": "b3c6adc3-d73d-4d90-bb9c-0893e4146eac",
+        "definition": {}
+      },
+      "eventHandlers": [
+        {
+          "objID": "f33d9480-83e6-4fe2-a38e-c2663a280181",
+          "eventName": "LONG_PRESSED",
+          "handlerType": "action",
+          "action": "open_stats"
+        }
+      ],
                                     "children": [
                                         {
                                             "objID": "dcae61c4-5f46-4ca0-8c46-4038ba44d6ba",
@@ -1996,14 +2003,16 @@
                             "flagScrollbarMode": "off",
                             "hiddenFlagType": "literal",
                             "hiddenFlag": true,
-                            "localStyles": {
-                                "objID": "dd1d2c6d-2e72-45c0-9ba4-606ffbf7a561",
-                                "definition": {
-                                    "MAIN": {
-                                        "DEFAULT": {
-                                            "pad_top": 0,
-                                            "pad_bottom": 0,
-                                            "pad_left": 0,
+      "localStyles": {
+        "objID": "dd1d2c6d-2e72-45c0-9ba4-606ffbf7a561",
+        "definition": {
+          "MAIN": {
+            "DEFAULT": {
+              "bg_color": "#15171C",
+              "bg_opa": 255,
+              "pad_top": 0,
+              "pad_bottom": 0,
+              "pad_left": 0,
                                             "pad_right": 0
                                         }
                                     }

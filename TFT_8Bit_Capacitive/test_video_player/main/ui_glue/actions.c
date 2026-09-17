@@ -575,7 +575,13 @@ void ui_glue_init(void) {
     }
     if (objects.chip_fps) {
         lv_obj_add_flag(objects.chip_fps, LV_OBJ_FLAG_CLICKABLE);
-        lv_obj_add_event_cb(objects.chip_fps, action_open_stats, LV_EVENT_LONG_PRESSED, NULL);
+        /* El texto hijo no debe capturar la pulsación larga destinada al chip. */
+        uint32_t child_count = lv_obj_get_child_count(objects.chip_fps);
+        for (uint32_t i = 0; i < child_count; i++) {
+            lv_obj_t *child = lv_obj_get_child(objects.chip_fps, i);
+            lv_obj_remove_flag(child, LV_OBJ_FLAG_CLICKABLE);
+            lv_obj_add_flag(child, LV_OBJ_FLAG_EVENT_BUBBLE);
+        }
     }
     if (objects.obj0) {
         lv_obj_remove_flag(objects.obj0, LV_OBJ_FLAG_CLICKABLE);
