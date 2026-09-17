@@ -5,6 +5,7 @@
 #include "freertos/portmacro.h"
 #include "esp_timer.h"
 #include "esp_heap_caps.h"
+#include "esp_system.h"
 #include "lcd_bus.h"
 #include "ili9488_8080.h"
 
@@ -328,6 +329,23 @@ void perf_get_fps(float *dec_fps, float *pres_fps) {
     if (dec_fps) *dec_fps = s_last_dec_fps;
     if (pres_fps) *pres_fps = s_last_pres_fps;
     portEXIT_CRITICAL(&s_perf_mux);
+}
+
+void perf_get_live_metrics(perf_live_metrics_t *out) {
+    if (!out) return;
+    portENTER_CRITICAL(&s_perf_mux);
+    out->dec_fps = s_last_dec_fps;
+    out->pres_fps = s_last_pres_fps;
+    out->dropped = s_frames_dropped;
+    out->rd_avg_ms = (s_reader_rd_count > 0) ? ((float)s_reader_rd_sum_us / (float)s_reader_rd_count / 1000.0f) : 0.0f;
+    out->rd_max_ms = (float)s_reader_rd_max_us / 1000.0f;
+    out->dec_avg_ms = (s_frame_dec_count > 0) ? ((float)s_frame_dec_sum_us / (float)s_frame_dec_count / 1000.0f) : 0.0f;
+    out->dec_max_ms = (float)s_frame_dec_max_us / 1000.0f;
+    out->blit_ms = (s_blit_count > 0) ? ((float)s_blit_sum_us / (float)s_blit_count / 1000.0f) : 0.0f;
+    portEXIT_CRITICAL(&s_perf_mux);
+    out->te_hz = (uint32_t)(lcd_bus_te_get_hz() + 0.5f);
+    out->heap_int_kb = (uint32_t)(esp_get_free_internal_heap_size() / 1024);
+    out->heap_psram_kb = (uint32_t)(heap_caps_get_free_size(MALLOC_CAP_SPIRAM) / 1024);
 }
 
 void perf_set_scenario(int track, const char *scn) {

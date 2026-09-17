@@ -36,6 +36,22 @@ void perf_mark_touch_age(uint32_t us);
 // Consulta de FPS calculados de la ventana actual
 void perf_get_fps(float *dec_fps, float *pres_fps);
 
+typedef struct {
+    float dec_fps;
+    float pres_fps;
+    uint32_t dropped;
+    float rd_avg_ms;
+    float rd_max_ms;
+    float dec_avg_ms;
+    float dec_max_ms;
+    float blit_ms;
+    uint32_t te_hz;
+    uint32_t heap_int_kb;
+    uint32_t heap_psram_kb;
+} perf_live_metrics_t;
+
+void perf_get_live_metrics(perf_live_metrics_t *out);
+
 // Estado de UI para informe PERF (publicado por gui_task)
 void perf_get_ui_state(char *out_view, size_t max_len, int *out_hud);
 

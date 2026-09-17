@@ -5,6 +5,7 @@
 #include "ui/styles.h"
 #include "ui_glue.h"
 #include "player.h"
+#include "perf.h"
 #include "settings_nvs.h"
 #include "media_library.h"
 #include "lcd_bus.h"
@@ -522,6 +523,10 @@ void ui_glue_init(void) {
     ili9488_8080_set_backlight(s_settings.bright);
     if (objects.player_touch) {
         lv_obj_add_event_cb(objects.player_touch, player_touch_gesture_event_cb, LV_EVENT_ALL, NULL);
+    }
+    if (objects.chip_fps) {
+        lv_obj_add_flag(objects.chip_fps, LV_OBJ_FLAG_CLICKABLE);
+        lv_obj_add_event_cb(objects.chip_fps, action_open_stats, LV_EVENT_LONG_PRESSED, NULL);
     }
     s_last_touch_time = esp_timer_get_time() / 1000;
     s_osd_visible = true;
@@ -1142,6 +1147,53 @@ void ui_glue_tick(void) {
         }
         ESP_LOGI(TAG, "Gestos: Brillo auto-ocultado tras 1.2s");
     }
+
+    // B5: Actualización de métricas en vivo en ovl_stats (<= 2 Hz)
+    static int64_t s_last_stats_update_ms = 0;
+    if (objects.ovl_stats && !lv_obj_has_flag(objects.ovl_stats, LV_OBJ_FLAG_HIDDEN)) {
+        if (now_gest - s_last_stats_update_ms >= 500) {
+            s_last_stats_update_ms = now_gest;
+            perf_live_metrics_t m;
+            perf_get_live_metrics(&m);
+
+            if (objects.lbl_stat_pres) {
+                char buf[32];
+                snprintf(buf, sizeof(buf), "%0.1f fps", m.pres_fps);
+                lv_label_set_text(objects.lbl_stat_pres, buf);
+            }
+            if (objects.lbl_stat_dec) {
+                char buf[32];
+                snprintf(buf, sizeof(buf), "%0.1f fps", m.dec_fps);
+                lv_label_set_text(objects.lbl_stat_dec, buf);
+            }
+            if (objects.lbl_stat_drop) {
+                char buf[32];
+                snprintf(buf, sizeof(buf), "%lu", (unsigned long)m.dropped);
+                lv_label_set_text(objects.lbl_stat_drop, buf);
+            }
+            if (objects.lbl_stat_rd) {
+                char buf[32];
+                snprintf(buf, sizeof(buf), "%0.1f / %0.1f ms", m.rd_avg_ms, m.rd_max_ms);
+                lv_label_set_text(objects.lbl_stat_rd, buf);
+            }
+            if (objects.lbl_stat_dec_time) {
+                char buf[32];
+                snprintf(buf, sizeof(buf), "%0.1f / %0.1f ms", m.dec_avg_ms, m.dec_max_ms);
+                lv_label_set_text(objects.lbl_stat_dec_time, buf);
+            }
+            if (objects.lbl_stat_blit) {
+                char buf[32];
+                snprintf(buf, sizeof(buf), "%0.1f ms (%lu Hz)", m.blit_ms, (unsigned long)m.te_hz);
+                lv_label_set_text(objects.lbl_stat_blit, buf);
+            }
+            if (objects.lbl_stat_file) {
+                const media_item_t *cur = media_library_get(s_current_track_idx);
+                if (cur && cur->title[0] != '\0') {
+                    lv_label_set_text(objects.lbl_stat_file, cur->title);
+                }
+            }
+        }
+    }
 }
 
 // ----------------- EEZ Studio Action Handlers -----------------
@@ -1665,6 +1717,36 @@ void ui_glue_run_uinav_test(void) {
 
 void action_open_stats(lv_event_t *e) {
     s_last_touch_time = esp_timer_get_time() / 1000;
+    if (!objects.ovl_stats) return;
+
+    if (s_view_mode == VIEW_MODE_SETTINGS) {
+        ui_glue_set_view_mode(VIEW_MODE_FULLSCREEN);
+    }
+
+    bool is_hidden = lv_obj_has_flag(objects.ovl_stats, LV_OBJ_FLAG_HIDDEN);
+    if (is_hidden) {
+        lv_obj_remove_flag(objects.ovl_stats, LV_OBJ_FLAG_HIDDEN);
+        if (s_view_mode == VIEW_MODE_FULLSCREEN) {
+            lcd_bus_set_video_rect(0, 0, 0, 0);
+            player_cmd_t cmd = {.type = PCMD_SET_VIDEO_RECT, .rect = {0, 0, 0, 0}};
+            player_cmd_send(&cmd);
+        }
+        ESP_LOGI(TAG, "Action: ovl_stats mostrada");
+    } else {
+        lv_obj_add_flag(objects.ovl_stats, LV_OBJ_FLAG_HIDDEN);
+        if (s_view_mode == VIEW_MODE_FULLSCREEN) {
+            if (s_osd_visible) {
+                lcd_bus_set_video_rect(0, 40, 480, 196);
+                player_cmd_t cmd = {.type = PCMD_SET_VIDEO_RECT, .rect = {0, 40, 480, 196}};
+                player_cmd_send(&cmd);
+            } else {
+                lcd_bus_set_video_rect(0, 0, 480, 320);
+                player_cmd_t cmd = {.type = PCMD_SET_VIDEO_RECT, .rect = {0, 0, 480, 320}};
+                player_cmd_send(&cmd);
+            }
+        }
+        ESP_LOGI(TAG, "Action: ovl_stats cerrada");
+    }
 }
 
 static void resume_overlay_event_cb(lv_event_t *e) {
