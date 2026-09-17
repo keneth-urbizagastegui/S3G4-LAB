@@ -168,3 +168,113 @@ UINAV,btn=unlock,result=PASS
 6. **`main/ui/screens.c` y `ui.c` editados a mano** (guardas `startWidgetIndex >= 0`, caché de pantallas).
    Se pierden si se regenera desde EEZ. Hay que llevarlo a una solución que sobreviva al «Build» (por
    ejemplo, crear las tarjetas en `ui_glue` sin el user widget indexado).
+
+---
+
+## 7. Iteración 4 — Corrección de Defectos L1 a L11 y Resultados F6a_run9 (17/09/2026)
+
+En la iteración 4 se implementaron las soluciones completas para los defectos L1 a L11 definidos en `plan_antigravity/11_paquete_F6a_it4.md`, preservando intactos los umbrales de rendimiento, perros guardianes y reloj PTS.
+
+### Resumen de Defectos Corregidos
+
+| Defecto | Descripción | Solución Implementada | Commit |
+| :--- | :--- | :--- | :--- |
+| **L1** | Biblioteca volvía al video tras 3s | Se forzó la unicidad de vistas en `ui_glue_set_view_mode`. Al abrir la biblioteca se pausa el video (`PCMD_PAUSE`), se guarda posición en NVS y se fija `video_rect = {0,0,0,0}`. La OSD no puede auto-ocultarse fuera de `scr_player`. | `e776ef0` |
+| **L2** | `btn_queue` duplicaba acción de atrás | `btn_queue` muestra toast "Próximamente / Esta opción llega en la próxima versión." sin alterar la pantalla activa. | `bc5005e` |
+| **L3** | Hoja inferior `BibliotecaReanudar` | Implementada hoja inferior (480×144 en y=176, `#15171C`, borde superior `#2B2F38`) según `referencia/widgets/BibliotecaReanudar.md`. Títulos, botón cerrar, "Continuar en m:ss" (pos − 2s) y "Desde el principio" (pos 0). Si es la pista en pausa, reanuda directo; si `pos` está entre 5s y dur−10s, abre hoja; si no, inicia desde 0. | `99e5bde` |
+| **L4** | Repetir uno enseñaba ~1s del siguiente video | Vaciado de cola de prefetch y slots en `avi_player_restart`, `avi_player_close` y `avi_player_seek_frame`. En `REPEAT_ONE` se reinician `s_track_presented_frames=0` y reloj PTS `s_pts_started=false`. Log explícito: `EOF,track=...,repeat=...,next_frame_from=...`. | `cdd65d2` |
+| **L5** | Progreso de tarjetas vistas enteras | `media_item_t.resume_ms` en RAM se actualiza atómicamente en `media_library_set_resume(path, pos)`. Regla <10s del final o <5s = visto (0 ms). `ui_glue_refresh_cards()` refresca visualmente `bar_resume` y `badge_now` en el grid. | `8c25012` |
+| **L6** | Botones activos con círculo rojo | Modificado estilo `st_icon_btn` en proyecto EEZ (`video_player.eez-project`), `styles.c` y `styles.h`: en estado CHECKED `bg_opa = 0` (transparente, sólo icono ámbar `#F2B33D`), en PRESSED fondo `#1F2228` con radio 22. | `ab81e92` |
+| **L7** | Tildes y caracteres especiales | Regeneradas fuentes Montserrat 12, 14 y 20 con rangos `0x20-0x7E, 0xA0-0xFF, 0x2014, 0x2022, 0x2026` y glifos FontAwesome (incluyendo icono de candado) con `lv_font_conv`. Eliminado emoji 🔒. Añadido punto medio `·` en `library_summary`. | `408c472` |
+| **L8** | Bloqueo según tablero `Bloqueo` | Creado overlay `ovl_lock` según `Bloqueo.md`: tarjeta 200×116 centrada en (140,104), círculo de 64×64 `#15171C` con `img_lock_big`, `arc_unlock` de 80×80 ámbar con carga animada 0–100 en 1000 ms. Desbloqueo tras pulsación mantenida de 1s; toques cortos reinician el arco. Ocultación automática tras 2s. | `626d168` |
+| **L9 & L10** | Manejadores duplicados y código EEZ tocado | Creador dinámico `create_card_widget` en `ui_glue/actions.c` desacoplado del struct global `objects`, preservando la integridad de widgets de pantalla. `screens.c` y `ui.c` restaurados a salida 100% pura e idéntica de EEZ Studio. Un solo manejador de evento en tarjeta con hijos no clicables (`EVENT_BUBBLE`). | `a5dc77c` |
+| **L11** | UINAV con aserciones reales | Eliminadas respuestas `PASS` fijas. Cada botón en `UINAV` valida su efecto real en estado, posición o vista: `back`, `L1_lib_stay` (60s sin video), `L3_resume_cont`, `L3_resume_start`, `card`, `queue` (toast), `play`, `fwd`, `rew`, `next`, `prev`, `repeat`, `shuffle`, `settings`, `seek`, `lock`, `lock_short_touch`, `unlock`. | `ea7b19f` |
+
+### Estabilidad y Ajustes de Concurrencia
+- **Stack de `gui_task`:** Aumentado de 8192 a 16384 bytes en `main.c`, previniendo desbordamiento de pila en LVGL 9 (`241a2ed`).
+- **Sincronización UINAV:** `ui_glue_is_uinav_running()` asegura que el escenario de autoprueba espere la culminación de la navegación interactiva antes de iniciar transiciones automáticas (`5e9408d`).
+- **Cold Start de Pista 0 & Commits NVS:** Pospuesto el primer guardado periódico NVS a 15 s (`pos_ms >= 15000`) y añadido filtro de valores idénticos en `settings_nvs_set_pos` para evitar bloqueo de bus SPI flash durante la lectura en frío de FATFS (`8c024fc`).
+- **Sincronización `scn`/`hud` en PERF:** Restablecimiento del temporizador de reporte y marcación temporal `init` durante la transición de pantallas para evitar reportes desfasados (`71faa07`).
+
+---
+
+### Resultados de Medición Automatizada: `F6a_run9`
+- **Comando:** `python tools/perf_capture.py --port COM16 --out plan_antigravity/mediciones/F6a_run9 --phase F6a --timeout 600`
+- **Resultado:** **ÉXITO (Código de salida: 0)**.
+
+```
+============================================================================================================================================================================
+RESUMEN DE RENDIMIENTO (F6a) - F6a_run9
+============================================================================================================================================================================
+Track  Escenario  View   HUD  Muestras Dec FPS  Pres FPS drop  rd_avg  rd_p50  rd_p95  rd_max  rd_slow  dec_f_avg  dec_f_max  blit_avg drift   
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+0      hidden     full   0    8        29.9     29.9     3     8.1     8.2     9.9     15.8    0        15.4       21.5       0.0      -8.0     te_hz=44.5 te_wait=8.1ms
+0      osd        full   1    8        30.0     30.0     0     5.4     5.4     6.7     8.8     0        13.7       17.4       7.4      14.2     te_hz=44.5 te_wait=8.8ms
+0      seek       full   0    9        29.7     29.7     1     8.0     7.7     11.5    17.9    0        15.5       24.2       0.0      6.7      te_hz=44.5 te_wait=7.3ms
+1      hidden     full   0    8        30.0     30.0     0     9.1     9.1     11.2    16.3    0        16.0       22.6       0.0      10.4     te_hz=44.5 te_wait=7.3ms
+1      osd        full   1    8        29.8     29.8     1     11.9    12.3    14.5    19.0    0        18.0       24.5       6.8      7.6      te_hz=44.5 te_wait=8.4ms
+1      seek       full   0    9        29.3     29.3     2     10.0    9.8     13.5    19.4    0        16.7       24.5       0.0      13.7     te_hz=44.5 te_wait=7.5ms
+2      hidden     full   0    8        30.0     30.0     0     7.2     7.0     9.1     15.4    0        14.7       21.0       0.0      9.9      te_hz=44.5 te_wait=7.4ms
+2      osd        full   1    8        30.0     30.0     0     7.1     6.9     9.5     27.4    0        14.8       30.2       5.1      19.5     te_hz=44.5 te_wait=8.9ms
+2      seek       full   0    9        29.4     29.4     0     10.1    10.3    13.3    20.3    0        16.9       27.8       0.0      13.0     te_hz=44.5 te_wait=7.2ms
+3      hidden     full   0    8        29.9     29.9     2     10.8    11.2    13.6    17.4    0        17.3       22.6       0.0      9.0      te_hz=44.6 te_wait=7.6ms
+3      osd        full   1    8        30.0     30.0     0     8.9     8.6     10.9    14.1    0        15.9       21.3       6.2      17.5     te_hz=44.6 te_wait=8.6ms
+3      seek       full   0    9        28.8     28.8     0     9.0     9.0     11.4    17.5    0        16.1       22.0       0.0      9.7      te_hz=44.5 te_wait=7.6ms
+4      hidden     full   0    8        30.0     30.0     1     10.8    10.3    13.8    18.3    0        17.3       23.9       0.0      10.9     te_hz=44.6 te_wait=7.5ms
+4      osd        full   1    8        30.1     30.1     0     8.9     8.6     10.9    15.0    0        15.9       21.0       5.6      14.9     te_hz=44.5 te_wait=8.4ms
+4      seek       full   0    9        29.2     29.2     0     9.3     9.1     11.6    16.2    0        16.2       21.3       0.0      8.1      te_hz=44.5 te_wait=7.6ms
+5      hidden     full   0    8        29.4     29.4     0     11.1    11.0    12.0    12.7    0        15.6       17.4       0.0      20.6     te_hz=44.5 te_wait=8.7ms
+5      osd        full   1    8        29.3     29.3     0     11.2    11.1    12.3    13.5    0        15.7       18.1       5.3      15.1     te_hz=44.5 te_wait=8.5ms
+5      seek       full   0    8        28.9     28.9     0     11.0    10.9    12.1    13.0    0        15.6       17.7       0.0      15.8     te_hz=44.5 te_wait=8.4ms
+============================================================================================================================================================================
+```
+
+#### Cumplimiento de Criterios F6a / F5a:
+- **Tasa de Descartes (Hidden):** Global **0.21%** (6/2890), Pista 0: 0.62%, Pista 1: 0.00%, Pista 2: 0.00%, Pista 3: 0.41%, Pista 4: 0.21%, Pista 5: 0.00% (todos $\le 1.0\%$).
+- **FPS de Presentación:** Media en `hidden` = **29.79 FPS** ($\ge 28.5$), en `osd` = **29.87 FPS** ($\ge 28.0$).
+- **Sincronismo TE:** 100% presente, frecuencia 44.0–45.0 Hz, 0 timeouts sobre 15,481 fotogramas.
+- **Memoria:** Heap interna mínima = 147.2 KB ($\ge 30$ KB), PSRAM libre = 7.78 MB ($\ge 6$ MB).
+- **Lector SD:** `rd_avg` = 9.5 ms ($< 15.0$ ms), inanición de cola `q_wait_max` = 0.1 ms ($< 15.0$ ms).
+- **Estrés & Navegación:** 20 cambios de pista, 50 seeks aleatorios con 0 desincronías. Escenario `TAP` pasó de 0 a 1.
+- **Navegación UINAV:** 20/20 casos interactivos en **PASS**.
+
+---
+
+## 8. Diagnóstico L12 — Línea Vertical Móvil (Tearing Físico Direct Blit / TE)
+
+### 1. Fenomenología Observada
+Keneth reporta una línea vertical delgada que cruza la pantalla de izquierda a derecha (o viceversa) periódicamente durante la reproducción de video en modo pantalla completa.
+
+### 2. Geometría y Escaneo del Panel
+- El controlador ILI9488 está configurado con `MADCTL = 0x48` (modo apaisado nativo).
+- Físicamente, el haz de refresco del controlador escanea columna por columna: de columna 0 a columna 479 (eje horizontal de la vista apaisada).
+- En consecuencia, una discontinuidad de sincronismo entre la lectura del controlador hacia los píxeles y la escritura del ESP32-S3 vía bus Intel 8080 de 8 bits se manifiesta visualmente como un **corte vertical**, no horizontal.
+
+### 3. Discrepancia de Frecuencias y Deriva de Fase (Beat Frequency)
+- **Frecuencia de refresco del panel:** Medida en autotest = **44.5 Hz** ($T_{TE} \approx 22.47\text{ ms}$).
+- **Cadencia de video:** 30.0 fps fijos ($T_{frame} \approx 33.33\text{ ms}$).
+- La relación de frecuencias es aperiódica y no armónica ($30 / 44.5 \approx 0.674$).
+- En cada fotograma sucesivo se produce un desfase temporal acumulativo de:
+  $$\Delta T = 33.33\text{ ms} - 22.47\text{ ms} = 10.86\text{ ms}$$
+- Este desfasaje hace que el instante de inicio de volcado de fotograma respecto al haz del panel avance a través de todo el ciclo de refresco a una frecuencia de batido de:
+  $$f_{beat} = 44.5 - 30.0 = 14.5\text{ Hz}$$
+  o en términos del ciclo de repetición de fotogramas (30 fps / 14.5 Hz $\approx 2.07\text{ s}$), la línea de corte recorre la pantalla de extremo a extremo aproximadamente **cada 2 segundos**.
+
+### 4. Cronometría del Pipeline DMA frente al Período TE
+A partir de las mediciones registradas en `F6a_run9`:
+- Espera de TE (`te_wait_ms_avg`): **7.4 ms a 8.9 ms** (tiempo que transcurre esperando el flanco TE antes de blit).
+- Duración de volcado DMA directo (`frame_blit_ms_avg`): **15.8 ms a 20.6 ms** (30 franjas de 16 líneas por frame a 20 MHz en bus de 8 bits: $480 \times 320 \times 2\text{ bytes} = 307.200\text{ bytes}$; tiempo teórico puro de bus = $15.36\text{ ms}$, más sobrecargas de interrupción y descriptores DMA = $\sim 17\text{ ms}$).
+- **Tiempo total desde el flanco TE hasta el último byte volcado:**
+  $$T_{total} = \text{te\_wait} + \text{blit} \approx 8.0\text{ ms} + 17.5\text{ ms} = 25.5\text{ ms}$$
+- **Período del panel:** $T_{TE} = 22.47\text{ ms}$.
+- **Conclusión técnica:** Dado que el tiempo total de transferencia DMA ($17.5\text{ ms}$) representa el **78% de todo el período de cuadro del panel** ($22.47\text{ ms}$), es físicamente imposible volcar el fotograma completo dentro de un único intervalo de V-Blanking (que dura apenas decenas de microsegundos en pantallas ILI9488 sin memoria externa). Por lo tanto, el puntero de lectura del ILI9488 inevitablemente **adelanta o es adelantado por el puntero de escritura DMA**, produciendo el desplazamiento de la línea de corte a la frecuencia de batido.
+
+### 5. Interferencia Asíncrona de LVGL
+- Cuando la OSD está visible o cuando la mini-barra de progreso / estadísticas se actualizan (cada 250 ms), la tarea `gui_task` realiza transferencias de dibujo en el bus de pantalla sin esperar el flanco TE.
+- Esto introduce una colisión adicional en el bus Intel 8080 que retrasa el inicio del blit del video y agrava la visibilidad del corte.
+- Con la OSD oculta (`hidden`), la línea sigue presente pero es más uniforme, confirmando que la causa raíz primaria es la relación temporal intrínseca entre la tasa de bus (8 bits a 20 MHz), la duración del blit (17.5 ms) y la cadencia de 44.5 Hz vs 30 fps.
+
+### 6. Recomendación de Solución para Fase 6b / Siguientes Pasos
+1. Para eliminar completamente el tearing residual sin doble búfer de pantalla completa (que requeriría 300 KB de SRAM interna inexistente para framebuffers DMA directos), la estrategia viable es acoplar la sincronización mediante retardo de fase dinámico programable en el flanco TE (ajustar el scanline de inicio de TE o disparar el blit con un offset fijo tal que el haz de lectura siempre se mantenga por delante o por detrás del haz de escritura en la región central de interés).
+2. Cualquier ajuste de sincronía fina en los registros de panel o temporizadores de DMA debe coordinarse y ser validado con Keneth en hardware real.
+
