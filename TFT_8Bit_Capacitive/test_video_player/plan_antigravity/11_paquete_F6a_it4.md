@@ -126,3 +126,9 @@ el re-anclaje PTS), tocar la secuencia de inicio del panel, dejar la autoprueba 
 editar `main/ui` a mano. Commit tras cada defecto. No termines mientras una medición siga en marcha.
 **Minimiza las ventanas:** agrupa compilar + flashear + medir en un solo comando de PowerShell y no
 abras un proceso por cada lectura del puerto.
+
+## Anexo L12 (Keneth, 17/09/2026): la línea aparece también con la OSD OCULTA
+La hipótesis 1 pierde peso, pero no se descarta del todo: con la OSD oculta sigue actualizándose
+`bar_mini_progress` (y=317, cada 250 ms). Prioriza la hipótesis 2 (inicio del envío respecto a TE y
+duración del envío frente al periodo de 22,4 ms) y prueba el modo `tear_diag` con la barra fina
+desactivada para separar ambas causas.
