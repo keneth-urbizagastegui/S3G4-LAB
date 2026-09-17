@@ -44,6 +44,7 @@ static uint32_t s_track_presented_frames = 0;
 static TaskHandle_t s_player_task_handle = NULL;
 static int64_t s_pts_t0_us = 0;
 static bool s_pts_started = false;
+static int64_t s_repeat_restart_eof_us = 0;
 
 static void player_open_track(int index);
 
@@ -396,6 +397,8 @@ static void player_handle_eof(void) {
     }
 
     if (s_status.repeat == REPEAT_ONE) {
+        int64_t t_eof_us = esp_timer_get_time();
+        s_repeat_restart_eof_us = t_eof_us;
         const char *next_path = cur ? cur->path : "desconocido";
         ESP_LOGI(TAG, "EOF,track=%d,repeat=%d,next_frame_from=%s",
                  s_status.track_index, (int)s_status.repeat, next_path);
@@ -403,7 +406,7 @@ static void player_handle_eof(void) {
         s_pts_started = false;
         s_pts_t0_us = 0;
         s_track_presented_frames = 0;
-        s_track_play_start_us = esp_timer_get_time();
+        s_track_play_start_us = t_eof_us;
     } else {
         int total = s_status.track_count;
         int next = -1;
@@ -755,6 +758,13 @@ static void player_task(void *arg) {
 
             if (ret == ESP_OK) {
                 s_track_presented_frames++;
+                if (s_repeat_restart_eof_us > 0 && s_track_presented_frames == 1) {
+                    uint32_t restart_delay_ms = (uint32_t)((esp_timer_get_time() - s_repeat_restart_eof_us) / 1000);
+                    ESP_LOGI(TAG, "REPEAT_ONE_RESTART,delay_ms=%lu", (unsigned long)restart_delay_ms);
+                    printf("REPEAT_ONE_RESTART,delay_ms=%lu\n", (unsigned long)restart_delay_ms);
+                    fflush(stdout);
+                    s_repeat_restart_eof_us = 0;
+                }
                 int64_t now_us = esp_timer_get_time();
                 if (now_us - last_nvs_pos_save_us >= 15000000) {
                     last_nvs_pos_save_us = now_us;
