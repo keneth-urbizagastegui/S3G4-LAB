@@ -551,8 +551,8 @@ void action_open_library(lv_event_t *e) {
 void action_open_queue(lv_event_t *e) {
     s_last_touch_time = esp_timer_get_time() / 1000;
     if (s_locked) return;
-    ESP_LOGI(TAG, "Action: open_queue -> abriendo biblioteca");
-    action_open_library(NULL);
+    ESP_LOGI(TAG, "Action: open_queue -> mostrando aviso");
+    ui_glue_show_toast("Próximamente", "Esta opción llega en la próxima versión.", false);
 }
 
 void action_close_queue(lv_event_t *e) {
