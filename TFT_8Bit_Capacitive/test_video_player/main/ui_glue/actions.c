@@ -110,6 +110,7 @@ static void dump_widget(const char *name, lv_obj_t *obj) {
         printf("UIDUMP,id=%s,null=1\n", name);
         return;
     }
+    lv_obj_update_layout(obj);
     int x = lv_obj_get_x(obj);
     int y = lv_obj_get_y(obj);
     int w = lv_obj_get_width(obj);
