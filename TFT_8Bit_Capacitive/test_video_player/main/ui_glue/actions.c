@@ -143,7 +143,8 @@ static uint8_t brightness_display_to_real(int display_brightness) {
     return (uint8_t)(BRIGHTNESS_REAL_MIN + (display_brightness * 75 + 50) / 100);
 }
 
-extern void touch_inject_synthetic(uint16_t x, uint16_t y, bool pressed);
+extern uint32_t touch_inject_synthetic(uint16_t x, uint16_t y, bool pressed);
+extern bool touch_synthetic_was_consumed(uint32_t sequence);
 
 static lv_obj_t *s_toast_box = NULL;
 static lv_obj_t *s_toast_icon = NULL;
@@ -1688,52 +1689,47 @@ static void wait_gui_ms(uint32_t ms) {
     }
 }
 
+static bool sim_touch_wait_consumed(uint32_t sequence) {
+    for (int i = 0; i < 8; i++) {
+        lv_timer_handler();
+        if (touch_synthetic_was_consumed(sequence)) return true;
+        vTaskDelay(pdMS_TO_TICKS(1));
+    }
+    ESP_LOGW(TAG, "Autotest: transicion tactil sintetica %lu no consumida", (unsigned long)sequence);
+    return false;
+}
+
 static void sim_touch_click(uint16_t x, uint16_t y) {
-    touch_inject_synthetic(x, y, true);
-    for (int i = 0; i < 6; i++) {
-        lv_timer_handler();
-        vTaskDelay(pdMS_TO_TICKS(15));
-    }
-    touch_inject_synthetic(x, y, false);
-    for (int i = 0; i < 6; i++) {
-        lv_timer_handler();
-        vTaskDelay(pdMS_TO_TICKS(15));
-    }
+    uint32_t press_sequence = touch_inject_synthetic(x, y, true);
+    sim_touch_wait_consumed(press_sequence);
+    uint32_t release_sequence = touch_inject_synthetic(x, y, false);
+    sim_touch_wait_consumed(release_sequence);
 }
 
 static void sim_touch_hold(uint16_t x, uint16_t y, uint32_t hold_ms) {
-    touch_inject_synthetic(x, y, true);
+    uint32_t press_sequence = touch_inject_synthetic(x, y, true);
+    sim_touch_wait_consumed(press_sequence);
     uint32_t elapsed = 0;
     while (elapsed < hold_ms) {
         lv_timer_handler();
         vTaskDelay(pdMS_TO_TICKS(20));
         elapsed += 20;
     }
-    touch_inject_synthetic(x, y, false);
-    for (int i = 0; i < 6; i++) {
-        lv_timer_handler();
-        vTaskDelay(pdMS_TO_TICKS(15));
-    }
+    uint32_t release_sequence = touch_inject_synthetic(x, y, false);
+    sim_touch_wait_consumed(release_sequence);
 }
 
 static void sim_touch_drag(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, int steps) {
-    touch_inject_synthetic(x1, y1, true);
-    for (int i = 0; i < 4; i++) {
-        lv_timer_handler();
-        vTaskDelay(pdMS_TO_TICKS(15));
-    }
+    uint32_t press_sequence = touch_inject_synthetic(x1, y1, true);
+    sim_touch_wait_consumed(press_sequence);
     for (int s = 1; s <= steps; s++) {
         uint16_t cur_x = x1 + (int32_t)(x2 - x1) * s / steps;
         uint16_t cur_y = y1 + (int32_t)(y2 - y1) * s / steps;
-        touch_inject_synthetic(cur_x, cur_y, true);
-        lv_timer_handler();
-        vTaskDelay(pdMS_TO_TICKS(15));
+        uint32_t move_sequence = touch_inject_synthetic(cur_x, cur_y, true);
+        sim_touch_wait_consumed(move_sequence);
     }
-    touch_inject_synthetic(x2, y2, false);
-    for (int i = 0; i < 4; i++) {
-        lv_timer_handler();
-        vTaskDelay(pdMS_TO_TICKS(15));
-    }
+    uint32_t release_sequence = touch_inject_synthetic(x2, y2, false);
+    sim_touch_wait_consumed(release_sequence);
 }
 
 static volatile bool s_uinav_running = false;

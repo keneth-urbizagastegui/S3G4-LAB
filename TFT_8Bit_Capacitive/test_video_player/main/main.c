@@ -49,6 +49,7 @@ typedef struct {
     uint16_t y;
     bool pressed;
     int64_t timestamp_us;
+    uint32_t sequence;
 } touch_sample_t;
 
 static touch_sample_t s_shared_touch = {0};
@@ -56,19 +57,31 @@ static portMUX_TYPE s_touch_mux = portMUX_INITIALIZER_UNLOCKED;
 
 static bool s_synthetic_touch_active = false;
 static touch_sample_t s_synthetic_touch = {0};
+static uint32_t s_synthetic_touch_sequence = 0;
+static uint32_t s_synthetic_touch_consumed_sequence = 0;
 #if CONFIG_APP_PERF_AUTOTEST
 static volatile bool s_autotest_active = true;
 #endif
 
-void touch_inject_synthetic(uint16_t x, uint16_t y, bool pressed) {
+uint32_t touch_inject_synthetic(uint16_t x, uint16_t y, bool pressed) {
     portENTER_CRITICAL(&s_touch_mux);
+    uint32_t sequence = ++s_synthetic_touch_sequence;
     s_synthetic_touch_active = pressed;
     s_synthetic_touch.x = x;
     s_synthetic_touch.y = y;
     s_synthetic_touch.pressed = pressed;
     s_synthetic_touch.timestamp_us = esp_timer_get_time();
+    s_synthetic_touch.sequence = sequence;
     s_shared_touch = s_synthetic_touch;
     portEXIT_CRITICAL(&s_touch_mux);
+    return sequence;
+}
+
+bool touch_synthetic_was_consumed(uint32_t sequence) {
+    portENTER_CRITICAL(&s_touch_mux);
+    bool consumed = s_synthetic_touch_consumed_sequence == sequence;
+    portEXIT_CRITICAL(&s_touch_mux);
+    return consumed;
 }
 
 static uint32_t my_tick_get_cb(void) {
@@ -247,6 +260,12 @@ static void lvgl_touch_read_cb(lv_indev_t *indev, lv_indev_data_t *data) {
         data->state = LV_INDEV_STATE_PRESSED;
     } else {
         data->state = LV_INDEV_STATE_RELEASED;
+    }
+
+    if (sample.sequence != 0) {
+        portENTER_CRITICAL(&s_touch_mux);
+        s_synthetic_touch_consumed_sequence = sample.sequence;
+        portEXIT_CRITICAL(&s_touch_mux);
     }
 }
 
