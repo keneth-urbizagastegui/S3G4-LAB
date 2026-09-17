@@ -756,10 +756,10 @@ static void player_task(void *arg) {
             if (ret == ESP_OK) {
                 s_track_presented_frames++;
                 int64_t now_us = esp_timer_get_time();
-                if (now_us - last_nvs_pos_save_us >= 5000000) {
+                if (now_us - last_nvs_pos_save_us >= 15000000) {
                     last_nvs_pos_save_us = now_us;
                     const media_item_t *cur_it = media_library_get(s_status.track_index);
-                    if (cur_it && cur_it->compatible && !cur_it->failed_playback && s_status.pos_ms >= 5000) {
+                    if (cur_it && cur_it->compatible && !cur_it->failed_playback && s_status.pos_ms >= 15000) {
                         float dec_fps = 0, pres_fps = 0;
                         perf_get_fps(&dec_fps, &pres_fps);
                         if (pres_fps > 0.0f || s_track_presented_frames >= 30) {

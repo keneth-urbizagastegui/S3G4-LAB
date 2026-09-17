@@ -154,6 +154,11 @@ esp_err_t settings_nvs_set_pos(const char *path, uint32_t pos_ms) {
     char key[16];
     get_pos_key(path, key, sizeof(key));
 
+    uint32_t cur = 0;
+    if (nvs_get_u32(s_handle, key, &cur) == ESP_OK && cur == pos_ms) {
+        return ESP_OK;
+    }
+
     esp_err_t err = nvs_set_u32(s_handle, key, pos_ms);
     if (err == ESP_OK) {
         err = nvs_commit(s_handle);
