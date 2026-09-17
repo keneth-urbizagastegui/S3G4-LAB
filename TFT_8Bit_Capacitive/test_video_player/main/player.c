@@ -392,8 +392,7 @@ static void player_handle_eof(void) {
     ESP_LOGI(TAG, "Fin de video alcanzado. Aplicando politica de repeticion.");
     const media_item_t *cur = media_library_get(s_status.track_index);
     if (cur) {
-        settings_nvs_set_pos(cur->path, 0);
-        media_library_set_resume(s_status.track_index, 0);
+        media_library_set_resume(cur->path, 0);
     }
 
     if (s_status.repeat == REPEAT_ONE) {
@@ -765,7 +764,7 @@ static void player_task(void *arg) {
                         perf_get_fps(&dec_fps, &pres_fps);
                         if (pres_fps > 0.0f || s_track_presented_frames >= 30) {
                             settings_nvs_set_last_path(cur_it->path);
-                            settings_nvs_set_pos(cur_it->path, (uint32_t)s_status.pos_ms);
+                            media_library_set_resume(cur_it->path, (uint32_t)s_status.pos_ms);
                         }
                     }
                 }

@@ -279,6 +279,39 @@ int ui_glue_get_hud_forced(void) {
     return s_hud_forced_mode;
 }
 
+void ui_glue_refresh_cards(void) {
+    if (!objects.lib_grid) return;
+    uint32_t child_cnt = lv_obj_get_child_count(objects.lib_grid);
+    for (uint32_t c = 0; c < child_cnt; c++) {
+        lv_obj_t *card = lv_obj_get_child(objects.lib_grid, c);
+        if (!card) continue;
+        int idx = (int)(intptr_t)lv_obj_get_user_data(card);
+        const media_item_t *item = media_library_get(idx);
+        if (!item) continue;
+
+        lv_obj_t *badge = lv_obj_get_child(card, 1);
+        lv_obj_t *bar_res = lv_obj_get_child(card, 2);
+
+        if (badge) {
+            if (idx == s_current_track_idx) {
+                lv_obj_remove_flag(badge, LV_OBJ_FLAG_HIDDEN);
+            } else {
+                lv_obj_add_flag(badge, LV_OBJ_FLAG_HIDDEN);
+            }
+        }
+
+        if (bar_res) {
+            if (item->resume_ms > 0 && item->dur_ms > 0) {
+                lv_obj_remove_flag(bar_res, LV_OBJ_FLAG_HIDDEN);
+                int32_t pct = (int32_t)(((uint64_t)item->resume_ms * 1000) / item->dur_ms);
+                lv_bar_set_value(bar_res, pct, LV_ANIM_OFF);
+            } else {
+                lv_obj_add_flag(bar_res, LV_OBJ_FLAG_HIDDEN);
+            }
+        }
+    }
+}
+
 void ui_glue_set_view_mode(view_mode_t mode) {
     view_mode_t old_mode = s_view_mode;
     s_view_mode = mode;
@@ -311,6 +344,7 @@ void ui_glue_set_view_mode(view_mode_t mode) {
             }
         }
         loadScreen(SCREEN_ID_SCR_LIBRARY);
+        ui_glue_refresh_cards();
         lcd_bus_set_video_rect(0, 0, 0, 0);
         player_cmd_t cmd = {.type = PCMD_SET_VIDEO_RECT, .rect = {0, 0, 0, 0}};
         player_cmd_send(&cmd);
@@ -797,6 +831,7 @@ static void resume_start_btn_cb(lv_event_t *e) {
         const media_item_t *item = media_library_get(s_resume_target_idx);
         if (!item) return;
         media_library_set_resume(item->path, 0); // borra la guardada
+        ui_glue_refresh_cards();
         player_cmd_t cmd_open = {.type = PCMD_OPEN, .arg = s_resume_target_idx};
         player_cmd_send(&cmd_open);
         ui_glue_set_view_mode(VIEW_MODE_FULLSCREEN);
