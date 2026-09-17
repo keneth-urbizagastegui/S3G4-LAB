@@ -1302,6 +1302,20 @@ void ui_glue_tick(void) {
             }
         }
     }
+
+    // B9: btn_next desactivado (40% opacidad) en el último video si repetir está desactivado
+    if (objects.btn_next) {
+        int total_tracks = media_library_count();
+        bool is_last = (total_tracks > 0) && (s_current_track_idx >= total_tracks - 1);
+        bool rep_off = (s_settings.repeat == 0);
+        if (is_last && rep_off) {
+            lv_obj_add_state(objects.btn_next, LV_STATE_DISABLED);
+            lv_obj_set_style_opa(objects.btn_next, (lv_opa_t)(255 * 0.40), LV_PART_MAIN);
+        } else {
+            lv_obj_remove_state(objects.btn_next, LV_STATE_DISABLED);
+            lv_obj_set_style_opa(objects.btn_next, LV_OPA_COVER, LV_PART_MAIN);
+        }
+    }
 }
 
 // ----------------- EEZ Studio Action Handlers -----------------
@@ -1325,6 +1339,11 @@ void action_prev(lv_event_t *e) {
 void action_next(lv_event_t *e) {
     s_last_touch_time = esp_timer_get_time() / 1000;
     if (s_locked) return;
+    int total_tracks = media_library_count();
+    if (s_settings.repeat == 0 && total_tracks > 0 && s_current_track_idx >= total_tracks - 1) {
+        ESP_LOGI(TAG, "Action: next ignorado (fin de lista con repetir en off)");
+        return;
+    }
     player_cmd_t cmd = {.type = PCMD_NEXT};
     player_cmd_send(&cmd);
     ESP_LOGI(TAG, "Action: next");
