@@ -26,6 +26,8 @@ $env:IDF_PATH = 'C:\esp\v6.0.1\esp-idf'
 $env:IDF_TOOLS_PATH = 'C:\Users\Keneth\.espressif'
 $IdfPython = Join-Path $env:IDF_TOOLS_PATH 'python_env\idf6.0_py3.12_env\Scripts\python.exe'
 if (-not (Test-Path $IdfPython)) { throw "No existe el Python de ESP-IDF: $IdfPython" }
+# export.ps1 invoca `python` durante su inicialización; publíquese antes de cargarlo.
+$env:Path = "$(Split-Path -Parent $IdfPython);$env:Path"
 
 Set-Location $Proyecto
 . (Join-Path $env:IDF_PATH 'export.ps1') | Out-Null
