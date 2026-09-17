@@ -67,6 +67,23 @@ static lv_obj_t *s_btn_resume_close = NULL;
 static int s_resume_target_idx = -1;
 static void show_resume_sheet(int idx);
 
+#define BRIGHTNESS_REAL_MIN 25
+#define BRIGHTNESS_REAL_MAX 100
+
+/* NVS and the backlight use the real 25..100% range. The UI exposes it as
+ * 0..100% so its lower endpoint remains visible on this display. */
+static int brightness_real_to_display(uint8_t real_brightness) {
+    if (real_brightness < BRIGHTNESS_REAL_MIN) real_brightness = BRIGHTNESS_REAL_MIN;
+    if (real_brightness > BRIGHTNESS_REAL_MAX) real_brightness = BRIGHTNESS_REAL_MAX;
+    return ((real_brightness - BRIGHTNESS_REAL_MIN) * 100 + 37) / 75;
+}
+
+static uint8_t brightness_display_to_real(int display_brightness) {
+    if (display_brightness < 0) display_brightness = 0;
+    if (display_brightness > 100) display_brightness = 100;
+    return (uint8_t)(BRIGHTNESS_REAL_MIN + (display_brightness * 75 + 50) / 100);
+}
+
 extern void touch_inject_synthetic(uint16_t x, uint16_t y, bool pressed);
 
 static lv_obj_t *s_toast_box = NULL;
@@ -408,7 +425,7 @@ static void player_touch_gesture_event_cb(lv_event_t *e) {
         s_touch_down_ms = now;
         s_touch_down_pos = p;
         s_is_vertical_drag = false;
-        s_drag_start_brightness = s_settings.bright ? s_settings.bright : 70;
+        s_drag_start_brightness = brightness_real_to_display(s_settings.bright);
         s_last_touch_time = now;
     } else if (code == LV_EVENT_PRESSING) {
         s_last_touch_time = now;
@@ -432,12 +449,12 @@ static void player_touch_gesture_event_cb(lv_event_t *e) {
             // 1 % cada 2 px (hacia arriba aumenta, hacia abajo disminuye)
             int delta_pct = (s_touch_down_pos.y - p.y) / 2;
             int new_bri = s_drag_start_brightness + delta_pct;
-            if (new_bri < 20) new_bri = 20;
+            if (new_bri < 0) new_bri = 0;
             if (new_bri > 100) new_bri = 100;
 
-            s_settings.bright = (uint8_t)new_bri;
+            s_settings.bright = brightness_display_to_real(new_bri);
             settings_nvs_set_u8("bright", s_settings.bright);
-            ili9488_8080_set_backlight(new_bri);
+            ili9488_8080_set_backlight(s_settings.bright);
 
             if (objects.bar_brightness) lv_bar_set_value(objects.bar_brightness, new_bri, LV_ANIM_OFF);
             if (objects.lbl_bri) {
@@ -536,17 +553,21 @@ static void player_touch_gesture_event_cb(lv_event_t *e) {
 
 void ui_glue_init(void) {
     settings_nvs_load(&s_settings);
-    if (s_settings.bright < 20) s_settings.bright = 20;
-    if (s_settings.bright > 100) s_settings.bright = 100;
+    if (s_settings.bright < BRIGHTNESS_REAL_MIN) {
+        s_settings.bright = BRIGHTNESS_REAL_MIN;
+        settings_nvs_set_u8("bright", s_settings.bright);
+    }
+    if (s_settings.bright > BRIGHTNESS_REAL_MAX) s_settings.bright = BRIGHTNESS_REAL_MAX;
     ili9488_8080_set_backlight(s_settings.bright);
 
+    int shown_brightness = brightness_real_to_display(s_settings.bright);
     if (objects.sld_brightness) {
-        lv_slider_set_range(objects.sld_brightness, 20, 100);
-        lv_slider_set_value(objects.sld_brightness, s_settings.bright, LV_ANIM_OFF);
+        lv_slider_set_range(objects.sld_brightness, 0, 100);
+        lv_slider_set_value(objects.sld_brightness, shown_brightness, LV_ANIM_OFF);
     }
     if (objects.bar_brightness) {
-        lv_bar_set_range(objects.bar_brightness, 20, 100);
-        lv_bar_set_value(objects.bar_brightness, s_settings.bright, LV_ANIM_OFF);
+        lv_bar_set_range(objects.bar_brightness, 0, 100);
+        lv_bar_set_value(objects.bar_brightness, shown_brightness, LV_ANIM_OFF);
     }
     if (objects.player_touch) {
         lv_obj_add_event_cb(objects.player_touch, player_touch_gesture_event_cb, LV_EVENT_ALL, NULL);
@@ -931,12 +952,12 @@ void ui_glue_sync_settings_controls(void) {
         lv_obj_set_style_text_align(objects.obj32, LV_TEXT_ALIGN_CENTER, 0);
     }
     if (objects.sld_brightness) {
-        lv_slider_set_range(objects.sld_brightness, 20, 100);
-        lv_slider_set_value(objects.sld_brightness, s_settings.bright, LV_ANIM_OFF);
+        lv_slider_set_range(objects.sld_brightness, 0, 100);
+        lv_slider_set_value(objects.sld_brightness, brightness_real_to_display(s_settings.bright), LV_ANIM_OFF);
     }
     if (objects.lbl_set_bri_val) {
         char bbuf[16];
-        snprintf(bbuf, sizeof(bbuf), "%d%%", s_settings.bright);
+        snprintf(bbuf, sizeof(bbuf), "%d%%", brightness_real_to_display(s_settings.bright));
         lv_label_set_text(objects.lbl_set_bri_val, bbuf);
     }
     if (objects.dd_osd_timeout) {
@@ -1929,15 +1950,15 @@ void ui_glue_run_uinav_test(void) {
     printf("UINAV,btn=settings_ver_rendimiento,result=%s\n", perf_flow_ok ? "PASS" : "FAIL");
     wait_gui_ms(50);
 
-    // Probar límite inferior de brillo (no baja de 20%)
+    // Probar mínimo real 25% con escala visible 0..100%.
     if (objects.sld_brightness) {
-        lv_slider_set_value(objects.sld_brightness, 10, LV_ANIM_OFF);
+        lv_slider_set_value(objects.sld_brightness, 0, LV_ANIM_OFF);
         action_set_brightness(NULL);
-        bool bri_min_ok = (s_settings.bright >= 20);
-        // Restaurar a 70%
+        bool bri_min_ok = (s_settings.bright == BRIGHTNESS_REAL_MIN);
+        // Restaurar a 70% mostrado.
         lv_slider_set_value(objects.sld_brightness, 70, LV_ANIM_OFF);
         action_set_brightness(NULL);
-        printf("UINAV,btn=brightness_clamp20,result=%s\n", bri_min_ok ? "PASS" : "FAIL");
+        printf("UINAV,btn=brightness_real25_display0,result=%s\n", bri_min_ok ? "PASS" : "FAIL");
     }
 
     // 12. btn=seek (x=340, y=249) -> barra de seek
@@ -2579,28 +2600,31 @@ void action_set_brightness(lv_event_t *e) {
     s_last_touch_time = esp_timer_get_time() / 1000;
     if (!objects.sld_brightness) return;
     int32_t val = lv_slider_get_value(objects.sld_brightness);
-    if (val < 20) {
-        val = 20;
-        lv_slider_set_value(objects.sld_brightness, 20, LV_ANIM_OFF);
+    if (val < 0) {
+        val = 0;
+        lv_slider_set_value(objects.sld_brightness, 0, LV_ANIM_OFF);
     }
-    if (val > 100) val = 100;
-    s_settings.bright = (uint8_t)val;
+    if (val > 100) {
+        val = 100;
+        lv_slider_set_value(objects.sld_brightness, 100, LV_ANIM_OFF);
+    }
+    s_settings.bright = brightness_display_to_real(val);
     settings_nvs_set_u8("bright", s_settings.bright);
     ili9488_8080_set_backlight(s_settings.bright);
     if (objects.lbl_set_bri_val) {
         char bbuf[16];
-        snprintf(bbuf, sizeof(bbuf), "%d%%", s_settings.bright);
+        snprintf(bbuf, sizeof(bbuf), "%d%%", (int)val);
         lv_label_set_text(objects.lbl_set_bri_val, bbuf);
     }
     if (objects.bar_brightness) {
-        lv_bar_set_value(objects.bar_brightness, s_settings.bright, LV_ANIM_OFF);
+        lv_bar_set_value(objects.bar_brightness, val, LV_ANIM_OFF);
     }
     if (objects.lbl_bri) {
         char bbuf[16];
-        snprintf(bbuf, sizeof(bbuf), "%d%%", s_settings.bright);
+        snprintf(bbuf, sizeof(bbuf), "%d%%", (int)val);
         lv_label_set_text(objects.lbl_bri, bbuf);
     }
-    ESP_LOGI(TAG, "Action: set_brightness -> %d%%", s_settings.bright);
+    ESP_LOGI(TAG, "Action: set_brightness -> mostrado %ld%%, real %d%%", (long)val, s_settings.bright);
 }
 
 void action_set_osd_timeout(lv_event_t *e) {

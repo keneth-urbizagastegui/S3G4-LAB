@@ -158,7 +158,7 @@ void set_var_library_summary(const char *value) { if (value) snprintf(s_cache.li
 
 int32_t get_var_brightness() { return s_cache.brightness; }
 void set_var_brightness(int32_t value) {
-    if (value < 20) value = 20;
+    if (value < 0) value = 0;
     if (value > 100) value = 100;
     s_cache.brightness = value;
 }

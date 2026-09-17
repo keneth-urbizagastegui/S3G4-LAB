@@ -329,8 +329,8 @@ for page in proj['userPages']:
         if 'ovl_brightness' not in existing_ids:
             ovl_b_children = [
                 make_image(10, 6, 20, 20, "brightness", recolor="c_text"),
-                make_bar(12, 32, 16, 120, identifier="bar_brightness", min_val=10, max_val=100, value=70, radius=8),
-                make_label(0, 158, 40, 16, text="70%", font="montserrat_12", color="c_text", align="CENTER", identifier="lbl_bri")
+                make_bar(12, 32, 16, 120, identifier="bar_brightness", min_val=0, max_val=100, value=60, radius=8),
+                make_label(0, 158, 40, 16, text="60%", font="montserrat_12", color="c_text", align="CENTER", identifier="lbl_bri")
             ]
             root_screen['children'].append(
                 make_container(16, 70, 40, 180, identifier="ovl_brightness", use_style="st_card", hidden=True, children=ovl_b_children)
@@ -448,8 +448,8 @@ if 'scr_settings' not in existing_pages:
     # Tab 0: Pantalla
     tab0_children = [
         make_label(16, 16, 100, 16, text="Brillo", font="montserrat_14", color="c_text"),
-        make_label(260, 16, 50, 16, text="100%", font="montserrat_14", color="c_muted", align="RIGHT", identifier="lbl_set_bri_val"),
-        make_slider(16, 42, 298, 4, identifier="sld_brightness", min_val=10, max_val=100, value=100, action_name="set_brightness"),
+        make_label(260, 16, 50, 16, text="60%", font="montserrat_14", color="c_muted", align="RIGHT", identifier="lbl_set_bri_val"),
+        make_slider(16, 42, 298, 4, identifier="sld_brightness", min_val=0, max_val=100, value=60, action_name="set_brightness"),
         
         make_label(16, 75, 180, 16, text="Ocultar controles tras", font="montserrat_14", color="c_text"),
         make_dropdown(220, 68, 94, 32, "2 s\n3 s\n5 s\nNunca", identifier="dd_osd_timeout", action_name="set_osd_timeout"),
