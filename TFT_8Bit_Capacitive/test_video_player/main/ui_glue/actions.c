@@ -746,6 +746,191 @@ static void fix_card_events(lv_obj_t *card, int idx) {
     }
 }
 
+static lv_obj_t *s_resume_overlay = NULL;
+static lv_obj_t *s_resume_sheet = NULL;
+static lv_obj_t *s_resume_title = NULL;
+static lv_obj_t *s_resume_sub = NULL;
+static lv_obj_t *s_btn_resume_cont = NULL;
+static lv_obj_t *s_lbl_resume_cont = NULL;
+static lv_obj_t *s_btn_resume_start = NULL;
+static lv_obj_t *s_lbl_resume_start = NULL;
+static lv_obj_t *s_btn_resume_close = NULL;
+static int s_resume_target_idx = -1;
+
+static void resume_overlay_event_cb(lv_event_t *e) {
+    lv_point_t p;
+    lv_indev_get_point(lv_indev_active(), &p);
+    if (p.y < 176 && s_resume_overlay) {
+        lv_obj_add_flag(s_resume_overlay, LV_OBJ_FLAG_HIDDEN);
+    }
+}
+
+static void resume_close_btn_cb(lv_event_t *e) {
+    if (s_resume_overlay) {
+        lv_obj_add_flag(s_resume_overlay, LV_OBJ_FLAG_HIDDEN);
+    }
+}
+
+static void resume_cont_btn_cb(lv_event_t *e) {
+    if (s_resume_overlay) {
+        lv_obj_add_flag(s_resume_overlay, LV_OBJ_FLAG_HIDDEN);
+    }
+    if (s_resume_target_idx >= 0) {
+        const media_item_t *item = media_library_get(s_resume_target_idx);
+        if (!item) return;
+        uint32_t resume_pos = (item->resume_ms > 2000) ? (item->resume_ms - 2000) : 0;
+        player_cmd_t cmd_open = {.type = PCMD_OPEN, .arg = s_resume_target_idx};
+        player_cmd_send(&cmd_open);
+        if (resume_pos > 0) {
+            player_cmd_t cmd_seek = {.type = PCMD_SEEK_MS, .arg = (int32_t)resume_pos};
+            player_cmd_send(&cmd_seek);
+        }
+        ui_glue_set_view_mode(VIEW_MODE_FULLSCREEN);
+    }
+}
+
+static void resume_start_btn_cb(lv_event_t *e) {
+    if (s_resume_overlay) {
+        lv_obj_add_flag(s_resume_overlay, LV_OBJ_FLAG_HIDDEN);
+    }
+    if (s_resume_target_idx >= 0) {
+        const media_item_t *item = media_library_get(s_resume_target_idx);
+        if (!item) return;
+        media_library_set_resume(item->path, 0); // borra la guardada
+        player_cmd_t cmd_open = {.type = PCMD_OPEN, .arg = s_resume_target_idx};
+        player_cmd_send(&cmd_open);
+        ui_glue_set_view_mode(VIEW_MODE_FULLSCREEN);
+    }
+}
+
+static void init_resume_sheet(void) {
+    if (s_resume_overlay || !objects.scr_library) return;
+
+    // Overlay modal (480x320 @ 60% opacidad)
+    s_resume_overlay = lv_obj_create(objects.scr_library);
+    lv_obj_set_pos(s_resume_overlay, 0, 0);
+    lv_obj_set_size(s_resume_overlay, 480, 320);
+    lv_obj_set_style_bg_color(s_resume_overlay, lv_color_hex(0x0B0C0F), 0);
+    lv_obj_set_style_bg_opa(s_resume_overlay, 153, 0); // 60%
+    lv_obj_set_style_border_width(s_resume_overlay, 0, 0);
+    lv_obj_set_style_pad_all(s_resume_overlay, 0, 0);
+    lv_obj_remove_flag(s_resume_overlay, LV_OBJ_FLAG_SCROLLABLE);
+    lv_obj_add_flag(s_resume_overlay, LV_OBJ_FLAG_CLICKABLE);
+    lv_obj_add_event_cb(s_resume_overlay, resume_overlay_event_cb, LV_EVENT_CLICKED, NULL);
+
+    // Sheet container: x=0, y=176, w=480, h=144, bg #15171C, border top 1px #2A2D34, radius 12
+    s_resume_sheet = lv_obj_create(s_resume_overlay);
+    lv_obj_set_pos(s_resume_sheet, 0, 176);
+    lv_obj_set_size(s_resume_sheet, 480, 144);
+    lv_obj_set_style_bg_color(s_resume_sheet, lv_color_hex(0x15171C), 0);
+    lv_obj_set_style_bg_opa(s_resume_sheet, 255, 0);
+    lv_obj_set_style_border_color(s_resume_sheet, lv_color_hex(0x2A2D34), 0);
+    lv_obj_set_style_border_width(s_resume_sheet, 1, 0);
+    lv_obj_set_style_border_side(s_resume_sheet, LV_BORDER_SIDE_TOP, 0);
+    lv_obj_set_style_radius(s_resume_sheet, 12, 0);
+    lv_obj_set_style_pad_all(s_resume_sheet, 0, 0);
+    lv_obj_remove_flag(s_resume_sheet, LV_OBJ_FLAG_SCROLLABLE);
+
+    // Title label: x=16, y=15, w=380, h=18, font 14, color #EDEDEA
+    s_resume_title = lv_label_create(s_resume_sheet);
+    lv_obj_set_pos(s_resume_title, 16, 15);
+    lv_obj_set_size(s_resume_title, 380, 18);
+    lv_label_set_long_mode(s_resume_title, LV_LABEL_LONG_DOT);
+    lv_obj_set_style_text_font(s_resume_title, &lv_font_montserrat_14, 0);
+    lv_obj_set_style_text_color(s_resume_title, lv_color_hex(0xEDEDEA), 0);
+
+    // Subtitle label: x=16, y=35, w=380, h=14, font 12, color #8E929B
+    s_resume_sub = lv_label_create(s_resume_sheet);
+    lv_obj_set_pos(s_resume_sub, 16, 35);
+    lv_obj_set_size(s_resume_sub, 380, 14);
+    lv_obj_set_style_text_font(s_resume_sub, &lv_font_montserrat_12, 0);
+    lv_obj_set_style_text_color(s_resume_sub, lv_color_hex(0x8E929B), 0);
+
+    // Close button: x=424, y=5, w=44, h=44
+    s_btn_resume_close = lv_button_create(s_resume_sheet);
+    lv_obj_set_pos(s_btn_resume_close, 424, 5);
+    lv_obj_set_size(s_btn_resume_close, 44, 44);
+    lv_obj_set_style_bg_opa(s_btn_resume_close, 0, 0);
+    lv_obj_set_style_border_width(s_btn_resume_close, 0, 0);
+    lv_obj_set_style_shadow_width(s_btn_resume_close, 0, 0);
+    lv_obj_set_style_pad_all(s_btn_resume_close, 0, 0);
+    lv_obj_add_event_cb(s_btn_resume_close, resume_close_btn_cb, LV_EVENT_CLICKED, NULL);
+
+    lv_obj_t *img_close_icon = lv_image_create(s_btn_resume_close);
+    lv_image_set_src(img_close_icon, &img_close);
+    lv_obj_set_style_image_recolor(img_close_icon, lv_color_hex(0x8E929B), 0);
+    lv_obj_set_style_image_recolor_opa(img_close_icon, 255, 0);
+    lv_obj_center(img_close_icon);
+    lv_obj_remove_flag(img_close_icon, LV_OBJ_FLAG_CLICKABLE);
+    lv_obj_add_flag(img_close_icon, LV_OBJ_FLAG_EVENT_BUBBLE);
+
+    // Continuar button: x=16, y=65, w=216, h=56, bg #F2B33D, radius 8
+    s_btn_resume_cont = lv_button_create(s_resume_sheet);
+    lv_obj_set_pos(s_btn_resume_cont, 16, 65);
+    lv_obj_set_size(s_btn_resume_cont, 216, 56);
+    lv_obj_set_style_bg_color(s_btn_resume_cont, lv_color_hex(0xF2B33D), 0);
+    lv_obj_set_style_bg_opa(s_btn_resume_cont, 255, 0);
+    lv_obj_set_style_radius(s_btn_resume_cont, 8, 0);
+    lv_obj_set_style_border_width(s_btn_resume_cont, 0, 0);
+    lv_obj_set_style_shadow_width(s_btn_resume_cont, 0, 0);
+    lv_obj_add_event_cb(s_btn_resume_cont, resume_cont_btn_cb, LV_EVENT_CLICKED, NULL);
+
+    s_lbl_resume_cont = lv_label_create(s_btn_resume_cont);
+    lv_obj_set_style_text_font(s_lbl_resume_cont, &lv_font_montserrat_14, 0);
+    lv_obj_set_style_text_color(s_lbl_resume_cont, lv_color_hex(0x1A1204), 0);
+    lv_obj_center(s_lbl_resume_cont);
+    lv_obj_remove_flag(s_lbl_resume_cont, LV_OBJ_FLAG_CLICKABLE);
+    lv_obj_add_flag(s_lbl_resume_cont, LV_OBJ_FLAG_EVENT_BUBBLE);
+
+    // Desde el principio button: x=248, y=65, w=216, h=56, bg #1F2228, border 1px #2A2D34, radius 8
+    s_btn_resume_start = lv_button_create(s_resume_sheet);
+    lv_obj_set_pos(s_btn_resume_start, 248, 65);
+    lv_obj_set_size(s_btn_resume_start, 216, 56);
+    lv_obj_set_style_bg_color(s_btn_resume_start, lv_color_hex(0x1F2228), 0);
+    lv_obj_set_style_bg_opa(s_btn_resume_start, 255, 0);
+    lv_obj_set_style_border_color(s_btn_resume_start, lv_color_hex(0x2A2D34), 0);
+    lv_obj_set_style_border_width(s_btn_resume_start, 1, 0);
+    lv_obj_set_style_radius(s_btn_resume_start, 8, 0);
+    lv_obj_set_style_shadow_width(s_btn_resume_start, 0, 0);
+    lv_obj_add_event_cb(s_btn_resume_start, resume_start_btn_cb, LV_EVENT_CLICKED, NULL);
+
+    s_lbl_resume_start = lv_label_create(s_btn_resume_start);
+    lv_label_set_text(s_lbl_resume_start, "Desde el principio");
+    lv_obj_set_style_text_font(s_lbl_resume_start, &lv_font_montserrat_14, 0);
+    lv_obj_set_style_text_color(s_lbl_resume_start, lv_color_hex(0xEDEDEA), 0);
+    lv_obj_center(s_lbl_resume_start);
+    lv_obj_remove_flag(s_lbl_resume_start, LV_OBJ_FLAG_CLICKABLE);
+    lv_obj_add_flag(s_lbl_resume_start, LV_OBJ_FLAG_EVENT_BUBBLE);
+}
+
+static void show_resume_sheet(int idx) {
+    const media_item_t *item = media_library_get(idx);
+    if (!item) return;
+
+    init_resume_sheet();
+    s_resume_target_idx = idx;
+
+    lv_label_set_text(s_resume_title, item->title[0] ? item->title : item->path);
+
+    uint32_t v_sec = item->resume_ms / 1000;
+    uint32_t t_sec = item->dur_ms / 1000;
+    char sub_buf[64];
+    snprintf(sub_buf, sizeof(sub_buf), "Visto hasta %lu:%02lu de %lu:%02lu",
+             (unsigned long)(v_sec / 60), (unsigned long)(v_sec % 60),
+             (unsigned long)(t_sec / 60), (unsigned long)(t_sec % 60));
+    lv_label_set_text(s_resume_sub, sub_buf);
+
+    uint32_t cont_pos = (item->resume_ms > 2000) ? (item->resume_ms - 2000) : 0;
+    uint32_t c_sec = cont_pos / 1000;
+    char cont_buf[64];
+    snprintf(cont_buf, sizeof(cont_buf), "Continuar en %lu:%02lu",
+             (unsigned long)(c_sec / 60), (unsigned long)(c_sec % 60));
+    lv_label_set_text(s_lbl_resume_cont, cont_buf);
+
+    lv_obj_remove_flag(s_resume_overlay, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_move_foreground(s_resume_overlay);
+}
+
 void action_play_index(lv_event_t *e) {
     s_last_touch_time = esp_timer_get_time() / 1000;
     lv_obj_t *target = lv_event_get_target(e);
@@ -769,19 +954,31 @@ void action_play_index(lv_event_t *e) {
         return;
     }
 
-    ESP_LOGI(TAG, "Action: play_index -> %d (%s)", idx, item->path);
-    player_cmd_t cmd_open = {.type = PCMD_OPEN, .arg = idx};
-    player_cmd_send(&cmd_open);
-
-    // 2s rewind on resume
-    if (item->resume_ms > 2000) {
-        uint32_t resume_pos = item->resume_ms - 2000;
-        player_cmd_t cmd_seek = {.type = PCMD_SEEK_MS, .arg = (int32_t)resume_pos};
-        player_cmd_send(&cmd_seek);
-        ESP_LOGI(TAG, "Resuming with 2s rewind: target %lu ms (saved %lu ms)",
-                 (unsigned long)resume_pos, (unsigned long)item->resume_ms);
+    // Si es el video actual (pausado por L1), reanudar directamente sin preguntar
+    if (idx == s_current_track_idx) {
+        player_status_t st;
+        player_get_status(&st);
+        if (st.state == PST_PAUSED) {
+            player_cmd_t cmd_play = {.type = PCMD_PLAY};
+            player_cmd_send(&cmd_play);
+        } else {
+            player_cmd_t cmd_open = {.type = PCMD_OPEN, .arg = idx};
+            player_cmd_send(&cmd_open);
+        }
+        ui_glue_set_view_mode(VIEW_MODE_FULLSCREEN);
+        return;
     }
 
+    // L3: Al tocar tarjeta con posición guardada entre 5 s y dur - 10 s -> abrir hoja BibliotecaReanudar
+    if (item->resume_ms >= 5000 && (item->dur_ms > 10000 && item->resume_ms <= item->dur_ms - 10000)) {
+        show_resume_sheet(idx);
+        return;
+    }
+
+    // Sin posición guardada: reproducir desde 0
+    ESP_LOGI(TAG, "Action: play_index -> %d (%s) desde 0", idx, item->path);
+    player_cmd_t cmd_open = {.type = PCMD_OPEN, .arg = idx};
+    player_cmd_send(&cmd_open);
     ui_glue_set_view_mode(VIEW_MODE_FULLSCREEN);
 }
 
