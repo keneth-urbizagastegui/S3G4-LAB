@@ -278,3 +278,20 @@ A partir de las mediciones registradas en `F6a_run9`:
 1. Para eliminar completamente el tearing residual sin doble búfer de pantalla completa (que requeriría 300 KB de SRAM interna inexistente para framebuffers DMA directos), la estrategia viable es acoplar la sincronización mediante retardo de fase dinámico programable en el flanco TE (ajustar el scanline de inicio de TE o disparar el blit con un offset fijo tal que el haz de lectura siempre se mantenga por delante o por detrás del haz de escritura en la región central de interés).
 2. Cualquier ajuste de sincronía fina en los registros de panel o temporizadores de DMA debe coordinarse y ser validado con Keneth en hardware real.
 
+
+---
+
+## 9. Auditoría de la it4 (Claude, 17/09/2026)
+
+- `F6a_run9` verificado contra el CSV: descartes reales **0,18 %** (OSD oculta, 6/3324) y **0,19 %**
+  (OSD visible, 7/3600); pres mínimo 28,2 / 28,9 y mediana 29,9 / 30,0; heap interna mínima 147 KB.
+  La etiqueta `init` (71faa07) solo marca **una** muestra: no oculta datos.
+- Re-anclaje PTS en 100 ms (sin cambios). Sin `PASS` fijos en UINAV; L1 se comprueba 60 s de verdad.
+- **L12, diagnóstico incompleto.** El argumento «no cabe en el blanking vertical» no es la condición
+  relevante: sin corte basta con **empezar a escribir justo tras TE y escribir más deprisa que el
+  barrido** (480 líneas en ~22,5 ms ≈ 21 líneas/ms frente a ~23–30 líneas/ms del envío por franjas). Con
+  un envío de hasta 20,6 ms el margen es mínimo y cualquier parada (volcado de LVGL, lector, espera en la
+  cola) deja que el barrido adelante a la escritura: ahí aparece la línea. Tampoco se midió
+  `te_to_first_byte_ms`, que pedía el paquete. Queda para la siguiente iteración con datos por fotograma
+  (retardo TE→primer byte, duración de cada franja y paradas > 2 ms).
+- Firmware normal de `b525d87` flasheado por el auditor en COM16. Pendiente la prueba manual de Keneth.
