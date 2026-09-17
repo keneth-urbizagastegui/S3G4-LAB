@@ -756,15 +756,19 @@ static void player_task(void *arg) {
 
             if (ret == ESP_OK) {
                 s_track_presented_frames++;
-                int64_t present_us = esp_timer_get_time();
-                if (s_repeat_last_present_us > 0 && s_track_presented_frames == 1) {
-                    uint32_t gap_ms = (uint32_t)((present_us - s_repeat_last_present_us) / 1000);
-                    ESP_LOGI(TAG, "LOOP,gap_ms=%lu", (unsigned long)gap_ms);
-                    printf("LOOP,gap_ms=%lu\n", (unsigned long)gap_ms);
-                    fflush(stdout);
-                    s_repeat_last_present_us = 0;
+                /* LOOP sólo se mide durante REPEAT_ONE. Consultar el reloj en
+                 * cada presentación normal añadía trabajo a la ruta crítica. */
+                if (s_status.repeat == REPEAT_ONE) {
+                    int64_t present_us = esp_timer_get_time();
+                    if (s_repeat_last_present_us > 0 && s_track_presented_frames == 1) {
+                        uint32_t gap_ms = (uint32_t)((present_us - s_repeat_last_present_us) / 1000);
+                        ESP_LOGI(TAG, "LOOP,gap_ms=%lu", (unsigned long)gap_ms);
+                        printf("LOOP,gap_ms=%lu\n", (unsigned long)gap_ms);
+                        fflush(stdout);
+                        s_repeat_last_present_us = 0;
+                    }
+                    s_repeat_last_present_us = present_us;
                 }
-                s_repeat_last_present_us = present_us;
                 int64_t now_us = esp_timer_get_time();
                 if (now_us - last_nvs_pos_save_us >= 15000000) {
                     last_nvs_pos_save_us = now_us;
