@@ -147,6 +147,25 @@ static void lvgl_disp_flush_cb(lv_display_t *disp, const lv_area_t *area, uint8_
     view_mode_t vmode = ui_glue_get_view_mode();
 
     if (vmode == VIEW_MODE_FULLSCREEN) {
+        // Si hay capas de superposición activas registradas en lcd_bus,
+        // actualizar el búfer de capas en PSRAM con los píxeles renderizados por LVGL
+        if (lcd_bus_has_active_overlays()) {
+            lcd_bus_overlay_update_from_lvgl(area->x1, area->y1, area->x2, area->y2, pixels);
+        }
+
+        // Si el reproductor no está reproduciendo activamente (en pausa / detenido),
+        // volcar directamente la capa al panel para que se vea inmediatamente
+        player_status_t st;
+        player_get_status(&st);
+        if (st.state != PST_PLAYING) {
+            int64_t t0 = esp_timer_get_time();
+            draw_bitmap_oriented(area->x1, area->y1, area->x2, area->y2, pixels);
+            int64_t blit_us = esp_timer_get_time() - t0;
+            perf_mark_blit((uint32_t)blit_us);
+            lv_display_flush_ready(disp);
+            return;
+        }
+
         // En pantalla completa el video se blittea directo al panel.
         // Recortar cualquier fila que coincida con la región de video activa.
         int16_t vx, vy, vw, vh;
@@ -271,6 +290,7 @@ typedef enum {
     UI_REQ_SET_VIEW,
     UI_REQ_SET_HUD,
     UI_REQ_UINAV,
+    UI_REQ_SET_OVERLAYS,
 } ui_req_type_t;
 
 typedef struct {
@@ -481,6 +501,18 @@ static void gui_task(void *arg) {
                 ui_glue_set_hud_forced(req.arg);
             } else if (req.type == UI_REQ_UINAV) {
                 ui_glue_run_uinav_test();
+            } else if (req.type == UI_REQ_SET_OVERLAYS) {
+                if (req.arg) {
+                    if (objects.ovl_stats && lv_obj_has_flag(objects.ovl_stats, LV_OBJ_FLAG_HIDDEN)) {
+                        action_open_stats(NULL);
+                    }
+                    action_lock(NULL);
+                } else {
+                    if (objects.ovl_stats && !lv_obj_has_flag(objects.ovl_stats, LV_OBJ_FLAG_HIDDEN)) {
+                        action_open_stats(NULL);
+                    }
+                    ui_glue_unlock();
+                }
             }
             publish_ui_state();
         }
@@ -523,7 +555,7 @@ static void log_stack_and_heap_diag(const char *phase_tag) {
 static void autotest_task(void *arg) {
     ESP_LOGI(TAG, "Tarea de autotest F2 iniciada (usa cola de comandos y peticiones UI).");
 
-    vTaskDelay(pdMS_TO_TICKS(1000));
+    vTaskDelay(pdMS_TO_TICKS(2500));
     log_stack_and_heap_diag("AUTOTEST_START");
 
     int total_tracks = media_library_count();
@@ -560,8 +592,8 @@ static void autotest_task(void *arg) {
             if (vm == VIEW_MODE_FULLSCREEN) break;
             vTaskDelay(pdMS_TO_TICKS(10));
         }
-
-        vTaskDelay(pdMS_TO_TICKS(400));
+        // Esperar a que el prefetch llene la cola y el reloj PTS se estabilice tras abrir pista
+        vTaskDelay(pdMS_TO_TICKS(4000));
 
         for (int s = 0; s < 3; s++) {
             const char *scn_name = scenarios[s];
@@ -666,11 +698,15 @@ static void autotest_task(void *arg) {
     }
     vTaskDelay(pdMS_TO_TICKS(1000));
 
+    // Asegurar reproduccion activa de pista 0 tras UINAV
+    player_cmd_t cmd_open_tog = {.type = PCMD_OPEN, .arg = 0};
+    player_cmd_send(&cmd_open_tog);
+    ui_req_send(UI_REQ_SET_VIEW, VIEW_MODE_FULLSCREEN);
+    vTaskDelay(pdMS_TO_TICKS(5000));
+
     // Escenario TOGGLE (Fase 3): alternar HUD cada 500 ms durante 10 s para verificar estabilidad de direct blit
     ESP_LOGI(TAG, "Iniciando escenario TOGGLE (10 s, alterna cada 500 ms)...");
     perf_set_scenario(0, "toggle");
-    ui_req_send(UI_REQ_SET_VIEW, VIEW_MODE_FULLSCREEN);
-    vTaskDelay(pdMS_TO_TICKS(200));
     for (int t = 0; t < 20; t++) {
         int hud_m = (t % 2 == 0) ? 2 : 1;
         ui_req_send(UI_REQ_SET_HUD, hud_m);
@@ -686,6 +722,31 @@ static void autotest_task(void *arg) {
         vTaskDelay(pdMS_TO_TICKS(500));
         perf_report_if_due();
     }
+
+    // Escenario OVERLAY (Fase 6b it2): ovl_stats y ovl_lock visibles con video en reproduccion activa
+    ESP_LOGI(TAG, "Iniciando escenario OVERLAY (10 s con ovl_stats y ovl_lock)...");
+    ui_req_send(UI_REQ_SET_VIEW, VIEW_MODE_FULLSCREEN);
+    ui_req_send(UI_REQ_SET_HUD, 1); // HUD oculto
+    player_cmd_t cmd_rect_ovl = {.type = PCMD_SET_VIDEO_RECT, .rect = {0, 0, 480, 320}};
+    player_cmd_send(&cmd_rect_ovl);
+    lcd_bus_set_video_rect(0, 0, 480, 320);
+    vTaskDelay(pdMS_TO_TICKS(1000));
+
+    perf_set_scenario(0, "overlay");
+
+    // Activar capas ovl_stats y ovl_lock
+    ui_req_send(UI_REQ_SET_OVERLAYS, 1);
+    vTaskDelay(pdMS_TO_TICKS(500));
+
+    int64_t ovl_t0 = esp_timer_get_time();
+    while (esp_timer_get_time() - ovl_t0 < 10000000LL) {
+        perf_report_if_due();
+        vTaskDelay(pdMS_TO_TICKS(100));
+    }
+
+    // Desactivar overlays
+    ui_req_send(UI_REQ_SET_OVERLAYS, 0);
+    vTaskDelay(pdMS_TO_TICKS(400));
 
     // Escenario STRESS final: 20 cambios de pista y 50 saltos SEEK simulando arrastre
     ESP_LOGI(TAG, "Iniciando escenario final de STRESS...");

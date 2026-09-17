@@ -10,6 +10,7 @@
 #include "settings_nvs.h"
 #include "media_library.h"
 #include "lcd_bus.h"
+#include "avi_player.h"
 #include "ili9488_8080.h"
 #include "sdcard_spi.h"
 #include "esp_system.h"
@@ -257,11 +258,9 @@ static void lock_overlay_event_cb(lv_event_t *e) {
             bool was_hidden = lv_obj_has_flag(s_lock_card, LV_OBJ_FLAG_HIDDEN);
             lv_obj_remove_flag(s_lock_card, LV_OBJ_FLAG_HIDDEN);
             if (was_hidden) {
-                // Pausar direct blit mientras la tarjeta esté visible para no sobreescribirla
-                lcd_bus_set_video_rect(0, 0, 0, 0);
-                player_cmd_t cmd = {.type = PCMD_SET_VIDEO_RECT, .rect = {0, 0, 0, 0}};
-                player_cmd_send(&cmd);
-                ESP_LOGI(TAG, "Toque en pantalla bloqueada -> tarjeta mostrada con blit pausado");
+                // Registrar tarjeta de bloqueo (200x116 en 140, 104) como overlay 0
+                lcd_bus_set_overlay_rect(0, 140, 104, 200, 116, true);
+                ESP_LOGI(TAG, "Toque en pantalla bloqueada -> tarjeta mostrada con composicion overlay");
             }
         }
         s_lock_show_time = esp_timer_get_time() / 1000;
@@ -385,6 +384,12 @@ void ui_glue_unlock(void) {
     if (s_ovl_lock) {
         lv_obj_add_flag(s_ovl_lock, LV_OBJ_FLAG_HIDDEN);
     }
+    lcd_bus_set_overlay_rect(0, 0, 0, 0, 0, false);
+    player_status_t st_unl;
+    player_get_status(&st_unl);
+    if (st_unl.state != PST_PLAYING) {
+        avi_player_reblit_current_frame();
+    }
     if (s_arc_unlock) {
         lv_arc_set_value(s_arc_unlock, 0);
     }
@@ -422,9 +427,7 @@ static void player_touch_gesture_event_cb(lv_event_t *e) {
                 s_consume_next_click = true;
                 if (objects.ovl_brightness) {
                     lv_obj_remove_flag(objects.ovl_brightness, LV_OBJ_FLAG_HIDDEN);
-                    lcd_bus_set_video_rect(0, 0, 0, 0);
-                    player_cmd_t cmd = {.type = PCMD_SET_VIDEO_RECT, .rect = {0, 0, 0, 0}};
-                    player_cmd_send(&cmd);
+                    lcd_bus_set_overlay_rect(3, 16, 70, 40, 180, true);
                 }
             }
         }
@@ -487,9 +490,7 @@ static void player_touch_gesture_event_cb(lv_event_t *e) {
                             lv_label_set_text(objects.lbl_seek_hint, buf);
                         }
                         lv_obj_remove_flag(objects.ovl_seek_hint, LV_OBJ_FLAG_HIDDEN);
-                        lcd_bus_set_video_rect(0, 0, 0, 0);
-                        player_cmd_t cmd = {.type = PCMD_SET_VIDEO_RECT, .rect = {0, 0, 0, 0}};
-                        player_cmd_send(&cmd);
+                        lcd_bus_set_overlay_rect(2, 64, 116, 100, 88, true);
                     }
                     ESP_LOGI(TAG, "Gestos: Doble toque izquierdo -> acum %ld s", (long)s_accum_seek_s);
                 } else if (s_touch_down_pos.x > 320) {
@@ -511,9 +512,7 @@ static void player_touch_gesture_event_cb(lv_event_t *e) {
                             lv_label_set_text(objects.lbl_seek_hint, buf);
                         }
                         lv_obj_remove_flag(objects.ovl_seek_hint, LV_OBJ_FLAG_HIDDEN);
-                        lcd_bus_set_video_rect(0, 0, 0, 0);
-                        player_cmd_t cmd = {.type = PCMD_SET_VIDEO_RECT, .rect = {0, 0, 0, 0}};
-                        player_cmd_send(&cmd);
+                        lcd_bus_set_overlay_rect(2, 316, 116, 100, 88, true);
                     }
                     ESP_LOGI(TAG, "Gestos: Doble toque derecho -> acum +%ld s", (long)s_accum_seek_s);
                 } else {
@@ -1215,11 +1214,13 @@ void ui_glue_tick(void) {
         int64_t now = esp_timer_get_time() / 1000;
         if (now - s_lock_show_time >= 2000 && s_lock_touch_start_us == 0) {
             lv_obj_add_flag(s_lock_card, LV_OBJ_FLAG_HIDDEN);
-            // Reanudar el blit directo de video a pantalla completa
-            lcd_bus_set_video_rect(0, 0, 480, 320);
-            player_cmd_t cmd = {.type = PCMD_SET_VIDEO_RECT, .rect = {0, 0, 480, 320}};
-            player_cmd_send(&cmd);
-            ESP_LOGI(TAG, "Tarjeta de bloqueo auto-ocultada tras 2s -> blit directo reanudado");
+            lcd_bus_set_overlay_rect(0, 0, 0, 0, 0, false);
+            player_status_t st_lock;
+            player_get_status(&st_lock);
+            if (st_lock.state != PST_PLAYING) {
+                avi_player_reblit_current_frame();
+            }
+            ESP_LOGI(TAG, "Tarjeta de bloqueo auto-ocultada tras 2s -> overlay 0 desactivado");
         }
     }
 
@@ -1239,6 +1240,7 @@ void ui_glue_tick(void) {
     if (s_seek_in_flight && (now_gest >= s_seek_hint_hide_ms)) {
         s_seek_in_flight = false;
         if (objects.ovl_seek_hint) lv_obj_add_flag(objects.ovl_seek_hint, LV_OBJ_FLAG_HIDDEN);
+        lcd_bus_set_overlay_rect(2, 0, 0, 0, 0, false);
 
         player_status_t st_seek;
         player_get_status(&st_seek);
@@ -1251,16 +1253,8 @@ void ui_glue_tick(void) {
         ESP_LOGI(TAG, "Gestos: Seek hint expirado -> seek commit %ld ms (acum %ld s)", (long)target, (long)s_accum_seek_s);
         s_accum_seek_s = 0;
 
-        if (s_brightness_hide_ms == 0 && (!s_locked || (s_lock_card && lv_obj_has_flag(s_lock_card, LV_OBJ_FLAG_HIDDEN)))) {
-            if (s_osd_visible) {
-                lcd_bus_set_video_rect(0, 40, 480, 196);
-                player_cmd_t cmd_r = {.type = PCMD_SET_VIDEO_RECT, .rect = {0, 40, 480, 196}};
-                player_cmd_send(&cmd_r);
-            } else {
-                lcd_bus_set_video_rect(0, 0, 480, 320);
-                player_cmd_t cmd_r = {.type = PCMD_SET_VIDEO_RECT, .rect = {0, 0, 480, 320}};
-                player_cmd_send(&cmd_r);
-            }
+        if (st_seek.state != PST_PLAYING) {
+            avi_player_reblit_current_frame();
         }
     }
 
@@ -1268,17 +1262,12 @@ void ui_glue_tick(void) {
     if (s_brightness_hide_ms > 0 && (now_gest >= s_brightness_hide_ms)) {
         s_brightness_hide_ms = 0;
         if (objects.ovl_brightness) lv_obj_add_flag(objects.ovl_brightness, LV_OBJ_FLAG_HIDDEN);
+        lcd_bus_set_overlay_rect(3, 0, 0, 0, 0, false);
 
-        if (!s_seek_in_flight && (!s_locked || (s_lock_card && lv_obj_has_flag(s_lock_card, LV_OBJ_FLAG_HIDDEN)))) {
-            if (s_osd_visible) {
-                lcd_bus_set_video_rect(0, 40, 480, 196);
-                player_cmd_t cmd_r = {.type = PCMD_SET_VIDEO_RECT, .rect = {0, 40, 480, 196}};
-                player_cmd_send(&cmd_r);
-            } else {
-                lcd_bus_set_video_rect(0, 0, 480, 320);
-                player_cmd_t cmd_r = {.type = PCMD_SET_VIDEO_RECT, .rect = {0, 0, 480, 320}};
-                player_cmd_send(&cmd_r);
-            }
+        player_status_t st_b;
+        player_get_status(&st_b);
+        if (st_b.state != PST_PLAYING) {
+            avi_player_reblit_current_frame();
         }
         ESP_LOGI(TAG, "Gestos: Brillo auto-ocultado tras 1.2s");
     }
@@ -1510,10 +1499,8 @@ void action_lock(lv_event_t *e) {
     s_lock_show_time = esp_timer_get_time() / 1000;
     s_lock_touch_start_us = 0;
 
-    // Pausar blit directo (video_rect = 0) mientras la tarjeta esté visible (2s) para no sobreescribirla
-    lcd_bus_set_video_rect(0, 0, 0, 0);
-    player_cmd_t cmd = {.type = PCMD_SET_VIDEO_RECT, .rect = {0, 0, 0, 0}};
-    player_cmd_send(&cmd);
+    // Registrar la tarjeta de bloqueo (200x116 en 140, 104) como overlay 0
+    lcd_bus_set_overlay_rect(0, 140, 104, 200, 116, true);
 
     printf("UINAV,btn=lock,result=PASS\n");
     fflush(stdout);
@@ -2031,26 +2018,17 @@ void action_open_stats(lv_event_t *e) {
     bool is_hidden = lv_obj_has_flag(objects.ovl_stats, LV_OBJ_FLAG_HIDDEN);
     if (is_hidden) {
         lv_obj_remove_flag(objects.ovl_stats, LV_OBJ_FLAG_HIDDEN);
-        if (s_view_mode == VIEW_MODE_FULLSCREEN) {
-            lcd_bus_set_video_rect(0, 0, 0, 0);
-            player_cmd_t cmd = {.type = PCMD_SET_VIDEO_RECT, .rect = {0, 0, 0, 0}};
-            player_cmd_send(&cmd);
-        }
-        ESP_LOGI(TAG, "Action: ovl_stats mostrada");
+        lcd_bus_set_overlay_rect(1, 12, 52, 212, 172, true);
+        ESP_LOGI(TAG, "Action: ovl_stats mostrada (overlay 1 activo)");
     } else {
         lv_obj_add_flag(objects.ovl_stats, LV_OBJ_FLAG_HIDDEN);
-        if (s_view_mode == VIEW_MODE_FULLSCREEN) {
-            if (s_osd_visible) {
-                lcd_bus_set_video_rect(0, 40, 480, 196);
-                player_cmd_t cmd = {.type = PCMD_SET_VIDEO_RECT, .rect = {0, 40, 480, 196}};
-                player_cmd_send(&cmd);
-            } else {
-                lcd_bus_set_video_rect(0, 0, 480, 320);
-                player_cmd_t cmd = {.type = PCMD_SET_VIDEO_RECT, .rect = {0, 0, 480, 320}};
-                player_cmd_send(&cmd);
-            }
+        lcd_bus_set_overlay_rect(1, 0, 0, 0, 0, false);
+        player_status_t st_stat;
+        player_get_status(&st_stat);
+        if (st_stat.state != PST_PLAYING) {
+            avi_player_reblit_current_frame();
         }
-        ESP_LOGI(TAG, "Action: ovl_stats cerrada");
+        ESP_LOGI(TAG, "Action: ovl_stats cerrada (overlay 1 desactivado)");
     }
 }
 

@@ -361,6 +361,17 @@ void perf_set_scenario(int track, const char *scn) {
 
 void perf_report_if_due(void) {
     int64_t now = esp_timer_get_time();
+
+    static int64_t s_last_ovl_log_us = 0;
+    if (now - s_last_ovl_log_us >= 1000000LL) {
+        s_last_ovl_log_us = now;
+        int rects = 0;
+        uint32_t px = 0;
+        lcd_bus_get_overlay_stats(&rects, &px);
+        printf("OVL,rects=%d,px=%lu\n", rects, (unsigned long)px);
+        fflush(stdout);
+    }
+
     if (s_last_report_us == 0) {
         s_last_report_us = now;
         return;

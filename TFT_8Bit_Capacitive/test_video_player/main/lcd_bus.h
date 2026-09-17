@@ -17,6 +17,29 @@ typedef struct {
     int16_t h;
 } lcd_video_rect_t;
 
+#define LCD_OVERLAY_MAX_RECTS 4
+
+typedef struct {
+    int16_t x;
+    int16_t y;
+    int16_t w;
+    int16_t h;
+    bool enabled;
+    int16_t nat_y_min; // Native coordinate row min (= x)
+    int16_t nat_y_max; // Native coordinate row max (= x + w - 1)
+    int16_t nat_x_min; // Native coordinate col min (= 319 - (y + h - 1))
+    int16_t nat_x_max; // Native coordinate col max (= 319 - y)
+} lcd_overlay_rect_t;
+
+// Gestión de capas de superposición (overlay) en coordenadas apaisadas (LVGL)
+void lcd_bus_set_overlay_rect(int id, int16_t x, int16_t y, int16_t w, int16_t h, bool enabled);
+void lcd_bus_clear_overlays(void);
+int lcd_bus_get_active_overlays(lcd_overlay_rect_t out_rects[LCD_OVERLAY_MAX_RECTS]);
+bool lcd_bus_has_active_overlays(void);
+const uint16_t *lcd_bus_get_overlay_buffer(void);
+void lcd_bus_overlay_update_from_lvgl(int16_t x1, int16_t y1, int16_t x2, int16_t y2, const uint16_t *src_pixels);
+void lcd_bus_get_overlay_stats(int *out_rects, uint32_t *out_px);
+
 // Inicializa el bus LCD y su mutex recursivo
 void lcd_bus_init(void);
 

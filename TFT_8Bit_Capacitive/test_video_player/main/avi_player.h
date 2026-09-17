@@ -33,6 +33,9 @@ esp_err_t avi_player_read_next_frame(uint16_t *out_rgb565, uint8_t scale);
 // Decodificación por bloques por DMA directo al panel ILI9488 (modo direct F3)
 esp_err_t avi_player_read_and_blit_direct(void);
 
+// Re-emite el último fotograma decodificado con las capas de overlay actuales (para pausa)
+esp_err_t avi_player_reblit_current_frame(void);
+
 // Salta el siguiente cuadro sin decodificar (lectura de cabecera de chunk + fseek)
 esp_err_t avi_player_skip_next_frame(void);
 

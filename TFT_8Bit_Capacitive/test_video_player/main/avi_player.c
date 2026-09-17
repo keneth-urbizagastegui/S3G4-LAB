@@ -30,6 +30,11 @@ static long s_movi_start_offset = 0;
 static uint32_t *s_index_table = NULL;
 static bool s_need_index_seek = true;
 
+// Búfer para retener el último fotograma JPEG decodificado (re-blit en pausa)
+static uint8_t *s_last_jpeg_chunk = NULL;
+static size_t s_last_jpeg_len = 0;
+static size_t s_last_jpeg_cap = 0;
+
 #define JPEG_INBUF_INIT_SIZE (48 * 1024)
 #define JPEG_INBUF_MAX_SIZE  (128 * 1024)
 
@@ -538,6 +543,12 @@ void avi_player_close(void) {
         free(s_index_table);
         s_index_table = NULL;
     }
+    if (s_last_jpeg_chunk) {
+        free(s_last_jpeg_chunk);
+        s_last_jpeg_chunk = NULL;
+        s_last_jpeg_cap = 0;
+        s_last_jpeg_len = 0;
+    }
     s_info.is_open = false;
     s_info.is_eof = true;
     s_need_index_seek = true;
@@ -622,6 +633,18 @@ esp_err_t avi_player_read_and_blit_direct(void) {
         return err;
     }
 
+    if (slot->chunk_len > 0) {
+        if (slot->chunk_len > s_last_jpeg_cap) {
+            if (s_last_jpeg_chunk) free(s_last_jpeg_chunk);
+            s_last_jpeg_chunk = (uint8_t *)heap_caps_malloc(slot->chunk_len + 4096, MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT);
+            s_last_jpeg_cap = s_last_jpeg_chunk ? (slot->chunk_len + 4096) : 0;
+        }
+        if (s_last_jpeg_chunk) {
+            memcpy(s_last_jpeg_chunk, slot->buf, slot->chunk_len);
+            s_last_jpeg_len = slot->chunk_len;
+        }
+    }
+
     jpeg_dec_handle_t dec = s_dec_full;
     if (!dec) {
         xQueueSend(s_q_free, &slot, 0);
@@ -689,6 +712,10 @@ esp_err_t avi_player_read_and_blit_direct(void) {
         }
     }
 
+    lcd_overlay_rect_t active_overlays[LCD_OVERLAY_MAX_RECTS];
+    int num_overlays = lcd_bus_get_active_overlays(active_overlays);
+    const uint16_t *overlay_buf = (num_overlays > 0) ? lcd_bus_get_overlay_buffer() : NULL;
+
     lcd_bus_lock();
 
     tear_diag_mode_t diag = tear_diag_get_mode();
@@ -735,6 +762,31 @@ esp_err_t avi_player_read_and_blit_direct(void) {
             return ESP_FAIL;
         }
 
+        int cur_lines = (hdr_info.width > 0) ? (io.out_size / (hdr_info.width * 2)) : 0;
+        line_y += cur_lines;
+
+        // Composición de capas opacas sobre el búfer nativo de la franja (Sección 0 F6b)
+        // Se ejecuta en CPU de forma concurrente mientras el DMA de la franja anterior sigue en vuelo
+        if (num_overlays > 0 && overlay_buf != NULL && cur_lines > 0) {
+            int strip_y_start = line_y - cur_lines;
+            for (int r = 0; r < cur_lines; r++) {
+                int phys_y = strip_y_start + r;
+                for (int ov = 0; ov < num_overlays; ov++) {
+                    if (phys_y >= active_overlays[ov].nat_y_min && phys_y <= active_overlays[ov].nat_y_max) {
+                        int x_min = active_overlays[ov].nat_x_min;
+                        int x_max = active_overlays[ov].nat_x_max;
+                        if (x_min < 0) x_min = 0;
+                        if (x_max > 319) x_max = 319;
+                        if (x_max >= x_min) {
+                            uint16_t *dst = s_strip_bufs[b & 1] + r * 320 + x_min;
+                            const uint16_t *src = overlay_buf + phys_y * 320 + x_min;
+                            memcpy(dst, src, (x_max - x_min + 1) * sizeof(uint16_t));
+                        }
+                    }
+                }
+            }
+        }
+
         // Si habia un DMA previo en vuelo, esperar a que termine antes de lanzar el siguiente
         if (dma_in_flight) {
             lcd_bus_wait_strip_done(&strip_dma_us);
@@ -742,9 +794,6 @@ esp_err_t avi_player_read_and_blit_direct(void) {
             total_frame_blit_us += strip_dma_us;
             perf_mark_strip(strip_dma_us);
         }
-
-        int cur_lines = (hdr_info.width > 0) ? (io.out_size / (hdr_info.width * 2)) : 0;
-        line_y += cur_lines;
 
         // Diagnostico de tearing (T2)
         bool skip_strip = false;
@@ -823,6 +872,134 @@ esp_err_t avi_player_read_and_blit_direct(void) {
     perf_mark_direct_frame(strips_sent_count, total_frame_blit_us, windows_count);
     perf_mark_presented();
 
+    return ESP_OK;
+}
+
+esp_err_t avi_player_reblit_current_frame(void) {
+    if (!s_last_jpeg_chunk || s_last_jpeg_len == 0) {
+        return ESP_ERR_INVALID_STATE;
+    }
+    jpeg_dec_handle_t dec = s_dec_full;
+    if (!dec) return ESP_FAIL;
+
+    jpeg_dec_io_t io = {
+        .inbuf = s_last_jpeg_chunk,
+        .inbuf_len = (int)s_last_jpeg_len,
+    };
+
+    jpeg_dec_header_info_t hdr_info;
+    jpeg_error_t jerr = jpeg_dec_parse_header(dec, &io, &hdr_info);
+    if (jerr != JPEG_ERR_OK) return ESP_FAIL;
+
+    int outbuf_len = 0;
+    jpeg_dec_get_outbuf_len(dec, &outbuf_len);
+    int process_count = 0;
+    jpeg_dec_get_process_count(dec, &process_count);
+    if (process_count <= 0 || outbuf_len <= 0) return ESP_FAIL;
+
+    if (!s_strip_bufs[0] || s_strip_buf_len < (size_t)outbuf_len) return ESP_ERR_INVALID_STATE;
+
+    int16_t vx, vy, vw, vh;
+    lcd_bus_get_video_rect(&vx, &vy, &vw, &vh);
+    if (vw <= 0 || vh <= 0) return ESP_OK;
+
+    int line_y = 0;
+    bool dma_in_flight = false;
+    int x_start = 0;
+    int x_end = 319;
+    int clip_w = 320;
+    if (hdr_info.width == 320 && hdr_info.height == 480) {
+        if (vh < 320) {
+            x_start = 319 - (vy + vh - 1);
+            x_end = 319 - vy;
+            if (x_start < 0) x_start = 0;
+            if (x_end > 319) x_end = 319;
+            clip_w = x_end - x_start + 1;
+        }
+    }
+
+    lcd_overlay_rect_t active_overlays[LCD_OVERLAY_MAX_RECTS];
+    int num_overlays = lcd_bus_get_active_overlays(active_overlays);
+    const uint16_t *overlay_buf = (num_overlays > 0) ? lcd_bus_get_overlay_buffer() : NULL;
+
+    lcd_bus_lock();
+
+    if (hdr_info.width == 320 && hdr_info.height == 480) {
+        if (clip_w > 0) {
+            lcd_bus_set_frame_window((uint16_t)x_start, 0, (uint16_t)x_end, 479);
+        }
+    } else {
+        uint16_t x1_win = (uint16_t)x_start;
+        uint16_t x2_win = (uint16_t)x_end;
+        uint16_t y2_win = (hdr_info.height > 0 && hdr_info.height <= 480) ? (hdr_info.height - 1) : 319;
+        lcd_bus_set_frame_window(x1_win, 0, x2_win, y2_win);
+    }
+
+    uint32_t strips_sent_count = 0;
+    for (int b = 0; b < process_count; b++) {
+        io.outbuf = (uint8_t *)s_strip_bufs[b & 1];
+        jerr = jpeg_dec_process(dec, &io);
+        if (jerr != JPEG_ERR_OK) {
+            if (dma_in_flight) lcd_bus_wait_strip_done(NULL);
+            lcd_bus_unlock();
+            return ESP_FAIL;
+        }
+
+        int cur_lines = (hdr_info.width > 0) ? (io.out_size / (hdr_info.width * 2)) : 0;
+        line_y += cur_lines;
+
+        if (num_overlays > 0 && overlay_buf != NULL && cur_lines > 0) {
+            int strip_y_start = line_y - cur_lines;
+            for (int r = 0; r < cur_lines; r++) {
+                int phys_y = strip_y_start + r;
+                for (int ov = 0; ov < num_overlays; ov++) {
+                    if (phys_y >= active_overlays[ov].nat_y_min && phys_y <= active_overlays[ov].nat_y_max) {
+                        int x_min = active_overlays[ov].nat_x_min;
+                        int x_max = active_overlays[ov].nat_x_max;
+                        if (x_min < 0) x_min = 0;
+                        if (x_max > 319) x_max = 319;
+                        if (x_max >= x_min) {
+                            uint16_t *dst = s_strip_bufs[b & 1] + r * 320 + x_min;
+                            const uint16_t *src = overlay_buf + phys_y * 320 + x_min;
+                            memcpy(dst, src, (x_max - x_min + 1) * sizeof(uint16_t));
+                        }
+                    }
+                }
+            }
+        }
+
+        if (dma_in_flight) {
+            lcd_bus_wait_strip_done(NULL);
+            dma_in_flight = false;
+        }
+
+        if (hdr_info.width == 320 && hdr_info.height == 480) {
+            if (vh >= 320) {
+                size_t strip_bytes = (size_t)cur_lines * 320 * sizeof(uint16_t);
+                bool is_first = (strips_sent_count == 0);
+                lcd_bus_draw_strip_continue_async(s_strip_bufs[b & 1], strip_bytes, is_first);
+                dma_in_flight = true;
+                strips_sent_count++;
+            } else if (clip_w > 0) {
+                ensure_clip_strip_bufs(320 * 16 * sizeof(uint16_t));
+                uint16_t *dst_strip = s_clip_strip_bufs[b & 1];
+                const uint16_t *src_strip = s_strip_bufs[b & 1];
+                for (int r = 0; r < cur_lines; r++) {
+                    memcpy(dst_strip + r * clip_w, src_strip + r * 320 + x_start, clip_w * sizeof(uint16_t));
+                }
+                size_t clip_bytes = (size_t)cur_lines * clip_w * sizeof(uint16_t);
+                bool is_first = (strips_sent_count == 0);
+                lcd_bus_draw_strip_continue_async(dst_strip, clip_bytes, is_first);
+                dma_in_flight = true;
+                strips_sent_count++;
+            }
+        }
+    }
+
+    if (dma_in_flight) {
+        lcd_bus_wait_strip_done(NULL);
+    }
+    lcd_bus_unlock();
     return ESP_OK;
 }
 

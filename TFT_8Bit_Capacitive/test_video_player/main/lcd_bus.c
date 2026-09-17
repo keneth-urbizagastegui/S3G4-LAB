@@ -4,6 +4,7 @@
 #include "freertos/semphr.h"
 #include "esp_timer.h"
 #include "esp_log.h"
+#include "esp_heap_caps.h"
 #include "esp_lcd_panel_io.h"
 #include "ili9488_8080.h"
 
@@ -13,6 +14,9 @@ static SemaphoreHandle_t s_bus_mutex = NULL;
 static portMUX_TYPE s_rect_mux = portMUX_INITIALIZER_UNLOCKED;
 static lcd_video_rect_t s_video_rect = {0, 0, 480, 320};
 
+static lcd_overlay_rect_t s_overlay_rects[LCD_OVERLAY_MAX_RECTS] = {0};
+static uint16_t *s_overlay_buf = NULL; // 320 x 480 RGB565 en PSRAM
+
 static int64_t s_strip_start_us = 0;
 static bool s_strip_in_flight = false;
 
@@ -21,7 +25,125 @@ void lcd_bus_init(void) {
         s_bus_mutex = xSemaphoreCreateRecursiveMutex();
         assert(s_bus_mutex != NULL);
     }
+    if (!s_overlay_buf) {
+        s_overlay_buf = (uint16_t *)heap_caps_malloc(320 * 480 * sizeof(uint16_t), MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT);
+        assert(s_overlay_buf != NULL);
+        memset(s_overlay_buf, 0, 320 * 480 * sizeof(uint16_t));
+        ESP_LOGI(TAG, "Buffer de overlay PSRAM (320x480 RGB565, %u bytes) inicializado.",
+                 (unsigned int)(320 * 480 * sizeof(uint16_t)));
+    }
     ESP_LOGI(TAG, "lcd_bus inicializado con mutex recursivo.");
+}
+
+void lcd_bus_set_overlay_rect(int id, int16_t x, int16_t y, int16_t w, int16_t h, bool enabled) {
+    if (id < 0 || id >= LCD_OVERLAY_MAX_RECTS) return;
+    portENTER_CRITICAL(&s_rect_mux);
+    s_overlay_rects[id].x = x;
+    s_overlay_rects[id].y = y;
+    s_overlay_rects[id].w = w;
+    s_overlay_rects[id].h = h;
+    s_overlay_rects[id].enabled = enabled;
+    if (enabled && w > 0 && h > 0) {
+        s_overlay_rects[id].nat_y_min = x;
+        s_overlay_rects[id].nat_y_max = x + w - 1;
+        s_overlay_rects[id].nat_x_min = 319 - (y + h - 1);
+        s_overlay_rects[id].nat_x_max = 319 - y;
+    } else {
+        s_overlay_rects[id].nat_y_min = 0;
+        s_overlay_rects[id].nat_y_max = 0;
+        s_overlay_rects[id].nat_x_min = 0;
+        s_overlay_rects[id].nat_x_max = 0;
+    }
+    portEXIT_CRITICAL(&s_rect_mux);
+}
+
+void lcd_bus_clear_overlays(void) {
+    portENTER_CRITICAL(&s_rect_mux);
+    for (int i = 0; i < LCD_OVERLAY_MAX_RECTS; i++) {
+        s_overlay_rects[i].enabled = false;
+    }
+    portEXIT_CRITICAL(&s_rect_mux);
+}
+
+int lcd_bus_get_active_overlays(lcd_overlay_rect_t out_rects[LCD_OVERLAY_MAX_RECTS]) {
+    int cnt = 0;
+    portENTER_CRITICAL(&s_rect_mux);
+    for (int i = 0; i < LCD_OVERLAY_MAX_RECTS; i++) {
+        if (s_overlay_rects[i].enabled && s_overlay_rects[i].w > 0 && s_overlay_rects[i].h > 0) {
+            if (out_rects) out_rects[cnt] = s_overlay_rects[i];
+            cnt++;
+        }
+    }
+    portEXIT_CRITICAL(&s_rect_mux);
+    return cnt;
+}
+
+bool lcd_bus_has_active_overlays(void) {
+    bool any = false;
+    portENTER_CRITICAL(&s_rect_mux);
+    for (int i = 0; i < LCD_OVERLAY_MAX_RECTS; i++) {
+        if (s_overlay_rects[i].enabled && s_overlay_rects[i].w > 0 && s_overlay_rects[i].h > 0) {
+            any = true;
+            break;
+        }
+    }
+    portEXIT_CRITICAL(&s_rect_mux);
+    return any;
+}
+
+const uint16_t *lcd_bus_get_overlay_buffer(void) {
+    return s_overlay_buf;
+}
+
+void lcd_bus_get_overlay_stats(int *out_rects, uint32_t *out_px) {
+    int cnt = 0;
+    uint32_t px = 0;
+    portENTER_CRITICAL(&s_rect_mux);
+    for (int i = 0; i < LCD_OVERLAY_MAX_RECTS; i++) {
+        if (s_overlay_rects[i].enabled && s_overlay_rects[i].w > 0 && s_overlay_rects[i].h > 0) {
+            cnt++;
+            px += (uint32_t)s_overlay_rects[i].w * (uint32_t)s_overlay_rects[i].h;
+        }
+    }
+    portEXIT_CRITICAL(&s_rect_mux);
+    if (out_rects) *out_rects = cnt;
+    if (out_px) *out_px = px;
+}
+
+void lcd_bus_overlay_update_from_lvgl(int16_t x1, int16_t y1, int16_t x2, int16_t y2, const uint16_t *src_pixels) {
+    if (!s_overlay_buf || !src_pixels) return;
+
+    lcd_overlay_rect_t actives[LCD_OVERLAY_MAX_RECTS];
+    int n = lcd_bus_get_active_overlays(actives);
+    if (n == 0) return;
+
+    int w = x2 - x1 + 1;
+    if (w <= 0) return;
+
+    for (int i = 0; i < n; i++) {
+        int16_t rx1 = actives[i].x;
+        int16_t ry1 = actives[i].y;
+        int16_t rx2 = actives[i].x + actives[i].w - 1;
+        int16_t ry2 = actives[i].y + actives[i].h - 1;
+
+        int16_t ix1 = (x1 > rx1) ? x1 : rx1;
+        int16_t ix2 = (x2 < rx2) ? x2 : rx2;
+        int16_t iy1 = (y1 > ry1) ? y1 : ry1;
+        int16_t iy2 = (y2 < ry2) ? y2 : ry2;
+
+        if (ix1 <= ix2 && iy1 <= iy2) {
+            for (int ly = iy1; ly <= iy2; ly++) {
+                int x_phys = 319 - ly;
+                if (x_phys < 0 || x_phys >= 320) continue;
+                int src_row = (ly - y1) * w;
+                for (int lx = ix1; lx <= ix2; lx++) {
+                    int y_phys = lx;
+                    if (y_phys < 0 || y_phys >= 480) continue;
+                    s_overlay_buf[y_phys * 320 + x_phys] = src_pixels[src_row + (lx - x1)];
+                }
+            }
+        }
+    }
 }
 
 void lcd_bus_lock(void) {

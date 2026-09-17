@@ -127,6 +127,7 @@ def main():
     ui_data = None
     uinav_records = []
     scroll_data = None
+    ovl_records = []
     crashed = False
     crash_reason = ""
 
@@ -182,6 +183,12 @@ def main():
                 kv = parse_kv_line(line_str, "SCROLL")
                 if kv:
                     scroll_data = kv
+
+            # Deteccion de OVL
+            if line_str.startswith("OVL,"):
+                kv = parse_kv_line(line_str, "OVL")
+                if kv:
+                    ovl_records.append(kv)
 
             # Deteccion de LIB
             if line_str.startswith("LIB,"):
@@ -808,6 +815,59 @@ def main():
                     f5a_passed = False
             else:
                 print(f"[INFO {args.phase.upper()}]: Linea SCROLL no recibida en este run.")
+
+        # 16. Criterios especificos F6b it2: Escenario OVERLAY (composicion de capas sin detener el video)
+        if args.phase.upper() == "F6B":
+            print("\n" + "-" * 80)
+            print("EVALUACION CRITERIOS ESPECIFICOS FASE F6b it2 (ESCENARIO OVERLAY)")
+            print("-" * 80)
+            overlay_recs = [r for r in perf_records if r.get("scn") == "overlay"]
+            if overlay_recs:
+                filtered_ovl = overlay_recs[1:] if len(overlay_recs) > 1 else overlay_recs
+                ovl_pres = [float(r.get("pres_fps", 0.0)) for r in filtered_ovl]
+                avg_ovl_pres = sum(ovl_pres) / len(ovl_pres) if ovl_pres else 0.0
+                total_ovl_drop = sum(int(r.get("drop", 0)) for r in filtered_ovl)
+                total_ovl_dec = sum(int(r.get("dec_frames", round(float(r.get("dec_fps", 0.0)) * 2.0))) for r in filtered_ovl)
+                total_ovl_frames = total_ovl_dec + total_ovl_drop
+                ovl_drop_rate = (total_ovl_drop / total_ovl_frames * 100.0) if total_ovl_frames > 0 else 0.0
+
+                print(f"[EVALUACION OVERLAY pres_fps]: media = {avg_ovl_pres:.2f} FPS (umbral: >= 29.0 FPS)")
+                if avg_ovl_pres < 29.0:
+                    print(f"[CRITERIO F6b FALLIDO]: pres_fps en overlay = {avg_ovl_pres:.2f} < 29.0 FPS.", file=sys.stderr)
+                    f5a_passed = False
+                else:
+                    print(f"[CRITERIO F6b OK]: pres_fps en overlay = {avg_ovl_pres:.2f} >= 29.0 FPS.")
+
+                print(f"[EVALUACION OVERLAY DROP]: drop={total_ovl_drop}, frames={total_ovl_frames}, tasa={ovl_drop_rate:.2f}% (umbral: <= 1.0%)")
+                if ovl_drop_rate > 1.0:
+                    print(f"[CRITERIO F6b FALLIDO]: Tasa de drop en overlay ({ovl_drop_rate:.2f}%) > 1.0%.", file=sys.stderr)
+                    f5a_passed = False
+                else:
+                    print(f"[CRITERIO F6b OK]: Tasa de drop en overlay <= 1.0%.")
+
+                # Comprobar frame_blit_ms incremento <= 1.0 ms vs hidden track 0
+                ovl_blit_vals = [float(r.get("frame_blit_ms_avg", 0.0)) for r in filtered_ovl if float(r.get("frame_blit_ms_avg", 0.0)) > 0.0]
+                avg_ovl_blit = sum(ovl_blit_vals) / len(ovl_blit_vals) if ovl_blit_vals else 0.0
+                base_recs = groups.get(("0", "hidden")) or groups.get((0, "hidden")) or []
+                base_blit_vals = [float(r.get("frame_blit_ms_avg", 0.0)) for r in base_recs[1:] if float(r.get("frame_blit_ms_avg", 0.0)) > 0.0]
+                avg_base_blit = sum(base_blit_vals) / len(base_blit_vals) if base_blit_vals else 0.0
+                blit_delta = avg_ovl_blit - avg_base_blit
+                print(f"[EVALUACION OVERLAY frame_blit_ms]: overlay={avg_ovl_blit:.2f} ms vs base_hidden={avg_base_blit:.2f} ms, delta={blit_delta:+.2f} ms (umbral: delta <= 1.0 ms)")
+                if blit_delta > 1.0:
+                    print(f"[CRITERIO F6b FALLIDO]: Incremento de frame_blit_ms ({blit_delta:+.2f} ms) > 1.0 ms.", file=sys.stderr)
+                    f5a_passed = False
+                else:
+                    print(f"[CRITERIO F6b OK]: Incremento de frame_blit_ms <= 1.0 ms.")
+
+                # Comprobar recepcion de lineas OVL
+                if ovl_records:
+                    print(f"[CRITERIO F6b OK]: Se recibieron {len(ovl_records)} lineas OVL (log periodico 1s).")
+                else:
+                    print(f"[CRITERIO F6b FALLIDO]: No se recibieron lineas OVL.", file=sys.stderr)
+                    f5a_passed = False
+            else:
+                print("[CRITERIO F6b FALLIDO]: No se recibieron registros con scn='overlay'.", file=sys.stderr)
+                f5a_passed = False
 
         print("=" * 80)
         if f5a_passed:
