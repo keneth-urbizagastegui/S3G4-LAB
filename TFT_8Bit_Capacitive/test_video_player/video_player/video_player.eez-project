@@ -599,7 +599,7 @@
                                     "identifier": "lbl_subtitle",
                                     "text": "subtitle",
                                     "textType": "expression",
-                                    "longMode": "SCROLL_CIRCULAR",
+                                    "longMode": "DOT",
                                     "recolor": false
                                 },
                                 {
@@ -672,7 +672,7 @@
                                             "children": [],
                                             "text": "fps_text",
                                             "textType": "expression",
-                                            "longMode": "SCROLL_CIRCULAR",
+                                            "longMode": "WRAP",
                                             "recolor": false
                                         }
                                     ],
@@ -821,7 +821,7 @@
                                     "identifier": "lbl_pos",
                                     "text": "pos_text",
                                     "textType": "expression",
-                                    "longMode": "SCROLL_CIRCULAR",
+                                    "longMode": "WRAP",
                                     "recolor": false
                                 },
                                 {
@@ -919,7 +919,7 @@
                                     "identifier": "lbl_dur",
                                     "text": "dur_text",
                                     "textType": "expression",
-                                    "longMode": "SCROLL_CIRCULAR",
+                                    "longMode": "WRAP",
                                     "recolor": false
                                 },
                                 {
@@ -1857,7 +1857,7 @@
                                     "children": [],
                                     "text": "70%",
                                     "textType": "literal",
-                                    "longMode": "SCROLL_CIRCULAR",
+                                    "longMode": "CLIP",
                                     "identifier": "lbl_bri"
                                 }
                             ],
@@ -1976,7 +1976,7 @@
                                     "children": [],
                                     "text": "+10 s",
                                     "textType": "literal",
-                                    "longMode": "SCROLL_CIRCULAR",
+                                    "longMode": "CLIP",
                                     "identifier": "lbl_seek_hint"
                                 }
                             ],
@@ -2055,7 +2055,7 @@
                                     "children": [],
                                     "text": "Rendimiento",
                                     "textType": "literal",
-                                    "longMode": "SCROLL_CIRCULAR"
+                                    "longMode": "CLIP"
                                 },
                                 {
                                     "objID": "5eb9dd1a-86b8-4d1c-a144-cc1b2dc844a6",
@@ -2168,7 +2168,7 @@
                                     "children": [],
                                     "text": "Presentados",
                                     "textType": "literal",
-                                    "longMode": "SCROLL_CIRCULAR"
+                                    "longMode": "CLIP"
                                 },
                                 {
                                     "objID": "1234d2fd-4417-4c6b-842d-11c095ae9290",
@@ -2206,7 +2206,7 @@
                                     "children": [],
                                     "text": "30.0 fps",
                                     "textType": "literal",
-                                    "longMode": "SCROLL_CIRCULAR",
+                                    "longMode": "CLIP",
                                     "identifier": "lbl_stat_pres"
                                 },
                                 {
@@ -2244,7 +2244,7 @@
                                     "children": [],
                                     "text": "Decodificados",
                                     "textType": "literal",
-                                    "longMode": "SCROLL_CIRCULAR"
+                                    "longMode": "CLIP"
                                 },
                                 {
                                     "objID": "a47b50e7-3079-4a0b-a460-44ea80341625",
@@ -2282,7 +2282,7 @@
                                     "children": [],
                                     "text": "30.0 fps",
                                     "textType": "literal",
-                                    "longMode": "SCROLL_CIRCULAR",
+                                    "longMode": "CLIP",
                                     "identifier": "lbl_stat_dec"
                                 },
                                 {
@@ -2320,7 +2320,7 @@
                                     "children": [],
                                     "text": "Descartados",
                                     "textType": "literal",
-                                    "longMode": "SCROLL_CIRCULAR"
+                                    "longMode": "CLIP"
                                 },
                                 {
                                     "objID": "233ba31c-2c7a-4567-a7c3-29a193c7008d",
@@ -2358,7 +2358,7 @@
                                     "children": [],
                                     "text": "0",
                                     "textType": "literal",
-                                    "longMode": "SCROLL_CIRCULAR",
+                                    "longMode": "CLIP",
                                     "identifier": "lbl_stat_drop"
                                 },
                                 {
@@ -2396,7 +2396,7 @@
                                     "children": [],
                                     "text": "Lectura SD",
                                     "textType": "literal",
-                                    "longMode": "SCROLL_CIRCULAR"
+                                    "longMode": "CLIP"
                                 },
                                 {
                                     "objID": "cb8c650f-133a-45e9-ab02-060a8a319eef",
@@ -2434,7 +2434,7 @@
                                     "children": [],
                                     "text": "5.1 / 9.4 ms",
                                     "textType": "literal",
-                                    "longMode": "SCROLL_CIRCULAR",
+                                    "longMode": "CLIP",
                                     "identifier": "lbl_stat_rd"
                                 },
                                 {
@@ -2472,7 +2472,7 @@
                                     "children": [],
                                     "text": "Decodificaci\u00f3n",
                                     "textType": "literal",
-                                    "longMode": "SCROLL_CIRCULAR"
+                                    "longMode": "CLIP"
                                 },
                                 {
                                     "objID": "e5286ff9-24bd-4f3e-bdf2-e6051c42068b",
@@ -2510,7 +2510,7 @@
                                     "children": [],
                                     "text": "21.8 / 27.0 ms",
                                     "textType": "literal",
-                                    "longMode": "SCROLL_CIRCULAR",
+                                    "longMode": "CLIP",
                                     "identifier": "lbl_stat_dec_time"
                                 },
                                 {
@@ -2548,7 +2548,7 @@
                                     "children": [],
                                     "text": "Env\u00edo al panel",
                                     "textType": "literal",
-                                    "longMode": "SCROLL_CIRCULAR"
+                                    "longMode": "CLIP"
                                 },
                                 {
                                     "objID": "e0788395-8ace-43f4-8f30-fe1fee666a9a",
@@ -2586,7 +2586,7 @@
                                     "children": [],
                                     "text": "18.9 ms",
                                     "textType": "literal",
-                                    "longMode": "SCROLL_CIRCULAR",
+                                    "longMode": "CLIP",
                                     "identifier": "lbl_stat_blit"
                                 },
                                 {
@@ -2624,7 +2624,7 @@
                                     "children": [],
                                     "text": "Archivo",
                                     "textType": "literal",
-                                    "longMode": "SCROLL_CIRCULAR"
+                                    "longMode": "CLIP"
                                 },
                                 {
                                     "objID": "1bb5f31b-e67f-482b-881d-9ef7602746c8",
@@ -2662,7 +2662,7 @@
                                     "children": [],
                                     "text": "480x320 \u00b7 MJPEG",
                                     "textType": "literal",
-                                    "longMode": "SCROLL_CIRCULAR",
+                                    "longMode": "CLIP",
                                     "identifier": "lbl_stat_file"
                                 }
                             ],
@@ -2773,7 +2773,7 @@
                                     "identifier": "lbl_lib_title",
                                     "text": "Biblioteca",
                                     "textType": "literal",
-                                    "longMode": "SCROLL_CIRCULAR",
+                                    "longMode": "WRAP",
                                     "recolor": false
                                 },
                                 {
@@ -2813,7 +2813,7 @@
                                     "identifier": "lbl_lib_count",
                                     "text": "library_summary",
                                     "textType": "expression",
-                                    "longMode": "SCROLL_CIRCULAR",
+                                    "longMode": "WRAP",
                                     "recolor": false
                                 },
                                 {
@@ -3098,7 +3098,7 @@
                             "identifier": "lbl_nomedia_title",
                             "text": "No hay videos",
                             "textType": "literal",
-                            "longMode": "SCROLL_CIRCULAR",
+                            "longMode": "WRAP",
                             "recolor": false
                         },
                         {
@@ -3138,7 +3138,7 @@
                             "identifier": "lbl_nomedia_sub",
                             "text": "Copia archivos .avi en /videos de la microSD",
                             "textType": "literal",
-                            "longMode": "SCROLL_CIRCULAR",
+                            "longMode": "WRAP",
                             "recolor": false
                         },
                         {
@@ -3204,7 +3204,7 @@
                                     "children": [],
                                     "text": "Error 0x0",
                                     "textType": "literal",
-                                    "longMode": "SCROLL_CIRCULAR",
+                                    "longMode": "WRAP",
                                     "recolor": false
                                 }
                             ],
@@ -3288,7 +3288,7 @@
                                     "children": [],
                                     "text": "Reintentar",
                                     "textType": "literal",
-                                    "longMode": "SCROLL_CIRCULAR",
+                                    "longMode": "WRAP",
                                     "recolor": false
                                 }
                             ],
@@ -3364,7 +3364,7 @@
                                     "children": [],
                                     "text": "Ver ajustes",
                                     "textType": "literal",
-                                    "longMode": "SCROLL_CIRCULAR",
+                                    "longMode": "WRAP",
                                     "recolor": false
                                 }
                             ],
@@ -3407,7 +3407,7 @@
                             "identifier": "lbl_retry_hint",
                             "text": "Reintentando cada segundo...",
                             "textType": "literal",
-                            "longMode": "SCROLL_CIRCULAR",
+                            "longMode": "WRAP",
                             "recolor": false
                         }
                     ]
@@ -3567,7 +3567,7 @@
                                     "children": [],
                                     "text": "A continuaci\u00f3n",
                                     "textType": "literal",
-                                    "longMode": "SCROLL_CIRCULAR",
+                                    "longMode": "CLIP",
                                     "identifier": "lbl_queue_title"
                                 },
                                 {
@@ -3907,7 +3907,7 @@
                                             "children": [],
                                             "text": "Repetir todo",
                                             "textType": "literal",
-                                            "longMode": "SCROLL_CIRCULAR",
+                                            "longMode": "CLIP",
                                             "identifier": "lbl_q_mode"
                                         }
                                     ],
@@ -4105,7 +4105,7 @@
                                     "children": [],
                                     "text": "Ajustes",
                                     "textType": "literal",
-                                    "longMode": "SCROLL_CIRCULAR"
+                                    "longMode": "CLIP"
                                 },
                                 {
                                     "objID": "5c976627-53ea-46b6-ae5b-790193ddf88f",
@@ -4175,7 +4175,7 @@
                                             "children": [],
                                             "text": "Pantalla",
                                             "textType": "literal",
-                                            "longMode": "SCROLL_CIRCULAR",
+                                            "longMode": "CLIP",
                                             "identifier": "lbl_tab_0"
                                         }
                                     ],
@@ -4250,7 +4250,7 @@
                                             "children": [],
                                             "text": "Reproducci\u00f3n",
                                             "textType": "literal",
-                                            "longMode": "SCROLL_CIRCULAR",
+                                            "longMode": "CLIP",
                                             "identifier": "lbl_tab_1"
                                         }
                                     ],
@@ -4325,7 +4325,7 @@
                                             "children": [],
                                             "text": "Almacenamiento",
                                             "textType": "literal",
-                                            "longMode": "SCROLL_CIRCULAR",
+                                            "longMode": "CLIP",
                                             "identifier": "lbl_tab_2"
                                         }
                                     ],
@@ -4400,7 +4400,7 @@
                                             "children": [],
                                             "text": "Acerca de",
                                             "textType": "literal",
-                                            "longMode": "SCROLL_CIRCULAR",
+                                            "longMode": "CLIP",
                                             "identifier": "lbl_tab_3"
                                         }
                                     ],
@@ -4515,7 +4515,7 @@
                                             "children": [],
                                             "text": "Brillo",
                                             "textType": "literal",
-                                            "longMode": "SCROLL_CIRCULAR"
+                                            "longMode": "CLIP"
                                         },
                                         {
                                             "objID": "c27df50e-1767-4876-901b-b2ac058d5ed5",
@@ -4553,7 +4553,7 @@
                                             "children": [],
                                             "text": "100%",
                                             "textType": "literal",
-                                            "longMode": "SCROLL_CIRCULAR",
+                                            "longMode": "CLIP",
                                             "identifier": "lbl_set_bri_val"
                                         },
                                         {
@@ -4638,7 +4638,7 @@
                                             "children": [],
                                             "text": "Ocultar controles tras",
                                             "textType": "literal",
-                                            "longMode": "SCROLL_CIRCULAR"
+                                            "longMode": "CLIP"
                                         },
                                         {
                                             "objID": "b1c6e732-d9ab-4679-800e-3cd4325f6d57",
@@ -4714,7 +4714,7 @@
                                             "children": [],
                                             "text": "Mostrar FPS en la OSD",
                                             "textType": "literal",
-                                            "longMode": "SCROLL_CIRCULAR"
+                                            "longMode": "CLIP"
                                         },
                                         {
                                             "objID": "548cad5f-3e95-4add-8e83-605139d431a6",
@@ -4786,7 +4786,7 @@
                                             "children": [],
                                             "text": "Barra de progreso m\u00ednima",
                                             "textType": "literal",
-                                            "longMode": "SCROLL_CIRCULAR"
+                                            "longMode": "CLIP"
                                         },
                                         {
                                             "objID": "7992eb24-b905-4b8c-aa3b-04ff6e6e4222",
@@ -4896,7 +4896,7 @@
                                             "children": [],
                                             "text": "Repetir",
                                             "textType": "literal",
-                                            "longMode": "SCROLL_CIRCULAR"
+                                            "longMode": "CLIP"
                                         },
                                         {
                                             "objID": "87eb97e9-d12b-4293-bcba-db02a8417d08",
@@ -4972,7 +4972,7 @@
                                             "children": [],
                                             "text": "Aleatorio",
                                             "textType": "literal",
-                                            "longMode": "SCROLL_CIRCULAR"
+                                            "longMode": "CLIP"
                                         },
                                         {
                                             "objID": "4cb822b9-7af2-4d91-b71e-4b4f41abd390",
@@ -5044,7 +5044,7 @@
                                             "children": [],
                                             "text": "Continuar donde lo dej\u00e9",
                                             "textType": "literal",
-                                            "longMode": "SCROLL_CIRCULAR"
+                                            "longMode": "CLIP"
                                         },
                                         {
                                             "objID": "1f336dc0-d159-4729-81c9-d5ff0e920cdf",
@@ -5081,7 +5081,7 @@
                                             "children": [],
                                             "text": "Guarda la posici\u00f3n de cada video",
                                             "textType": "literal",
-                                            "longMode": "SCROLL_CIRCULAR"
+                                            "longMode": "CLIP"
                                         },
                                         {
                                             "objID": "580ad239-56c6-4bde-ada3-2fd6b68ac307",
@@ -5153,7 +5153,7 @@
                                             "children": [],
                                             "text": "Salto de los botones \u27f2 \u27f3",
                                             "textType": "literal",
-                                            "longMode": "SCROLL_CIRCULAR"
+                                            "longMode": "CLIP"
                                         },
                                         {
                                             "objID": "6e4a47fb-5d33-4434-a28f-94cdd66b5974",
@@ -5341,7 +5341,7 @@
                                                     "children": [],
                                                     "text": "microSD SDHC 32 GB",
                                                     "textType": "literal",
-                                                    "longMode": "SCROLL_CIRCULAR",
+                                                    "longMode": "CLIP",
                                                     "identifier": "lbl_sd_name"
                                                 },
                                                 {
@@ -5380,7 +5380,7 @@
                                                     "children": [],
                                                     "text": "FAT32",
                                                     "textType": "literal",
-                                                    "longMode": "SCROLL_CIRCULAR",
+                                                    "longMode": "CLIP",
                                                     "identifier": "lbl_sd_fs"
                                                 },
                                                 {
@@ -5468,7 +5468,7 @@
                                                     "children": [],
                                                     "text": "Calculando espacio...",
                                                     "textType": "literal",
-                                                    "longMode": "SCROLL_CIRCULAR",
+                                                    "longMode": "CLIP",
                                                     "identifier": "lbl_sd_free"
                                                 }
                                             ],
@@ -5510,7 +5510,7 @@
                                             "children": [],
                                             "text": "Velocidad del bus",
                                             "textType": "literal",
-                                            "longMode": "SCROLL_CIRCULAR"
+                                            "longMode": "CLIP"
                                         },
                                         {
                                             "objID": "d4230d58-7632-467c-9d38-59e8b1078415",
@@ -5548,7 +5548,7 @@
                                             "children": [],
                                             "text": "SPI \u00b7 20 MHz",
                                             "textType": "literal",
-                                            "longMode": "SCROLL_CIRCULAR",
+                                            "longMode": "CLIP",
                                             "identifier": "lbl_sd_speed"
                                         },
                                         {
@@ -5586,7 +5586,7 @@
                                             "children": [],
                                             "text": "Videos encontrados",
                                             "textType": "literal",
-                                            "longMode": "SCROLL_CIRCULAR"
+                                            "longMode": "CLIP"
                                         },
                                         {
                                             "objID": "36f3dedd-7558-4843-847a-f6e2598c38af",
@@ -5624,7 +5624,7 @@
                                             "children": [],
                                             "text": "4 en /videos",
                                             "textType": "literal",
-                                            "longMode": "SCROLL_CIRCULAR",
+                                            "longMode": "CLIP",
                                             "identifier": "lbl_sd_count"
                                         },
                                         {
@@ -5734,7 +5734,7 @@
                                                     "children": [],
                                                     "text": "Volver a escanear",
                                                     "textType": "literal",
-                                                    "longMode": "SCROLL_CIRCULAR"
+                                                    "longMode": "CLIP"
                                                 }
                                             ],
                                             "identifier": "btn_rescan",
@@ -5813,7 +5813,7 @@
                                             "children": [],
                                             "text": "S3G4 Video",
                                             "textType": "literal",
-                                            "longMode": "SCROLL_CIRCULAR"
+                                            "longMode": "CLIP"
                                         },
                                         {
                                             "objID": "802854b8-41a0-4dfa-8f1c-c9ca8fd92e02",
@@ -5850,7 +5850,7 @@
                                             "children": [],
                                             "text": "Reproductor de video embebido",
                                             "textType": "literal",
-                                            "longMode": "SCROLL_CIRCULAR"
+                                            "longMode": "CLIP"
                                         },
                                         {
                                             "objID": "85c24ba3-f23c-41d4-915a-e0becdc13751",
@@ -5887,7 +5887,7 @@
                                             "children": [],
                                             "text": "Firmware",
                                             "textType": "literal",
-                                            "longMode": "SCROLL_CIRCULAR"
+                                            "longMode": "CLIP"
                                         },
                                         {
                                             "objID": "d285d61f-5da2-4eae-8250-ab5083ab4580",
@@ -5925,7 +5925,7 @@
                                             "children": [],
                                             "text": "vp-v0.8",
                                             "textType": "literal",
-                                            "longMode": "SCROLL_CIRCULAR",
+                                            "longMode": "CLIP",
                                             "identifier": "lbl_about_fw"
                                         },
                                         {
@@ -5963,7 +5963,7 @@
                                             "children": [],
                                             "text": "ESP-IDF",
                                             "textType": "literal",
-                                            "longMode": "SCROLL_CIRCULAR"
+                                            "longMode": "CLIP"
                                         },
                                         {
                                             "objID": "27a16e91-c55a-407d-8c1b-cd6b2c38aeab",
@@ -6001,7 +6001,7 @@
                                             "children": [],
                                             "text": "6.0.1",
                                             "textType": "literal",
-                                            "longMode": "SCROLL_CIRCULAR",
+                                            "longMode": "CLIP",
                                             "identifier": "lbl_about_idf"
                                         },
                                         {
@@ -6039,7 +6039,7 @@
                                             "children": [],
                                             "text": "LVGL",
                                             "textType": "literal",
-                                            "longMode": "SCROLL_CIRCULAR"
+                                            "longMode": "CLIP"
                                         },
                                         {
                                             "objID": "146a5c26-88be-4584-b473-3fc0be7b27fe",
@@ -6077,7 +6077,7 @@
                                             "children": [],
                                             "text": "9.5.0",
                                             "textType": "literal",
-                                            "longMode": "SCROLL_CIRCULAR",
+                                            "longMode": "CLIP",
                                             "identifier": "lbl_about_lvgl"
                                         },
                                         {
@@ -6115,7 +6115,7 @@
                                             "children": [],
                                             "text": "Panel",
                                             "textType": "literal",
-                                            "longMode": "SCROLL_CIRCULAR"
+                                            "longMode": "CLIP"
                                         },
                                         {
                                             "objID": "699c64c7-3dda-463d-8019-199f7dc7beaf",
@@ -6153,7 +6153,7 @@
                                             "children": [],
                                             "text": "ILI9488 \u00b7 8080 8 bits \u00b7 16 MHz",
                                             "textType": "literal",
-                                            "longMode": "SCROLL_CIRCULAR",
+                                            "longMode": "CLIP",
                                             "identifier": "lbl_about_panel"
                                         },
                                         {
@@ -6191,7 +6191,7 @@
                                             "children": [],
                                             "text": "Sincron\u00eda",
                                             "textType": "literal",
-                                            "longMode": "SCROLL_CIRCULAR"
+                                            "longMode": "CLIP"
                                         },
                                         {
                                             "objID": "69c017d8-7ca3-4d99-b8c5-ca9616d2d543",
@@ -6229,7 +6229,7 @@
                                             "children": [],
                                             "text": "TE en GPIO 7 \u00b7 46 Hz",
                                             "textType": "literal",
-                                            "longMode": "SCROLL_CIRCULAR",
+                                            "longMode": "CLIP",
                                             "identifier": "lbl_about_te"
                                         },
                                         {
@@ -6301,7 +6301,7 @@
                                                     "children": [],
                                                     "text": "Ver rendimiento",
                                                     "textType": "literal",
-                                                    "longMode": "SCROLL_CIRCULAR"
+                                                    "longMode": "CLIP"
                                                 }
                                             ],
                                             "identifier": "btn_open_stats",
@@ -6466,7 +6466,7 @@
                                     "children": [],
                                     "text": "Reproduciendo",
                                     "textType": "literal",
-                                    "longMode": "SCROLL_CIRCULAR",
+                                    "longMode": "WRAP",
                                     "recolor": false
                                 }
                             ],
@@ -6556,7 +6556,7 @@
                             "identifier": "lbl_card_title",
                             "text": "Video Title",
                             "textType": "literal",
-                            "longMode": "SCROLL_CIRCULAR",
+                            "longMode": "DOT",
                             "recolor": false
                         },
                         {

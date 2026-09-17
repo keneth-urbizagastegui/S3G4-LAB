@@ -568,8 +568,18 @@ static TaskHandle_t s_gui_task_handle = NULL;
 static TaskHandle_t s_autotest_task_handle = NULL;
 
 /* Runs only on the GUI task: LVGL objects must never be inspected from the
- * autotest task.  A scrolling label is deliberately excluded, because it has
- * an explicit, readable overflow policy. */
+ * autotest task.  The only permitted marquees are the player title and the
+ * active row created inside objects.queue_list. */
+static bool textfit_is_allowed_marquee(const lv_obj_t *obj) {
+    if (obj == objects.lbl_title) return true;
+
+    for (const lv_obj_t *parent = lv_obj_get_parent(obj); parent;
+         parent = lv_obj_get_parent(parent)) {
+        if (parent == objects.queue_list) return true;
+    }
+    return false;
+}
+
 static void textfit_check_tree(lv_obj_t *obj, int *offenders) {
     if (lv_obj_check_type(obj, &lv_label_class)) {
         lv_label_long_mode_t mode = lv_label_get_long_mode(obj);
@@ -581,9 +591,30 @@ static void textfit_check_tree(lv_obj_t *obj, int *offenders) {
                          lv_obj_get_style_text_line_space(obj, LV_PART_MAIN),
                          LV_COORD_MAX, LV_TEXT_FLAG_NONE);
         int32_t box_w = lv_obj_get_content_width(obj);
-        if (text_size.x > box_w && mode != LV_LABEL_LONG_SCROLL_CIRCULAR) {
-            printf("TEXTFIT_BAD,id=label@%p,text_w=%ld,box_w=%ld\n",
+        int32_t box_h = lv_obj_get_content_height(obj);
+        bool marquee = mode == LV_LABEL_LONG_SCROLL_CIRCULAR;
+        bool allowed_marquee = textfit_is_allowed_marquee(obj);
+
+        if (marquee && !allowed_marquee) {
+            printf("TEXTFIT_BAD,id=label@%p,reason=marquee_not_allowed\n",
+                   (void *)obj);
+            (*offenders)++;
+        }
+        if (text_size.x > box_w && !marquee) {
+            printf("TEXTFIT_BAD,id=label@%p,reason=width,text_w=%ld,box_w=%ld\n",
                    (void *)obj, (long)text_size.x, (long)box_w);
+            (*offenders)++;
+        }
+        if (text_size.y > box_h) {
+            printf("TEXTFIT_BAD,id=label@%p,reason=line_height,text_h=%ld,box_h=%ld\n",
+                   (void *)obj, (long)text_size.y, (long)box_h);
+            (*offenders)++;
+        }
+        if (lv_obj_get_scroll_y(obj) != 0 ||
+            (lv_obj_has_flag(obj, LV_OBJ_FLAG_SCROLLABLE) &&
+             (lv_obj_get_scroll_dir(obj) & LV_DIR_VER))) {
+            printf("TEXTFIT_BAD,id=label@%p,reason=vertical_scroll,scroll_y=%ld\n",
+                   (void *)obj, (long)lv_obj_get_scroll_y(obj));
             (*offenders)++;
         }
     }
