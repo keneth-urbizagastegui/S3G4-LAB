@@ -17,8 +17,52 @@ static lcd_video_rect_t s_video_rect = {0, 0, 480, 320};
 static lcd_overlay_rect_t s_overlay_rects[LCD_OVERLAY_MAX_RECTS] = {0};
 static uint16_t *s_overlay_buf = NULL; // 320 x 480 RGB565 en PSRAM
 
+typedef struct {
+    uint16_t start;
+    uint16_t end;
+} lcd_overlay_span_t;
+
+typedef struct {
+    lcd_overlay_span_t spans[LCD_OVERLAY_MAX_SPANS_PER_ROW];
+    uint32_t opaque_bits[10]; // 320 bits; ruta exacta si una fila supera la lista corta.
+    uint8_t count;
+    bool spans_complete;
+} lcd_overlay_row_cache_t;
+
+// Metadatos en DRAM interna: el vídeo no vuelve a inspeccionar píxeles PSRAM.
+static lcd_overlay_row_cache_t s_overlay_rows[480];
+
 static int64_t s_strip_start_us = 0;
 static bool s_strip_in_flight = false;
+
+static void rebuild_overlay_row_cache(int phys_y) {
+    if (!s_overlay_buf || phys_y < 0 || phys_y >= 480) return;
+
+    lcd_overlay_row_cache_t *row = &s_overlay_rows[phys_y];
+    const uint16_t *src = s_overlay_buf + phys_y * 320;
+    memset(row->opaque_bits, 0, sizeof(row->opaque_bits));
+    row->count = 0;
+    row->spans_complete = true;
+
+    int x = 0;
+    while (x < 320) {
+        while (x < 320 && src[x] == LCD_OVERLAY_COLOR_KEY) x++;
+        if (x == 320) break;
+        int start = x;
+        do {
+            row->opaque_bits[x >> 5] |= 1u << (x & 31);
+            x++;
+        } while (x < 320 && src[x] != LCD_OVERLAY_COLOR_KEY);
+
+        if (row->count < LCD_OVERLAY_MAX_SPANS_PER_ROW) {
+            row->spans[row->count].start = start;
+            row->spans[row->count].end = x - 1;
+            row->count++;
+        } else {
+            row->spans_complete = false;
+        }
+    }
+}
 
 static void fill_overlay_rect_with_color_key(int16_t x, int16_t y, int16_t w, int16_t h) {
     if (!s_overlay_buf || w <= 0 || h <= 0) return;
@@ -30,6 +74,10 @@ static void fill_overlay_rect_with_color_key(int16_t x, int16_t y, int16_t w, in
             if (lx < 0 || lx >= 480) continue;
             s_overlay_buf[lx * 320 + x_phys] = LCD_OVERLAY_COLOR_KEY;
         }
+    }
+
+    for (int lx = x; lx < x + w; lx++) {
+        rebuild_overlay_row_cache(lx);
     }
 }
 
@@ -117,6 +165,38 @@ const uint16_t *lcd_bus_get_overlay_buffer(void) {
     return s_overlay_buf;
 }
 
+void lcd_bus_overlay_copy_row(uint16_t *dst_row, int phys_y, int x_min, int x_max) {
+    if (!dst_row || !s_overlay_buf || phys_y < 0 || phys_y >= 480) return;
+    if (x_min < 0) x_min = 0;
+    if (x_max > 319) x_max = 319;
+    if (x_min > x_max) return;
+
+    const lcd_overlay_row_cache_t *row = &s_overlay_rows[phys_y];
+    const uint16_t *src = s_overlay_buf + phys_y * 320;
+    if (row->spans_complete) {
+        for (uint8_t i = 0; i < row->count; i++) {
+            int start = row->spans[i].start > x_min ? row->spans[i].start : x_min;
+            int end = row->spans[i].end < x_max ? row->spans[i].end : x_max;
+            if (start <= end) {
+                memcpy(dst_row + start, src + start, (size_t)(end - start + 1) * sizeof(uint16_t));
+            }
+        }
+        return;
+    }
+
+    // Caso infrecuente de una fila con más de 32 tramos: la máscara interna
+    // conserva transparencia exacta sin volver a leer/comparar el buffer PSRAM.
+    int x = x_min;
+    while (x <= x_max) {
+        while (x <= x_max && !(row->opaque_bits[x >> 5] & (1u << (x & 31)))) x++;
+        int start = x;
+        while (x <= x_max && (row->opaque_bits[x >> 5] & (1u << (x & 31)))) x++;
+        if (start < x) {
+            memcpy(dst_row + start, src + start, (size_t)(x - start) * sizeof(uint16_t));
+        }
+    }
+}
+
 void lcd_bus_get_overlay_stats(int *out_rects, uint32_t *out_px) {
     int cnt = 0;
     uint32_t px = 0;
@@ -165,6 +245,12 @@ void lcd_bus_overlay_update_from_lvgl(int16_t x1, int16_t y1, int16_t x2, int16_
                 }
             }
         }
+    }
+
+    // Un flush puede tocar varios píxeles de una misma fila nativa; indexarla
+    // una sola vez al final evita convertir el coste en ancho*alto.
+    for (int y_phys = x1; y_phys <= x2; y_phys++) {
+        rebuild_overlay_row_cache(y_phys);
     }
 }
 

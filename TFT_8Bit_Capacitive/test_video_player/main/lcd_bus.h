@@ -18,6 +18,7 @@ typedef struct {
 } lcd_video_rect_t;
 
 #define LCD_OVERLAY_MAX_RECTS 4
+#define LCD_OVERLAY_MAX_SPANS_PER_ROW 32
 // Color clave RGB565 para las zonas transparentes de las capas LVGL.
 // Verde puro (0x07E0) no forma parte del diseño de la OSD.
 #define LCD_OVERLAY_COLOR_KEY 0x07E0u
@@ -40,6 +41,9 @@ void lcd_bus_clear_overlays(void);
 int lcd_bus_get_active_overlays(lcd_overlay_rect_t out_rects[LCD_OVERLAY_MAX_RECTS]);
 bool lcd_bus_has_active_overlays(void);
 const uint16_t *lcd_bus_get_overlay_buffer(void);
+// Copia los tramos opacos ya indexados de una fila nativa al búfer de video.
+// x_min/x_max limitan la copia a la intersección con una capa activa.
+void lcd_bus_overlay_copy_row(uint16_t *dst_row, int phys_y, int x_min, int x_max);
 void lcd_bus_overlay_update_from_lvgl(int16_t x1, int16_t y1, int16_t x2, int16_t y2, const uint16_t *src_pixels);
 void lcd_bus_get_overlay_stats(int *out_rects, uint32_t *out_px);
 

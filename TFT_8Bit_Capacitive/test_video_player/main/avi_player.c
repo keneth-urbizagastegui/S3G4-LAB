@@ -779,14 +779,8 @@ esp_err_t avi_player_read_and_blit_direct(void) {
                         if (x_min < 0) x_min = 0;
                         if (x_max > 319) x_max = 319;
                         if (x_max >= x_min) {
-                            uint16_t *dst = s_strip_bufs[b & 1] + r * 320 + x_min;
-                            const uint16_t *src = overlay_buf + phys_y * 320 + x_min;
-                            for (int x = x_min; x <= x_max; x++) {
-                                uint16_t pixel = src[x - x_min];
-                                if (pixel != LCD_OVERLAY_COLOR_KEY) {
-                                    dst[x - x_min] = pixel;
-                                }
-                            }
+                            lcd_bus_overlay_copy_row(s_strip_bufs[b & 1] + r * 320,
+                                                     phys_y, x_min, x_max);
                         }
                     }
                 }
@@ -965,14 +959,8 @@ esp_err_t avi_player_reblit_current_frame(void) {
                         if (x_min < 0) x_min = 0;
                         if (x_max > 319) x_max = 319;
                         if (x_max >= x_min) {
-                            uint16_t *dst = s_strip_bufs[b & 1] + r * 320 + x_min;
-                            const uint16_t *src = overlay_buf + phys_y * 320 + x_min;
-                            for (int x = x_min; x <= x_max; x++) {
-                                uint16_t pixel = src[x - x_min];
-                                if (pixel != LCD_OVERLAY_COLOR_KEY) {
-                                    dst[x - x_min] = pixel;
-                                }
-                            }
+                            lcd_bus_overlay_copy_row(s_strip_bufs[b & 1] + r * 320,
+                                                     phys_y, x_min, x_max);
                         }
                     }
                 }
