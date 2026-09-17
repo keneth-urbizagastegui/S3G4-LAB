@@ -1,4 +1,5 @@
 #include "ui/actions.h"
+#include "ui/vars.h"
 #include "ui/screens.h"
 #include "ui/images.h"
 #include "ui/ui.h"
@@ -1945,9 +1946,18 @@ void action_play_index(lv_event_t *e) {
 
     if (!item->compatible) {
         ESP_LOGW(TAG, "Video incompatible: %s (%s)", item->path, item->incompat);
-        char msg[128];
-        snprintf(msg, sizeof(msg), "%s", (item->incompat[0] != '\0') ? item->incompat : "Formato o resolución incompatible.");
-        ui_glue_show_toast("Video incompatible", msg, true);
+        lv_obj_t *card_obj = target;
+        while (card_obj && lv_obj_get_parent(card_obj) != objects.lib_grid) {
+            card_obj = lv_obj_get_parent(card_obj);
+        }
+        if (card_obj) {
+            lv_obj_set_style_border_color(card_obj, lv_color_hex(0xE5484D), 0);
+            lv_obj_set_style_border_width(card_obj, 2, 0);
+        }
+        char msg[160];
+        snprintf(msg, sizeof(msg), "%s. Se admiten 320x480 y 480x320. Conviertelo con convert_videos.py",
+                 (item->incompat[0] != '\0') ? item->incompat : "Formato no compatible");
+        ui_glue_show_toast("No se puede reproducir", msg, true);
         return;
     }
 
@@ -1982,7 +1992,16 @@ void action_play_index(lv_event_t *e) {
 void action_rescan(lv_event_t *e) {
     s_last_touch_time = esp_timer_get_time() / 1000;
     ESP_LOGI(TAG, "Action: rescan library...");
+    if (objects.bar_scan) {
+        lv_obj_remove_flag(objects.bar_scan, LV_OBJ_FLAG_HIDDEN);
+        lv_bar_set_value(objects.bar_scan, 500, LV_ANIM_OFF);
+        lv_refr_now(NULL);
+    }
     esp_err_t err = media_library_scan();
+    if (objects.bar_scan) {
+        lv_bar_set_value(objects.bar_scan, 1000, LV_ANIM_OFF);
+        lv_obj_add_flag(objects.bar_scan, LV_OBJ_FLAG_HIDDEN);
+    }
     if (err == ESP_OK && media_library_count() > 0) {
         action_library_populate(NULL);
         loadScreen(SCREEN_ID_SCR_LIBRARY);
@@ -2041,9 +2060,6 @@ static lv_obj_t *create_card_widget(lv_obj_t *parent_obj, int idx) {
     lv_obj_t *badge = lv_obj_create(card);
     lv_obj_set_pos(badge, 6, 6);
     lv_obj_set_size(badge, 90, 18);
-    if (!is_active) {
-        lv_obj_add_flag(badge, LV_OBJ_FLAG_HIDDEN);
-    }
     lv_obj_remove_flag(badge, LV_OBJ_FLAG_CLICKABLE|LV_OBJ_FLAG_SCROLLABLE|LV_OBJ_FLAG_SCROLL_CHAIN_HOR|LV_OBJ_FLAG_SCROLL_CHAIN_VER|LV_OBJ_FLAG_SCROLL_ELASTIC|LV_OBJ_FLAG_SCROLL_MOMENTUM|LV_OBJ_FLAG_SCROLL_WITH_ARROW);
     lv_obj_add_flag(badge, LV_OBJ_FLAG_EVENT_BUBBLE);
     lv_obj_set_scrollbar_mode(badge, LV_SCROLLBAR_MODE_OFF);
@@ -2056,9 +2072,17 @@ static lv_obj_t *create_card_widget(lv_obj_t *parent_obj, int idx) {
     lv_obj_add_flag(lbl_badge, LV_OBJ_FLAG_EVENT_BUBBLE);
     lv_obj_set_scrollbar_mode(lbl_badge, LV_SCROLLBAR_MODE_OFF);
     lv_obj_set_style_text_font(lbl_badge, &lv_font_montserrat_12, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_color(lbl_badge, lv_color_hex(theme_colors[active_theme_index][6]), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(lbl_badge, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_label_set_text_static(lbl_badge, "Reproduciendo");
+
+    if (is_active) {
+        lv_obj_set_style_text_color(lbl_badge, lv_color_hex(theme_colors[active_theme_index][6]), LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_label_set_text_static(lbl_badge, "Reproduciendo");
+    } else if (item->compatible && !item->rotated) {
+        lv_obj_set_style_text_color(lbl_badge, lv_color_hex(0x8E929B), LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_label_set_text_static(lbl_badge, "Sin girar");
+    } else {
+        lv_obj_add_flag(badge, LV_OBJ_FLAG_HIDDEN);
+    }
 
     // bar_resume (child 2)
     lv_obj_t *bar_res = lv_bar_create(card);
@@ -2111,12 +2135,12 @@ static lv_obj_t *create_card_widget(lv_obj_t *parent_obj, int idx) {
     }
 
     if (!item->compatible) {
-        lv_obj_set_style_opa(card, LV_OPA_50, 0);
-        if (item->incompat[0]) {
-            lv_label_set_text(lbl_meta, item->incompat);
-        }
+        lv_obj_set_style_opa(card, 115, 0); // 45% opacidad
+        lv_obj_set_style_text_color(lbl_title, lv_color_hex(0x8E929B), 0);
+        lv_obj_set_style_text_color(lbl_meta, lv_color_hex(0xE5484D), 0);
+        lv_label_set_text(lbl_meta, item->incompat[0] ? item->incompat : "No compatible");
     } else if (!item->rotated) {
-        lv_label_set_text(lbl_meta, "Sin girar");
+        lv_label_set_text_static(lbl_meta, "Sin girar: puede verse corte");
     }
 
     return card;
@@ -2126,13 +2150,40 @@ void action_library_populate(lv_event_t *e) {
     if (!objects.lib_grid) return;
     lv_obj_clean(objects.lib_grid);
 
+    // Scrollbar estilo #2A2D34 3px
+    lv_obj_set_scrollbar_mode(objects.lib_grid, LV_SCROLLBAR_MODE_AUTO);
+    lv_obj_set_style_width(objects.lib_grid, 3, LV_PART_SCROLLBAR);
+    lv_obj_set_style_bg_color(objects.lib_grid, lv_color_hex(0x2A2D34), LV_PART_SCROLLBAR);
+    lv_obj_set_style_bg_opa(objects.lib_grid, 255, LV_PART_SCROLLBAR);
+    lv_obj_set_style_radius(objects.lib_grid, 2, LV_PART_SCROLLBAR);
+
     int count = media_library_count();
     ESP_LOGI(TAG, "Populating library grid: %d items", count);
 
+    int incomp_cnt = 0;
     for (int i = 0; i < count; i++) {
+        const media_item_t *m = media_library_get(i);
+        if (m && !m->compatible) incomp_cnt++;
         create_card_widget(objects.lib_grid, i);
     }
     lv_obj_update_layout(objects.lib_grid);
+
+    // library_summary: «N videos · M no compatibles · X GB libres»
+    struct statvfs vfs;
+    float free_gb = 0.0f;
+    if (statvfs("/sdcard", &vfs) == 0) {
+        free_gb = ((uint64_t)vfs.f_bavail * (uint64_t)vfs.f_frsize) / (1024.0f * 1024.0f * 1024.0f);
+    }
+    char sum_buf[64];
+    if (incomp_cnt > 0) {
+        snprintf(sum_buf, sizeof(sum_buf), "%d videos · %d no compatibles · %.1f GB libres", count, incomp_cnt, free_gb);
+    } else {
+        snprintf(sum_buf, sizeof(sum_buf), "%d videos · %.1f GB libres", count, free_gb);
+    }
+    set_var_library_summary(sum_buf);
+    if (objects.lbl_lib_count) {
+        lv_label_set_text(objects.lbl_lib_count, sum_buf);
+    }
 }
 
 void action_settings_tab(lv_event_t *e) {
