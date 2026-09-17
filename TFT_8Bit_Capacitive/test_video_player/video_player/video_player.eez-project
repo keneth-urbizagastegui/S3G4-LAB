@@ -2751,7 +2751,11 @@
                             },
                             "PRESSED": {
                                 "bg_color": "c_surface_hi",
-                                "bg_opa": 255
+                                "bg_opa": 255,
+                                "radius": 22
+                            },
+                            "CHECKED": {
+                                "bg_opa": 0
                             }
                         }
                     }

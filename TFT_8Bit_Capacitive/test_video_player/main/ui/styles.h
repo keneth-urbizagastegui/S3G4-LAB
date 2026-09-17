@@ -20,6 +20,7 @@ void remove_style_st_bar(lv_obj_t *obj);
 // Style: st_icon_btn
 lv_style_t *get_style_st_icon_btn_MAIN_DEFAULT();
 lv_style_t *get_style_st_icon_btn_MAIN_PRESSED();
+lv_style_t *get_style_st_icon_btn_MAIN_CHECKED();
 void add_style_st_icon_btn(lv_obj_t *obj);
 void remove_style_st_icon_btn(lv_obj_t *obj);
 
