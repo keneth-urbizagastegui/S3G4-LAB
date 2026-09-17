@@ -200,6 +200,10 @@ bool sdcard_is_mounted(void) {
     return s_is_mounted;
 }
 
+const sdmmc_card_t *sdcard_get_card(void) {
+    return s_card;
+}
+
 void sdcard_spi_deinit(void) {
     if (!s_is_mounted) return;
     esp_vfs_fat_sdcard_unmount(SD_MOUNT_POINT, s_card);

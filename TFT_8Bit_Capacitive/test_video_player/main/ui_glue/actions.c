@@ -165,10 +165,19 @@ void ui_glue_fix_all_button_flags(void) {
     fix_button_events(objects.btn_lib_settings);
     fix_button_events(objects.btn_retry);
     fix_button_events(objects.btn_settings_alt);
+    fix_button_events(objects.btn_queue_close);
+    fix_button_events(objects.btn_q_repeat);
+    fix_button_events(objects.btn_q_shuffle);
 }
 
 void ui_glue_dump_all(void) {
     ui_glue_fix_all_button_flags();
+    dump_widget("btn_queue_close", objects.btn_queue_close);
+    dump_widget("btn_q_repeat", objects.btn_q_repeat);
+    dump_widget("btn_q_shuffle", objects.btn_q_shuffle);
+    dump_widget("queue_list", objects.queue_list);
+    dump_widget("lbl_queue_title", objects.lbl_queue_title);
+    dump_widget("lbl_q_mode", objects.lbl_q_mode);
     dump_widget("btn_back", objects.btn_back);
     dump_widget("lbl_title", objects.lbl_title);
     dump_widget("lbl_subtitle", objects.lbl_subtitle);
@@ -445,10 +454,170 @@ void ui_glue_refresh_cards(void) {
     }
 }
 
+static void queue_row_click_cb(lv_event_t *e) {
+    s_last_touch_time = esp_timer_get_time() / 1000;
+    int idx = (int)(intptr_t)lv_event_get_user_data(e);
+    ESP_LOGI(TAG, "Queue row clicked: index %d", idx);
+    const media_item_t *item = media_library_get(idx);
+    if (!item || !item->compatible) {
+        ui_glue_show_toast("No compatible", item ? item->incompat : "Archivo no reproducible", true);
+        return;
+    }
+    s_current_track_idx = idx;
+    player_cmd_t cmd = {.type = PCMD_OPEN, .arg = idx};
+    player_cmd_send(&cmd);
+    ui_glue_set_view_mode(VIEW_MODE_FULLSCREEN);
+}
+
+void update_queue_footer(void) {
+    if (!objects.lbl_q_mode) return;
+    player_status_t pst;
+    player_get_status(&pst);
+
+    if (objects.img_q_repeat) {
+        if (pst.repeat != REPEAT_OFF) {
+            lv_obj_set_style_image_recolor(objects.img_q_repeat, lv_color_hex(theme_colors[active_theme_index][6]), 0);
+            lv_obj_set_style_image_recolor_opa(objects.img_q_repeat, 255, 0);
+        } else {
+            lv_obj_set_style_image_recolor(objects.img_q_repeat, lv_color_hex(theme_colors[active_theme_index][5]), 0);
+            lv_obj_set_style_image_recolor_opa(objects.img_q_repeat, 255, 0);
+        }
+    }
+
+    if (objects.img_q_shuffle) {
+        if (pst.shuffle) {
+            lv_obj_set_style_image_recolor(objects.img_q_shuffle, lv_color_hex(theme_colors[active_theme_index][6]), 0);
+            lv_obj_set_style_image_recolor_opa(objects.img_q_shuffle, 255, 0);
+        } else {
+            lv_obj_set_style_image_recolor(objects.img_q_shuffle, lv_color_hex(theme_colors[active_theme_index][5]), 0);
+            lv_obj_set_style_image_recolor_opa(objects.img_q_shuffle, 255, 0);
+        }
+    }
+
+    if (pst.shuffle) {
+        lv_label_set_text_static(objects.lbl_q_mode, "Aleatorio");
+    } else if (pst.repeat == REPEAT_ALL) {
+        lv_label_set_text_static(objects.lbl_q_mode, "Repetir todo");
+    } else if (pst.repeat == REPEAT_ONE) {
+        lv_label_set_text_static(objects.lbl_q_mode, "Repetir uno");
+    } else {
+        lv_label_set_text_static(objects.lbl_q_mode, "Repetir desc.");
+    }
+}
+
+static void create_queue_row_widget(lv_obj_t *parent, int idx) {
+    const media_item_t *item = media_library_get(idx);
+    if (!item) return;
+
+    bool is_current = (idx == s_current_track_idx);
+
+    lv_obj_t *row = lv_obj_create(parent);
+    lv_obj_set_size(row, 260, 56);
+    lv_obj_set_style_bg_opa(row, 0, LV_STATE_DEFAULT);
+    lv_obj_set_style_border_width(row, 1, LV_STATE_DEFAULT);
+    lv_obj_set_style_border_side(row, LV_BORDER_SIDE_BOTTOM, LV_STATE_DEFAULT);
+    lv_obj_set_style_border_color(row, lv_color_hex(theme_colors[active_theme_index][3]), LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_all(row, 0, LV_STATE_DEFAULT);
+    lv_obj_remove_flag(row, LV_OBJ_FLAG_SCROLLABLE | LV_OBJ_FLAG_SCROLL_CHAIN_HOR | LV_OBJ_FLAG_SCROLL_CHAIN_VER | LV_OBJ_FLAG_SCROLL_ELASTIC | LV_OBJ_FLAG_SCROLL_MOMENTUM | LV_OBJ_FLAG_SCROLL_WITH_ARROW);
+    lv_obj_set_scrollbar_mode(row, LV_SCROLLBAR_MODE_OFF);
+    lv_obj_add_flag(row, LV_OBJ_FLAG_CLICKABLE);
+    lv_obj_set_user_data(row, (void *)(intptr_t)idx);
+    lv_obj_add_event_cb(row, queue_row_click_cb, LV_EVENT_CLICKED, (void *)(intptr_t)idx);
+
+    // Thumbnail: 12, 10, 64, 36
+    lv_obj_t *img = lv_image_create(row);
+    lv_obj_set_pos(img, 12, 10);
+    lv_obj_set_size(img, 64, 36);
+    if (item->thumb_dsc) {
+        lv_image_set_src(img, item->thumb_dsc);
+    } else {
+        lv_image_set_src(img, &img_film);
+    }
+    lv_obj_set_style_radius(img, 4, 0);
+    lv_obj_remove_flag(img, LV_OBJ_FLAG_CLICKABLE | LV_OBJ_FLAG_SCROLLABLE);
+    lv_obj_add_flag(img, LV_OBJ_FLAG_EVENT_BUBBLE);
+
+    // Title: 86, 10, 140, 18
+    lv_obj_t *lbl = lv_label_create(row);
+    lv_obj_set_pos(lbl, 86, 10);
+    lv_obj_set_size(lbl, 140, 18);
+    lv_obj_set_style_text_font(lbl, &lv_font_montserrat_14, 0);
+    lv_obj_remove_flag(lbl, LV_OBJ_FLAG_CLICKABLE | LV_OBJ_FLAG_SCROLLABLE);
+    lv_obj_add_flag(lbl, LV_OBJ_FLAG_EVENT_BUBBLE);
+    lv_label_set_text(lbl, item->title[0] ? item->title : item->path);
+
+    if (is_current) {
+        lv_obj_set_style_text_color(lbl, lv_color_hex(theme_colors[active_theme_index][6]), 0);
+        lv_label_set_long_mode(lbl, LV_LABEL_LONG_SCROLL_CIRCULAR);
+    } else {
+        lv_obj_set_style_text_color(lbl, lv_color_hex(theme_colors[active_theme_index][4]), 0);
+        lv_label_set_long_mode(lbl, LV_LABEL_LONG_DOT);
+    }
+
+    // Meta: 86, 30, 140, 14
+    lv_obj_t *lbl_meta = lv_label_create(row);
+    lv_obj_set_pos(lbl_meta, 86, 30);
+    lv_obj_set_size(lbl_meta, 140, 14);
+    lv_obj_set_style_text_font(lbl_meta, &lv_font_montserrat_12, 0);
+    lv_obj_set_style_text_color(lbl_meta, lv_color_hex(theme_colors[active_theme_index][5]), 0);
+    lv_obj_remove_flag(lbl_meta, LV_OBJ_FLAG_CLICKABLE | LV_OBJ_FLAG_SCROLLABLE);
+    lv_obj_add_flag(lbl_meta, LV_OBJ_FLAG_EVENT_BUBBLE);
+
+    if (!item->compatible) {
+        lv_label_set_text(lbl_meta, item->incompat[0] ? item->incompat : "No compatible");
+        lv_obj_set_style_text_color(lbl_meta, lv_color_hex(0xE5484D), 0);
+    } else if (!item->rotated) {
+        lv_label_set_text(lbl_meta, "Sin girar");
+    } else if (item->dur_ms > 0) {
+        uint32_t s = item->dur_ms / 1000;
+        char buf[32];
+        snprintf(buf, sizeof(buf), "%lu:%02lu", (unsigned long)(s / 60), (unsigned long)(s % 60));
+        lv_label_set_text(lbl_meta, buf);
+    } else {
+        lv_label_set_text(lbl_meta, "0:00");
+    }
+
+    // icon_now: 234, 20
+    if (is_current) {
+        lv_obj_t *icon_now = lv_image_create(row);
+        lv_obj_set_pos(icon_now, 234, 20);
+        lv_obj_set_size(icon_now, 16, 16);
+        lv_image_set_src(icon_now, &img_play);
+        lv_obj_set_style_image_recolor(icon_now, lv_color_hex(theme_colors[active_theme_index][6]), 0);
+        lv_obj_set_style_image_recolor_opa(icon_now, 255, 0);
+        lv_obj_remove_flag(icon_now, LV_OBJ_FLAG_CLICKABLE | LV_OBJ_FLAG_SCROLLABLE);
+        lv_obj_add_flag(icon_now, LV_OBJ_FLAG_EVENT_BUBBLE);
+    }
+}
+
+void ui_glue_populate_queue(void) {
+    if (!objects.queue_list) return;
+    lv_obj_clean(objects.queue_list);
+    lv_obj_add_flag(objects.queue_list, LV_OBJ_FLAG_SCROLLABLE);
+    lv_obj_set_scroll_dir(objects.queue_list, LV_DIR_VER);
+    lv_obj_clear_flag(objects.queue_list, LV_OBJ_FLAG_SCROLL_ELASTIC | LV_OBJ_FLAG_SCROLL_MOMENTUM | LV_OBJ_FLAG_SCROLL_CHAIN_HOR | LV_OBJ_FLAG_SCROLL_CHAIN_VER | LV_OBJ_FLAG_SCROLL_WITH_ARROW);
+    lv_obj_set_scrollbar_mode(objects.queue_list, LV_SCROLLBAR_MODE_AUTO);
+    lv_obj_set_flex_flow(objects.queue_list, LV_FLEX_FLOW_COLUMN);
+    lv_obj_set_style_pad_all(objects.queue_list, 0, 0);
+    lv_obj_set_style_pad_row(objects.queue_list, 0, 0);
+
+    int count = media_library_count();
+    for (int i = 0; i < count; i++) {
+        create_queue_row_widget(objects.queue_list, i);
+    }
+    lv_obj_update_layout(objects.queue_list);
+    update_queue_footer();
+}
+
 void ui_glue_set_view_mode(view_mode_t mode) {
     view_mode_t old_mode = s_view_mode;
     s_view_mode = mode;
-    printf("VIEW,mode=%s,track=%d\n", (mode == VIEW_MODE_FULLSCREEN) ? "player" : "library", s_current_track_idx);
+    const char *vmode_str = "library";
+    if (mode == VIEW_MODE_FULLSCREEN) vmode_str = "player";
+    else if (mode == VIEW_MODE_QUEUE) vmode_str = "queue";
+    else if (mode == VIEW_MODE_SETTINGS) vmode_str = "settings";
+    else if (mode == VIEW_MODE_NO_MEDIA) vmode_str = "no_media";
+    printf("VIEW,mode=%s,track=%d\n", vmode_str, s_current_track_idx);
     fflush(stdout);
 
     if (mode == VIEW_MODE_FULLSCREEN) {
@@ -464,9 +633,18 @@ void ui_glue_set_view_mode(view_mode_t mode) {
             player_cmd_t cmd = {.type = PCMD_SET_VIDEO_RECT, .rect = {0, 0, 480, 320}};
             player_cmd_send(&cmd);
         }
+    } else if (mode == VIEW_MODE_QUEUE) {
+        if (objects.scr_queue) {
+            loadScreen(SCREEN_ID_SCR_QUEUE);
+        }
+        // En la cola pausamos el blit directo de video pero NO pausamos la reproduccion del player
+        lcd_bus_set_video_rect(0, 0, 0, 0);
+        player_cmd_t cmd = {.type = PCMD_SET_VIDEO_RECT, .rect = {0, 0, 0, 0}};
+        player_cmd_send(&cmd);
+        ui_glue_populate_queue();
     } else {
         // Al salir de scr_player el video se pausa y se guarda la posicion
-        if (old_mode == VIEW_MODE_FULLSCREEN) {
+        if (old_mode == VIEW_MODE_FULLSCREEN || old_mode == VIEW_MODE_QUEUE) {
             player_status_t st;
             player_get_status(&st);
             if (st.state == PST_PLAYING) {
@@ -752,12 +930,14 @@ void action_open_library(lv_event_t *e) {
 void action_open_queue(lv_event_t *e) {
     s_last_touch_time = esp_timer_get_time() / 1000;
     if (s_locked) return;
-    ESP_LOGI(TAG, "Action: open_queue -> mostrando aviso");
-    ui_glue_show_toast("Próximamente", "Esta opción llega en la próxima versión.", false);
+    ESP_LOGI(TAG, "Action: open_queue -> abriendo cola");
+    ui_glue_set_view_mode(VIEW_MODE_QUEUE);
 }
 
 void action_close_queue(lv_event_t *e) {
     s_last_touch_time = esp_timer_get_time() / 1000;
+    ESP_LOGI(TAG, "Action: close_queue -> volviendo al reproductor sin pausar");
+    ui_glue_set_view_mode(VIEW_MODE_FULLSCREEN);
 }
 
 void action_open_settings(lv_event_t *e) {
@@ -887,14 +1067,28 @@ void ui_glue_run_uinav_test(void) {
     bool card_ok = (ui_glue_get_view_mode() == VIEW_MODE_FULLSCREEN);
     printf("UINAV,btn=card,result=%s\n", card_ok ? "PASS" : "FAIL");
 
-    // 3. btn=queue (x=458, y=20) -> muestra aviso toast (L2)
+    // 3. btn=queue (x=458, y=20) -> abre scr_queue real sin pausar (B1)
     ui_glue_set_osd_visible(true);
     wait_gui_ms(200);
+    player_status_t st_q1;
+    player_get_status(&st_q1);
     sim_touch_click(458, 20);
     wait_gui_ms(300);
-    bool queue_ok = (s_toast_box != NULL && !lv_obj_has_flag(s_toast_box, LV_OBJ_FLAG_HIDDEN));
+    bool q_open = (ui_glue_get_view_mode() == VIEW_MODE_QUEUE);
+    player_status_t st_q2;
+    player_get_status(&st_q2);
+    bool q_no_pause = (st_q2.state == st_q1.state);
+
+    // Cerrar cola (btn_queue_close x=458, y=22)
+    sim_touch_click(458, 22);
+    wait_gui_ms(300);
+    bool q_close = (ui_glue_get_view_mode() == VIEW_MODE_FULLSCREEN);
+    player_status_t st_q3;
+    player_get_status(&st_q3);
+    bool q_close_no_pause = (st_q3.state == st_q1.state);
+
+    bool queue_ok = (q_open && q_no_pause && q_close && q_close_no_pause);
     printf("UINAV,btn=queue,result=%s\n", queue_ok ? "PASS" : "FAIL");
-    if (s_toast_box) lv_obj_add_flag(s_toast_box, LV_OBJ_FLAG_HIDDEN);
     wait_gui_ms(100);
 
     // 4. btn=play (x=240, y=295) -> comprueba cambio de estado

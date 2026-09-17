@@ -12,7 +12,11 @@ extern "C" {
 
 typedef enum {
     VIEW_MODE_STUDIO = 0,
-    VIEW_MODE_FULLSCREEN = 1
+    VIEW_MODE_FULLSCREEN = 1,
+    VIEW_MODE_QUEUE = 2,
+    VIEW_MODE_SETTINGS = 3,
+    VIEW_MODE_NO_MEDIA = 4,
+    VIEW_MODE_LIBRARY = 0
 } view_mode_t;
 
 void ui_glue_init(void);
