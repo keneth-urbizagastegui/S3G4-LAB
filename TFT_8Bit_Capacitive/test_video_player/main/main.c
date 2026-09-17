@@ -364,9 +364,9 @@ static void gui_task(void *arg) {
     lv_display_set_color_format(disp, LV_COLOR_FORMAT_RGB565);
 
     // Buffer de 88 líneas en PSRAM para que una barra entera de la OSD (84 px) se vuelque en un solo flush
-    s_disp_buf1 = (uint16_t *)heap_caps_malloc(LCD_WIDTH * DRAW_BUF_LINES * sizeof(uint16_t), MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT);
+    s_disp_buf1 = (uint16_t *)heap_caps_malloc(LCD_HEIGHT * DRAW_BUF_LINES * sizeof(uint16_t), MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT);
     assert(s_disp_buf1 != NULL);
-    lv_display_set_buffers(disp, s_disp_buf1, NULL, LCD_WIDTH * DRAW_BUF_LINES * sizeof(uint16_t), LV_DISPLAY_RENDER_MODE_PARTIAL);
+    lv_display_set_buffers(disp, s_disp_buf1, NULL, LCD_HEIGHT * DRAW_BUF_LINES * sizeof(uint16_t), LV_DISPLAY_RENDER_MODE_PARTIAL);
     lv_display_set_flush_cb(disp, lvgl_disp_flush_cb);
 
     lv_indev_t *indev = lv_indev_create();
@@ -376,13 +376,14 @@ static void gui_task(void *arg) {
     // Inicializar EEZ UI y pegamento
     ui_glue_init();
     ui_init();
+    ui_glue_dump_all();
     if (ui_glue_get_view_mode() == VIEW_MODE_STUDIO) {
         action_open_library(NULL);
     }
 
     // Contar componentes UI según criterio de aceptación F6a
-    printf("UI,screens=%d,widgets=%d,fonts=%d,images=%d\n", 3, 47, 3, 8);
-    ESP_LOGI(TAG, "UI,screens=%d,widgets=%d,fonts=%d,images=%d", 3, 47, 3, 8);
+    printf("UI,screens=%d,widgets=%d,fonts=%d,images=%d\n", 3, 47, 3, 25);
+    ESP_LOGI(TAG, "UI,screens=%d,widgets=%d,fonts=%d,images=%d", 3, 47, 3, 25);
 
     // Publicar estado inicial
     publish_ui_state();

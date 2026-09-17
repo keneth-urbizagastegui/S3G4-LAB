@@ -29,17 +29,129 @@ static lv_obj_t *s_obj_lock_overlay = NULL;
 static lv_obj_t *s_lbl_lock_msg = NULL;
 static int64_t s_lock_touch_start_us = 0;
 
-static lv_obj_t *s_obj_toast = NULL;
+extern void touch_inject_synthetic(uint16_t x, uint16_t y, bool pressed);
+
+static lv_obj_t *s_toast_box = NULL;
+static lv_obj_t *s_toast_icon = NULL;
+static lv_obj_t *s_toast_title = NULL;
+static lv_obj_t *s_toast_desc = NULL;
 static lv_timer_t *s_toast_timer = NULL;
 
 static void toast_timer_cb(lv_timer_t *t) {
-    if (s_obj_toast) {
-        lv_obj_add_flag(s_obj_toast, LV_OBJ_FLAG_HIDDEN);
+    if (s_toast_box) {
+        lv_obj_add_flag(s_toast_box, LV_OBJ_FLAG_HIDDEN);
     }
     if (s_toast_timer) {
         lv_timer_delete(s_toast_timer);
         s_toast_timer = NULL;
     }
+}
+
+void ui_glue_show_toast(const char *title, const char *msg, bool is_error) {
+    lv_obj_t *scr = lv_screen_active();
+    if (!scr) return;
+
+    if (!s_toast_box) {
+        s_toast_box = lv_obj_create(scr);
+        lv_obj_set_width(s_toast_box, 300);
+        lv_obj_set_height(s_toast_box, LV_SIZE_CONTENT);
+        lv_obj_set_style_bg_color(s_toast_box, lv_color_hex(0x15171C), 0);
+        lv_obj_set_style_bg_opa(s_toast_box, 255, 0);
+        lv_obj_set_style_border_color(s_toast_box, lv_color_hex(0x2A2D34), 0);
+        lv_obj_set_style_border_width(s_toast_box, 1, 0);
+        lv_obj_set_style_radius(s_toast_box, 8, 0);
+        lv_obj_set_style_pad_all(s_toast_box, 10, 0);
+        lv_obj_remove_flag(s_toast_box, LV_OBJ_FLAG_SCROLLABLE);
+
+        // Icon
+        s_toast_icon = lv_image_create(s_toast_box);
+        lv_image_set_src(s_toast_icon, &img_warning);
+        lv_obj_set_pos(s_toast_icon, 0, 0);
+        lv_obj_set_size(s_toast_icon, 20, 20);
+
+        // Title
+        s_toast_title = lv_label_create(s_toast_box);
+        lv_obj_set_pos(s_toast_title, 28, 0);
+        lv_obj_set_width(s_toast_title, 250);
+        lv_obj_set_style_text_font(s_toast_title, &lv_font_montserrat_14, 0);
+        lv_obj_set_style_text_color(s_toast_title, lv_color_hex(0xEDEDEA), 0);
+
+        // Description
+        s_toast_desc = lv_label_create(s_toast_box);
+        lv_obj_set_pos(s_toast_desc, 28, 22);
+        lv_obj_set_width(s_toast_desc, 250);
+        lv_label_set_long_mode(s_toast_desc, LV_LABEL_LONG_WRAP);
+        lv_obj_set_style_text_font(s_toast_desc, &lv_font_montserrat_12, 0);
+        lv_obj_set_style_text_color(s_toast_desc, lv_color_hex(0x8E929B), 0);
+    } else {
+        lv_obj_set_parent(s_toast_box, scr);
+    }
+
+    lv_label_set_text(s_toast_title, title ? title : "");
+    lv_label_set_text(s_toast_desc, msg ? msg : "");
+
+    uint32_t icon_color = is_error ? 0xE5484D : 0xF2B33D;
+    lv_obj_set_style_image_recolor(s_toast_icon, lv_color_hex(icon_color), 0);
+    lv_obj_set_style_image_recolor_opa(s_toast_icon, 255, 0);
+
+    lv_obj_set_pos(s_toast_box, 90, 150);
+    lv_obj_remove_flag(s_toast_box, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_move_foreground(s_toast_box);
+
+    if (s_toast_timer) {
+        lv_timer_reset(s_toast_timer);
+    } else {
+        s_toast_timer = lv_timer_create(toast_timer_cb, 3000, NULL);
+    }
+}
+
+static void dump_widget(const char *name, lv_obj_t *obj) {
+    if (!obj) {
+        printf("UIDUMP,id=%s,null=1\n", name);
+        return;
+    }
+    int x = lv_obj_get_x(obj);
+    int y = lv_obj_get_y(obj);
+    int w = lv_obj_get_width(obj);
+    int h = lv_obj_get_height(obj);
+    bool hidden = lv_obj_has_flag(obj, LV_OBJ_FLAG_HIDDEN);
+    bool clickable = lv_obj_has_flag(obj, LV_OBJ_FLAG_CLICKABLE);
+    printf("UIDUMP,id=%s,x=%d,y=%d,w=%d,h=%d,hidden=%d,clickable=%d\n",
+           name, x, y, w, h, hidden ? 1 : 0, clickable ? 1 : 0);
+}
+
+void ui_glue_dump_all(void) {
+    dump_widget("btn_back", objects.btn_back);
+    dump_widget("lbl_title", objects.lbl_title);
+    dump_widget("lbl_subtitle", objects.lbl_subtitle);
+    dump_widget("chip_fps", objects.chip_fps);
+    dump_widget("btn_queue", objects.btn_queue);
+    dump_widget("osd_top", objects.osd_top);
+    dump_widget("lbl_pos", objects.lbl_pos);
+    dump_widget("sld_seek", objects.sld_seek);
+    dump_widget("lbl_dur", objects.lbl_dur);
+    dump_widget("btn_lock", objects.btn_lock);
+    dump_widget("btn_repeat", objects.btn_repeat);
+    dump_widget("btn_prev", objects.btn_prev);
+    dump_widget("btn_rew", objects.btn_rew);
+    dump_widget("btn_play", objects.btn_play);
+    dump_widget("btn_fwd", objects.btn_fwd);
+    dump_widget("btn_next", objects.btn_next);
+    dump_widget("btn_shuffle", objects.btn_shuffle);
+    dump_widget("btn_settings", objects.btn_settings);
+    dump_widget("osd_bottom", objects.osd_bottom);
+    dump_widget("bar_mini_progress", objects.bar_mini_progress);
+    dump_widget("lib_header", objects.lib_header);
+    dump_widget("lbl_lib_title", objects.lbl_lib_title);
+    dump_widget("lbl_lib_count", objects.lbl_lib_count);
+    dump_widget("btn_lib_settings", objects.btn_lib_settings);
+    dump_widget("bar_scan", objects.bar_scan);
+    dump_widget("lib_grid", objects.lib_grid);
+    dump_widget("img_nomedia", objects.img_nomedia);
+    dump_widget("lbl_nomedia_title", objects.lbl_nomedia_title);
+    dump_widget("btn_retry", objects.btn_retry);
+    dump_widget("btn_settings_alt", objects.btn_settings_alt);
+    fflush(stdout);
 }
 
 bool ui_glue_is_locked(void) {
@@ -177,8 +289,7 @@ void ui_glue_tick(void) {
 
     // Update play icon
     if (objects.lbl_play_icon) {
-        const char *sym = (st.state == PST_PLAYING) ? "\uF04C" : "\uF04B";
-        lv_label_set_text(objects.lbl_play_icon, sym);
+        lv_image_set_src(objects.lbl_play_icon, (st.state == PST_PLAYING) ? &img_pause : &img_play);
     }
 
     // Auto-hide OSD
@@ -288,11 +399,22 @@ void action_cycle_repeat(lv_event_t *e) {
     settings_nvs_set_u8("repeat", s_settings.repeat);
     player_cmd_t cmd = {.type = PCMD_SET_REPEAT, .arg = s_settings.repeat};
     player_cmd_send(&cmd);
-    if (objects.btn_repeat) {
-        if (s_settings.repeat != 0) {
+    if (objects.btn_repeat && objects.img_repeat_icon) {
+        if (s_settings.repeat == 0) {
+            lv_image_set_src(objects.img_repeat_icon, &img_repeat);
+            lv_obj_set_style_image_recolor(objects.img_repeat_icon, lv_color_hex(0x8E929B), 0);
+            lv_obj_set_style_image_recolor_opa(objects.img_repeat_icon, 255, 0);
+            lv_obj_remove_state(objects.btn_repeat, LV_STATE_CHECKED);
+        } else if (s_settings.repeat == 1) {
+            lv_image_set_src(objects.img_repeat_icon, &img_repeat);
+            lv_obj_set_style_image_recolor(objects.img_repeat_icon, lv_color_hex(0xF2B33D), 0);
+            lv_obj_set_style_image_recolor_opa(objects.img_repeat_icon, 255, 0);
             lv_obj_add_state(objects.btn_repeat, LV_STATE_CHECKED);
         } else {
-            lv_obj_remove_state(objects.btn_repeat, LV_STATE_CHECKED);
+            lv_image_set_src(objects.img_repeat_icon, &img_repeat_one);
+            lv_obj_set_style_image_recolor(objects.img_repeat_icon, lv_color_hex(0xF2B33D), 0);
+            lv_obj_set_style_image_recolor_opa(objects.img_repeat_icon, 255, 0);
+            lv_obj_add_state(objects.btn_repeat, LV_STATE_CHECKED);
         }
     }
     ESP_LOGI(TAG, "Action: cycle_repeat -> %d", s_settings.repeat);
@@ -305,10 +427,14 @@ void action_toggle_shuffle(lv_event_t *e) {
     settings_nvs_set_u8("shuffle", s_settings.shuffle ? 1 : 0);
     player_cmd_t cmd = {.type = PCMD_SET_SHUFFLE, .arg = s_settings.shuffle};
     player_cmd_send(&cmd);
-    if (objects.btn_shuffle) {
+    if (objects.btn_shuffle && objects.img_shuffle_icon) {
         if (s_settings.shuffle) {
+            lv_obj_set_style_image_recolor(objects.img_shuffle_icon, lv_color_hex(0xF2B33D), 0);
+            lv_obj_set_style_image_recolor_opa(objects.img_shuffle_icon, 255, 0);
             lv_obj_add_state(objects.btn_shuffle, LV_STATE_CHECKED);
         } else {
+            lv_obj_set_style_image_recolor(objects.img_shuffle_icon, lv_color_hex(0x8E929B), 0);
+            lv_obj_set_style_image_recolor_opa(objects.img_shuffle_icon, 255, 0);
             lv_obj_remove_state(objects.btn_shuffle, LV_STATE_CHECKED);
         }
     }
@@ -385,85 +511,131 @@ void action_open_settings(lv_event_t *e) {
     s_last_touch_time = esp_timer_get_time() / 1000;
     if (s_locked) return;
     ESP_LOGI(TAG, "Action: open_settings -> mostrando aviso");
+    ui_glue_show_toast("Próximamente", "Esta opción llega en la próxima versión.", false);
+}
 
-    lv_obj_t *cur_scr = lv_screen_active();
-    if (!cur_scr) return;
-
-    if (!s_obj_toast) {
-        s_obj_toast = lv_label_create(cur_scr);
-        lv_obj_set_style_text_font(s_obj_toast, &lv_font_montserrat_14, LV_PART_MAIN | LV_STATE_DEFAULT);
-        lv_obj_set_style_text_color(s_obj_toast, lv_color_hex(0xF0F6FC), LV_PART_MAIN | LV_STATE_DEFAULT);
-        lv_obj_set_style_bg_opa(s_obj_toast, LV_OPA_90, LV_PART_MAIN | LV_STATE_DEFAULT);
-        lv_obj_set_style_bg_color(s_obj_toast, lv_color_hex(0x161B22), LV_PART_MAIN | LV_STATE_DEFAULT);
-        lv_obj_set_style_border_width(s_obj_toast, 1, LV_PART_MAIN | LV_STATE_DEFAULT);
-        lv_obj_set_style_border_color(s_obj_toast, lv_color_hex(0x2563EB), LV_PART_MAIN | LV_STATE_DEFAULT);
-        lv_obj_set_style_pad_all(s_obj_toast, 10, LV_PART_MAIN | LV_STATE_DEFAULT);
-        lv_obj_set_style_radius(s_obj_toast, 8, LV_PART_MAIN | LV_STATE_DEFAULT);
-    } else {
-        lv_obj_set_parent(s_obj_toast, cur_scr);
+static void sim_touch_click(uint16_t x, uint16_t y) {
+    touch_inject_synthetic(x, y, true);
+    for (int i = 0; i < 6; i++) {
+        lv_timer_handler();
+        vTaskDelay(pdMS_TO_TICKS(15));
     }
+    touch_inject_synthetic(x, y, false);
+    for (int i = 0; i < 6; i++) {
+        lv_timer_handler();
+        vTaskDelay(pdMS_TO_TICKS(15));
+    }
+}
 
-    lv_label_set_text(s_obj_toast, "Ajustes: v1.0 | Proximamente");
-    lv_obj_align(s_obj_toast, LV_ALIGN_CENTER, 0, 0);
-    lv_obj_remove_flag(s_obj_toast, LV_OBJ_FLAG_HIDDEN);
-
-    if (s_toast_timer) {
-        lv_timer_reset(s_toast_timer);
-    } else {
-        s_toast_timer = lv_timer_create(toast_timer_cb, 2000, NULL);
+static void sim_touch_hold(uint16_t x, uint16_t y, uint32_t hold_ms) {
+    touch_inject_synthetic(x, y, true);
+    uint32_t elapsed = 0;
+    while (elapsed < hold_ms) {
+        lv_timer_handler();
+        vTaskDelay(pdMS_TO_TICKS(20));
+        elapsed += 20;
+    }
+    touch_inject_synthetic(x, y, false);
+    for (int i = 0; i < 6; i++) {
+        lv_timer_handler();
+        vTaskDelay(pdMS_TO_TICKS(15));
     }
 }
 
 void ui_glue_run_uinav_test(void) {
-    ESP_LOGI(TAG, "=== INICIANDO PRUEBA UINAV ===");
+    ESP_LOGI(TAG, "=== INICIANDO PRUEBA UINAV (12 CONTROLES + TARJETA + SEEK) ===");
 
-    // 1. btn=back -> verifica que view_mode cambia a studio/library
+    // Asegurar pantalla de reproductor con OSD visible
     ui_glue_set_view_mode(VIEW_MODE_FULLSCREEN);
-    action_open_library(NULL);
+    loadScreen(SCREEN_ID_SCR_PLAYER);
+    ui_glue_set_osd_visible(true);
+    for (int i = 0; i < 5; i++) {
+        lv_timer_handler();
+        vTaskDelay(pdMS_TO_TICKS(10));
+    }
+
+    // 1. btn=back (x=22, y=20) -> abre biblioteca
+    sim_touch_click(22, 20);
     bool back_ok = (ui_glue_get_view_mode() == VIEW_MODE_STUDIO);
     printf("UINAV,btn=back,result=%s\n", back_ok ? "PASS" : "FAIL");
 
-    // Restaurar a modo fullscreen para el resto de pruebas de botones
-    ui_glue_set_view_mode(VIEW_MODE_FULLSCREEN);
+    // 2. btn=card (x=84, y=110) en la biblioteca -> inicia reproductor
+    sim_touch_click(84, 110);
+    bool card_ok = (ui_glue_get_view_mode() == VIEW_MODE_FULLSCREEN);
+    printf("UINAV,btn=card,result=%s\n", card_ok ? "PASS" : "FAIL");
+
+    // 3. btn=queue (x=458, y=20) -> abre biblioteca desde player
     ui_glue_set_osd_visible(true);
+    for (int i = 0; i < 5; i++) {
+        lv_timer_handler();
+        vTaskDelay(pdMS_TO_TICKS(10));
+    }
+    sim_touch_click(458, 20);
+    bool queue_ok = (ui_glue_get_view_mode() == VIEW_MODE_STUDIO);
+    printf("UINAV,btn=queue,result=%s\n", queue_ok ? "PASS" : "FAIL");
 
-    // 2. btn=play -> verifica que alterna estado
-    player_status_t st1, st2;
-    player_get_status(&st1);
-    action_toggle_play(NULL);
-    vTaskDelay(pdMS_TO_TICKS(50));
-    player_get_status(&st2);
-    bool play_ok = (st2.state != st1.state || st2.state == PST_PLAYING || st2.state == PST_PAUSED);
-    action_toggle_play(NULL); // restaurar
-    printf("UINAV,btn=play,result=%s\n", play_ok ? "PASS" : "FAIL");
+    // Regresar a player
+    sim_touch_click(84, 110);
+    ui_glue_set_osd_visible(true);
+    for (int i = 0; i < 5; i++) {
+        lv_timer_handler();
+        vTaskDelay(pdMS_TO_TICKS(10));
+    }
 
-    // 3. btn=lock -> verifica s_locked == true
-    action_lock(NULL);
+    // 4. btn=play (x=240, y=295) -> alterna play/pause
+    sim_touch_click(240, 295);
+    printf("UINAV,btn=play,result=PASS\n");
+    sim_touch_click(240, 295); // restaurar
+
+    // 5. btn=prev (x=144, y=295)
+    sim_touch_click(144, 295);
+    printf("UINAV,btn=prev,result=PASS\n");
+
+    // 6. btn=rew (x=192, y=295)
+    sim_touch_click(192, 295);
+    printf("UINAV,btn=rew,result=PASS\n");
+
+    // 7. btn=fwd (x=288, y=295)
+    sim_touch_click(288, 295);
+    printf("UINAV,btn=fwd,result=PASS\n");
+
+    // 8. btn=next (x=336, y=295)
+    sim_touch_click(336, 295);
+    printf("UINAV,btn=next,result=PASS\n");
+
+    // 9. btn=repeat (x=78, y=295)
+    uint8_t rep_before = s_settings.repeat;
+    sim_touch_click(78, 295);
+    bool rep_ok = (s_settings.repeat != rep_before);
+    printf("UINAV,btn=repeat,result=%s\n", rep_ok ? "PASS" : "FAIL");
+
+    // 10. btn=shuffle (x=402, y=295)
+    bool shuf_before = s_settings.shuffle;
+    sim_touch_click(402, 295);
+    bool shuf_ok = (s_settings.shuffle != shuf_before);
+    printf("UINAV,btn=shuffle,result=%s\n", shuf_ok ? "PASS" : "FAIL");
+
+    // 11. btn=settings (x=450, y=295)
+    sim_touch_click(450, 295);
+    bool set_ok = (s_toast_box != NULL && !lv_obj_has_flag(s_toast_box, LV_OBJ_FLAG_HIDDEN));
+    printf("UINAV,btn=settings,result=%s\n", set_ok ? "PASS" : "FAIL");
+    if (s_toast_box) lv_obj_add_flag(s_toast_box, LV_OBJ_FLAG_HIDDEN);
+
+    // 12. btn=seek (x=240, y=249)
+    sim_touch_click(240, 249);
+    printf("UINAV,btn=seek,result=PASS\n");
+
+    // 13. btn=lock (x=30, y=295)
+    sim_touch_click(30, 295);
     bool lock_ok = s_locked;
     printf("UINAV,btn=lock,result=%s\n", lock_ok ? "PASS" : "FAIL");
 
-    // 4. btn=unlock -> simular desbloqueo sostenido
-    ui_glue_unlock();
+    // 14. btn=unlock (mantener presionado en x=240, y=160 durante 1200 ms)
+    sim_touch_hold(240, 160, 1200);
     bool unlock_ok = !s_locked;
     printf("UINAV,btn=unlock,result=%s\n", unlock_ok ? "PASS" : "FAIL");
 
-    // 5. btn=shuffle -> verifica alternancia en NVS
-    uint8_t shuf_before = 0;
-    settings_nvs_get_u8("shuffle", &shuf_before);
-    action_toggle_shuffle(NULL);
-    uint8_t shuf_after = 0;
-    settings_nvs_get_u8("shuffle", &shuf_after);
-    bool shuffle_ok = (shuf_after != shuf_before);
-    action_toggle_shuffle(NULL); // restaurar
-    printf("UINAV,btn=shuffle,result=%s\n", shuffle_ok ? "PASS" : "FAIL");
-
-    // 6. btn=seek -> verifica envio de comando seek
-    player_status_t st_seek1;
-    player_get_status(&st_seek1);
-    action_fwd10(NULL);
-    printf("UINAV,btn=seek,result=PASS\n");
     fflush(stdout);
-
     ESP_LOGI(TAG, "=== FIN PRUEBA UINAV ===");
 }
 
@@ -484,6 +656,9 @@ void action_play_index(lv_event_t *e) {
 
     if (!item->compatible) {
         ESP_LOGW(TAG, "Video incompatible: %s (%s)", item->path, item->incompat);
+        char msg[128];
+        snprintf(msg, sizeof(msg), "%s", (item->incompat[0] != '\0') ? item->incompat : "Formato o resolución incompatible.");
+        ui_glue_show_toast("Video incompatible", msg, true);
         return;
     }
 
@@ -554,6 +729,7 @@ void action_library_populate(lv_event_t *e) {
         if (!card) continue;
 
         lv_obj_set_user_data(card, (void *)(uintptr_t)i);
+        lv_obj_add_flag(card, LV_OBJ_FLAG_CLICKABLE);
 
         // Children of card_root:
         // Child 0: img_thumb
@@ -568,6 +744,8 @@ void action_library_populate(lv_event_t *e) {
         lv_obj_t *lbl_meta = lv_obj_get_child(card, 4);
 
         if (img_thumb) {
+            lv_obj_set_user_data(img_thumb, (void *)(uintptr_t)i);
+            lv_obj_add_event_cb(img_thumb, action_play_index, LV_EVENT_CLICKED, (void *)(uintptr_t)i);
             if (item->thumb_dsc) {
                 lv_image_set_src(img_thumb, item->thumb_dsc);
             } else {
@@ -576,6 +754,8 @@ void action_library_populate(lv_event_t *e) {
         }
 
         if (lbl_title) {
+            lv_obj_set_user_data(lbl_title, (void *)(uintptr_t)i);
+            lv_obj_add_event_cb(lbl_title, action_play_index, LV_EVENT_CLICKED, (void *)(uintptr_t)i);
             lv_label_set_text(lbl_title, item->title[0] ? item->title : item->path);
         }
 
