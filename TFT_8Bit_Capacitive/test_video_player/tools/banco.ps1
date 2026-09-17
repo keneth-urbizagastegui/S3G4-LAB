@@ -12,7 +12,7 @@
 
 param(
     [Parameter(Mandatory = $true)]
-    [ValidateSet('entorno', 'build', 'flash', 'build-perf', 'flash-perf', 'medir')]
+    [ValidateSet('entorno', 'ui', 'build', 'flash', 'build-perf', 'flash-perf', 'medir')]
     [string]$Accion,
     [string]$Puerto = 'COM16',
     [string]$Salida = 'plan_antigravity/mediciones/captura',
@@ -43,6 +43,16 @@ switch ($Accion) {
         & $IdfPython --version
         Invoke-Idf @('--version')
         'OK: entorno listo'
+    }
+    'ui' {
+        # Genera main/ui desde el proyecto EEZ sin abrir la ventana (equivale a pulsar «Build» en EEZ Studio)
+        $eez = 'C:\Users\Keneth\AppData\Local\Programs\eezstudio\EEZ Studio.exe'
+        if (-not (Test-Path $eez)) { throw "No existe EEZ Studio: $eez" }
+        $proy = Join-Path $Proyecto 'video_player\video_player.eez-project'
+        if (-not (Test-Path $proy)) { throw "No existe el proyecto EEZ: $proy" }
+        & $eez --build-project $proy
+        if ($LASTEXITCODE -ne 0) { throw "El Build de EEZ fallo con codigo $LASTEXITCODE" }
+        'OK: main/ui regenerado desde EEZ'
     }
     'build' { Invoke-Idf @('build'); 'OK: build' }
     'flash' { Invoke-Idf @('-p', $Puerto, 'build', 'flash'); 'OK: firmware normal flasheado' }

@@ -41,6 +41,7 @@ demás de `04` (mediciones, umbrales, informes) sigue igual.
 
 ```
 pwsh -NoProfile -ExecutionPolicy Bypass -File tools/banco.ps1 -Accion entorno
+pwsh -NoProfile -ExecutionPolicy Bypass -File tools/banco.ps1 -Accion ui               # regenera main/ui desde EEZ (sin abrir la ventana)
 pwsh -NoProfile -ExecutionPolicy Bypass -File tools/banco.ps1 -Accion build
 pwsh -NoProfile -ExecutionPolicy Bypass -File tools/banco.ps1 -Accion flash            # firmware normal
 pwsh -NoProfile -ExecutionPolicy Bypass -File tools/banco.ps1 -Accion build-perf
@@ -66,7 +67,9 @@ pwsh -NoProfile -ExecutionPolicy Bypass -File tools/banco.ps1 -Accion medir -Sal
    (`MADCTL 0x48`), salvo autorización expresa del auditor por escrito en el paquete.
 5. Escribir `PASS` (o `offenders=0`) sin comprobar el efecto real.
 6. Editar a mano `main/ui` (código generado por EEZ): todo cambio de interfaz va en el proyecto
-   `video_player/video_player.eez-project` y se regenera.
+   `video_player/video_player.eez-project` y se regenera con `-Accion ui`, que llama a
+   `EEZ Studio.exe --build-project` sin abrir la ventana (verificado el 17/09/2026: regenerar no
+   produce diferencias en `main/ui`).
 7. Dejar la autoprueba (`CONFIG_APP_PERF_AUTOTEST=y`) en el firmware normal.
 8. Reescribir o enmendar commits ajenos.
 
