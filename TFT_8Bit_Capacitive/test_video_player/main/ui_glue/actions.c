@@ -410,6 +410,10 @@ int ui_glue_get_hud_forced(void) {
 
 void ui_glue_refresh_cards(void) {
     if (!objects.lib_grid) return;
+    player_status_t pst;
+    player_get_status(&pst);
+    bool is_active = (pst.state == PST_PLAYING || pst.state == PST_PAUSED);
+
     uint32_t child_cnt = lv_obj_get_child_count(objects.lib_grid);
     for (uint32_t c = 0; c < child_cnt; c++) {
         lv_obj_t *card = lv_obj_get_child(objects.lib_grid, c);
@@ -422,7 +426,7 @@ void ui_glue_refresh_cards(void) {
         lv_obj_t *bar_res = lv_obj_get_child(card, 2);
 
         if (badge) {
-            if (idx == s_current_track_idx) {
+            if (idx == s_current_track_idx && is_active) {
                 lv_obj_remove_flag(badge, LV_OBJ_FLAG_HIDDEN);
             } else {
                 lv_obj_add_flag(badge, LV_OBJ_FLAG_HIDDEN);
@@ -430,7 +434,7 @@ void ui_glue_refresh_cards(void) {
         }
 
         if (bar_res) {
-            if (item->resume_ms > 0 && item->dur_ms > 0) {
+            if (item->resume_ms > 0 && item->dur_ms > 0 && !(idx == s_current_track_idx && pst.state == PST_ENDED)) {
                 lv_obj_remove_flag(bar_res, LV_OBJ_FLAG_HIDDEN);
                 int32_t pct = (int32_t)(((uint64_t)item->resume_ms * 1000) / item->dur_ms);
                 lv_bar_set_value(bar_res, pct, LV_ANIM_OFF);
@@ -468,10 +472,15 @@ void ui_glue_set_view_mode(view_mode_t mode) {
             if (st.state == PST_PLAYING) {
                 player_cmd_t cmd_pause = {.type = PCMD_PAUSE};
                 player_cmd_send(&cmd_pause);
-            }
-            const media_item_t *cur = media_library_get(s_current_track_idx);
-            if (cur && cur->compatible) {
-                media_library_set_resume(cur->path, (uint32_t)st.pos_ms);
+                const media_item_t *cur = media_library_get(s_current_track_idx);
+                if (cur && cur->compatible) {
+                    media_library_set_resume(cur->path, (uint32_t)st.pos_ms);
+                }
+            } else if (st.state == PST_ENDED) {
+                const media_item_t *cur = media_library_get(s_current_track_idx);
+                if (cur) {
+                    media_library_set_resume(cur->path, 0);
+                }
             }
         }
         if (objects.scr_library) {
@@ -1309,10 +1318,14 @@ static lv_obj_t *create_card_widget(lv_obj_t *parent_obj, int idx) {
     lv_obj_set_style_radius(img_thumb, 6, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // badge_now (child 1)
+    player_status_t pst;
+    player_get_status(&pst);
+    bool is_active = (idx == s_current_track_idx) && (pst.state == PST_PLAYING || pst.state == PST_PAUSED);
+
     lv_obj_t *badge = lv_obj_create(card);
     lv_obj_set_pos(badge, 6, 6);
     lv_obj_set_size(badge, 90, 18);
-    if (idx != s_current_track_idx) {
+    if (!is_active) {
         lv_obj_add_flag(badge, LV_OBJ_FLAG_HIDDEN);
     }
     lv_obj_remove_flag(badge, LV_OBJ_FLAG_CLICKABLE|LV_OBJ_FLAG_SCROLLABLE|LV_OBJ_FLAG_SCROLL_CHAIN_HOR|LV_OBJ_FLAG_SCROLL_CHAIN_VER|LV_OBJ_FLAG_SCROLL_ELASTIC|LV_OBJ_FLAG_SCROLL_MOMENTUM|LV_OBJ_FLAG_SCROLL_WITH_ARROW);
@@ -1336,7 +1349,7 @@ static lv_obj_t *create_card_widget(lv_obj_t *parent_obj, int idx) {
     lv_obj_set_pos(bar_res, 0, 77);
     lv_obj_set_size(bar_res, 144, 3);
     lv_bar_set_range(bar_res, 0, 1000);
-    if (item->resume_ms > 0 && item->dur_ms > 0) {
+    if (item->resume_ms > 0 && item->dur_ms > 0 && !(idx == s_current_track_idx && pst.state == PST_ENDED)) {
         int32_t pct = (int32_t)(((uint64_t)item->resume_ms * 1000) / item->dur_ms);
         lv_bar_set_value(bar_res, pct, LV_ANIM_OFF);
     } else {
