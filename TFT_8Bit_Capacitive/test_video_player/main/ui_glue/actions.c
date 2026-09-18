@@ -684,7 +684,9 @@ void ui_glue_set_osd_visible(bool visible) {
         } else {
             if (objects.osd_top) lv_obj_add_flag(objects.osd_top, LV_OBJ_FLAG_HIDDEN);
             if (objects.osd_bottom) lv_obj_add_flag(objects.osd_bottom, LV_OBJ_FLAG_HIDDEN);
-            if (objects.bar_mini_progress) lv_obj_remove_flag(objects.bar_mini_progress, LV_OBJ_FLAG_HIDDEN);
+            /* En hidden no debe quedar una barra de progreso que invalida LVGL
+             * periódicamente; el vídeo directo ya ocupa toda la pantalla. */
+            if (objects.bar_mini_progress) lv_obj_add_flag(objects.bar_mini_progress, LV_OBJ_FLAG_HIDDEN);
             player_cmd_t cmd = {.type = PCMD_SET_VIDEO_RECT, .rect = {0, 0, 480, 320}};
             player_cmd_send(&cmd);
             lcd_bus_set_video_rect(0, 0, 480, 320);
