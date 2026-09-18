@@ -46,6 +46,19 @@ static lv_obj_t *ui_glue_label_create(lv_obj_t *parent) {
     return label;
 }
 
+/* Apply this whenever a runtime title is written.  Only the player title and
+ * the row matching player_status.track_index may use a horizontal marquee. */
+static void ui_glue_set_track_title_overflow(lv_obj_t *label, bool allow_marquee) {
+    ui_glue_label_no_scroll(label);
+    if (allow_marquee) {
+        lv_label_set_long_mode(label, LV_LABEL_LONG_SCROLL_CIRCULAR);
+        lv_obj_set_scroll_dir(label, LV_DIR_HOR);
+        lv_obj_set_style_anim_duration(label, 6000, 0);
+    } else {
+        lv_label_set_long_mode(label, LV_LABEL_LONG_DOT);
+    }
+}
+
 /* LOCAL TO actions.c ONLY: route every dynamic-label allocation in this file
  * through ui_glue_label_create(), enforcing LONG_CLIP and no vertical scroll.
  * Do not copy or extend this LVGL API redefinition to other project files. */
@@ -299,6 +312,7 @@ void ui_glue_show_toast(const char *title, const char *msg, bool is_error) {
     }
 
     lv_label_set_text(s_toast_title, title ? title : "");
+    ui_glue_label_no_scroll(s_toast_title);
     lv_label_set_text(s_toast_desc, msg ? msg : "");
 
     uint32_t icon_color = is_error ? 0xE5484D : 0xF2B33D;
@@ -862,11 +876,11 @@ static void queue_row_click_cb(lv_event_t *e) {
     ui_glue_set_view_mode(VIEW_MODE_FULLSCREEN);
 }
 
-static lv_obj_t *create_queue_row_widget(lv_obj_t *parent, int idx) {
+static lv_obj_t *create_queue_row_widget(lv_obj_t *parent, int idx, int current_idx) {
     const media_item_t *item = media_library_get(idx);
     if (!item) return NULL;
 
-    bool is_current = (idx == s_current_track_idx);
+    bool is_current = (idx == current_idx);
 
     lv_obj_t *row = lv_obj_create(parent);
     lv_obj_set_size(row, 260, 56);
@@ -909,16 +923,12 @@ static lv_obj_t *create_queue_row_widget(lv_obj_t *parent, int idx) {
     lv_obj_remove_flag(lbl, LV_OBJ_FLAG_CLICKABLE | LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_add_flag(lbl, LV_OBJ_FLAG_EVENT_BUBBLE);
     lv_label_set_text(lbl, item->title[0] ? item->title : item->path);
+    ui_glue_set_track_title_overflow(lbl, is_current);
 
     if (is_current) {
         lv_obj_set_style_text_color(lbl, lv_color_hex(theme_colors[active_theme_index][6]), 0);
-        lv_label_set_long_mode(lbl, LV_LABEL_LONG_SCROLL_CIRCULAR);
-        /* The only queue marquee is horizontal and belongs to this row. */
-        lv_obj_set_scroll_dir(lbl, LV_DIR_HOR);
-        lv_obj_set_style_anim_duration(lbl, 6000, 0);
     } else {
         lv_obj_set_style_text_color(lbl, lv_color_hex(theme_colors[active_theme_index][4]), 0);
-        lv_label_set_long_mode(lbl, LV_LABEL_LONG_DOT);
     }
 
     // Meta: 86, 30, 140, 16 (Montserrat 12 has a 16 px line height).
@@ -970,11 +980,14 @@ void ui_glue_populate_queue(void) {
     lv_obj_set_style_pad_all(objects.queue_list, 0, 0);
     lv_obj_set_style_pad_row(objects.queue_list, 0, 0);
 
+    player_status_t status;
+    player_get_status(&status);
+    int current_idx = status.track_index;
     int count = media_library_count();
     lv_obj_t *cur_row_obj = NULL;
     for (int i = 0; i < count; i++) {
-        lv_obj_t *r = create_queue_row_widget(objects.queue_list, i);
-        if (i == s_current_track_idx) {
+        lv_obj_t *r = create_queue_row_widget(objects.queue_list, i, current_idx);
+        if (i == current_idx) {
             cur_row_obj = r;
         }
     }
@@ -1433,6 +1446,7 @@ void ui_glue_update_stats_labels(void) {
         const media_item_t *cur = media_library_get(s_current_track_idx);
         if (cur && cur->title[0] != '\0') {
             set_label_text_if_changed(objects.lbl_stat_file, cur->title);
+            ui_glue_label_no_scroll(objects.lbl_stat_file);
         }
     }
 }
@@ -1441,6 +1455,12 @@ void ui_glue_tick(void) {
     player_status_t st;
     player_get_status(&st);
     s_current_track_idx = st.track_index;
+    /* screens.c may replace the player-title text on this tick; reaffirm the
+     * one globally permitted marquee whenever that runtime title is updated. */
+    if (objects.lbl_title) {
+        ui_glue_set_track_title_overflow(objects.lbl_title, true);
+        lv_obj_set_style_anim_duration(objects.lbl_title, 8000, 0);
+    }
 
     static player_state_t s_prev_player_state = PST_IDLE;
 
@@ -2503,6 +2523,7 @@ static void show_resume_sheet(int idx) {
     s_resume_target_idx = idx;
 
     lv_label_set_text(s_resume_title, item->title[0] ? item->title : item->path);
+    ui_glue_set_track_title_overflow(s_resume_title, false);
 
     uint32_t v_sec = item->resume_ms / 1000;
     uint32_t t_sec = item->dur_ms / 1000;
@@ -2708,6 +2729,7 @@ static lv_obj_t *create_card_widget(lv_obj_t *parent_obj, int idx) {
     lv_obj_set_style_text_font(lbl_title, &lv_font_montserrat_12, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(lbl_title, lv_color_hex(theme_colors[active_theme_index][4]), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_label_set_text(lbl_title, item->title[0] ? item->title : item->path);
+    ui_glue_set_track_title_overflow(lbl_title, false);
 
     // lbl_card_meta (child 4)
     lv_obj_t *lbl_meta = lv_label_create(card);

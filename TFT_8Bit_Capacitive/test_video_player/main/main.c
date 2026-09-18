@@ -608,6 +608,23 @@ static bool textfit_is_library_card_title(const lv_obj_t *obj) {
            obj == lv_obj_get_child((lv_obj_t *)card, 3);
 }
 
+/* Stable structural identity for diagnosing an unexpected marquee. */
+static const char *textfit_marquee_owner(const lv_obj_t *obj) {
+    if (obj == objects.lbl_title) return "player_title";
+
+    for (const lv_obj_t *parent = lv_obj_get_parent(obj); parent;
+         parent = lv_obj_get_parent(parent)) {
+        if (parent == objects.queue_list) return "queue_row";
+        if (parent == objects.lib_grid) return "library_card";
+        if (parent == objects.scr_player) return "scr_player";
+        if (parent == objects.scr_library) return "scr_library";
+        if (parent == objects.scr_queue) return "scr_queue";
+        if (parent == lv_layer_top()) return "layer_top";
+        if (parent == lv_layer_sys()) return "layer_sys";
+    }
+    return "unknown";
+}
+
 static void textfit_check_tree(lv_obj_t *obj, int *offenders) {
     if (lv_obj_check_type(obj, &lv_label_class)) {
         lv_label_long_mode_t mode = lv_label_get_long_mode(obj);
@@ -628,8 +645,8 @@ static void textfit_check_tree(lv_obj_t *obj, int *offenders) {
         textfit_preview(text, preview);
 
         if (marquee && !allowed_marquee) {
-            printf("TEXTFIT_BAD,id=label@%p,reason=marquee_not_allowed,text=%s\n",
-                   (void *)obj, preview);
+            printf("TEXTFIT_BAD,id=label@%p,reason=marquee_not_allowed,owner=%s,text=%s\n",
+                   (void *)obj, textfit_marquee_owner(obj), preview);
             (*offenders)++;
         }
         if (text_size.x > box_w && !marquee && !allowed_card_ellipsis) {
