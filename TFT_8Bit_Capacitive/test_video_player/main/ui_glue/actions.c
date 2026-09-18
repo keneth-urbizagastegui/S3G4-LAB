@@ -214,6 +214,21 @@ static lv_obj_t *s_lbl_resume_start = NULL;
 static lv_obj_t *s_btn_resume_close = NULL;
 static int s_resume_target_idx = -1;
 static void show_resume_sheet(int idx);
+static lv_obj_t *s_dropdown_chevrons[3] = {0};
+
+static void ui_glue_add_dropdown_chevron(lv_obj_t *dropdown, int slot) {
+    if (!dropdown || slot < 0 || slot >= 3 || s_dropdown_chevrons[slot]) return;
+    lv_obj_t *icon = lv_image_create(lv_obj_get_parent(dropdown));
+    lv_image_set_src(icon, &img_chevron_down);
+    lv_obj_set_size(icon, 16, 16);
+    lv_obj_set_pos(icon, lv_obj_get_x(dropdown) + lv_obj_get_width(dropdown) - 20,
+                   lv_obj_get_y(dropdown) + (lv_obj_get_height(dropdown) - 16) / 2);
+    lv_obj_remove_flag(icon, LV_OBJ_FLAG_CLICKABLE | LV_OBJ_FLAG_SCROLLABLE);
+    lv_obj_add_flag(icon, LV_OBJ_FLAG_EVENT_BUBBLE);
+    lv_obj_set_style_pad_right(dropdown, 24, LV_PART_MAIN);
+    lv_obj_move_foreground(icon);
+    s_dropdown_chevrons[slot] = icon;
+}
 
 static lv_obj_t *ui_glue_overlay_backing(lv_obj_t *card) {
     if (!card) return NULL;
@@ -790,11 +805,11 @@ void ui_glue_init(void) {
     ui_glue_prepare_overlay_card(1, objects.ovl_stats);
     ui_glue_prepare_overlay_card(2, objects.ovl_seek_hint);
     ui_glue_prepare_overlay_card(3, objects.ovl_brightness);
-    /* Montserrat intentionally has no LV_SYMBOL_DOWN (U+F078).  Use the
-     * design PNG so dropdown indicators cannot render as missing-glyph boxes. */
-    if (objects.dd_osd_timeout) lv_dropdown_set_symbol(objects.dd_osd_timeout, &img_chevron_down);
-    if (objects.dd_repeat) lv_dropdown_set_symbol(objects.dd_repeat, &img_chevron_down);
-    if (objects.dd_seek_step) lv_dropdown_set_symbol(objects.dd_seek_step, &img_chevron_down);
+    /* Use concrete images rather than LV_SYMBOL_DOWN: Montserrat lacks U+F078,
+     * and a visible right-hand affordance must survive the dropdown renderer. */
+    ui_glue_add_dropdown_chevron(objects.dd_osd_timeout, 0);
+    ui_glue_add_dropdown_chevron(objects.dd_repeat, 1);
+    ui_glue_add_dropdown_chevron(objects.dd_seek_step, 2);
     if (objects.chip_fps) {
         lv_obj_add_flag(objects.chip_fps, LV_OBJ_FLAG_CLICKABLE);
         /* El texto hijo no debe capturar la pulsación larga destinada al chip. */
