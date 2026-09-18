@@ -202,6 +202,7 @@ static lv_obj_t *s_arc_unlock = NULL;
 static lv_obj_t *s_overlay_card_backing[LCD_OVERLAY_MAX_RECTS] = {0};
 static int64_t s_lock_touch_start_us = 0;
 static int64_t s_lock_show_time = 0;
+static int s_queue_rendered_track_idx = -2;
 
 static lv_obj_t *s_resume_overlay = NULL;
 static lv_obj_t *s_resume_sheet = NULL;
@@ -1099,6 +1100,7 @@ void ui_glue_populate_queue(void) {
     player_status_t status;
     player_get_status(&status);
     int current_idx = status.track_index;
+    s_queue_rendered_track_idx = current_idx;
     int count = media_library_count();
     lv_obj_t *cur_row_obj = NULL;
     for (int i = 0; i < count; i++) {
@@ -1581,6 +1583,12 @@ void ui_glue_tick(void) {
     player_status_t st;
     player_get_status(&st);
     s_current_track_idx = st.track_index;
+    /* A row may keep its prior long mode after the player advances while the
+     * queue remains open. Rebuild from one status snapshot so only the new
+     * current row can retain the permitted marquee. */
+    if (objects.queue_list && s_queue_rendered_track_idx != st.track_index) {
+        ui_glue_populate_queue();
+    }
     for (int slot = 0; slot < LCD_OVERLAY_MAX_RECTS; slot++) {
         lv_obj_t *pending = s_pending_overlay_rect[slot];
         if (!pending) continue;
