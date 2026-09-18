@@ -197,6 +197,10 @@ static int64_t s_single_tap_time_ms = 0;
 static lv_obj_t *s_ovl_lock = NULL;
 static lv_obj_t *s_lock_card = NULL;
 static lv_obj_t *s_arc_unlock = NULL;
+/* Square color-key backings sit immediately below every rounded overlay card.
+ * LVGL otherwise resolves the anti-aliased rounded corners against the screen's
+ * default background before the overlay pixels reach the compositor. */
+static lv_obj_t *s_overlay_card_backing[LCD_OVERLAY_MAX_RECTS] = {0};
 static int64_t s_lock_touch_start_us = 0;
 static int64_t s_lock_show_time = 0;
 
@@ -212,6 +216,56 @@ static lv_obj_t *s_btn_resume_close = NULL;
 static int s_resume_target_idx = -1;
 static void show_resume_sheet(int idx);
 
+static lv_obj_t *ui_glue_overlay_backing(lv_obj_t *card) {
+    if (!card) return NULL;
+    for (int i = 0; i < LCD_OVERLAY_MAX_RECTS; i++) {
+        if (s_overlay_card_backing[i] && lv_obj_get_child(s_overlay_card_backing[i], 0) == card) {
+            return s_overlay_card_backing[i];
+        }
+    }
+    return NULL;
+}
+
+static void ui_glue_prepare_overlay_card(int slot, lv_obj_t *card) {
+    if (!card || slot < 0 || slot >= LCD_OVERLAY_MAX_RECTS || s_overlay_card_backing[slot]) return;
+
+    bool hidden = lv_obj_has_flag(card, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_t *backing = lv_obj_create(lv_obj_get_parent(card));
+    lv_obj_set_pos(backing, lv_obj_get_x(card), lv_obj_get_y(card));
+    lv_obj_set_size(backing, lv_obj_get_width(card), lv_obj_get_height(card));
+    lv_obj_set_style_bg_color(backing, lv_color_make(0, 255, 0), 0);
+    lv_obj_set_style_bg_opa(backing, LV_OPA_COVER, 0);
+    lv_obj_set_style_border_width(backing, 0, 0);
+    lv_obj_set_style_radius(backing, 0, 0);
+    lv_obj_set_style_pad_all(backing, 0, 0);
+    lv_obj_remove_flag(backing, LV_OBJ_FLAG_SCROLLABLE | LV_OBJ_FLAG_CLICKABLE);
+    lv_obj_set_parent(card, backing);
+    lv_obj_set_pos(card, 0, 0);
+    if (hidden) lv_obj_add_flag(backing, LV_OBJ_FLAG_HIDDEN);
+    s_overlay_card_backing[slot] = backing;
+}
+
+static void ui_glue_set_overlay_card_visible(lv_obj_t *card, bool visible) {
+    lv_obj_t *backing = ui_glue_overlay_backing(card);
+    if (visible) {
+        if (backing) lv_obj_remove_flag(backing, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_remove_flag(card, LV_OBJ_FLAG_HIDDEN);
+    } else {
+        lv_obj_add_flag(card, LV_OBJ_FLAG_HIDDEN);
+        if (backing) lv_obj_add_flag(backing, LV_OBJ_FLAG_HIDDEN);
+    }
+}
+
+static void ui_glue_set_overlay_card_pos(lv_obj_t *card, int16_t x, int16_t y) {
+    lv_obj_t *backing = ui_glue_overlay_backing(card);
+    if (backing) {
+        lv_obj_set_pos(backing, x, y);
+        lv_obj_set_pos(card, 0, 0);
+    } else {
+        lv_obj_set_pos(card, x, y);
+    }
+}
+
 /* Reutiliza una única pista de salto: nunca quedan rectángulos activos a ambos lados. */
 static void show_seek_hint(int16_t x, const lv_image_dsc_t *icon, const char *text) {
     if (!objects.ovl_seek_hint) return;
@@ -219,14 +273,14 @@ static void show_seek_hint(int16_t x, const lv_image_dsc_t *icon, const char *te
     /* Primero retirar el rectángulo y el objeto de su posición anterior.  Así el
      * flush de LVGL no puede dejar una tarjeta vacía en el lado opuesto. */
     lcd_bus_set_overlay_rect(2, 0, 0, 0, 0, false);
-    lv_obj_add_flag(objects.ovl_seek_hint, LV_OBJ_FLAG_HIDDEN);
+    ui_glue_set_overlay_card_visible(objects.ovl_seek_hint, false);
 
-    lv_obj_set_pos(objects.ovl_seek_hint, x, 116);
+    ui_glue_set_overlay_card_pos(objects.ovl_seek_hint, x, 116);
     if (objects.img_seek_hint) lv_image_set_src(objects.img_seek_hint, icon);
     if (objects.lbl_seek_hint) lv_label_set_text(objects.lbl_seek_hint, text);
 
     lcd_bus_set_overlay_rect(2, x, 116, 100, 88, true);
-    lv_obj_remove_flag(objects.ovl_seek_hint, LV_OBJ_FLAG_HIDDEN);
+    ui_glue_set_overlay_card_visible(objects.ovl_seek_hint, true);
 }
 
 #define BRIGHTNESS_REAL_MIN 25
@@ -433,9 +487,8 @@ static void lock_overlay_event_cb(lv_event_t *e) {
         s_lock_touch_start_us = esp_timer_get_time();
         if (s_lock_card) {
             bool was_hidden = lv_obj_has_flag(s_lock_card, LV_OBJ_FLAG_HIDDEN);
-            lv_obj_remove_flag(s_lock_card, LV_OBJ_FLAG_HIDDEN);
+            ui_glue_set_overlay_card_visible(s_lock_card, true);
             if (was_hidden) {
-                // Registrar tarjeta de bloqueo (200x116 en 140, 104) como overlay 0
                 lcd_bus_set_overlay_rect(0, 140, 104, 200, 116, true);
                 ESP_LOGI(TAG, "Toque en pantalla bloqueada -> tarjeta mostrada con composicion overlay");
             }
@@ -553,6 +606,8 @@ static void init_lock_overlay(void) {
     lv_obj_set_style_bg_opa(lbl_hint, LV_OPA_TRANSP, 0);
     lv_obj_remove_flag(lbl_hint, LV_OBJ_FLAG_CLICKABLE);
     lv_obj_add_flag(lbl_hint, LV_OBJ_FLAG_EVENT_BUBBLE);
+
+    ui_glue_prepare_overlay_card(0, s_lock_card);
 }
 
 void ui_glue_unlock(void) {
@@ -605,7 +660,7 @@ static void player_touch_gesture_event_cb(lv_event_t *e) {
                 s_single_tap_pending = false;
                 s_consume_next_click = true;
                 if (objects.ovl_brightness) {
-                    lv_obj_remove_flag(objects.ovl_brightness, LV_OBJ_FLAG_HIDDEN);
+                    ui_glue_set_overlay_card_visible(objects.ovl_brightness, true);
                     lcd_bus_set_overlay_rect(3, 16, 70, 40, 180, true);
                 }
             }
@@ -722,6 +777,9 @@ void ui_glue_init(void) {
     if (objects.player_touch) {
         lv_obj_add_event_cb(objects.player_touch, player_touch_gesture_event_cb, LV_EVENT_ALL, NULL);
     }
+    ui_glue_prepare_overlay_card(1, objects.ovl_stats);
+    ui_glue_prepare_overlay_card(2, objects.ovl_seek_hint);
+    ui_glue_prepare_overlay_card(3, objects.ovl_brightness);
     /* Montserrat intentionally has no LV_SYMBOL_DOWN (U+F078).  Use the
      * design PNG so dropdown indicators cannot render as missing-glyph boxes. */
     if (objects.dd_osd_timeout) lv_dropdown_set_symbol(objects.dd_osd_timeout, &img_chevron_down);
@@ -1515,7 +1573,7 @@ void ui_glue_tick(void) {
     if (s_locked && s_lock_card && !lv_obj_has_flag(s_lock_card, LV_OBJ_FLAG_HIDDEN)) {
         int64_t now = esp_timer_get_time() / 1000;
         if (now - s_lock_show_time >= 2000 && s_lock_touch_start_us == 0) {
-            lv_obj_add_flag(s_lock_card, LV_OBJ_FLAG_HIDDEN);
+            ui_glue_set_overlay_card_visible(s_lock_card, false);
             lcd_bus_set_overlay_rect(0, 0, 0, 0, 0, false);
             player_status_t st_lock;
             player_get_status(&st_lock);
@@ -1541,7 +1599,7 @@ void ui_glue_tick(void) {
     // Gestos: finalizar ráfaga de seek hint acumulado tras 600 ms
     if (s_seek_in_flight && (now_gest >= s_seek_hint_hide_ms)) {
         s_seek_in_flight = false;
-        if (objects.ovl_seek_hint) lv_obj_add_flag(objects.ovl_seek_hint, LV_OBJ_FLAG_HIDDEN);
+        if (objects.ovl_seek_hint) ui_glue_set_overlay_card_visible(objects.ovl_seek_hint, false);
         lcd_bus_set_overlay_rect(2, 0, 0, 0, 0, false);
 
         player_status_t st_seek;
@@ -1563,7 +1621,7 @@ void ui_glue_tick(void) {
     // Gestos: auto-ocultar indicador de brillo tras 600 ms
     if (s_brightness_hide_ms > 0 && (now_gest >= s_brightness_hide_ms)) {
         s_brightness_hide_ms = 0;
-        if (objects.ovl_brightness) lv_obj_add_flag(objects.ovl_brightness, LV_OBJ_FLAG_HIDDEN);
+        if (objects.ovl_brightness) ui_glue_set_overlay_card_visible(objects.ovl_brightness, false);
         lcd_bus_set_overlay_rect(3, 0, 0, 0, 0, false);
 
         player_status_t st_b;
@@ -1755,7 +1813,7 @@ void action_lock(lv_event_t *e) {
         lv_obj_move_foreground(s_ovl_lock);
     }
     if (s_lock_card) {
-        lv_obj_remove_flag(s_lock_card, LV_OBJ_FLAG_HIDDEN);
+        ui_glue_set_overlay_card_visible(s_lock_card, true);
     }
     if (s_arc_unlock) {
         lv_arc_set_value(s_arc_unlock, 0);
@@ -1763,7 +1821,6 @@ void action_lock(lv_event_t *e) {
     s_lock_show_time = esp_timer_get_time() / 1000;
     s_lock_touch_start_us = 0;
 
-    // Registrar la tarjeta de bloqueo (200x116 en 140, 104) como overlay 0
     lcd_bus_set_overlay_rect(0, 140, 104, 200, 116, true);
 
     ESP_LOGI(TAG, "Action: lock -> pantalla bloqueada con tarjeta visible 2s");
@@ -2343,7 +2400,7 @@ void action_open_stats(lv_event_t *e) {
             player_cmd_t cmd = {.type = PCMD_PLAY};
             player_cmd_send(&cmd);
         }
-        lv_obj_remove_flag(objects.ovl_stats, LV_OBJ_FLAG_HIDDEN);
+        ui_glue_set_overlay_card_visible(objects.ovl_stats, true);
         lcd_bus_set_overlay_rect(1, 12, 52, 212, 172, true);
         ui_glue_update_stats_labels();
         ESP_LOGI(TAG, "Action: ovl_stats abierta desde ajustes (overlay 1 activo)");
@@ -2352,12 +2409,12 @@ void action_open_stats(lv_event_t *e) {
 
     bool is_hidden = lv_obj_has_flag(objects.ovl_stats, LV_OBJ_FLAG_HIDDEN);
     if (is_hidden) {
-        lv_obj_remove_flag(objects.ovl_stats, LV_OBJ_FLAG_HIDDEN);
+        ui_glue_set_overlay_card_visible(objects.ovl_stats, true);
         lcd_bus_set_overlay_rect(1, 12, 52, 212, 172, true);
         ui_glue_update_stats_labels();
         ESP_LOGI(TAG, "Action: ovl_stats mostrada (overlay 1 activo)");
     } else {
-        lv_obj_add_flag(objects.ovl_stats, LV_OBJ_FLAG_HIDDEN);
+        ui_glue_set_overlay_card_visible(objects.ovl_stats, false);
         lcd_bus_set_overlay_rect(1, 0, 0, 0, 0, false);
         player_status_t st_stat;
         player_get_status(&st_stat);
