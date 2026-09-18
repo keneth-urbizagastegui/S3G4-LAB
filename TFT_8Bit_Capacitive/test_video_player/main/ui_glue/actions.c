@@ -488,10 +488,10 @@ static void init_lock_overlay(void) {
     lv_obj_remove_flag(icon, LV_OBJ_FLAG_CLICKABLE);
     lv_obj_add_flag(icon, LV_OBJ_FLAG_EVENT_BUBBLE);
 
-    // Title: x=0, y=86, w=200, h=16
+    // Montserrat 14 needs an 18 px content box.
     lv_obj_t *lbl_title = lv_label_create(s_lock_card);
     lv_obj_set_pos(lbl_title, 0, 86);
-    lv_obj_set_size(lbl_title, 200, 16);
+    lv_obj_set_size(lbl_title, 200, 18);
     lv_label_set_text(lbl_title, "Pantalla bloqueada");
     lv_obj_set_style_text_font(lbl_title, &lv_font_montserrat_14, 0);
     lv_obj_set_style_text_color(lbl_title, lv_color_hex(0xEDEDEA), 0);
@@ -500,10 +500,10 @@ static void init_lock_overlay(void) {
     lv_obj_remove_flag(lbl_title, LV_OBJ_FLAG_CLICKABLE);
     lv_obj_add_flag(lbl_title, LV_OBJ_FLAG_EVENT_BUBBLE);
 
-    // Subtitle / hint: x=0, y=100, w=200, h=14
+    // Montserrat 12 needs a 16 px content box.
     lv_obj_t *lbl_hint = lv_label_create(s_lock_card);
     lv_obj_set_pos(lbl_hint, 0, 100);
-    lv_obj_set_size(lbl_hint, 200, 14);
+    lv_obj_set_size(lbl_hint, 200, 16);
     lv_label_set_text(lbl_hint, "Mantén pulsado para desbloquear");
     lv_obj_set_style_text_font(lbl_hint, &lv_font_montserrat_12, 0);
     lv_obj_set_style_text_color(lbl_hint, lv_color_hex(0x8E929B), 0);
@@ -2403,10 +2403,10 @@ static void init_resume_sheet(void) {
     lv_obj_set_style_text_font(s_resume_title, &lv_font_montserrat_14, 0);
     lv_obj_set_style_text_color(s_resume_title, lv_color_hex(0xEDEDEA), 0);
 
-    // Subtitle label: x=16, y=35, w=380, h=14, font 12, color #8E929B
+    // Montserrat 12 needs a 16 px content box.
     s_resume_sub = lv_label_create(s_resume_sheet);
     lv_obj_set_pos(s_resume_sub, 16, 35);
-    lv_obj_set_size(s_resume_sub, 380, 14);
+    lv_obj_set_size(s_resume_sub, 380, 16);
     lv_obj_set_style_text_font(s_resume_sub, &lv_font_montserrat_12, 0);
     lv_obj_set_style_text_color(s_resume_sub, lv_color_hex(0x8E929B), 0);
 
@@ -2684,7 +2684,7 @@ static lv_obj_t *create_card_widget(lv_obj_t *parent_obj, int idx) {
     // lbl_card_meta (child 4)
     lv_obj_t *lbl_meta = lv_label_create(card);
     lv_obj_set_pos(lbl_meta, 0, 104);
-    lv_obj_set_size(lbl_meta, 144, 14);
+    lv_obj_set_size(lbl_meta, 144, 16);
     lv_label_set_long_mode(lbl_meta, LV_LABEL_LONG_DOT);
     lv_obj_remove_flag(lbl_meta, LV_OBJ_FLAG_CLICKABLE|LV_OBJ_FLAG_SCROLLABLE|LV_OBJ_FLAG_SCROLL_CHAIN_HOR|LV_OBJ_FLAG_SCROLL_CHAIN_VER|LV_OBJ_FLAG_SCROLL_ELASTIC|LV_OBJ_FLAG_SCROLL_MOMENTUM|LV_OBJ_FLAG_SCROLL_WITH_ARROW);
     lv_obj_add_flag(lbl_meta, LV_OBJ_FLAG_EVENT_BUBBLE);

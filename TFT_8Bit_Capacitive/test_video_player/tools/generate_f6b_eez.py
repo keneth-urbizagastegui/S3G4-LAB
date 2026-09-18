@@ -135,6 +135,12 @@ def normalize_label_geometry(node):
         if min_height:
             node["height"] = max(node.get("height", 0), min_height)
         min_widths = {
+            # Keep this table keyed by literal caption: imported EEZ labels do
+            # not all have identifiers.  These are measured font extents, not
+            # visual guesses, so the generated source has no clipped label.
+            "Envío al panel": 90,
+            "Barra de progreso mínima": 210,
+            "Almacenamiento": 130,
             "Presentados": 90,
             "Decodificados": 100,
             "Descartados": 100,
