@@ -27,6 +27,17 @@
 
 static const char *TAG = "UI_ACTIONS";
 
+/* Labels never scroll vertically.  The two permitted horizontal marquees
+ * explicitly restore their own long mode and horizontal direction later. */
+static void ui_glue_label_no_scroll(lv_obj_t *label) {
+    lv_label_set_long_mode(label, LV_LABEL_LONG_CLIP);
+    lv_obj_remove_flag(label, LV_OBJ_FLAG_SCROLLABLE | LV_OBJ_FLAG_SCROLL_CHAIN_HOR |
+                              LV_OBJ_FLAG_SCROLL_CHAIN_VER | LV_OBJ_FLAG_SCROLL_ELASTIC |
+                              LV_OBJ_FLAG_SCROLL_MOMENTUM | LV_OBJ_FLAG_SCROLL_WITH_ARROW);
+    lv_obj_set_scroll_dir(label, LV_DIR_NONE);
+    lv_obj_set_scrollbar_mode(label, LV_SCROLLBAR_MODE_OFF);
+}
+
 static const lv_font_t *ui_glue_replacement_font(const lv_font_t *font) {
     if (font == &lv_font_montserrat_12) return &ui_font_montserrat_12;
     if (font == &lv_font_montserrat_14) return &ui_font_montserrat_14;
@@ -39,6 +50,9 @@ static void ui_glue_apply_fonts_recursive(lv_obj_t *obj) {
         lv_obj_get_style_text_font(obj, LV_PART_MAIN));
     if (replacement) {
         lv_obj_set_style_text_font(obj, replacement, LV_PART_MAIN);
+    }
+    if (lv_obj_check_type(obj, &lv_label_class) && obj != objects.lbl_title) {
+        ui_glue_label_no_scroll(obj);
     }
 
     uint32_t child_count = lv_obj_get_child_count(obj);
@@ -2677,7 +2691,7 @@ static lv_obj_t *create_card_widget(lv_obj_t *parent_obj, int idx) {
     lv_obj_remove_flag(lbl_title, LV_OBJ_FLAG_CLICKABLE|LV_OBJ_FLAG_SCROLLABLE|LV_OBJ_FLAG_SCROLL_CHAIN_HOR|LV_OBJ_FLAG_SCROLL_CHAIN_VER|LV_OBJ_FLAG_SCROLL_ELASTIC|LV_OBJ_FLAG_SCROLL_MOMENTUM|LV_OBJ_FLAG_SCROLL_WITH_ARROW);
     lv_obj_add_flag(lbl_title, LV_OBJ_FLAG_EVENT_BUBBLE);
     lv_obj_set_scrollbar_mode(lbl_title, LV_SCROLLBAR_MODE_OFF);
-    lv_obj_set_style_text_font(lbl_title, &lv_font_montserrat_14, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(lbl_title, &lv_font_montserrat_12, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(lbl_title, lv_color_hex(theme_colors[active_theme_index][4]), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_label_set_text(lbl_title, item->title[0] ? item->title : item->path);
 

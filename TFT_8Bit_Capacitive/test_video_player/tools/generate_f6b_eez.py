@@ -413,7 +413,7 @@ for page in proj['userPages']:
                 make_label(100, 92, 100, 14, text="5.1 / 9.4 ms", font="montserrat_12", color="c_text", align="RIGHT", identifier="lbl_stat_rd"),
                 make_label(12, 110, 80, 14, text="Decodificación", font="montserrat_12", color="c_muted"),
                 make_label(100, 110, 100, 14, text="21.8 / 27.0 ms", font="montserrat_12", color="c_text", align="RIGHT", identifier="lbl_stat_dec_time"),
-                make_label(12, 128, 80, 14, text="Envío al panel", font="montserrat_12", color="c_muted"),
+                make_label(12, 128, 90, 14, text="Envío al panel", font="montserrat_12", color="c_muted"),
                 make_label(110, 128, 90, 14, text="18.9 ms", font="montserrat_12", color="c_text", align="RIGHT", identifier="lbl_stat_blit"),
                 make_label(12, 146, 60, 14, text="Archivo", font="montserrat_12", color="c_muted"),
                 make_label(75, 146, 125, 14, text="480x320 · MJPEG", font="montserrat_12", color="c_text", align="RIGHT", identifier="lbl_stat_file")
@@ -488,7 +488,7 @@ if 'scr_settings' not in existing_pages:
             make_label(16, 16, 120, 16, text="Reproducción", font="montserrat_14", color="c_text", identifier="lbl_tab_1")
         ]),
         make_button(0, 148, 149, 48, identifier="btn_tab_2", action_name="settings_tab", children=[
-            make_label(16, 16, 120, 16, text="Almacenamiento", font="montserrat_14", color="c_text", identifier="lbl_tab_2")
+            make_label(16, 16, 130, 16, text="Almacenamiento", font="montserrat_14", color="c_text", identifier="lbl_tab_2")
         ]),
         make_button(0, 196, 149, 48, identifier="btn_tab_3", action_name="settings_tab", children=[
             make_label(16, 16, 120, 16, text="Acerca de", font="montserrat_14", color="c_text", identifier="lbl_tab_3")
@@ -507,7 +507,7 @@ if 'scr_settings' not in existing_pages:
         make_label(16, 130, 200, 16, text="Mostrar FPS en la OSD", font="montserrat_14", color="c_text"),
         make_switch(270, 126, 44, 24, identifier="sw_show_stats", action_name="set_show_stats"),
         
-        make_label(16, 185, 200, 16, text="Barra de progreso mínima", font="montserrat_14", color="c_text"),
+        make_label(16, 185, 210, 16, text="Barra de progreso mínima", font="montserrat_14", color="c_text"),
         make_switch(270, 181, 44, 24, identifier="sw_mini_progress", action_name="set_mini_progress")
     ]
     
