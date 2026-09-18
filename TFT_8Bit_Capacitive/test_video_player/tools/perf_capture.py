@@ -301,7 +301,8 @@ def main():
         print("\nError: No se recibio ninguna linea PERF.", file=sys.stderr)
         sys.exit(3)
 
-    # Procesar resumen descartando los primeros 2 segundos de cada escenario
+    # La autoprueba abre la ventana de medida solo tras 2 s de presentacion
+    # estable; todas las muestras recibidas pertenecen al escenario medido.
     groups = {}
     for r in perf_records:
         trk = r.get("track", "?")
@@ -312,7 +313,7 @@ def main():
         groups[key].append(r)
 
     print("\n" + "=" * 172)
-    print(f"RESUMEN DE RENDIMIENTO ({args.phase}) - (Primeros 2s descartados por escenario)")
+    print(f"RESUMEN DE RENDIMIENTO ({args.phase}) - (ventanas abiertas tras estabilizacion)")
     print("=" * 172)
     print(f"{'Track':<7}{'Escenario':<11}{'View':<7}{'HUD':<5}{'Muestras':<9}{'Dec FPS':<9}{'Pres FPS':<9}{'drop':<6}{'rd_avg':<8}{'rd_p50':<8}{'rd_p95':<8}{'rd_max':<8}{'rd_slow':<9}{'dec_f_avg':<11}{'dec_f_max':<11}{'blit_avg':<9}{'drift':<8}")
     print("-" * 172)
@@ -326,8 +327,7 @@ def main():
     summary_data = {}
 
     for (trk, scn), recs in sorted(groups.items(), key=sort_key):
-        # Descartar primeros 2s de cada escenario (el primer reporte de 2s)
-        filtered = recs[1:] if len(recs) > 1 else recs
+        filtered = recs
         n = len(filtered)
         if n > 0:
             avg_dec = sum(float(x.get("dec_fps", 0.0)) for x in filtered) / n
@@ -409,7 +409,7 @@ def main():
                         c_scn = row.get("scn", "?")
                         cmp_groups.setdefault((c_trk, c_scn), []).append(row)
                     for (c_trk, c_scn), recs in cmp_groups.items():
-                        c_filt = recs[1:] if len(recs) > 1 else recs
+                        c_filt = recs
                         cn = len(c_filt)
                         if cn > 0:
                             c_pres = sum(float(x.get("pres_fps", 0.0)) for x in c_filt) / cn
@@ -613,7 +613,7 @@ def main():
         max_drift_observed = 0.0
         for (trk, scn), recs in groups.items():
             if scn in ("hidden", "osd", "seek"):
-                filtered = recs[1:] if len(recs) > 1 else recs
+                filtered = recs
                 for r in filtered:
                     try:
                         d_val = float(r.get("drift_ms", 0))
@@ -632,7 +632,7 @@ def main():
         hidden_pres_list = []
         osd_pres_list = []
         for (trk, scn), recs in groups.items():
-            filtered = recs[1:] if len(recs) > 1 else recs
+            filtered = recs
             if scn == "hidden":
                 for r in filtered:
                     hidden_pres_list.append(float(r.get("pres_fps", 0.0)))
@@ -663,7 +663,7 @@ def main():
         total_hidden_dec = 0
         for (trk, scn), recs in sorted(groups.items(), key=sort_key):
             if scn == "hidden":
-                filtered = recs[1:] if len(recs) > 1 else recs
+                filtered = recs
                 trk_drop = sum(int(r.get("drop", 0)) for r in filtered)
                 trk_dec = sum(int(r.get("dec_frames", round(float(r.get("dec_fps", 0.0)) * 2.0))) for r in filtered)
                 trk_total = trk_dec + trk_drop
@@ -693,7 +693,7 @@ def main():
         reader_rd_list = []
         for (trk, scn), recs in groups.items():
             if scn in ("hidden", "osd", "seek"):
-                filtered = recs[1:] if len(recs) > 1 else recs
+                filtered = recs
                 for r in filtered:
                     try:
                         rd_a = float(r.get("reader_rd_avg", r.get("rd_avg", 0.0)))
@@ -857,7 +857,7 @@ def main():
             print("-" * 80)
             overlay_recs = [r for r in perf_records if r.get("scn") == "overlay"]
             if overlay_recs:
-                filtered_ovl = overlay_recs[1:] if len(overlay_recs) > 1 else overlay_recs
+                filtered_ovl = overlay_recs
                 ovl_pres = [float(r.get("pres_fps", 0.0)) for r in filtered_ovl]
                 avg_ovl_pres = sum(ovl_pres) / len(ovl_pres) if ovl_pres else 0.0
                 total_ovl_drop = sum(int(r.get("drop", 0)) for r in filtered_ovl)
@@ -883,7 +883,7 @@ def main():
                 ovl_blit_vals = [float(r.get("frame_blit_ms_avg", 0.0)) for r in filtered_ovl if float(r.get("frame_blit_ms_avg", 0.0)) > 0.0]
                 avg_ovl_blit = sum(ovl_blit_vals) / len(ovl_blit_vals) if ovl_blit_vals else 0.0
                 base_recs = groups.get(("0", "hidden")) or groups.get((0, "hidden")) or []
-                base_blit_vals = [float(r.get("frame_blit_ms_avg", 0.0)) for r in base_recs[1:] if float(r.get("frame_blit_ms_avg", 0.0)) > 0.0]
+                base_blit_vals = [float(r.get("frame_blit_ms_avg", 0.0)) for r in base_recs if float(r.get("frame_blit_ms_avg", 0.0)) > 0.0]
                 avg_base_blit = sum(base_blit_vals) / len(base_blit_vals) if base_blit_vals else 0.0
                 blit_delta = avg_ovl_blit - avg_base_blit
                 print(f"[EVALUACION OVERLAY frame_blit_ms]: overlay={avg_ovl_blit:.2f} ms vs base_hidden={avg_base_blit:.2f} ms, delta={blit_delta:+.2f} ms (umbral: delta <= 1.0 ms)")
@@ -998,7 +998,7 @@ def main():
         max_drift_observed = 0.0
         for (trk, scn), recs in groups.items():
             if scn in ("hidden", "osd", "seek"):
-                filtered = recs[1:] if len(recs) > 1 else recs
+                filtered = recs
                 for r in filtered:
                     try:
                         d_val = float(r.get("drift_ms", 0))
@@ -1017,7 +1017,7 @@ def main():
         hidden_pres_list = []
         osd_pres_list = []
         for (trk, scn), recs in groups.items():
-            filtered = recs[1:] if len(recs) > 1 else recs
+            filtered = recs
             if scn == "hidden":
                 for r in filtered:
                     hidden_pres_list.append(float(r.get("pres_fps", 0.0)))
@@ -1048,7 +1048,7 @@ def main():
         total_hidden_dec = 0
         for (trk, scn), recs in sorted(groups.items(), key=sort_key):
             if scn == "hidden":
-                filtered = recs[1:] if len(recs) > 1 else recs
+                filtered = recs
                 trk_drop = sum(int(r.get("drop", 0)) for r in filtered)
                 trk_dec = sum(int(r.get("dec_frames", round(float(r.get("dec_fps", 0.0)) * 2.0))) for r in filtered)
                 trk_total = trk_dec + trk_drop
@@ -1075,7 +1075,7 @@ def main():
         max_rd_observed = 0.0
         for (trk, scn), recs in groups.items():
             if scn in ("hidden", "osd", "seek"):
-                filtered = recs[1:] if len(recs) > 1 else recs
+                filtered = recs
                 for r in filtered:
                     try:
                         rd_m = float(r.get("rd_max", 0.0))
@@ -1209,7 +1209,7 @@ def main():
         max_drift_observed = 0.0
         for (trk, scn), recs in groups.items():
             if scn in ("hidden", "osd", "seek"):
-                filtered = recs[1:] if len(recs) > 1 else recs
+                filtered = recs
                 for r in filtered:
                     try:
                         d_val = float(r.get("drift_ms", 0))
@@ -1228,7 +1228,7 @@ def main():
         hidden_pres_list = []
         osd_pres_list = []
         for (trk, scn), recs in groups.items():
-            filtered = recs[1:] if len(recs) > 1 else recs
+            filtered = recs
             if scn == "hidden":
                 for r in filtered:
                     hidden_pres_list.append(float(r.get("pres_fps", 0.0)))
@@ -1259,7 +1259,7 @@ def main():
         total_hidden_dec = 0
         for (trk, scn), recs in sorted(groups.items(), key=sort_key):
             if scn == "hidden":
-                filtered = recs[1:] if len(recs) > 1 else recs
+                filtered = recs
                 trk_drop = sum(int(r.get("drop", 0)) for r in filtered)
                 trk_dec = sum(int(r.get("dec_frames", round(float(r.get("dec_fps", 0.0)) * 2.0))) for r in filtered)
                 trk_total = trk_dec + trk_drop
@@ -1371,7 +1371,7 @@ def main():
         max_drift_observed = 0.0
         for (trk, scn), recs in groups.items():
             if scn in ("hidden", "osd", "seek"):
-                filtered = recs[1:] if len(recs) > 1 else recs
+                filtered = recs
                 for r in filtered:
                     try:
                         d_val = float(r.get("drift_ms", 0))
@@ -1390,7 +1390,7 @@ def main():
         hidden_points = []
         for (trk, scn), recs in groups.items():
             if scn == "hidden":
-                filtered = recs[1:] if len(recs) > 1 else recs
+                filtered = recs
                 for r in filtered:
                     try:
                         t_m = float(r.get("t_ms", 0)) / 60000.0 # minutos

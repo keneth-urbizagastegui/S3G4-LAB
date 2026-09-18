@@ -668,6 +668,39 @@ static void log_stack_and_heap_diag(const char *phase_tag) {
 /* Reserva para apertura de pistas, LOOP, TAP/UINAV, OVERLAY, STRESS, SDPULL
  * y el cierre. Así el barrido por pista no puede consumir la ventana completa. */
 #define AUTOTEST_FIXED_BUDGET_SEC 300
+#define AUTOTEST_STABLE_PRESENTATION_US 2000000LL
+
+/* Keep warm-up traffic out of the measured scenario.  In particular, a
+ * resumed NVS position may need to refill the decoder/presentation pipeline
+ * after PCMD_OPEN. */
+static bool autotest_wait_for_stable_presentation(int track_idx) {
+    const int64_t timeout_us = 10000000LL;
+    int64_t wait_start_us = esp_timer_get_time();
+    int64_t playing_since_us = 0;
+
+    perf_set_scenario(track_idx, "init");
+    while (esp_timer_get_time() - wait_start_us < timeout_us) {
+        player_status_t status;
+        player_get_status(&status);
+        int64_t now_us = esp_timer_get_time();
+        if (status.state == PST_PLAYING && status.track_index == track_idx) {
+            if (playing_since_us == 0) playing_since_us = now_us;
+            perf_report_if_due();
+            if (now_us - playing_since_us >= AUTOTEST_STABLE_PRESENTATION_US) {
+                float dec_fps = 0.0f;
+                float pres_fps = 0.0f;
+                perf_get_fps(&dec_fps, &pres_fps);
+                if (pres_fps > 0.0f) return true;
+                /* A zero-presentation warm-up window is not stable. */
+                playing_since_us = 0;
+            }
+        } else {
+            playing_since_us = 0;
+        }
+        vTaskDelay(pdMS_TO_TICKS(50));
+    }
+    return false;
+}
 
 static void autotest_task(void *arg) {
     ESP_LOGI(TAG, "Tarea de autotest F2 iniciada (usa cola de comandos y peticiones UI).");
@@ -740,7 +773,10 @@ static void autotest_task(void *arg) {
                 vTaskDelay(pdMS_TO_TICKS(10));
             }
 
-            vTaskDelay(pdMS_TO_TICKS(600));
+            if (!autotest_wait_for_stable_presentation(track_idx)) {
+                ESP_LOGW(TAG, "Track %d escenario '%s': no alcanzo 2 s de presentacion estable",
+                         track_idx, scn_name);
+            }
 
             perf_set_scenario(track_idx, scn_name);
             ESP_LOGI(TAG, "Track %d -> Escenario '%s' (%d s, view=full, hud=%d)",
