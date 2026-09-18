@@ -2277,6 +2277,13 @@ void ui_glue_run_uinav_test(void) {
     wait_gui_ms(50);
 
     // Prueba Ajustes -> "Ver rendimiento" -> vuelve al reproductor reanudando y muestra ovl_stats
+    /* The preceding test must never leak a toggled overlay into this flow. */
+    bool perf_baseline_closed = !objects.ovl_stats || lv_obj_has_flag(objects.ovl_stats, LV_OBJ_FLAG_HIDDEN);
+    if (!perf_baseline_closed) {
+        bool cleanup_click = sim_touch_click_obj(objects.btn_stats_close);
+        wait_gui_ms(150);
+        perf_baseline_closed = cleanup_click && lv_obj_has_flag(objects.ovl_stats, LV_OBJ_FLAG_HIDDEN);
+    }
     ui_glue_set_osd_visible(true);
     wait_gui_ms(100);
     sim_touch_click(450, 295); // btn=settings
@@ -2290,11 +2297,11 @@ void ui_glue_run_uinav_test(void) {
     bool perf_screen_ok = (ui_glue_get_view_mode() == VIEW_MODE_FULLSCREEN);
     bool perf_resumed = (st_after_perf.state == PST_PLAYING);
     bool ovl_stats_shown = (objects.ovl_stats && !lv_obj_has_flag(objects.ovl_stats, LV_OBJ_FLAG_HIDDEN));
-    // Cerrar ovl_stats con toque sobre ella (x=100, y=100)
-    bool perf_close_click_ok = sim_touch_click_obj(objects.ovl_stats);
+    // Close through its real control, not the passive card container.
+    bool perf_close_click_ok = sim_touch_click_obj(objects.btn_stats_close);
     wait_gui_ms(250);
     bool ovl_stats_closed = (objects.ovl_stats && lv_obj_has_flag(objects.ovl_stats, LV_OBJ_FLAG_HIDDEN));
-    bool perf_flow_ok = (perf_tab_ok && perf_button_ok && perf_screen_ok && perf_resumed &&
+    bool perf_flow_ok = (perf_baseline_closed && perf_tab_ok && perf_button_ok && perf_screen_ok && perf_resumed &&
                          ovl_stats_shown && perf_close_click_ok && ovl_stats_closed);
     printf("UINAV,btn=settings_ver_rendimiento,result=%s\n", perf_flow_ok ? "PASS" : "FAIL");
     wait_gui_ms(50);
@@ -2323,11 +2330,17 @@ void ui_glue_run_uinav_test(void) {
     printf("UINAV,btn=seek,result=%s\n", seek_ok ? "PASS" : "FAIL");
 
     // 13. btn=lock (x=30, y=295)
+    bool lock_baseline_unlocked = !s_locked;
+    if (!lock_baseline_unlocked) {
+        ui_glue_unlock();
+        wait_gui_ms(150);
+        lock_baseline_unlocked = !s_locked;
+    }
     ui_glue_set_osd_visible(true);
     wait_gui_ms(100);
     bool lock_click_ok = sim_touch_click_obj(objects.btn_lock);
     wait_gui_ms(150);
-    bool lock_ok = (lock_click_ok && s_locked);
+    bool lock_ok = (lock_baseline_unlocked && lock_click_ok && s_locked);
     printf("UINAV,btn=lock,result=%s\n", lock_ok ? "PASS" : "FAIL");
 
     // L8: Pulsacion corta (300 ms) no debe desbloquear
@@ -2365,13 +2378,19 @@ void ui_glue_run_uinav_test(void) {
     printf("UINAV,btn=gestures,result=%s\n", gestures_ok ? "PASS" : "FAIL");
 
     // 16. ovl_stats: apertura y cierre
+    bool stats_baseline_closed = !objects.ovl_stats || lv_obj_has_flag(objects.ovl_stats, LV_OBJ_FLAG_HIDDEN);
+    if (!stats_baseline_closed) {
+        bool cleanup_click = sim_touch_click_obj(objects.btn_stats_close);
+        wait_gui_ms(150);
+        stats_baseline_closed = cleanup_click && lv_obj_has_flag(objects.ovl_stats, LV_OBJ_FLAG_HIDDEN);
+    }
     action_open_stats(NULL);
     wait_gui_ms(100);
     bool stats_open_ok = (objects.ovl_stats && !lv_obj_has_flag(objects.ovl_stats, LV_OBJ_FLAG_HIDDEN));
     action_open_stats(NULL);
     wait_gui_ms(100);
     bool stats_close_ok = (objects.ovl_stats && lv_obj_has_flag(objects.ovl_stats, LV_OBJ_FLAG_HIDDEN));
-    printf("UINAV,btn=stats,result=%s\n", (stats_open_ok && stats_close_ok) ? "PASS" : "FAIL");
+    printf("UINAV,btn=stats,result=%s\n", (stats_baseline_closed && stats_open_ok && stats_close_ok) ? "PASS" : "FAIL");
 
     // 17. Fin de video sin repetir: chip y barra retirados
     const media_item_t *item_eof = media_library_get(0);
