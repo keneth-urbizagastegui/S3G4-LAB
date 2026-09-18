@@ -375,7 +375,13 @@
                     "hiddenFlag": false,
                     "localStyles": {
                         "objID": "97459321-56be-4619-8bac-4277ea598be8",
-                        "definition": {}
+                        "definition": {
+                            "MAIN": {
+                                "DEFAULT": {
+                                    "bg_opa": 0
+                                }
+                            }
+                        }
                     },
                     "eventHandlers": [],
                     "children": [

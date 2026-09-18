@@ -600,6 +600,16 @@ for page in proj["userPages"]:
     for component in page.get("components", []):
         normalize_label_geometry(component)
 
+# The fullscreen player is composited over direct video through small RGB565
+# overlay rectangles.  Its root must not repaint those rectangles: only the
+# visible overlay cards may replace the color-keyed video pixels.
+for page in proj["userPages"]:
+    if page.get("name") != "scr_player":
+        continue
+    for component in page.get("components", []):
+        if component.get("type") == "LVGLScreenWidget":
+            component.setdefault("localStyles", {}).setdefault("definition", {}).setdefault("MAIN", {}).setdefault("DEFAULT", {})["bg_opa"] = 0
+
 with open(PROJ_PATH, 'w', encoding='utf-8') as f:
     json.dump(proj, f, indent=4)
 
