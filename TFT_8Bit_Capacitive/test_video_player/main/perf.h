@@ -27,6 +27,7 @@ void perf_mark_late(uint32_t us);
 void perf_mark_dropped(void);
 void perf_mark_drift(int32_t drift_ms);
 void perf_set_scenario(int track, const char *scn);
+void perf_start_measurement_window(void);
 void perf_report_if_due(void);
 
 // Métricas de latencia táctil (T1)

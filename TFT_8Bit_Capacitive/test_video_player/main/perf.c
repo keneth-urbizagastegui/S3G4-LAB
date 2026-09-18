@@ -359,6 +359,32 @@ void perf_set_scenario(int track, const char *scn) {
     portEXIT_CRITICAL(&s_perf_mux);
 }
 
+/* Reset only the accumulators reported by PERF.  Scenario and presentation
+ * state remain intact: this marks the real start of an autotest window. */
+void perf_start_measurement_window(void) {
+    portENTER_CRITICAL(&s_perf_mux);
+    s_frames_decoded = s_frames_presented = s_frames_dropped = 0;
+    s_oversize_frames = s_frame_mismatch = 0;
+    s_read_sum_us = s_read_count = s_read_max_us = 0;
+    s_rd_samples_cnt = s_rd_slow_count = 0;
+    s_reader_rd_sum_us = s_reader_rd_count = s_reader_rd_max_us = 0;
+    s_reader_rd_samples_cnt = 0;
+    s_slots_ready_sum = s_slots_ready_count = 0;
+    s_te_wait_sum_us = s_te_wait_count = s_te_wait_max_us = s_te_timeout_count = 0;
+    s_decode_sum_us = s_decode_count = s_decode_max_us = 0;
+    s_frame_dec_sum_us = s_frame_dec_count = s_frame_dec_max_us = 0;
+    s_blit_sum_us = s_blit_count = s_blit_max_us = 0;
+    s_late_max_us = 0;
+    s_last_drift_ms = 0;
+    s_strip_count = s_direct_frames_count = s_total_strips_sent = s_total_windows_sent = 0;
+    s_strip_sum_us = s_frame_blit_sum_us = 0;
+    s_lvgl_rows_clipped = 0;
+    s_touch_rd_sum_us = s_touch_rd_count = s_touch_rd_max_us = s_touch_age_max_us = 0;
+    s_last_dec_fps = s_last_pres_fps = 0.0f;
+    s_last_report_us = esp_timer_get_time();
+    portEXIT_CRITICAL(&s_perf_mux);
+}
+
 void perf_report_if_due(void) {
     int64_t now = esp_timer_get_time();
 

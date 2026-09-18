@@ -677,10 +677,11 @@ static void log_stack_and_heap_diag(const char *phase_tag) {
 /* Keep warm-up traffic out of the measured scenario.  In particular, a
  * resumed NVS position may need to refill the decoder/presentation pipeline
  * after PCMD_OPEN. */
-static bool autotest_wait_for_stable_presentation(int track_idx) {
+static bool autotest_wait_for_stable_presentation(int track_idx, const char *scenario) {
     const int64_t timeout_us = 10000000LL;
     int64_t wait_start_us = esp_timer_get_time();
     int64_t playing_since_us = 0;
+    uint32_t dropped_at_stable_start = 0;
 
     perf_set_scenario(track_idx, "init");
     while (esp_timer_get_time() - wait_start_us < timeout_us) {
@@ -688,13 +689,26 @@ static bool autotest_wait_for_stable_presentation(int track_idx) {
         player_get_status(&status);
         int64_t now_us = esp_timer_get_time();
         if (status.state == PST_PLAYING && status.track_index == track_idx) {
-            if (playing_since_us == 0) playing_since_us = now_us;
+            if (playing_since_us == 0) {
+                playing_since_us = now_us;
+                dropped_at_stable_start = status.dropped;
+            } else if (status.dropped != dropped_at_stable_start) {
+                /* A discard restarts the consecutive clean-presentation time. */
+                playing_since_us = now_us;
+                dropped_at_stable_start = status.dropped;
+            }
             perf_report_if_due();
             if (now_us - playing_since_us >= AUTOTEST_STABLE_PRESENTATION_US) {
                 float dec_fps = 0.0f;
                 float pres_fps = 0.0f;
                 perf_get_fps(&dec_fps, &pres_fps);
-                if (pres_fps > 0.0f) return true;
+                if (pres_fps > 0.0f) {
+                    perf_set_scenario(track_idx, scenario);
+                    perf_start_measurement_window();
+                    printf("AUTOTEST_WINDOW_START,track=%d,scn=%s,t_ms=%lld,stable_ms=2000,drop=0\n",
+                           track_idx, scenario, (long long)(now_us / 1000));
+                    return true;
+                }
                 /* A zero-presentation warm-up window is not stable. */
                 playing_since_us = 0;
             }
@@ -777,12 +791,12 @@ static void autotest_task(void *arg) {
                 vTaskDelay(pdMS_TO_TICKS(10));
             }
 
-            if (!autotest_wait_for_stable_presentation(track_idx)) {
+            if (!autotest_wait_for_stable_presentation(track_idx, scn_name)) {
                 ESP_LOGW(TAG, "Track %d escenario '%s': no alcanzo 2 s de presentacion estable",
                          track_idx, scn_name);
+                continue;
             }
 
-            perf_set_scenario(track_idx, scn_name);
             ESP_LOGI(TAG, "Track %d -> Escenario '%s' (%d s, view=full, hud=%d)",
                      track_idx, scn_name, sec_per_scenario, expected_hud);
 
