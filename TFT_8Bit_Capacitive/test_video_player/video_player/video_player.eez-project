@@ -6551,7 +6551,7 @@
                                 "definition": {
                                     "MAIN": {
                                         "DEFAULT": {
-                                            "text_font": "MONTSERRAT_14",
+                                            "text_font": "MONTSERRAT_12",
                                             "text_color": "c_text"
                                         }
                                     }

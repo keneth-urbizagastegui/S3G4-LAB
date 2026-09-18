@@ -600,6 +600,14 @@ static void textfit_preview(const char *text, char out[25]) {
     out[n] = '\0';
 }
 
+/* The library grid owns cards directly.  Its title is the fourth child in
+ * create_card_widget(); DOT is the specified, readable overflow treatment. */
+static bool textfit_is_library_card_title(const lv_obj_t *obj) {
+    const lv_obj_t *card = lv_obj_get_parent(obj);
+    return card && lv_obj_get_parent(card) == objects.lib_grid &&
+           obj == lv_obj_get_child((lv_obj_t *)card, 3);
+}
+
 static void textfit_check_tree(lv_obj_t *obj, int *offenders) {
     if (lv_obj_check_type(obj, &lv_label_class)) {
         lv_label_long_mode_t mode = lv_label_get_long_mode(obj);
@@ -614,6 +622,8 @@ static void textfit_check_tree(lv_obj_t *obj, int *offenders) {
         int32_t box_h = lv_obj_get_content_height(obj);
         bool marquee = mode == LV_LABEL_LONG_SCROLL_CIRCULAR;
         bool allowed_marquee = textfit_is_allowed_marquee(obj);
+        bool allowed_card_ellipsis = mode == LV_LABEL_LONG_DOT &&
+                                    textfit_is_library_card_title(obj);
         char preview[25];
         textfit_preview(text, preview);
 
@@ -622,7 +632,7 @@ static void textfit_check_tree(lv_obj_t *obj, int *offenders) {
                    (void *)obj, preview);
             (*offenders)++;
         }
-        if (text_size.x > box_w && !marquee) {
+        if (text_size.x > box_w && !marquee && !allowed_card_ellipsis) {
             printf("TEXTFIT_BAD,id=label@%p,reason=width,text_w=%ld,box_w=%ld,text=%s\n",
                    (void *)obj, (long)text_size.x, (long)box_w, preview);
             (*offenders)++;

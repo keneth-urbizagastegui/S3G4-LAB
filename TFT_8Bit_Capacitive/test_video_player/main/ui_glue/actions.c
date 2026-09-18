@@ -46,6 +46,9 @@ static lv_obj_t *ui_glue_label_create(lv_obj_t *parent) {
     return label;
 }
 
+/* LOCAL TO actions.c ONLY: route every dynamic-label allocation in this file
+ * through ui_glue_label_create(), enforcing LONG_CLIP and no vertical scroll.
+ * Do not copy or extend this LVGL API redefinition to other project files. */
 #define lv_label_create(parent) ui_glue_label_create(parent)
 
 static const lv_font_t *ui_glue_replacement_font(const lv_font_t *font) {
@@ -2702,7 +2705,6 @@ static lv_obj_t *create_card_widget(lv_obj_t *parent_obj, int idx) {
     lv_obj_add_flag(lbl_title, LV_OBJ_FLAG_EVENT_BUBBLE);
     lv_obj_set_scrollbar_mode(lbl_title, LV_SCROLLBAR_MODE_OFF);
     lv_obj_set_style_text_font(lbl_title, &lv_font_montserrat_12, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_letter_space(lbl_title, -3, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(lbl_title, lv_color_hex(theme_colors[active_theme_index][4]), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_label_set_text(lbl_title, item->title[0] ? item->title : item->path);
 
