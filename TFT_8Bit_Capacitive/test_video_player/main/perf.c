@@ -85,6 +85,9 @@ static int s_track = 0;
 static char s_scn[32] = "init";
 
 static int64_t s_last_report_us = 0;
+/* The first interval after an explicit autotest restart is deliberately
+ * discarded, so a report can never combine the prior epoch with a new one. */
+static bool s_discard_first_measurement_report = false;
 
 void perf_set_present_path(const char *path) {
     if (!path) return;
@@ -359,10 +362,8 @@ void perf_set_scenario(int track, const char *scn) {
     portEXIT_CRITICAL(&s_perf_mux);
 }
 
-/* Reset only the accumulators reported by PERF.  Scenario and presentation
- * state remain intact: this marks the real start of an autotest window. */
-void perf_start_measurement_window(void) {
-    portENTER_CRITICAL(&s_perf_mux);
+/* Caller holds s_perf_mux.  Scenario and presentation state remain intact. */
+static void perf_clear_measurement_window_locked(int64_t base_us) {
     s_frames_decoded = s_frames_presented = s_frames_dropped = 0;
     s_oversize_frames = s_frame_mismatch = 0;
     s_read_sum_us = s_read_count = s_read_max_us = 0;
@@ -381,7 +382,15 @@ void perf_start_measurement_window(void) {
     s_lvgl_rows_clipped = 0;
     s_touch_rd_sum_us = s_touch_rd_count = s_touch_rd_max_us = s_touch_age_max_us = 0;
     s_last_dec_fps = s_last_pres_fps = 0.0f;
-    s_last_report_us = esp_timer_get_time();
+    s_last_report_us = base_us;
+}
+
+/* Reset only the accumulators reported by PERF.  Scenario and presentation
+ * state remain intact: this marks the real start of an autotest window. */
+void perf_start_measurement_window(void) {
+    portENTER_CRITICAL(&s_perf_mux);
+    perf_clear_measurement_window_locked(esp_timer_get_time());
+    s_discard_first_measurement_report = true;
     portEXIT_CRITICAL(&s_perf_mux);
 }
 
@@ -398,17 +407,28 @@ void perf_report_if_due(void) {
         fflush(stdout);
     }
 
+    /* Keep time base and counters in the same epoch.  In particular,
+     * perf_start_measurement_window() cannot interleave between these reads
+     * and the snapshot/reset below. */
+    portENTER_CRITICAL(&s_perf_mux);
     if (s_last_report_us == 0) {
         s_last_report_us = now;
+        portEXIT_CRITICAL(&s_perf_mux);
         return;
     }
 
     int64_t window_us = now - s_last_report_us;
     if (window_us < 2000000) {
+        portEXIT_CRITICAL(&s_perf_mux);
         return;
     }
 
-    portENTER_CRITICAL(&s_perf_mux);
+    if (s_discard_first_measurement_report) {
+        perf_clear_measurement_window_locked(now);
+        s_discard_first_measurement_report = false;
+        portEXIT_CRITICAL(&s_perf_mux);
+        return;
+    }
     uint32_t dec = s_frames_decoded;
     uint32_t pres = s_frames_presented;
     uint32_t drop = s_frames_dropped;
