@@ -77,6 +77,14 @@ def make_container(left, top, width, height, identifier=None, use_style=None, hi
     return obj
 
 def make_label(left, top, width, height, text="", font=None, color=None, align="LEFT", identifier=None, hidden=False, long_mode="CLIP"):
+    # LVGL measures these Montserrat fonts at 16/18/25 px.  Giving a label
+    # less height clips it and shifts its baseline vertically.
+    min_height = {
+        "montserrat_12": 16,
+        "montserrat_14": 18,
+        "montserrat_20": 25,
+    }.get((font or "").lower(), 0)
+    height = max(height, min_height)
     main_def = {}
     if font:
         main_def["text_font"] = font
@@ -112,6 +120,42 @@ def make_label(left, top, width, height, text="", font=None, color=None, align="
     if identifier:
         obj["identifier"] = identifier
     return obj
+
+
+def normalize_label_geometry(node):
+    """Keep imported EEZ labels consistent with the generated F6b labels."""
+    if node.get("type") == "LVGLLabelWidget":
+        style = node.get("localStyles", {}).get("definition", {})
+        font = style.get("MAIN", {}).get("DEFAULT", {}).get("text_font", "")
+        min_height = {
+            "MONTSERRAT_12": 16,
+            "MONTSERRAT_14": 18,
+            "MONTSERRAT_20": 25,
+        }.get(font.upper(), 0)
+        if min_height:
+            node["height"] = max(node.get("height", 0), min_height)
+        min_widths = {
+            "Presentados": 90,
+            "Decodificados": 100,
+            "Descartados": 100,
+            "Lectura SD": 100,
+            "Decodificación": 110,
+            "480x320 · MJPEG": 180,
+            "A continuación": 130,
+            "Continuar donde lo dejé": 220,
+        }
+        text = node.get("text", "")
+        if text in min_widths:
+            node["width"] = max(node.get("width", 0), min_widths[text])
+        node["flagScrollbarMode"] = "off"
+
+        # Only the player title is a static marquee.  Queue-row marquees are
+        # created at runtime for the active row in ui_glue_populate_queue().
+        if node.get("identifier") != "lbl_title" and node.get("longMode") == "SCROLL_CIRCULAR":
+            node["longMode"] = "DOT"
+
+    for child in node.get("children", []):
+        normalize_label_geometry(child)
 
 def make_button(left, top, width, height, identifier=None, use_style="st_icon_btn", action_name=None, children=None, hidden=False):
     evts = [make_event_handler("CLICKED", action_name)] if action_name else []
@@ -551,6 +595,10 @@ if 'scr_settings' not in existing_pages:
         "components": [scr_settings_comp]
     })
     print("Added scr_settings")
+
+for page in proj["userPages"]:
+    for component in page.get("components", []):
+        normalize_label_geometry(component)
 
 with open(PROJ_PATH, 'w', encoding='utf-8') as f:
     json.dump(proj, f, indent=4)

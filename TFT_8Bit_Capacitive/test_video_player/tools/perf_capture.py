@@ -127,6 +127,7 @@ def main():
     ui_data = None
     uinav_records = []
     scroll_data = None
+    textfit_data = None
     ovl_records = []
     crashed = False
     crash_reason = ""
@@ -159,6 +160,7 @@ def main():
                 line_str.startswith("LIB,") or
                 line_str.startswith("UI,") or
                 line_str.startswith("UINAV,") or
+                line_str.startswith("TEXTFIT,") or
                 line_str.startswith("STRESS,") or
                 line_str.startswith("TAP,") or
                 line_str.startswith("SDPULL,") or
@@ -183,6 +185,12 @@ def main():
                 kv = parse_kv_line(line_str, "SCROLL")
                 if kv:
                     scroll_data = kv
+
+            # Deteccion de TEXTFIT
+            if line_str.startswith("TEXTFIT,"):
+                kv = parse_kv_line(line_str, "TEXTFIT")
+                if kv:
+                    textfit_data = kv
 
             # Deteccion de OVL
             if line_str.startswith("OVL,"):
@@ -827,6 +835,20 @@ def main():
                     f5a_passed = False
             else:
                 print(f"[INFO {args.phase.upper()}]: Linea SCROLL no recibida en este run.")
+
+            if textfit_data:
+                try:
+                    offenders = int(textfit_data.get("offenders", -1))
+                except ValueError:
+                    offenders = -1
+                print(f"[EVALUACION TEXTFIT]: offenders={offenders}")
+                if offenders == 0:
+                    print(f"[CRITERIO {args.phase.upper()} OK]: Prueba de ajuste de texto exitosa (offenders=0).")
+                else:
+                    print(f"[CRITERIO {args.phase.upper()} FALLIDO]: Prueba de ajuste de texto fallo (offenders={offenders} != 0).", file=sys.stderr)
+                    f5a_passed = False
+            else:
+                print(f"[INFO {args.phase.upper()}]: Linea TEXTFIT no recibida en este run.")
 
         # 16. Criterios especificos F6b it2: Escenario OVERLAY (composicion de capas sin detener el video)
         if args.phase.upper() == "F6B":

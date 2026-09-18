@@ -652,6 +652,8 @@ void ui_glue_init(void) {
     }
     if (objects.lbl_title) {
         lv_obj_set_style_anim_duration(objects.lbl_title, 8000, 0);
+        /* A marquee must never acquire a vertical scroll axis. */
+        lv_obj_set_scroll_dir(objects.lbl_title, LV_DIR_HOR);
     }
     s_last_touch_time = esp_timer_get_time() / 1000;
     s_osd_visible = true;
@@ -816,16 +818,18 @@ static lv_obj_t *create_queue_row_widget(lv_obj_t *parent, int idx) {
     if (is_current) {
         lv_obj_set_style_text_color(lbl, lv_color_hex(theme_colors[active_theme_index][6]), 0);
         lv_label_set_long_mode(lbl, LV_LABEL_LONG_SCROLL_CIRCULAR);
+        /* The only queue marquee is horizontal and belongs to this row. */
+        lv_obj_set_scroll_dir(lbl, LV_DIR_HOR);
         lv_obj_set_style_anim_duration(lbl, 6000, 0);
     } else {
         lv_obj_set_style_text_color(lbl, lv_color_hex(theme_colors[active_theme_index][4]), 0);
         lv_label_set_long_mode(lbl, LV_LABEL_LONG_DOT);
     }
 
-    // Meta: 86, 30, 140, 14
+    // Meta: 86, 30, 140, 16 (Montserrat 12 has a 16 px line height).
     lv_obj_t *lbl_meta = lv_label_create(row);
     lv_obj_set_pos(lbl_meta, 86, 30);
-    lv_obj_set_size(lbl_meta, 140, 14);
+    lv_obj_set_size(lbl_meta, 140, 16);
     lv_obj_set_style_text_font(lbl_meta, &lv_font_montserrat_12, 0);
     lv_obj_set_style_text_color(lbl_meta, lv_color_hex(theme_colors[active_theme_index][5]), 0);
     lv_obj_remove_flag(lbl_meta, LV_OBJ_FLAG_CLICKABLE | LV_OBJ_FLAG_SCROLLABLE);

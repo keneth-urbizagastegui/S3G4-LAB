@@ -569,13 +569,19 @@ static TaskHandle_t s_autotest_task_handle = NULL;
 
 /* Runs only on the GUI task: LVGL objects must never be inspected from the
  * autotest task.  The only permitted marquees are the player title and the
- * active row created inside objects.queue_list. */
+ * row that belongs to the currently playing track inside objects.queue_list. */
 static bool textfit_is_allowed_marquee(const lv_obj_t *obj) {
     if (obj == objects.lbl_title) return true;
 
     for (const lv_obj_t *parent = lv_obj_get_parent(obj); parent;
          parent = lv_obj_get_parent(parent)) {
-        if (parent == objects.queue_list) return true;
+        if (parent == objects.queue_list) {
+            const lv_obj_t *row = lv_obj_get_parent(obj);
+            player_status_t status;
+            player_get_status(&status);
+            return row && (int)(intptr_t)lv_obj_get_user_data((lv_obj_t *)row) ==
+                              status.track_index;
+        }
     }
     return false;
 }
