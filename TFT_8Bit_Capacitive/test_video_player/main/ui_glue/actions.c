@@ -2414,6 +2414,9 @@ void action_open_stats(lv_event_t *e) {
         ui_glue_set_overlay_card_visible(objects.ovl_stats, true);
         ui_glue_set_overlay_rect_for_obj(1, objects.ovl_stats, true);
         ui_glue_update_stats_labels();
+        player_status_t st_stats_open;
+        player_get_status(&st_stats_open);
+        if (st_stats_open.state != PST_PLAYING) avi_player_reblit_current_frame();
         ESP_LOGI(TAG, "Action: ovl_stats abierta desde ajustes (overlay 1 activo)");
         return;
     }
@@ -2423,6 +2426,9 @@ void action_open_stats(lv_event_t *e) {
         ui_glue_set_overlay_card_visible(objects.ovl_stats, true);
         ui_glue_set_overlay_rect_for_obj(1, objects.ovl_stats, true);
         ui_glue_update_stats_labels();
+        player_status_t st_stats_open;
+        player_get_status(&st_stats_open);
+        if (st_stats_open.state != PST_PLAYING) avi_player_reblit_current_frame();
         ESP_LOGI(TAG, "Action: ovl_stats mostrada (overlay 1 activo)");
     } else {
         ui_glue_set_overlay_card_visible(objects.ovl_stats, false);
