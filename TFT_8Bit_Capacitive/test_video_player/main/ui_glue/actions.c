@@ -266,6 +266,17 @@ static void ui_glue_set_overlay_card_pos(lv_obj_t *card, int16_t x, int16_t y) {
     }
 }
 
+static void ui_glue_set_overlay_rect_for_obj(int slot, lv_obj_t *obj, bool enabled) {
+    if (!enabled || !obj) {
+        lcd_bus_set_overlay_rect(slot, 0, 0, 0, 0, false);
+        return;
+    }
+    lv_area_t area;
+    lv_obj_get_coords(obj, &area);
+    lcd_bus_set_overlay_rect(slot, area.x1, area.y1,
+                             area.x2 - area.x1 + 1, area.y2 - area.y1 + 1, true);
+}
+
 /* Reutiliza una única pista de salto: nunca quedan rectángulos activos a ambos lados. */
 static void show_seek_hint(int16_t x, const lv_image_dsc_t *icon, const char *text) {
     if (!objects.ovl_seek_hint) return;
@@ -279,7 +290,7 @@ static void show_seek_hint(int16_t x, const lv_image_dsc_t *icon, const char *te
     if (objects.img_seek_hint) lv_image_set_src(objects.img_seek_hint, icon);
     if (objects.lbl_seek_hint) lv_label_set_text(objects.lbl_seek_hint, text);
 
-    lcd_bus_set_overlay_rect(2, x, 116, 100, 88, true);
+    ui_glue_set_overlay_rect_for_obj(2, objects.ovl_seek_hint, true);
     ui_glue_set_overlay_card_visible(objects.ovl_seek_hint, true);
 }
 
@@ -489,7 +500,7 @@ static void lock_overlay_event_cb(lv_event_t *e) {
             bool was_hidden = lv_obj_has_flag(s_lock_card, LV_OBJ_FLAG_HIDDEN);
             ui_glue_set_overlay_card_visible(s_lock_card, true);
             if (was_hidden) {
-                lcd_bus_set_overlay_rect(0, 140, 104, 200, 116, true);
+                ui_glue_set_overlay_rect_for_obj(0, s_lock_card, true);
                 ESP_LOGI(TAG, "Toque en pantalla bloqueada -> tarjeta mostrada con composicion overlay");
             }
         }
@@ -661,7 +672,7 @@ static void player_touch_gesture_event_cb(lv_event_t *e) {
                 s_consume_next_click = true;
                 if (objects.ovl_brightness) {
                     ui_glue_set_overlay_card_visible(objects.ovl_brightness, true);
-                    lcd_bus_set_overlay_rect(3, 16, 70, 40, 180, true);
+                    ui_glue_set_overlay_rect_for_obj(3, objects.ovl_brightness, true);
                 }
             }
         }
@@ -1357,7 +1368,7 @@ void ui_glue_set_view_mode(view_mode_t mode) {
         lcd_bus_set_video_rect(0, 0, 480, 320);
         player_cmd_t cmd = {.type = PCMD_SET_VIDEO_RECT, .rect = {0, 0, 480, 320}};
         player_cmd_send(&cmd);
-        lcd_bus_set_overlay_rect(3, 220, 0, 260, 320, true);
+        ui_glue_set_overlay_rect_for_obj(3, objects.queue_sheet, true);
         ui_glue_populate_queue();
     } else if (mode == VIEW_MODE_SETTINGS) {
         if (old_mode == VIEW_MODE_FULLSCREEN) {
@@ -1821,7 +1832,7 @@ void action_lock(lv_event_t *e) {
     s_lock_show_time = esp_timer_get_time() / 1000;
     s_lock_touch_start_us = 0;
 
-    lcd_bus_set_overlay_rect(0, 140, 104, 200, 116, true);
+    ui_glue_set_overlay_rect_for_obj(0, s_lock_card, true);
 
     ESP_LOGI(TAG, "Action: lock -> pantalla bloqueada con tarjeta visible 2s");
 }
@@ -2401,7 +2412,7 @@ void action_open_stats(lv_event_t *e) {
             player_cmd_send(&cmd);
         }
         ui_glue_set_overlay_card_visible(objects.ovl_stats, true);
-        lcd_bus_set_overlay_rect(1, 12, 52, 212, 172, true);
+        ui_glue_set_overlay_rect_for_obj(1, objects.ovl_stats, true);
         ui_glue_update_stats_labels();
         ESP_LOGI(TAG, "Action: ovl_stats abierta desde ajustes (overlay 1 activo)");
         return;
@@ -2410,7 +2421,7 @@ void action_open_stats(lv_event_t *e) {
     bool is_hidden = lv_obj_has_flag(objects.ovl_stats, LV_OBJ_FLAG_HIDDEN);
     if (is_hidden) {
         ui_glue_set_overlay_card_visible(objects.ovl_stats, true);
-        lcd_bus_set_overlay_rect(1, 12, 52, 212, 172, true);
+        ui_glue_set_overlay_rect_for_obj(1, objects.ovl_stats, true);
         ui_glue_update_stats_labels();
         ESP_LOGI(TAG, "Action: ovl_stats mostrada (overlay 1 activo)");
     } else {
