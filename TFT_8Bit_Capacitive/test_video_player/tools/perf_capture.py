@@ -481,27 +481,39 @@ def main():
         # 2. Presencia de senal TE y estabilidad de frecuencia
         te_present_all = True
         te_hz_vals = []
+        te_samples = 0
         for r in perf_records:
             scn = r.get("scn", "")
+            # La estabilidad de TE es una métrica de presentación. Las ventanas
+            # sin video (por ejemplo TAP/UINAV en la biblioteca) no tienen una
+            # cadencia de presentación que evaluar.
+            try:
+                presenting = (r.get("view", "") == "full" and
+                              r.get("present_path", "") == "direct" and
+                              float(r.get("pres_fps", 0.0)) > 0.0)
+            except ValueError:
+                presenting = False
+            if scn in ("init", "?") or not presenting:
+                continue
+            te_samples += 1
             tp = r.get("te_present", "0")
             if tp != "1":
                 te_present_all = False
-            if scn not in ("init", "?"):
-                try:
-                    hz = float(r.get("te_hz", 0.0))
-                    if hz > 0.0:
-                        te_hz_vals.append(hz)
-                except ValueError:
-                    pass
+            try:
+                hz = float(r.get("te_hz", 0.0))
+                if hz > 0.0:
+                    te_hz_vals.append(hz)
+            except ValueError:
+                pass
 
-        if not te_present_all or not te_hz_vals:
-            print(f"[CRITERIO F5a FALLIDO]: te_present != 1 en todos los registros o sin muestras de te_hz.", file=sys.stderr)
+        if te_samples == 0 or not te_present_all or not te_hz_vals:
+            print(f"[CRITERIO F5a FALLIDO]: Sin muestras TE con video presentando, te_present != 1 o sin te_hz.", file=sys.stderr)
             f5a_passed = False
         else:
             hz_min = min(te_hz_vals)
             hz_max = max(te_hz_vals)
             hz_var = hz_max - hz_min
-            print(f"[EVALUACION TE]: presente en 100% de registros. te_hz min={hz_min:.1f}, max={hz_max:.1f}, variacion={hz_var:.2f} Hz (umbral <= 2.0 Hz)")
+            print(f"[EVALUACION TE]: presente en 100% de {te_samples} muestras con video presentando. te_hz min={hz_min:.1f}, max={hz_max:.1f}, variacion={hz_var:.2f} Hz (umbral <= 2.0 Hz)")
             if hz_var > 2.0:
                 print(f"[CRITERIO F5a FALLIDO]: Variacion de te_hz ({hz_var:.2f} Hz) > 2.0 Hz.", file=sys.stderr)
                 f5a_passed = False
