@@ -1846,7 +1846,7 @@
                                         "definition": {
                                             "MAIN": {
                                                 "DEFAULT": {
-                                                    "text_font": "montserrat_12",
+                                                    "text_font": "MONTSERRAT_12",
                                                     "text_color": "c_text",
                                                     "text_align": "CENTER"
                                                 }
@@ -1965,7 +1965,7 @@
                                         "definition": {
                                             "MAIN": {
                                                 "DEFAULT": {
-                                                    "text_font": "montserrat_14",
+                                                    "text_font": "MONTSERRAT_14",
                                                     "text_color": "c_text",
                                                     "text_align": "CENTER"
                                                 }
@@ -2045,7 +2045,7 @@
                                         "definition": {
                                             "MAIN": {
                                                 "DEFAULT": {
-                                                    "text_font": "montserrat_14",
+                                                    "text_font": "MONTSERRAT_14",
                                                     "text_color": "c_text"
                                                 }
                                             }
@@ -2158,7 +2158,7 @@
                                         "definition": {
                                             "MAIN": {
                                                 "DEFAULT": {
-                                                    "text_font": "montserrat_12",
+                                                    "text_font": "MONTSERRAT_12",
                                                     "text_color": "c_muted"
                                                 }
                                             }
@@ -2195,7 +2195,7 @@
                                         "definition": {
                                             "MAIN": {
                                                 "DEFAULT": {
-                                                    "text_font": "montserrat_12",
+                                                    "text_font": "MONTSERRAT_12",
                                                     "text_color": "c_accent",
                                                     "text_align": "RIGHT"
                                                 }
@@ -2234,7 +2234,7 @@
                                         "definition": {
                                             "MAIN": {
                                                 "DEFAULT": {
-                                                    "text_font": "montserrat_12",
+                                                    "text_font": "MONTSERRAT_12",
                                                     "text_color": "c_muted"
                                                 }
                                             }
@@ -2271,7 +2271,7 @@
                                         "definition": {
                                             "MAIN": {
                                                 "DEFAULT": {
-                                                    "text_font": "montserrat_12",
+                                                    "text_font": "MONTSERRAT_12",
                                                     "text_color": "c_text",
                                                     "text_align": "RIGHT"
                                                 }
@@ -2310,7 +2310,7 @@
                                         "definition": {
                                             "MAIN": {
                                                 "DEFAULT": {
-                                                    "text_font": "montserrat_12",
+                                                    "text_font": "MONTSERRAT_12",
                                                     "text_color": "c_muted"
                                                 }
                                             }
@@ -2347,7 +2347,7 @@
                                         "definition": {
                                             "MAIN": {
                                                 "DEFAULT": {
-                                                    "text_font": "montserrat_12",
+                                                    "text_font": "MONTSERRAT_12",
                                                     "text_color": "c_text",
                                                     "text_align": "RIGHT"
                                                 }
@@ -2386,7 +2386,7 @@
                                         "definition": {
                                             "MAIN": {
                                                 "DEFAULT": {
-                                                    "text_font": "montserrat_12",
+                                                    "text_font": "MONTSERRAT_12",
                                                     "text_color": "c_muted"
                                                 }
                                             }
@@ -2423,7 +2423,7 @@
                                         "definition": {
                                             "MAIN": {
                                                 "DEFAULT": {
-                                                    "text_font": "montserrat_12",
+                                                    "text_font": "MONTSERRAT_12",
                                                     "text_color": "c_text",
                                                     "text_align": "RIGHT"
                                                 }
@@ -2462,7 +2462,7 @@
                                         "definition": {
                                             "MAIN": {
                                                 "DEFAULT": {
-                                                    "text_font": "montserrat_12",
+                                                    "text_font": "MONTSERRAT_12",
                                                     "text_color": "c_muted"
                                                 }
                                             }
@@ -2499,7 +2499,7 @@
                                         "definition": {
                                             "MAIN": {
                                                 "DEFAULT": {
-                                                    "text_font": "montserrat_12",
+                                                    "text_font": "MONTSERRAT_12",
                                                     "text_color": "c_text",
                                                     "text_align": "RIGHT"
                                                 }
@@ -2538,7 +2538,7 @@
                                         "definition": {
                                             "MAIN": {
                                                 "DEFAULT": {
-                                                    "text_font": "montserrat_12",
+                                                    "text_font": "MONTSERRAT_12",
                                                     "text_color": "c_muted"
                                                 }
                                             }
@@ -2575,7 +2575,7 @@
                                         "definition": {
                                             "MAIN": {
                                                 "DEFAULT": {
-                                                    "text_font": "montserrat_12",
+                                                    "text_font": "MONTSERRAT_12",
                                                     "text_color": "c_text",
                                                     "text_align": "RIGHT"
                                                 }
@@ -2614,7 +2614,7 @@
                                         "definition": {
                                             "MAIN": {
                                                 "DEFAULT": {
-                                                    "text_font": "montserrat_12",
+                                                    "text_font": "MONTSERRAT_12",
                                                     "text_color": "c_muted"
                                                 }
                                             }
@@ -2651,7 +2651,7 @@
                                         "definition": {
                                             "MAIN": {
                                                 "DEFAULT": {
-                                                    "text_font": "montserrat_12",
+                                                    "text_font": "MONTSERRAT_12",
                                                     "text_color": "c_text",
                                                     "text_align": "RIGHT"
                                                 }
@@ -3557,7 +3557,7 @@
                                         "definition": {
                                             "MAIN": {
                                                 "DEFAULT": {
-                                                    "text_font": "montserrat_14",
+                                                    "text_font": "MONTSERRAT_14",
                                                     "text_color": "c_text"
                                                 }
                                             }
@@ -3897,7 +3897,7 @@
                                                 "definition": {
                                                     "MAIN": {
                                                         "DEFAULT": {
-                                                            "text_font": "montserrat_12",
+                                                            "text_font": "MONTSERRAT_12",
                                                             "text_color": "c_muted"
                                                         }
                                                     }
@@ -4095,7 +4095,7 @@
                                         "definition": {
                                             "MAIN": {
                                                 "DEFAULT": {
-                                                    "text_font": "montserrat_14",
+                                                    "text_font": "MONTSERRAT_14",
                                                     "text_color": "c_text"
                                                 }
                                             }
@@ -4165,7 +4165,7 @@
                                                 "definition": {
                                                     "MAIN": {
                                                         "DEFAULT": {
-                                                            "text_font": "montserrat_12",
+                                                            "text_font": "MONTSERRAT_12",
                                                             "text_color": "c_accent"
                                                         }
                                                     }
@@ -4240,7 +4240,7 @@
                                                 "definition": {
                                                     "MAIN": {
                                                         "DEFAULT": {
-                                                            "text_font": "montserrat_14",
+                                                            "text_font": "MONTSERRAT_14",
                                                             "text_color": "c_text"
                                                         }
                                                     }
@@ -4315,7 +4315,7 @@
                                                 "definition": {
                                                     "MAIN": {
                                                         "DEFAULT": {
-                                                            "text_font": "montserrat_14",
+                                                            "text_font": "MONTSERRAT_14",
                                                             "text_color": "c_text"
                                                         }
                                                     }
@@ -4390,7 +4390,7 @@
                                                 "definition": {
                                                     "MAIN": {
                                                         "DEFAULT": {
-                                                            "text_font": "montserrat_14",
+                                                            "text_font": "MONTSERRAT_14",
                                                             "text_color": "c_text"
                                                         }
                                                     }
@@ -4505,7 +4505,7 @@
                                                 "definition": {
                                                     "MAIN": {
                                                         "DEFAULT": {
-                                                            "text_font": "montserrat_14",
+                                                            "text_font": "MONTSERRAT_14",
                                                             "text_color": "c_text"
                                                         }
                                                     }
@@ -4542,7 +4542,7 @@
                                                 "definition": {
                                                     "MAIN": {
                                                         "DEFAULT": {
-                                                            "text_font": "montserrat_14",
+                                                            "text_font": "MONTSERRAT_14",
                                                             "text_color": "c_muted",
                                                             "text_align": "RIGHT"
                                                         }
@@ -4628,7 +4628,7 @@
                                                 "definition": {
                                                     "MAIN": {
                                                         "DEFAULT": {
-                                                            "text_font": "montserrat_14",
+                                                            "text_font": "MONTSERRAT_14",
                                                             "text_color": "c_text"
                                                         }
                                                     }
@@ -4704,7 +4704,7 @@
                                                 "definition": {
                                                     "MAIN": {
                                                         "DEFAULT": {
-                                                            "text_font": "montserrat_12",
+                                                            "text_font": "MONTSERRAT_12",
                                                             "text_color": "c_text"
                                                         }
                                                     }
@@ -4776,7 +4776,7 @@
                                                 "definition": {
                                                     "MAIN": {
                                                         "DEFAULT": {
-                                                            "text_font": "montserrat_14",
+                                                            "text_font": "MONTSERRAT_14",
                                                             "text_color": "c_text"
                                                         }
                                                     }
@@ -4886,7 +4886,7 @@
                                                 "definition": {
                                                     "MAIN": {
                                                         "DEFAULT": {
-                                                            "text_font": "montserrat_14",
+                                                            "text_font": "MONTSERRAT_14",
                                                             "text_color": "c_text"
                                                         }
                                                     }
@@ -4962,7 +4962,7 @@
                                                 "definition": {
                                                     "MAIN": {
                                                         "DEFAULT": {
-                                                            "text_font": "montserrat_14",
+                                                            "text_font": "MONTSERRAT_14",
                                                             "text_color": "c_text"
                                                         }
                                                     }
@@ -5034,7 +5034,7 @@
                                                 "definition": {
                                                     "MAIN": {
                                                         "DEFAULT": {
-                                                            "text_font": "montserrat_14",
+                                                            "text_font": "MONTSERRAT_14",
                                                             "text_color": "c_text"
                                                         }
                                                     }
@@ -5071,7 +5071,7 @@
                                                 "definition": {
                                                     "MAIN": {
                                                         "DEFAULT": {
-                                                            "text_font": "montserrat_12",
+                                                            "text_font": "MONTSERRAT_12",
                                                             "text_color": "c_muted"
                                                         }
                                                     }
@@ -5143,7 +5143,7 @@
                                                 "definition": {
                                                     "MAIN": {
                                                         "DEFAULT": {
-                                                            "text_font": "montserrat_14",
+                                                            "text_font": "MONTSERRAT_14",
                                                             "text_color": "c_text"
                                                         }
                                                     }
@@ -5331,7 +5331,7 @@
                                                         "definition": {
                                                             "MAIN": {
                                                                 "DEFAULT": {
-                                                                    "text_font": "montserrat_12",
+                                                                    "text_font": "MONTSERRAT_12",
                                                                     "text_color": "c_text"
                                                                 }
                                                             }
@@ -5369,7 +5369,7 @@
                                                         "definition": {
                                                             "MAIN": {
                                                                 "DEFAULT": {
-                                                                    "text_font": "montserrat_12",
+                                                                    "text_font": "MONTSERRAT_12",
                                                                     "text_color": "c_muted",
                                                                     "text_align": "RIGHT"
                                                                 }
@@ -5458,7 +5458,7 @@
                                                         "definition": {
                                                             "MAIN": {
                                                                 "DEFAULT": {
-                                                                    "text_font": "montserrat_12",
+                                                                    "text_font": "MONTSERRAT_12",
                                                                     "text_color": "c_muted"
                                                                 }
                                                             }
@@ -5500,7 +5500,7 @@
                                                 "definition": {
                                                     "MAIN": {
                                                         "DEFAULT": {
-                                                            "text_font": "montserrat_14",
+                                                            "text_font": "MONTSERRAT_14",
                                                             "text_color": "c_text"
                                                         }
                                                     }
@@ -5537,7 +5537,7 @@
                                                 "definition": {
                                                     "MAIN": {
                                                         "DEFAULT": {
-                                                            "text_font": "montserrat_14",
+                                                            "text_font": "MONTSERRAT_14",
                                                             "text_color": "c_muted",
                                                             "text_align": "RIGHT"
                                                         }
@@ -5576,7 +5576,7 @@
                                                 "definition": {
                                                     "MAIN": {
                                                         "DEFAULT": {
-                                                            "text_font": "montserrat_14",
+                                                            "text_font": "MONTSERRAT_14",
                                                             "text_color": "c_text"
                                                         }
                                                     }
@@ -5613,7 +5613,7 @@
                                                 "definition": {
                                                     "MAIN": {
                                                         "DEFAULT": {
-                                                            "text_font": "montserrat_14",
+                                                            "text_font": "MONTSERRAT_14",
                                                             "text_color": "c_muted",
                                                             "text_align": "RIGHT"
                                                         }
@@ -5724,7 +5724,7 @@
                                                         "definition": {
                                                             "MAIN": {
                                                                 "DEFAULT": {
-                                                                    "text_font": "montserrat_12",
+                                                                    "text_font": "MONTSERRAT_12",
                                                                     "text_color": "c_accent"
                                                                 }
                                                             }
@@ -5803,7 +5803,7 @@
                                                 "definition": {
                                                     "MAIN": {
                                                         "DEFAULT": {
-                                                            "text_font": "montserrat_20",
+                                                            "text_font": "MONTSERRAT_20",
                                                             "text_color": "c_text"
                                                         }
                                                     }
@@ -5840,7 +5840,7 @@
                                                 "definition": {
                                                     "MAIN": {
                                                         "DEFAULT": {
-                                                            "text_font": "montserrat_12",
+                                                            "text_font": "MONTSERRAT_12",
                                                             "text_color": "c_muted"
                                                         }
                                                     }
@@ -5877,7 +5877,7 @@
                                                 "definition": {
                                                     "MAIN": {
                                                         "DEFAULT": {
-                                                            "text_font": "montserrat_12",
+                                                            "text_font": "MONTSERRAT_12",
                                                             "text_color": "c_muted"
                                                         }
                                                     }
@@ -5914,7 +5914,7 @@
                                                 "definition": {
                                                     "MAIN": {
                                                         "DEFAULT": {
-                                                            "text_font": "montserrat_12",
+                                                            "text_font": "MONTSERRAT_12",
                                                             "text_color": "c_text",
                                                             "text_align": "RIGHT"
                                                         }
@@ -5953,7 +5953,7 @@
                                                 "definition": {
                                                     "MAIN": {
                                                         "DEFAULT": {
-                                                            "text_font": "montserrat_12",
+                                                            "text_font": "MONTSERRAT_12",
                                                             "text_color": "c_muted"
                                                         }
                                                     }
@@ -5990,7 +5990,7 @@
                                                 "definition": {
                                                     "MAIN": {
                                                         "DEFAULT": {
-                                                            "text_font": "montserrat_12",
+                                                            "text_font": "MONTSERRAT_12",
                                                             "text_color": "c_text",
                                                             "text_align": "RIGHT"
                                                         }
@@ -6029,7 +6029,7 @@
                                                 "definition": {
                                                     "MAIN": {
                                                         "DEFAULT": {
-                                                            "text_font": "montserrat_12",
+                                                            "text_font": "MONTSERRAT_12",
                                                             "text_color": "c_muted"
                                                         }
                                                     }
@@ -6066,7 +6066,7 @@
                                                 "definition": {
                                                     "MAIN": {
                                                         "DEFAULT": {
-                                                            "text_font": "montserrat_12",
+                                                            "text_font": "MONTSERRAT_12",
                                                             "text_color": "c_text",
                                                             "text_align": "RIGHT"
                                                         }
@@ -6105,7 +6105,7 @@
                                                 "definition": {
                                                     "MAIN": {
                                                         "DEFAULT": {
-                                                            "text_font": "montserrat_12",
+                                                            "text_font": "MONTSERRAT_12",
                                                             "text_color": "c_muted"
                                                         }
                                                     }
@@ -6142,7 +6142,7 @@
                                                 "definition": {
                                                     "MAIN": {
                                                         "DEFAULT": {
-                                                            "text_font": "montserrat_12",
+                                                            "text_font": "MONTSERRAT_12",
                                                             "text_color": "c_text",
                                                             "text_align": "RIGHT"
                                                         }
@@ -6181,7 +6181,7 @@
                                                 "definition": {
                                                     "MAIN": {
                                                         "DEFAULT": {
-                                                            "text_font": "montserrat_12",
+                                                            "text_font": "MONTSERRAT_12",
                                                             "text_color": "c_muted"
                                                         }
                                                     }
@@ -6218,7 +6218,7 @@
                                                 "definition": {
                                                     "MAIN": {
                                                         "DEFAULT": {
-                                                            "text_font": "montserrat_12",
+                                                            "text_font": "MONTSERRAT_12",
                                                             "text_color": "c_text",
                                                             "text_align": "RIGHT"
                                                         }
@@ -6290,7 +6290,7 @@
                                                         "definition": {
                                                             "MAIN": {
                                                                 "DEFAULT": {
-                                                                    "text_font": "montserrat_14",
+                                                                    "text_font": "MONTSERRAT_14",
                                                                     "text_color": "c_accent",
                                                                     "text_align": "CENTER"
                                                                 }
