@@ -466,10 +466,10 @@ static void init_lock_overlay(void) {
     lv_obj_add_flag(s_ovl_lock, LV_OBJ_FLAG_CLICKABLE);
     lv_obj_add_event_cb(s_ovl_lock, lock_overlay_event_cb, LV_EVENT_ALL, NULL);
 
-    // Tarjeta Bloqueo: x=140, y=104, w=200, h=116, fondo #0B0C0F, radio 8.
+    // Tarjeta Bloqueo: x=140, y=96, w=200, h=132, fondo #0B0C0F, radio 8.
     s_lock_card = lv_obj_create(s_ovl_lock);
-    lv_obj_set_pos(s_lock_card, 140, 104);
-    lv_obj_set_size(s_lock_card, 200, 116);
+    lv_obj_set_pos(s_lock_card, 140, 96);
+    lv_obj_set_size(s_lock_card, 200, 132);
     lv_obj_set_style_bg_color(s_lock_card, lv_color_hex(0x0B0C0F), 0);
     lv_obj_set_style_bg_opa(s_lock_card, 255, 0);
     lv_obj_set_style_border_width(s_lock_card, 0, 0);
@@ -527,11 +527,12 @@ static void init_lock_overlay(void) {
     lv_obj_remove_flag(lbl_title, LV_OBJ_FLAG_CLICKABLE);
     lv_obj_add_flag(lbl_title, LV_OBJ_FLAG_EVENT_BUBBLE);
 
-    // Montserrat 12 needs a 16 px content box.
+    // Two readable Montserrat 12 lines; the lock-card width is fixed.
     lv_obj_t *lbl_hint = lv_label_create(s_lock_card);
     lv_obj_set_pos(lbl_hint, 0, 100);
-    lv_obj_set_size(lbl_hint, 200, 16);
-    lv_label_set_text(lbl_hint, "Mantén pulsado para desbloquear");
+    lv_obj_set_size(lbl_hint, 200, 32);
+    lv_label_set_long_mode(lbl_hint, LV_LABEL_LONG_WRAP);
+    lv_label_set_text(lbl_hint, "Mantén pulsado\npara desbloquear");
     lv_obj_set_style_text_font(lbl_hint, &lv_font_montserrat_12, 0);
     lv_obj_set_style_text_color(lbl_hint, lv_color_hex(0x8E929B), 0);
     lv_obj_set_style_text_align(lbl_hint, LV_TEXT_ALIGN_CENTER, 0);
@@ -2623,7 +2624,7 @@ static lv_obj_t *create_card_widget(lv_obj_t *parent_obj, int idx) {
     // card_root
     lv_obj_t *card = lv_obj_create(parent_obj);
     lv_obj_set_pos(card, 0, 0);
-    lv_obj_set_size(card, 144, 124);
+    lv_obj_set_size(card, 144, 140);
     lv_obj_set_user_data(card, (void *)(uintptr_t)idx);
     lv_obj_add_flag(card, LV_OBJ_FLAG_CLICKABLE);
     lv_obj_add_event_cb(card, action_play_index, LV_EVENT_CLICKED, (void *)(uintptr_t)idx);
@@ -2652,7 +2653,7 @@ static lv_obj_t *create_card_widget(lv_obj_t *parent_obj, int idx) {
 
     lv_obj_t *badge = lv_obj_create(card);
     lv_obj_set_pos(badge, 6, 6);
-    lv_obj_set_size(badge, 90, 18);
+    lv_obj_set_size(badge, 98, 18);
     lv_obj_remove_flag(badge, LV_OBJ_FLAG_CLICKABLE|LV_OBJ_FLAG_SCROLLABLE|LV_OBJ_FLAG_SCROLL_CHAIN_HOR|LV_OBJ_FLAG_SCROLL_CHAIN_VER|LV_OBJ_FLAG_SCROLL_ELASTIC|LV_OBJ_FLAG_SCROLL_MOMENTUM|LV_OBJ_FLAG_SCROLL_WITH_ARROW);
     lv_obj_add_flag(badge, LV_OBJ_FLAG_EVENT_BUBBLE);
     lv_obj_set_scrollbar_mode(badge, LV_SCROLLBAR_MODE_OFF);
@@ -2660,7 +2661,7 @@ static lv_obj_t *create_card_widget(lv_obj_t *parent_obj, int idx) {
 
     lv_obj_t *lbl_badge = lv_label_create(badge);
     lv_obj_set_pos(lbl_badge, 0, 1);
-    lv_obj_set_size(lbl_badge, 90, 16);
+    lv_obj_set_size(lbl_badge, 98, 16);
     lv_obj_remove_flag(lbl_badge, LV_OBJ_FLAG_CLICKABLE|LV_OBJ_FLAG_SCROLLABLE|LV_OBJ_FLAG_SCROLL_CHAIN_HOR|LV_OBJ_FLAG_SCROLL_CHAIN_VER|LV_OBJ_FLAG_SCROLL_ELASTIC|LV_OBJ_FLAG_SCROLL_MOMENTUM|LV_OBJ_FLAG_SCROLL_WITH_ARROW);
     lv_obj_add_flag(lbl_badge, LV_OBJ_FLAG_EVENT_BUBBLE);
     lv_obj_set_scrollbar_mode(lbl_badge, LV_SCROLLBAR_MODE_OFF);
@@ -2711,8 +2712,8 @@ static lv_obj_t *create_card_widget(lv_obj_t *parent_obj, int idx) {
     // lbl_card_meta (child 4)
     lv_obj_t *lbl_meta = lv_label_create(card);
     lv_obj_set_pos(lbl_meta, 0, 104);
-    lv_obj_set_size(lbl_meta, 144, 16);
-    lv_label_set_long_mode(lbl_meta, LV_LABEL_LONG_DOT);
+    lv_obj_set_size(lbl_meta, 144, 32);
+    lv_label_set_long_mode(lbl_meta, LV_LABEL_LONG_WRAP);
     lv_obj_remove_flag(lbl_meta, LV_OBJ_FLAG_CLICKABLE|LV_OBJ_FLAG_SCROLLABLE|LV_OBJ_FLAG_SCROLL_CHAIN_HOR|LV_OBJ_FLAG_SCROLL_CHAIN_VER|LV_OBJ_FLAG_SCROLL_ELASTIC|LV_OBJ_FLAG_SCROLL_MOMENTUM|LV_OBJ_FLAG_SCROLL_WITH_ARROW);
     lv_obj_add_flag(lbl_meta, LV_OBJ_FLAG_EVENT_BUBBLE);
     lv_obj_set_scrollbar_mode(lbl_meta, LV_SCROLLBAR_MODE_OFF);
@@ -2733,7 +2734,7 @@ static lv_obj_t *create_card_widget(lv_obj_t *parent_obj, int idx) {
         lv_obj_set_style_text_color(lbl_meta, lv_color_hex(0xE5484D), 0);
         lv_label_set_text(lbl_meta, item->incompat[0] ? item->incompat : "No compatible");
     } else if (!item->rotated) {
-        lv_label_set_text_static(lbl_meta, "Sin girar: puede verse corte");
+        lv_label_set_text_static(lbl_meta, "Sin girar:\npuede verse corte");
     }
 
     return card;
