@@ -1645,8 +1645,6 @@ void action_lock(lv_event_t *e) {
     // Registrar la tarjeta de bloqueo (200x116 en 140, 104) como overlay 0
     lcd_bus_set_overlay_rect(0, 140, 104, 200, 116, true);
 
-    printf("UINAV,btn=lock,result=PASS\n");
-    fflush(stdout);
     ESP_LOGI(TAG, "Action: lock -> pantalla bloqueada con tarjeta visible 2s");
 }
 
@@ -1740,6 +1738,19 @@ static void sim_touch_click(uint16_t x, uint16_t y) {
     sim_touch_wait_consumed(press_sequence);
     uint32_t release_sequence = touch_inject_synthetic(x, y, false);
     sim_touch_wait_consumed(release_sequence);
+}
+
+/* El autotest debe tocar el control que se generó, no una coordenada que pueda
+ * quedar obsoleta cuando EEZ cambie la composición de la pantalla. */
+static bool sim_touch_click_obj(lv_obj_t *obj) {
+    if (!obj || lv_obj_has_flag(obj, LV_OBJ_FLAG_HIDDEN)) {
+        return false;
+    }
+    lv_area_t area;
+    lv_obj_get_coords(obj, &area);
+    sim_touch_click((uint16_t)((area.x1 + area.x2) / 2),
+                    (uint16_t)((area.y1 + area.y2) / 2));
+    return true;
 }
 
 static void sim_touch_hold(uint16_t x, uint16_t y, uint32_t hold_ms) {
@@ -1974,22 +1985,22 @@ void ui_glue_run_uinav_test(void) {
     bool set_opened = (ui_glue_get_view_mode() == VIEW_MODE_SETTINGS);
 
     // Cambiar a pestaña 1 (Reproducción: x=75, y=100)
-    sim_touch_click(75, 100);
+    sim_touch_click_obj(objects.btn_tab_1);
     wait_gui_ms(200);
     bool tab1_ok = (s_active_settings_tab == 1);
 
     // Cambiar a pestaña 2 (Almacenamiento: x=75, y=150)
-    sim_touch_click(75, 150);
+    sim_touch_click_obj(objects.btn_tab_2);
     wait_gui_ms(200);
     bool tab2_ok = (s_active_settings_tab == 2);
 
     // Cambiar a pestaña 3 (Acerca de: x=75, y=200)
-    sim_touch_click(75, 200);
+    sim_touch_click_obj(objects.btn_tab_3);
     wait_gui_ms(200);
     bool tab3_ok = (s_active_settings_tab == 3);
 
     // Cambiar a pestaña 0 (Pantalla: x=75, y=60)
-    sim_touch_click(75, 60);
+    sim_touch_click_obj(objects.btn_tab_0);
     wait_gui_ms(200);
     bool tab0_ok = (s_active_settings_tab == 0);
 
@@ -2015,9 +2026,9 @@ void ui_glue_run_uinav_test(void) {
     wait_gui_ms(100);
     sim_touch_click(450, 295); // btn=settings
     wait_gui_ms(300);
-    sim_touch_click(75, 200); // tab 3: Acerca de
+    bool perf_tab_ok = sim_touch_click_obj(objects.btn_tab_3);
     wait_gui_ms(200);
-    sim_touch_click(86, 242); // btn_open_stats ("Ver rendimiento")
+    bool perf_button_ok = sim_touch_click_obj(objects.btn_open_stats);
     wait_gui_ms(350);
     player_status_t st_after_perf;
     player_get_status(&st_after_perf);
@@ -2025,10 +2036,11 @@ void ui_glue_run_uinav_test(void) {
     bool perf_resumed = (st_after_perf.state == PST_PLAYING);
     bool ovl_stats_shown = (objects.ovl_stats && !lv_obj_has_flag(objects.ovl_stats, LV_OBJ_FLAG_HIDDEN));
     // Cerrar ovl_stats con toque sobre ella (x=100, y=100)
-    sim_touch_click(100, 100);
+    bool perf_close_click_ok = sim_touch_click_obj(objects.ovl_stats);
     wait_gui_ms(250);
     bool ovl_stats_closed = (objects.ovl_stats && lv_obj_has_flag(objects.ovl_stats, LV_OBJ_FLAG_HIDDEN));
-    bool perf_flow_ok = (perf_screen_ok && perf_resumed && ovl_stats_shown && ovl_stats_closed);
+    bool perf_flow_ok = (perf_tab_ok && perf_button_ok && perf_screen_ok && perf_resumed &&
+                         ovl_stats_shown && perf_close_click_ok && ovl_stats_closed);
     printf("UINAV,btn=settings_ver_rendimiento,result=%s\n", perf_flow_ok ? "PASS" : "FAIL");
     wait_gui_ms(50);
 
@@ -2048,19 +2060,19 @@ void ui_glue_run_uinav_test(void) {
     wait_gui_ms(100);
     player_status_t st_b_seek;
     player_get_status(&st_b_seek);
-    sim_touch_click(340, 249);
+    bool seek_click_ok = sim_touch_click_obj(objects.sld_seek);
     wait_gui_ms(350);
     player_status_t st_a_seek;
     player_get_status(&st_a_seek);
-    bool seek_ok = (abs((int32_t)st_a_seek.pos_ms - (int32_t)st_b_seek.pos_ms) > 1000);
+    bool seek_ok = (seek_click_ok && abs((int32_t)st_a_seek.pos_ms - (int32_t)st_b_seek.pos_ms) > 1000);
     printf("UINAV,btn=seek,result=%s\n", seek_ok ? "PASS" : "FAIL");
 
     // 13. btn=lock (x=30, y=295)
     ui_glue_set_osd_visible(true);
     wait_gui_ms(100);
-    sim_touch_click(30, 295);
+    bool lock_click_ok = sim_touch_click_obj(objects.btn_lock);
     wait_gui_ms(150);
-    bool lock_ok = s_locked;
+    bool lock_ok = (lock_click_ok && s_locked);
     printf("UINAV,btn=lock,result=%s\n", lock_ok ? "PASS" : "FAIL");
 
     // L8: Pulsacion corta (300 ms) no debe desbloquear
