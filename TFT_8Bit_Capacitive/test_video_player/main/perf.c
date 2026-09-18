@@ -85,9 +85,9 @@ static int s_track = 0;
 static char s_scn[32] = "init";
 
 static int64_t s_last_report_us = 0;
-/* The first interval after an explicit autotest restart is deliberately
- * discarded, so a report can never combine the prior epoch with a new one. */
-static bool s_discard_first_measurement_report = false;
+
+/* Caller holds s_perf_mux.  Scenario and presentation state remain intact. */
+static void perf_clear_measurement_window_locked(int64_t base_us);
 
 void perf_set_present_path(const char *path) {
     if (!path) return;
@@ -358,11 +358,13 @@ void perf_set_scenario(int track, const char *scn) {
         strncpy(s_scn, scn, sizeof(s_scn) - 1);
         s_scn[sizeof(s_scn) - 1] = '\0';
     }
-    s_last_report_us = esp_timer_get_time();
+    /* A scenario boundary is a new reporting epoch.  Never move only the
+     * time base here: a partial prior epoch must not be divided by the new
+     * scenario's shorter interval. */
+    perf_clear_measurement_window_locked(esp_timer_get_time());
     portEXIT_CRITICAL(&s_perf_mux);
 }
 
-/* Caller holds s_perf_mux.  Scenario and presentation state remain intact. */
 static void perf_clear_measurement_window_locked(int64_t base_us) {
     s_frames_decoded = s_frames_presented = s_frames_dropped = 0;
     s_oversize_frames = s_frame_mismatch = 0;
@@ -390,7 +392,6 @@ static void perf_clear_measurement_window_locked(int64_t base_us) {
 void perf_start_measurement_window(void) {
     portENTER_CRITICAL(&s_perf_mux);
     perf_clear_measurement_window_locked(esp_timer_get_time());
-    s_discard_first_measurement_report = true;
     portEXIT_CRITICAL(&s_perf_mux);
 }
 
@@ -423,12 +424,6 @@ void perf_report_if_due(void) {
         return;
     }
 
-    if (s_discard_first_measurement_report) {
-        perf_clear_measurement_window_locked(now);
-        s_discard_first_measurement_report = false;
-        portEXIT_CRITICAL(&s_perf_mux);
-        return;
-    }
     uint32_t dec = s_frames_decoded;
     uint32_t pres = s_frames_presented;
     uint32_t drop = s_frames_dropped;
