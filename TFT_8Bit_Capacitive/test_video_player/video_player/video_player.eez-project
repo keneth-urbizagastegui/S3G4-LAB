@@ -2524,7 +2524,7 @@
                                     "type": "LVGLLabelWidget",
                                     "left": 12,
                                     "top": 128,
-                                    "width": 80,
+                                    "width": 90,
                                     "height": 16,
                                     "leftUnit": "px",
                                     "topUnit": "px",
