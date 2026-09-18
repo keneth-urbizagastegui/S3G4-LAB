@@ -68,6 +68,68 @@ void ui_glue_apply_fonts(void) {
     }
 }
 
+static const char *ui_glue_utf8_next(const char *text, uint32_t *codepoint) {
+    const uint8_t *p = (const uint8_t *)text;
+    if (p[0] < 0x80) {
+        *codepoint = p[0];
+        return text + 1;
+    }
+    if ((p[0] & 0xE0) == 0xC0 && (p[1] & 0xC0) == 0x80) {
+        *codepoint = ((uint32_t)(p[0] & 0x1F) << 6) | (p[1] & 0x3F);
+        return text + 2;
+    }
+    if ((p[0] & 0xF0) == 0xE0 && (p[1] & 0xC0) == 0x80 && (p[2] & 0xC0) == 0x80) {
+        *codepoint = ((uint32_t)(p[0] & 0x0F) << 12) |
+                     ((uint32_t)(p[1] & 0x3F) << 6) | (p[2] & 0x3F);
+        return text + 3;
+    }
+    if ((p[0] & 0xF8) == 0xF0 && (p[1] & 0xC0) == 0x80 &&
+        (p[2] & 0xC0) == 0x80 && (p[3] & 0xC0) == 0x80) {
+        *codepoint = ((uint32_t)(p[0] & 0x07) << 18) |
+                     ((uint32_t)(p[1] & 0x3F) << 12) |
+                     ((uint32_t)(p[2] & 0x3F) << 6) | (p[3] & 0x3F);
+        return text + 4;
+    }
+    *codepoint = p[0];
+    return text + 1;
+}
+
+static int ui_glue_count_missing_glyphs_recursive(lv_obj_t *obj) {
+    int missing = 0;
+    if (lv_obj_check_type(obj, &lv_label_class)) {
+        const lv_font_t *font = lv_obj_get_style_text_font(obj, LV_PART_MAIN);
+        const char *text = lv_label_get_text(obj);
+        for (uint32_t codepoint = 0; text && *text; ) {
+            text = ui_glue_utf8_next(text, &codepoint);
+            if (codepoint == '\n' || codepoint == '\r' || !font) continue;
+            lv_font_glyph_dsc_t glyph_dsc;
+            if (!lv_font_get_glyph_dsc(font, &glyph_dsc, codepoint, 0)) missing++;
+        }
+    }
+    uint32_t child_count = lv_obj_get_child_count(obj);
+    for (uint32_t i = 0; i < child_count; ++i) {
+        missing += ui_glue_count_missing_glyphs_recursive(lv_obj_get_child(obj, i));
+    }
+    return missing;
+}
+
+int ui_glue_count_missing_glyphs(void) {
+    int missing = 0;
+    lv_obj_t *screens[] = {
+        objects.scr_player, objects.scr_library, objects.scr_no_media,
+        objects.scr_queue, objects.scr_settings,
+    };
+    for (size_t i = 0; i < sizeof(screens) / sizeof(screens[0]); ++i) {
+        if (screens[i]) missing += ui_glue_count_missing_glyphs_recursive(screens[i]);
+    }
+    for (lv_display_t *display = lv_display_get_next(NULL); display;
+         display = lv_display_get_next(display)) {
+        missing += ui_glue_count_missing_glyphs_recursive(lv_display_get_layer_top(display));
+        missing += ui_glue_count_missing_glyphs_recursive(lv_display_get_layer_sys(display));
+    }
+    return missing;
+}
+
 static bool s_osd_visible = true;
 static int s_hud_forced_mode = 0; // 0=auto, 1=forced hidden, 2=forced visible
 static int64_t s_last_touch_time = 0;
@@ -618,6 +680,11 @@ void ui_glue_init(void) {
     if (objects.player_touch) {
         lv_obj_add_event_cb(objects.player_touch, player_touch_gesture_event_cb, LV_EVENT_ALL, NULL);
     }
+    /* Montserrat intentionally has no LV_SYMBOL_DOWN (U+F078).  Use the
+     * design PNG so dropdown indicators cannot render as missing-glyph boxes. */
+    if (objects.dd_osd_timeout) lv_dropdown_set_symbol(objects.dd_osd_timeout, &img_chevron_down);
+    if (objects.dd_repeat) lv_dropdown_set_symbol(objects.dd_repeat, &img_chevron_down);
+    if (objects.dd_seek_step) lv_dropdown_set_symbol(objects.dd_seek_step, &img_chevron_down);
     if (objects.chip_fps) {
         lv_obj_add_flag(objects.chip_fps, LV_OBJ_FLAG_CLICKABLE);
         /* El texto hijo no debe capturar la pulsación larga destinada al chip. */

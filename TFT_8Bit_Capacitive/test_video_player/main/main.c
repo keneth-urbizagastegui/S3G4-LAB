@@ -321,6 +321,7 @@ typedef enum {
     UI_REQ_UINAV,
     UI_REQ_SET_OVERLAYS,
     UI_REQ_TEXTFIT,
+    UI_REQ_GLYPHS,
 } ui_req_type_t;
 
 typedef struct {
@@ -330,6 +331,7 @@ typedef struct {
 
 static QueueHandle_t s_ui_req_queue = NULL;
 static void textfit_run(void);
+static volatile int s_autotest_glyph_missing = -1;
 
 __attribute__((unused)) static bool ui_req_send(ui_req_type_t type, int arg) {
     if (!s_ui_req_queue) return false;
@@ -547,6 +549,8 @@ static void gui_task(void *arg) {
                 }
             } else if (req.type == UI_REQ_TEXTFIT) {
                 textfit_run();
+            } else if (req.type == UI_REQ_GLYPHS) {
+                s_autotest_glyph_missing = ui_glue_count_missing_glyphs();
             }
             publish_ui_state();
         }
@@ -1124,6 +1128,14 @@ static void autotest_task(void *arg) {
     // TEXTFIT must run after every scenario while the GUI task owns LVGL.
     ui_req_send(UI_REQ_TEXTFIT, 0);
     vTaskDelay(pdMS_TO_TICKS(250));
+
+    /* GLYPHS runs in gui_task: all LVGL labels and their active fonts are checked. */
+    s_autotest_glyph_missing = -1;
+    ui_req_send(UI_REQ_GLYPHS, 0);
+    vTaskDelay(pdMS_TO_TICKS(250));
+    printf("GLYPHS,missing=%d\n", s_autotest_glyph_missing);
+    printf("GLYPHS,result=%s\n", s_autotest_glyph_missing == 0 ? "OK" : "FALLO");
+    fflush(stdout);
 
     log_stack_and_heap_diag("AUTOTEST_END");
 

@@ -21,6 +21,7 @@ typedef enum {
 
 void ui_glue_init(void);
 void ui_glue_apply_fonts(void);
+int ui_glue_count_missing_glyphs(void);
 void ui_glue_update_cache(const player_status_t *st);
 void ui_glue_tick(void);
 
