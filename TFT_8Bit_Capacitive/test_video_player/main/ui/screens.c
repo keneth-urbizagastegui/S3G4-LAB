@@ -2281,7 +2281,7 @@ void create_user_widget_uw_video_card(lv_obj_t *parent_obj, int startWidgetIndex
                     lv_obj_t *obj = lv_obj_create(parent_obj);
                     ((lv_obj_t **)&objects)[startWidgetIndex + 2] = obj;
                     lv_obj_set_pos(obj, 6, 6);
-                    lv_obj_set_size(obj, 98, 18);
+                    lv_obj_set_size(obj, 102, 18);
                     lv_obj_add_flag(obj, LV_OBJ_FLAG_HIDDEN);
                     lv_obj_remove_flag(obj, LV_OBJ_FLAG_SCROLLABLE|LV_OBJ_FLAG_SCROLL_CHAIN_HOR|LV_OBJ_FLAG_SCROLL_CHAIN_VER|LV_OBJ_FLAG_SCROLL_ELASTIC|LV_OBJ_FLAG_SCROLL_MOMENTUM|LV_OBJ_FLAG_SCROLL_WITH_ARROW);
                     lv_obj_set_scrollbar_mode(obj, LV_SCROLLBAR_MODE_OFF);
@@ -2292,7 +2292,7 @@ void create_user_widget_uw_video_card(lv_obj_t *parent_obj, int startWidgetIndex
                             lv_obj_t *obj = lv_label_create(parent_obj);
                             ((lv_obj_t **)&objects)[startWidgetIndex + 3] = obj;
                             lv_obj_set_pos(obj, 0, 1);
-                            lv_obj_set_size(obj, 98, 16);
+                            lv_obj_set_size(obj, 102, 16);
                             lv_obj_add_flag(obj, LV_OBJ_FLAG_CLICKABLE);
                             lv_obj_remove_flag(obj, LV_OBJ_FLAG_SCROLLABLE|LV_OBJ_FLAG_SCROLL_CHAIN_HOR|LV_OBJ_FLAG_SCROLL_CHAIN_VER|LV_OBJ_FLAG_SCROLL_ELASTIC|LV_OBJ_FLAG_SCROLL_MOMENTUM|LV_OBJ_FLAG_SCROLL_WITH_ARROW);
                             lv_obj_set_scrollbar_mode(obj, LV_SCROLLBAR_MODE_OFF);
