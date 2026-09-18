@@ -5708,9 +5708,9 @@
                                                 {
                                                     "objID": "3ec5ecd8-ef1d-47c2-bb5c-9b7b081007c1",
                                                     "type": "LVGLLabelWidget",
-                                                    "left": 24,
+                                                    "left": 36,
                                                     "top": 14,
-                                                    "width": 130,
+                                                    "width": 112,
                                                     "height": 16,
                                                     "leftUnit": "px",
                                                     "topUnit": "px",
@@ -5731,7 +5731,8 @@
                                                             "MAIN": {
                                                                 "DEFAULT": {
                                                                     "text_font": "MONTSERRAT_12",
-                                                                    "text_color": "c_accent"
+                                                                    "text_color": "c_accent",
+                                                                    "text_align": "CENTER"
                                                                 }
                                                             }
                                                         }
