@@ -127,8 +127,8 @@ void create_screen_scr_player() {
                     // chip_fps
                     lv_obj_t *obj = lv_obj_create(parent_obj);
                     objects.chip_fps = obj;
-                    lv_obj_set_pos(obj, 370, 10);
-                    lv_obj_set_size(obj, 62, 20);
+                    lv_obj_set_pos(obj, 366, 10);
+                    lv_obj_set_size(obj, 66, 20);
                     lv_obj_add_event_cb(obj, action_open_stats, LV_EVENT_LONG_PRESSED, (void *)0);
                     lv_obj_remove_flag(obj, LV_OBJ_FLAG_SCROLLABLE|LV_OBJ_FLAG_SCROLL_CHAIN_HOR|LV_OBJ_FLAG_SCROLL_CHAIN_VER|LV_OBJ_FLAG_SCROLL_ELASTIC|LV_OBJ_FLAG_SCROLL_MOMENTUM|LV_OBJ_FLAG_SCROLL_WITH_ARROW);
                     lv_obj_set_scrollbar_mode(obj, LV_SCROLLBAR_MODE_OFF);
@@ -139,7 +139,7 @@ void create_screen_scr_player() {
                             lv_obj_t *obj = lv_label_create(parent_obj);
                             objects.obj0 = obj;
                             lv_obj_set_pos(obj, 4, 2);
-                            lv_obj_set_size(obj, 54, 16);
+                            lv_obj_set_size(obj, 58, 16);
                             lv_obj_add_flag(obj, LV_OBJ_FLAG_CLICKABLE);
                             lv_obj_remove_flag(obj, LV_OBJ_FLAG_SCROLLABLE|LV_OBJ_FLAG_SCROLL_CHAIN_HOR|LV_OBJ_FLAG_SCROLL_CHAIN_VER|LV_OBJ_FLAG_SCROLL_ELASTIC|LV_OBJ_FLAG_SCROLL_MOMENTUM|LV_OBJ_FLAG_SCROLL_WITH_ARROW);
                             lv_obj_set_scrollbar_mode(obj, LV_SCROLLBAR_MODE_OFF);
