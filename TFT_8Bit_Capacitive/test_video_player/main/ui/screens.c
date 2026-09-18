@@ -776,7 +776,7 @@ void create_screen_scr_player() {
                     lv_obj_t *obj = lv_label_create(parent_obj);
                     objects.obj7 = obj;
                     lv_obj_set_pos(obj, 12, 128);
-                    lv_obj_set_size(obj, 90, 16);
+                    lv_obj_set_size(obj, 100, 16);
                     lv_label_set_long_mode(obj, LV_LABEL_LONG_CLIP);
                     lv_obj_add_flag(obj, LV_OBJ_FLAG_CLICKABLE);
                     lv_obj_remove_flag(obj, LV_OBJ_FLAG_CLICK_FOCUSABLE|LV_OBJ_FLAG_GESTURE_BUBBLE|LV_OBJ_FLAG_PRESS_LOCK|LV_OBJ_FLAG_SCROLLABLE|LV_OBJ_FLAG_SCROLL_CHAIN_HOR|LV_OBJ_FLAG_SCROLL_CHAIN_VER|LV_OBJ_FLAG_SCROLL_ELASTIC|LV_OBJ_FLAG_SCROLL_MOMENTUM|LV_OBJ_FLAG_SCROLL_WITH_ARROW|LV_OBJ_FLAG_SNAPPABLE);
@@ -1675,7 +1675,7 @@ void create_screen_scr_settings() {
                             lv_obj_t *obj = lv_label_create(parent_obj);
                             objects.obj16 = obj;
                             lv_obj_set_pos(obj, 16, 185);
-                            lv_obj_set_size(obj, 210, 18);
+                            lv_obj_set_size(obj, 220, 18);
                             lv_label_set_long_mode(obj, LV_LABEL_LONG_CLIP);
                             lv_obj_add_flag(obj, LV_OBJ_FLAG_CLICKABLE);
                             lv_obj_remove_flag(obj, LV_OBJ_FLAG_CLICK_FOCUSABLE|LV_OBJ_FLAG_GESTURE_BUBBLE|LV_OBJ_FLAG_PRESS_LOCK|LV_OBJ_FLAG_SCROLLABLE|LV_OBJ_FLAG_SCROLL_CHAIN_HOR|LV_OBJ_FLAG_SCROLL_CHAIN_VER|LV_OBJ_FLAG_SCROLL_ELASTIC|LV_OBJ_FLAG_SCROLL_MOMENTUM|LV_OBJ_FLAG_SCROLL_WITH_ARROW|LV_OBJ_FLAG_SNAPPABLE);

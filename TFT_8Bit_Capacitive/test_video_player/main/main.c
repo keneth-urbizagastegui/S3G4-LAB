@@ -590,6 +590,16 @@ static bool textfit_is_allowed_marquee(const lv_obj_t *obj) {
     return false;
 }
 
+static void textfit_preview(const char *text, char out[25]) {
+    size_t n = 0;
+    while (text && text[n] && n < 24) {
+        char c = text[n];
+        out[n] = (c == ',' || c == '\r' || c == '\n') ? ' ' : c;
+        ++n;
+    }
+    out[n] = '\0';
+}
+
 static void textfit_check_tree(lv_obj_t *obj, int *offenders) {
     if (lv_obj_check_type(obj, &lv_label_class)) {
         lv_label_long_mode_t mode = lv_label_get_long_mode(obj);
@@ -604,27 +614,29 @@ static void textfit_check_tree(lv_obj_t *obj, int *offenders) {
         int32_t box_h = lv_obj_get_content_height(obj);
         bool marquee = mode == LV_LABEL_LONG_SCROLL_CIRCULAR;
         bool allowed_marquee = textfit_is_allowed_marquee(obj);
+        char preview[25];
+        textfit_preview(text, preview);
 
         if (marquee && !allowed_marquee) {
-            printf("TEXTFIT_BAD,id=label@%p,reason=marquee_not_allowed\n",
-                   (void *)obj);
+            printf("TEXTFIT_BAD,id=label@%p,reason=marquee_not_allowed,text=%s\n",
+                   (void *)obj, preview);
             (*offenders)++;
         }
         if (text_size.x > box_w && !marquee) {
-            printf("TEXTFIT_BAD,id=label@%p,reason=width,text_w=%ld,box_w=%ld\n",
-                   (void *)obj, (long)text_size.x, (long)box_w);
+            printf("TEXTFIT_BAD,id=label@%p,reason=width,text_w=%ld,box_w=%ld,text=%s\n",
+                   (void *)obj, (long)text_size.x, (long)box_w, preview);
             (*offenders)++;
         }
         if (text_size.y > box_h) {
-            printf("TEXTFIT_BAD,id=label@%p,reason=line_height,text_h=%ld,box_h=%ld\n",
-                   (void *)obj, (long)text_size.y, (long)box_h);
+            printf("TEXTFIT_BAD,id=label@%p,reason=line_height,text_h=%ld,box_h=%ld,text=%s\n",
+                   (void *)obj, (long)text_size.y, (long)box_h, preview);
             (*offenders)++;
         }
         if (lv_obj_get_scroll_y(obj) != 0 ||
             (lv_obj_has_flag(obj, LV_OBJ_FLAG_SCROLLABLE) &&
              (lv_obj_get_scroll_dir(obj) & LV_DIR_VER))) {
-            printf("TEXTFIT_BAD,id=label@%p,reason=vertical_scroll,scroll_y=%ld\n",
-                   (void *)obj, (long)lv_obj_get_scroll_y(obj));
+            printf("TEXTFIT_BAD,id=label@%p,reason=vertical_scroll,scroll_y=%ld,text=%s\n",
+                   (void *)obj, (long)lv_obj_get_scroll_y(obj), preview);
             (*offenders)++;
         }
     }
