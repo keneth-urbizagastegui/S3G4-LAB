@@ -2668,7 +2668,7 @@
                                     "children": [],
                                     "text": "480x320 \u00b7 MJPEG",
                                     "textType": "literal",
-                                    "longMode": "CLIP",
+                                    "longMode": "SCROLL_CIRCULAR",
                                     "identifier": "lbl_stat_file"
                                 }
                             ],

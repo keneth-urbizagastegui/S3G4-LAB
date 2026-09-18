@@ -27,7 +27,7 @@
 
 static const char *TAG = "UI_ACTIONS";
 
-/* Labels never scroll vertically.  The two permitted horizontal marquees
+/* Labels never scroll vertically.  The permitted horizontal marquees
  * explicitly restore their own long mode and horizontal direction later. */
 static void ui_glue_label_no_scroll(lv_obj_t *label) {
     lv_label_set_long_mode(label, LV_LABEL_LONG_CLIP);
@@ -46,8 +46,7 @@ static lv_obj_t *ui_glue_label_create(lv_obj_t *parent) {
     return label;
 }
 
-/* Apply this whenever a runtime title is written.  Only the player title and
- * the row matching player_status.track_index may use a horizontal marquee. */
+/* Apply this whenever a permitted runtime marquee is written. */
 static void ui_glue_set_track_title_overflow(lv_obj_t *label, bool allow_marquee) {
     ui_glue_label_no_scroll(label);
     if (allow_marquee) {
@@ -1515,7 +1514,7 @@ void ui_glue_update_stats_labels(void) {
         const media_item_t *cur = media_library_get(s_current_track_idx);
         if (cur && cur->title[0] != '\0') {
             set_label_text_if_changed(objects.lbl_stat_file, cur->title);
-            ui_glue_label_no_scroll(objects.lbl_stat_file);
+            ui_glue_set_track_title_overflow(objects.lbl_stat_file, true);
         }
     }
 }
