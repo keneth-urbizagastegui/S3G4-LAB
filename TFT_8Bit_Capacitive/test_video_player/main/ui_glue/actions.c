@@ -218,6 +218,8 @@ static lv_obj_t *s_dropdown_chevrons[3] = {0};
 static lv_obj_t *s_stats_pause_note = NULL;
 static perf_live_metrics_t s_last_stats_metrics;
 static bool s_last_stats_metrics_valid = false;
+/* A shown layer is never registered with an empty composition rectangle. */
+static lv_obj_t *s_pending_overlay_rect[LCD_OVERLAY_MAX_RECTS] = {0};
 
 static void ui_glue_add_dropdown_chevron(lv_obj_t *dropdown, int slot) {
     if (!dropdown || slot < 0 || slot >= 3 || s_dropdown_chevrons[slot]) return;
@@ -286,12 +288,29 @@ static void ui_glue_set_overlay_card_pos(lv_obj_t *card, int16_t x, int16_t y) {
 static void ui_glue_set_overlay_rect_for_obj(int slot, lv_obj_t *obj, bool enabled) {
     if (!enabled || !obj) {
         lcd_bus_set_overlay_rect(slot, 0, 0, 0, 0, false);
+        if (slot >= 0 && slot < LCD_OVERLAY_MAX_RECTS) s_pending_overlay_rect[slot] = NULL;
         return;
     }
+
+    lv_obj_t *screen = lv_obj_get_screen(obj);
+    if (screen) lv_obj_update_layout(screen);
+    lv_obj_update_layout(obj);
     lv_area_t area;
     lv_obj_get_coords(obj, &area);
+    int16_t width = area.x2 - area.x1 + 1;
+    int16_t height = area.y2 - area.y1 + 1;
+    if (width <= 0 || height <= 0) {
+        if (slot >= 0 && slot < LCD_OVERLAY_MAX_RECTS && s_pending_overlay_rect[slot] != obj) {
+            ESP_LOGW(TAG, "Overlay %d sin geometria valida (%d x %d); reintento en siguiente tick",
+                     slot, width, height);
+        }
+        lcd_bus_set_overlay_rect(slot, 0, 0, 0, 0, false);
+        if (slot >= 0 && slot < LCD_OVERLAY_MAX_RECTS) s_pending_overlay_rect[slot] = obj;
+        return;
+    }
     lcd_bus_set_overlay_rect(slot, area.x1, area.y1,
-                             area.x2 - area.x1 + 1, area.y2 - area.y1 + 1, true);
+                             width, height, true);
+    if (slot >= 0 && slot < LCD_OVERLAY_MAX_RECTS) s_pending_overlay_rect[slot] = NULL;
 }
 
 /* Reutiliza una única pista de salto: nunca quedan rectángulos activos a ambos lados. */
@@ -307,8 +326,8 @@ static void show_seek_hint(int16_t x, const lv_image_dsc_t *icon, const char *te
     if (objects.img_seek_hint) lv_image_set_src(objects.img_seek_hint, icon);
     if (objects.lbl_seek_hint) lv_label_set_text(objects.lbl_seek_hint, text);
 
-    ui_glue_set_overlay_rect_for_obj(2, objects.ovl_seek_hint, true);
     ui_glue_set_overlay_card_visible(objects.ovl_seek_hint, true);
+    ui_glue_set_overlay_rect_for_obj(2, objects.ovl_seek_hint, true);
 }
 
 #define BRIGHTNESS_REAL_MIN 25
@@ -1562,6 +1581,15 @@ void ui_glue_tick(void) {
     player_status_t st;
     player_get_status(&st);
     s_current_track_idx = st.track_index;
+    for (int slot = 0; slot < LCD_OVERLAY_MAX_RECTS; slot++) {
+        lv_obj_t *pending = s_pending_overlay_rect[slot];
+        if (!pending) continue;
+        if (lv_obj_has_flag(pending, LV_OBJ_FLAG_HIDDEN)) {
+            s_pending_overlay_rect[slot] = NULL;
+            continue;
+        }
+        ui_glue_set_overlay_rect_for_obj(slot, pending, true);
+    }
     /* screens.c may replace the player-title text on this tick; reaffirm the
      * one globally permitted marquee whenever that runtime title is updated. */
     if (objects.lbl_title) {
