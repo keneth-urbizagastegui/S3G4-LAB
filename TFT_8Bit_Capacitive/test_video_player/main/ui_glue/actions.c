@@ -215,6 +215,9 @@ static lv_obj_t *s_btn_resume_close = NULL;
 static int s_resume_target_idx = -1;
 static void show_resume_sheet(int idx);
 static lv_obj_t *s_dropdown_chevrons[3] = {0};
+static lv_obj_t *s_stats_pause_note = NULL;
+static perf_live_metrics_t s_last_stats_metrics;
+static bool s_last_stats_metrics_valid = false;
 
 static void ui_glue_add_dropdown_chevron(lv_obj_t *dropdown, int slot) {
     if (!dropdown || slot < 0 || slot >= 3 || s_dropdown_chevrons[slot]) return;
@@ -805,6 +808,17 @@ void ui_glue_init(void) {
     ui_glue_prepare_overlay_card(1, objects.ovl_stats);
     ui_glue_prepare_overlay_card(2, objects.ovl_seek_hint);
     ui_glue_prepare_overlay_card(3, objects.ovl_brightness);
+    if (objects.ovl_stats && !s_stats_pause_note) {
+        s_stats_pause_note = lv_label_create(objects.ovl_stats);
+        lv_obj_set_pos(s_stats_pause_note, 110, 11);
+        lv_obj_set_size(s_stats_pause_note, 54, 16);
+        lv_label_set_text(s_stats_pause_note, "en pausa");
+        lv_obj_set_style_text_font(s_stats_pause_note, &lv_font_montserrat_12, 0);
+        lv_obj_set_style_text_color(s_stats_pause_note, lv_color_hex(0x8E929B), 0);
+        lv_obj_set_style_text_align(s_stats_pause_note, LV_TEXT_ALIGN_RIGHT, 0);
+        ui_glue_label_no_scroll(s_stats_pause_note);
+        lv_obj_add_flag(s_stats_pause_note, LV_OBJ_FLAG_HIDDEN);
+    }
     /* Use concrete images rather than LV_SYMBOL_DOWN: Montserrat lacks U+F078,
      * and a visible right-hand affordance must survive the dropdown renderer. */
     ui_glue_add_dropdown_chevron(objects.dd_osd_timeout, 0);
@@ -1492,8 +1506,18 @@ void ui_glue_update_stats_labels(void) {
     perf_get_live_metrics(&m);
     player_status_t st_cur;
     player_get_status(&st_cur);
-    float pres_fps = (st_cur.state == PST_PLAYING) ? m.pres_fps : 0.0f;
-    float dec_fps = (st_cur.state == PST_PLAYING) ? m.dec_fps : 0.0f;
+    if (st_cur.state == PST_PLAYING && (m.pres_fps > 0.0f || m.dec_fps > 0.0f)) {
+        s_last_stats_metrics = m;
+        s_last_stats_metrics_valid = true;
+    }
+    const perf_live_metrics_t *shown =
+        (st_cur.state != PST_PLAYING && s_last_stats_metrics_valid) ? &s_last_stats_metrics : &m;
+    if (s_stats_pause_note) {
+        if (st_cur.state == PST_PLAYING) lv_obj_add_flag(s_stats_pause_note, LV_OBJ_FLAG_HIDDEN);
+        else lv_obj_remove_flag(s_stats_pause_note, LV_OBJ_FLAG_HIDDEN);
+    }
+    float pres_fps = shown->pres_fps;
+    float dec_fps = shown->dec_fps;
 
     if (objects.lbl_stat_pres) {
         char buf[32];
@@ -1507,22 +1531,22 @@ void ui_glue_update_stats_labels(void) {
     }
     if (objects.lbl_stat_drop) {
         char buf[32];
-        snprintf(buf, sizeof(buf), "%lu", (unsigned long)m.dropped);
+        snprintf(buf, sizeof(buf), "%lu", (unsigned long)shown->dropped);
         set_label_text_if_changed(objects.lbl_stat_drop, buf);
     }
     if (objects.lbl_stat_rd) {
         char buf[32];
-        snprintf(buf, sizeof(buf), "%0.1f / %0.1f ms", m.rd_avg_ms, m.rd_max_ms);
+        snprintf(buf, sizeof(buf), "%0.1f / %0.1f ms", shown->rd_avg_ms, shown->rd_max_ms);
         set_label_text_if_changed(objects.lbl_stat_rd, buf);
     }
     if (objects.lbl_stat_dec_time) {
         char buf[32];
-        snprintf(buf, sizeof(buf), "%0.1f / %0.1f ms", m.dec_avg_ms, m.dec_max_ms);
+        snprintf(buf, sizeof(buf), "%0.1f / %0.1f ms", shown->dec_avg_ms, shown->dec_max_ms);
         set_label_text_if_changed(objects.lbl_stat_dec_time, buf);
     }
     if (objects.lbl_stat_blit) {
         char buf[32];
-        snprintf(buf, sizeof(buf), "%0.1f ms (%lu Hz)", m.blit_ms, (unsigned long)m.te_hz);
+        snprintf(buf, sizeof(buf), "%0.1f ms (%lu Hz)", shown->blit_ms, (unsigned long)shown->te_hz);
         set_label_text_if_changed(objects.lbl_stat_blit, buf);
     }
     if (objects.lbl_stat_file) {
