@@ -36,3 +36,14 @@ software/web_client/.env.test.local
 # OS General Files
 .DS_Store
 Thumbs.db
+.claude/settings.local.json
+
+# Shared AI context: source documents are tracked; local SQLite/runtime data is not.
+.ai-runtime/
+ai-context/runtime.local.json
+
+# rev 2.1: salidas regenerables de LTspice y de los scripts
+S3G4_LAB_rev2.1/**/*.raw
+S3G4_LAB_rev2.1/**/*.db
+S3G4_LAB_rev2.1/**/__pycache__/
+S3G4_LAB_rev2.1/herramientas/view_*

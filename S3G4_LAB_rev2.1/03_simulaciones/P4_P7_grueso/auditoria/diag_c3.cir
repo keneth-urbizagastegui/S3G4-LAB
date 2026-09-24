@@ -1,0 +1,18 @@
+* Diagnostico C3: P7 gruesa sin fuga del 4053; frente (BNC a PRE) y cadena comun (PRE a SAL)
+.include comun_c2.inc
+VC VSC 0 AC 1
+RC VSC BNCC 50
+CC BNCC 0 {CBNC}
+XRC VPC VNC RAILS
+XFC BNCC PREC VPC VNC FRONT_P7 POS=200
+XCC PREC SALC SALFC VPC VNC COMMON TAP=1 GFIX=100
+.ac list 100 1Meg 1.5Meg 3Meg 5Meg 10Meg 20Meg
+.meas ac front100 FIND mag(V(PREC)/V(BNCC)) AT=100
+.meas ac front1m5 FIND mag(V(PREC)/V(BNCC)) AT=1.5Meg
+.meas ac front5m FIND mag(V(PREC)/V(BNCC)) AT=5Meg
+.meas ac front10m FIND mag(V(PREC)/V(BNCC)) AT=10Meg
+.meas ac chain100 FIND mag(V(SALC)/V(PREC)) AT=100
+.meas ac chain1m5 FIND mag(V(SALC)/V(PREC)) AT=1.5Meg
+.meas ac chain5m FIND mag(V(SALC)/V(PREC)) AT=5Meg
+.meas ac chain10m FIND mag(V(SALC)/V(PREC)) AT=10Meg
+.end

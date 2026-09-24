@@ -1,0 +1,20 @@
+LTspice 26.0.2 for Windows
+Circuit: C:\Users\Keneth\Desktop\S3G4 LAB\S3G4_LAB_rev2.1\03_simulaciones\P4_P7_grueso\P4_rele\T01_zin.net
+Start Time: Thu Sep 24 08:02:19 2026
+solver = Normal
+Maximum thread count: 12
+tnom = 27
+temp = 27
+method = trap
+Direct Newton iteration succeeded in finding operating point.
+Total elapsed time: 0.265 seconds.
+
+Files loaded:
+C:\Users\Keneth\Desktop\S3G4 LAB\S3G4_LAB_rev2.1\03_simulaciones\P4_P7_grueso\P4_rele\T01_zin.net
+C:\Users\Keneth\Desktop\S3G4 LAB\S3G4_LAB_rev2.1\03_simulaciones\P4_P7_grueso\comun\rev21_comun.inc
+C:\Users\Keneth\AppData\Local\LTspice\lib\sub\UniversalOpAmp2.lib
+
+p4_x1_zin100: mag(V(BNC1)/I(BIX1)) =(119.170485638dB,0°) at 100
+p4_x1_cin1m: abs(im(I(BIX1)/V(BNC1)))/(2*pi*1Meg) =(-213.217998736dB,0°) at 1000000
+p4_d100_zin100: mag(V(BNC100)/I(BID100)) =(119.992528857dB,0°) at 100
+p4_d100_cin1m: abs(im(I(BID100)/V(BNC100)))/(2*pi*1Meg) =(-217.153445219dB,0°) at 1000000

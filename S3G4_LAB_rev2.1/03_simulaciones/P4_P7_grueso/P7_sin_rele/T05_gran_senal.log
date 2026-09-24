@@ -1,0 +1,280 @@
+LTspice 26.0.2 for Windows
+Circuit: C:\Users\Keneth\Desktop\S3G4 LAB\S3G4_LAB_rev2.1\03_simulaciones\P4_P7_grueso\P7_sin_rele\T05_gran_senal.net
+Start Time: Thu Sep 24 08:05:21 2026
+solver = Normal
+Maximum thread count: 12
+tnom = 27
+temp = 27
+method = trap
+Laplace(xcr50_5:EAAF): Window=5.3458802µs Nfft=16384
+Laplace(xcr50_11:EAAF): Window=5.3458802µs Nfft=16384
+Laplace(xcr50_20:EAAF): Window=5.3458802µs Nfft=16384
+Laplace(xcr50_40:EAAF): Window=5.3458802µs Nfft=16384
+Laplace(xcr10k_5:EAAF): Window=5.3458802µs Nfft=16384
+Laplace(xcr10k_11:EAAF): Window=5.3458802µs Nfft=16384
+Laplace(xcr10k_20:EAAF): Window=5.3458802µs Nfft=16384
+Laplace(xcr10k_40:EAAF): Window=5.3458802µs Nfft=16384
+Laplace(xcprobe_5:EAAF): Window=5.3458802µs Nfft=16384
+Laplace(xcprobe_11p2:EAAF): Window=5.3458802µs Nfft=16384
+Laplace(xcprobe_20:EAAF): Window=5.3458802µs Nfft=16384
+Laplace(xcprobe_40:EAAF): Window=5.3458802µs Nfft=16384
+Direct Newton iteration succeeded in finding operating point.
+Total elapsed time: 143.231 seconds.
+
+Files loaded:
+C:\Users\Keneth\Desktop\S3G4 LAB\S3G4_LAB_rev2.1\03_simulaciones\P4_P7_grueso\P7_sin_rele\T05_gran_senal.net
+C:\Users\Keneth\Desktop\S3G4 LAB\S3G4_LAB_rev2.1\03_simulaciones\P4_P7_grueso\comun\rev21_comun.inc
+C:\Users\Keneth\AppData\Local\LTspice\lib\sub\UniversalOpAmp2.lib
+
+Fourier components of V(SALr50_5)
+N-Period=1
+DC component:2.09251e-10
+
+Harmonic	Frequency	 Fourier 	Normalized	 Phase  	Normalized
+ Number 	  [Hz]   	Component	 Component	[degree]	Phase [deg]
+    1   	 1.000e+03	 2.498e-01	 1.000e+00	   90.00°	    0.00°
+    2   	 2.000e+03	 3.328e-10	 1.332e-09	 -110.43°	 -200.42°
+    3   	 3.000e+03	 1.235e-08	 4.944e-08	  -63.39°	 -153.39°
+    4   	 4.000e+03	 4.493e-10	 1.799e-09	  105.08°	   15.09°
+    5   	 5.000e+03	 3.144e-09	 1.259e-08	 -174.43°	 -264.43°
+    6   	 6.000e+03	 5.062e-10	 2.027e-09	  -78.19°	 -168.19°
+    7   	 7.000e+03	 2.725e-09	 1.091e-08	   21.16°	  -68.84°
+    8   	 8.000e+03	 4.022e-10	 1.610e-09	  106.03°	   16.03°
+    9   	 9.000e+03	 2.016e-09	 8.070e-09	 -153.77°	 -243.76°
+Partial Harmonic Distortion: 0.000005%
+Total Harmonic Distortion:   0.000000%
+
+Fourier components of V(SALr50_11)
+N-Period=1
+DC component:2.49888e-10
+
+Harmonic	Frequency	 Fourier 	Normalized	 Phase  	Normalized
+ Number 	  [Hz]   	Component	 Component	[degree]	Phase [deg]
+    1   	 1.000e+03	 5.495e-01	 1.000e+00	   90.00°	    0.00°
+    2   	 2.000e+03	 1.246e-10	 2.267e-10	  172.75°	   82.75°
+    3   	 3.000e+03	 1.444e-05	 2.628e-05	    1.32°	  -88.67°
+    4   	 4.000e+03	 2.124e-10	 3.866e-10	 -157.45°	 -247.45°
+    5   	 5.000e+03	 1.738e-05	 3.162e-05	 -177.20°	 -267.20°
+    6   	 6.000e+03	 2.386e-10	 4.342e-10	   -1.34°	  -91.34°
+    7   	 7.000e+03	 1.380e-05	 2.511e-05	    4.13°	  -85.87°
+    8   	 8.000e+03	 2.162e-10	 3.934e-10	  168.31°	   78.31°
+    9   	 9.000e+03	 6.076e-06	 1.106e-05	 -174.23°	 -264.22°
+Partial Harmonic Distortion: 0.004943%
+Total Harmonic Distortion:   0.008302%
+
+Fourier components of V(SALr50_20)
+N-Period=1
+DC component:1.12416e-11
+
+Harmonic	Frequency	 Fourier 	Normalized	 Phase  	Normalized
+ Number 	  [Hz]   	Component	 Component	[degree]	Phase [deg]
+    1   	 1.000e+03	 9.990e-01	 1.000e+00	   90.00°	    0.00°
+    2   	 2.000e+03	 8.515e-11	 8.523e-11	   37.52°	  -52.49°
+    3   	 3.000e+03	 1.301e-04	 1.303e-04	    3.37°	  -86.63°
+    4   	 4.000e+03	 9.787e-11	 9.796e-11	   80.26°	   -9.74°
+    5   	 5.000e+03	 4.296e-05	 4.300e-05	    3.23°	  -86.77°
+    6   	 6.000e+03	 1.506e-10	 1.508e-10	 -170.22°	 -260.22°
+    7   	 7.000e+03	 2.170e-05	 2.172e-05	 -176.42°	 -266.43°
+    8   	 8.000e+03	 7.323e-11	 7.330e-11	 -146.88°	 -236.88°
+    9   	 9.000e+03	 3.828e-05	 3.832e-05	 -175.55°	 -265.56°
+Partial Harmonic Distortion: 0.014407%
+Total Harmonic Distortion:   0.017012%
+
+Fourier components of V(SALr50_40)
+N-Period=1
+DC component:7.24414e-11
+
+Harmonic	Frequency	 Fourier 	Normalized	 Phase  	Normalized
+ Number 	  [Hz]   	Component	 Component	[degree]	Phase [deg]
+    1   	 1.000e+03	 1.998e+00	 1.000e+00	   90.01°	    0.00°
+    2   	 2.000e+03	 8.632e-11	 4.320e-11	  131.63°	   41.63°
+    3   	 3.000e+03	 1.818e-04	 9.098e-05	    3.27°	  -86.74°
+    4   	 4.000e+03	 9.810e-11	 4.910e-11	  -52.60°	 -142.61°
+    5   	 5.000e+03	 1.500e-04	 7.508e-05	    3.07°	  -86.94°
+    6   	 6.000e+03	 4.987e-11	 2.496e-11	  139.91°	   49.90°
+    7   	 7.000e+03	 1.089e-04	 5.453e-05	    3.70°	  -86.31°
+    8   	 8.000e+03	 9.036e-11	 4.523e-11	   49.52°	  -40.49°
+    9   	 9.000e+03	 6.464e-05	 3.235e-05	    5.27°	  -84.74°
+Partial Harmonic Distortion: 0.013392%
+Total Harmonic Distortion:   0.015410%
+
+Fourier components of V(SALr10k_5)
+N-Period=1
+DC component:-1.75161e-09
+
+Harmonic	Frequency	 Fourier 	Normalized	 Phase  	Normalized
+ Number 	  [Hz]   	Component	 Component	[degree]	Phase [deg]
+    1   	 1.000e+03	 2.473e-01	 1.000e+00	   90.06°	    0.00°
+    2   	 2.000e+03	 5.476e-09	 2.214e-08	  -70.26°	 -160.32°
+    3   	 3.000e+03	 6.691e-08	 2.705e-07	    1.84°	  -88.22°
+    4   	 4.000e+03	 2.352e-09	 9.511e-09	 -146.04°	 -236.10°
+    5   	 5.000e+03	 1.288e-08	 5.207e-08	 -114.04°	 -204.11°
+    6   	 6.000e+03	 2.407e-09	 9.735e-09	  -52.62°	 -142.69°
+    7   	 7.000e+03	 7.168e-09	 2.898e-08	   67.24°	  -22.83°
+    8   	 8.000e+03	 1.020e-09	 4.123e-09	 -160.08°	 -250.14°
+    9   	 9.000e+03	 6.013e-09	 2.431e-08	 -109.78°	 -199.84°
+Partial Harmonic Distortion: 0.000028%
+Total Harmonic Distortion:   0.000000%
+
+Fourier components of V(SALr10k_11)
+N-Period=1
+DC component:-1.50111e-09
+
+Harmonic	Frequency	 Fourier 	Normalized	 Phase  	Normalized
+ Number 	  [Hz]   	Component	 Component	[degree]	Phase [deg]
+    1   	 1.000e+03	 5.441e-01	 1.000e+00	   90.06°	    0.00°
+    2   	 2.000e+03	 6.074e-09	 1.117e-08	  -79.95°	 -170.01°
+    3   	 3.000e+03	 1.373e-05	 2.523e-05	    2.78°	  -87.28°
+    4   	 4.000e+03	 2.922e-09	 5.371e-09	 -123.12°	 -213.19°
+    5   	 5.000e+03	 1.594e-05	 2.930e-05	 -175.86°	 -265.93°
+    6   	 6.000e+03	 2.137e-09	 3.928e-09	  -47.73°	 -137.79°
+    7   	 7.000e+03	 1.342e-05	 2.467e-05	    5.60°	  -84.47°
+    8   	 8.000e+03	 1.557e-09	 2.862e-09	 -136.82°	 -226.89°
+    9   	 9.000e+03	 7.246e-06	 1.332e-05	 -172.19°	 -262.26°
+Partial Harmonic Distortion: 0.004776%
+Total Harmonic Distortion:   0.008006%
+
+Fourier components of V(SALr10k_20)
+N-Period=1
+DC component:-2.42583e-10
+
+Harmonic	Frequency	 Fourier 	Normalized	 Phase  	Normalized
+ Number 	  [Hz]   	Component	 Component	[degree]	Phase [deg]
+    1   	 1.000e+03	 9.877e-01	 1.000e+00	   90.07°	    0.00°
+    2   	 2.000e+03	 5.618e-10	 5.688e-10	 -139.02°	 -229.09°
+    3   	 3.000e+03	 6.745e-04	 6.829e-04	   70.78°	  -19.29°
+    4   	 4.000e+03	 6.405e-10	 6.484e-10	 -117.31°	 -207.38°
+    5   	 5.000e+03	 6.421e-05	 6.501e-05	   47.33°	  -42.74°
+    6   	 6.000e+03	 5.075e-10	 5.138e-10	  -96.83°	 -186.91°
+    7   	 7.000e+03	 1.005e-04	 1.017e-04	 -122.69°	 -212.76°
+    8   	 8.000e+03	 3.942e-10	 3.991e-10	  -78.71°	 -168.79°
+    9   	 9.000e+03	 6.964e-05	 7.050e-05	 -136.75°	 -226.82°
+Partial Harmonic Distortion: 0.069710%
+Total Harmonic Distortion:   0.070390%
+
+Fourier components of V(SALr10k_40)
+N-Period=1
+DC component:-3.87967e-11
+
+Harmonic	Frequency	 Fourier 	Normalized	 Phase  	Normalized
+ Number 	  [Hz]   	Component	 Component	[degree]	Phase [deg]
+    1   	 1.000e+03	 1.972e+00	 1.000e+00	   90.08°	    0.00°
+    2   	 2.000e+03	 2.932e-11	 1.487e-11	  -93.47°	 -183.56°
+    3   	 3.000e+03	 1.101e-03	 5.583e-04	   71.29°	  -18.80°
+    4   	 4.000e+03	 4.696e-11	 2.381e-11	  -51.40°	 -141.48°
+    5   	 5.000e+03	 5.512e-04	 2.795e-04	   60.46°	  -29.63°
+    6   	 6.000e+03	 6.582e-11	 3.337e-11	  -57.59°	 -147.67°
+    7   	 7.000e+03	 2.815e-04	 1.427e-04	   51.45°	  -38.64°
+    8   	 8.000e+03	 7.837e-11	 3.973e-11	   85.26°	   -4.82°
+    9   	 9.000e+03	 1.134e-04	 5.750e-05	   44.23°	  -45.85°
+Partial Harmonic Distortion: 0.064299%
+Total Harmonic Distortion:   0.065049%
+
+Fourier components of V(SALprobe_5)
+N-Period=1
+DC component:-2.09895e-07
+
+Harmonic	Frequency	 Fourier 	Normalized	 Phase  	Normalized
+ Number 	  [Hz]   	Component	 Component	[degree]	Phase [deg]
+    1   	 1.000e+03	 2.506e-01	 1.000e+00	   88.60°	    0.00°
+    2   	 2.000e+03	 4.541e-07	 1.812e-06	  -64.69°	 -153.29°
+    3   	 3.000e+03	 5.560e-06	 2.219e-05	   26.50°	  -62.10°
+    4   	 4.000e+03	 2.559e-07	 1.021e-06	 -124.07°	 -212.67°
+    5   	 5.000e+03	 9.335e-07	 3.726e-06	  -81.29°	 -169.89°
+    6   	 6.000e+03	 1.263e-07	 5.040e-07	  -38.69°	 -127.28°
+    7   	 7.000e+03	 3.846e-07	 1.535e-06	  122.78°	   34.18°
+    8   	 8.000e+03	 1.150e-07	 4.588e-07	 -117.95°	 -206.55°
+    9   	 9.000e+03	 3.146e-07	 1.255e-06	  -66.94°	 -155.54°
+Partial Harmonic Distortion: 0.002269%
+Total Harmonic Distortion:   0.002218%
+
+Fourier components of V(SALprobe_11p2)
+N-Period=1
+DC component:-1.63394e-07
+
+Harmonic	Frequency	 Fourier 	Normalized	 Phase  	Normalized
+ Number 	  [Hz]   	Component	 Component	[degree]	Phase [deg]
+    1   	 1.000e+03	 5.609e-01	 1.000e+00	   88.59°	    0.00°
+    2   	 2.000e+03	 5.450e-07	 9.716e-07	  -83.50°	 -172.09°
+    3   	 3.000e+03	 3.745e-04	 6.676e-04	   81.68°	   -6.91°
+    4   	 4.000e+03	 2.396e-07	 4.272e-07	 -100.61°	 -189.19°
+    5   	 5.000e+03	 2.825e-04	 5.037e-04	  -79.28°	 -167.87°
+    6   	 6.000e+03	 1.317e-07	 2.348e-07	  -75.12°	 -163.70°
+    7   	 7.000e+03	 2.100e-04	 3.744e-04	  112.11°	   23.52°
+    8   	 8.000e+03	 1.107e-07	 1.973e-07	  -97.01°	 -185.60°
+    9   	 9.000e+03	 1.533e-04	 2.733e-04	  -59.49°	 -148.08°
+Partial Harmonic Distortion: 0.095621%
+Total Harmonic Distortion:   0.099113%
+
+Fourier components of V(SALprobe_20)
+N-Period=1
+DC component:-5.99857e-08
+
+Harmonic	Frequency	 Fourier 	Normalized	 Phase  	Normalized
+ Number 	  [Hz]   	Component	 Component	[degree]	Phase [deg]
+    1   	 1.000e+03	 9.050e-01	 1.000e+00	   88.26°	    0.00°
+    2   	 2.000e+03	 1.346e-07	 1.487e-07	 -132.17°	 -220.43°
+    3   	 3.000e+03	 3.910e-02	 4.321e-02	   93.30°	    5.04°
+    4   	 4.000e+03	 1.354e-07	 1.497e-07	 -100.73°	 -188.99°
+    5   	 5.000e+03	 3.094e-03	 3.419e-03	  106.47°	   18.21°
+    6   	 6.000e+03	 9.866e-08	 1.090e-07	  -79.12°	 -167.38°
+    7   	 7.000e+03	 4.399e-03	 4.861e-03	  -89.27°	 -177.53°
+    8   	 8.000e+03	 4.809e-08	 5.314e-08	  -63.34°	 -151.60°
+    9   	 9.000e+03	 2.251e-03	 2.488e-03	  -79.60°	 -167.86°
+Partial Harmonic Distortion: 4.368420%
+Total Harmonic Distortion:   4.371579%
+
+Fourier components of V(SALprobe_40)
+N-Period=1
+DC component:-6.06569e-11
+
+Harmonic	Frequency	 Fourier 	Normalized	 Phase  	Normalized
+ Number 	  [Hz]   	Component	 Component	[degree]	Phase [deg]
+    1   	 1.000e+03	 1.610e+00	 1.000e+00	   87.90°	    0.00°
+    2   	 2.000e+03	 1.151e-10	 7.150e-11	 -178.62°	 -266.52°
+    3   	 3.000e+03	 6.318e-02	 3.924e-02	   91.74°	    3.84°
+    4   	 4.000e+03	 1.266e-10	 7.862e-11	 -169.56°	 -257.46°
+    5   	 5.000e+03	 2.737e-02	 1.700e-02	   92.99°	    5.09°
+    6   	 6.000e+03	 1.582e-10	 9.828e-11	  -70.98°	 -158.88°
+    7   	 7.000e+03	 1.145e-02	 7.115e-03	   95.25°	    7.35°
+    8   	 8.000e+03	 1.809e-10	 1.124e-10	 -145.08°	 -232.98°
+    9   	 9.000e+03	 3.517e-03	 2.184e-03	  104.34°	   16.44°
+Partial Harmonic Distortion: 4.340860%
+Total Harmonic Distortion:   4.345741%
+
+p7_r50_5_salpk: V(SALr50_5) =0.249760389328 at 0.00125
+p7_r50_5_iinpk: I(Vr50_5) =-5.00006151877e-06 at 0.00125
+p7_r50_5_bncpk: V(BNCr50_5) =4.99975013733 at 0.00125
+p7_r50_11_salpk: V(SALr50_11) =0.549470841885 at 0.00125
+p7_r50_11_iinpk: I(Vr50_11) =-1.10104197083e-05 at 0.00125
+p7_r50_11_bncpk: V(BNCr50_11) =10.9994497299 at 0.00125
+p7_r50_20_salpk: V(SALr50_20) =0.999023318291 at 0.00125
+p7_r50_20_iinpk: I(Vr50_20) =-2.42169907396e-05 at 0.00125
+p7_r50_20_bncpk: V(BNCr50_20) =19.9987888336 at 0.00125
+p7_r50_40_salpk: V(SALr50_40) =1.99802732468 at 0.00125
+p7_r50_40_iinpk: I(Vr50_40) =-5.41551251589e-05 at 0.00125
+p7_r50_40_bncpk: V(BNCr50_40) =39.9972915649 at 0.00125
+p7_r10k_5_salpk: V(SALr10k_5) =0.247299417853 at 0.00125
+p7_r10k_5_iinpk: I(Vr10k_5) =-4.95146312413e-06 at 0.00125
+p7_r10k_5_bncpk: V(BNCr10k_5) =4.95048522949 at 0.00125
+p7_r10k_11_salpk: V(SALr10k_11) =0.544054687023 at 0.00125
+p7_r10k_11_iinpk: I(Vr10k_11) =-1.08970439369e-05 at 0.00125
+p7_r10k_11_bncpk: V(BNCr10k_11) =10.8910293579 at 0.00125
+p7_r10k_20_salpk: V(SALr10k_20) =0.987161339581 at 0.00125
+p7_r10k_20_iinpk: I(Vr10k_20) =-2.38661804814e-05 at 0.00125
+p7_r10k_20_bncpk: V(BNCr10k_20) =19.7613373203 at 0.00125
+p7_r10k_40_salpk: V(SALr10k_40) =1.97150266171 at 0.00125
+p7_r10k_40_iinpk: I(Vr10k_40) =-5.33676046869e-05 at 0.00125
+p7_r10k_40_bncpk: V(BNCr10k_40) =39.4663238525 at 0.00125
+p7_probe_5_salpk: V(SALprobe_5) =0.250489560246 at 0.00125
+p7_probe_5_iinpk: I(Vprobe_5) =-5.00036616129e-06 at 0.00125
+p7_probe_5_bncpk: V(BNCprobe_5) =5.01435371208 at 0.00125
+p7_probe_11p2_salpk: V(SALprobe_11p2) =0.559545094728 at 0.00125
+p7_probe_11p2_iinpk: I(Vprobe_11p2) =-1.12052652293e-05 at 0.00125
+p7_probe_11p2_bncpk: V(BNCprobe_11p2) =11.2010353794 at 0.00125
+p7_probe_20_salpk: V(SALprobe_20) =0.870802033602 at 0.00125
+p7_probe_20_iinpk: I(Vprobe_20) =-2.02953059742e-05 at 0.00125
+p7_probe_20_bncpk: V(BNCprobe_20) =17.4318406963 at 0.00125
+p7_probe_40_salpk: V(SALprobe_40) =1.56472394848 at 0.00125
+p7_probe_40_iinpk: I(Vprobe_40) =-4.09839247512e-05 at 0.00125
+p7_probe_40_bncpk: V(BNCprobe_40) =31.3229213123 at 0.00125

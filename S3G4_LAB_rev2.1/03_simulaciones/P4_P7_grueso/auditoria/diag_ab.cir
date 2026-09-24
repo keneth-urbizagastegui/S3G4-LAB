@@ -1,0 +1,29 @@
+* Diagnostico de auditoria A/B: contabilidad de parasitas corregida
+* A: P4 500 mV/div con Coff del rele arriba; B: P7 5 mV/div; diodos con CJO ~0 porque CPAR ya los incluye
+.include comun_diag.inc
+VA VSA 0 AC 1
+RA VSA BNCA 50
+CA BNCA 0 {CBNC}
+XRA VPA VNA RAILS
+XFA BNCA PREA VPA VNA FRONT_P4 POS=100
+XCA PREA SALA SALFA VPA VNA COMMON TAP=1 GFIX=50
+VB VSB 0 AC 1
+RB VSB BNCB 50
+CB BNCB 0 {CBNC}
+XRB VPB VNB RAILS
+XFB BNCB PREB VPB VNB FRONT_P7 POS=2
+XCB PREB SALB SALFB VPB VNB COMMON TAP=1 GFIX=100
+.ac dec 80 10 100Meg
+.meas ac a_g100 FIND mag(V(SALA)) AT=100
+.meas ac a_gmax MAX mag(V(SALA)) FROM=10 TO=100k
+.meas ac a_gmin MIN mag(V(SALA)) FROM=10 TO=100k
+.meas ac a_g1m5 FIND mag(V(SALA)) AT=1.5Meg
+.meas ac a_peak MAX mag(V(SALA)) FROM=10 TO=100Meg
+.meas ac b_g100 FIND mag(V(SALB)) AT=100
+.meas ac b_gmax MAX mag(V(SALB)) FROM=10 TO=100k
+.meas ac b_gmin MIN mag(V(SALB)) FROM=10 TO=100k
+.meas ac b_g1m5 FIND mag(V(SALB)) AT=1.5Meg
+.meas ac b_peak MAX mag(V(SALB)) FROM=10 TO=100Meg
+.meas ac cbn PARAM CBN_P4
+.meas ac cbf PARAM CBF_P7
+.end

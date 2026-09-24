@@ -1,0 +1,327 @@
+<title>Anatomía del OpenScope MZ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@500;600&display=swap">
+<style>
+:root{
+  --bg:#f4f6f5; --paper:#fff; --ink:#1b2a2e; --muted:#5d6d72; --rule:#dde3e1;
+  --accent:#12667f; --accent2:#a9541c; --ok:#2f7d54; --warn:#9a6100; --crit:#b22d22; --open:#6a4fa3;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#11181a; --paper:#182125; --ink:#dce6e7; --muted:#93a3a8; --rule:#2a3639;
+  --accent:#5fb9d2; --accent2:#f0a06a; --ok:#63c891; --warn:#f0b75a; --crit:#ff8d80; --open:#b79ae8;}}
+:root[data-theme="dark"]{
+  --bg:#11181a; --paper:#182125; --ink:#dce6e7; --muted:#93a3a8; --rule:#2a3639;
+  --accent:#5fb9d2; --accent2:#f0a06a; --ok:#63c891; --warn:#f0b75a; --crit:#ff8d80; --open:#b79ae8;}
+body{background:var(--bg);color:var(--ink);font:15px/1.6 "IBM Plex Sans",system-ui,sans-serif}
+.wrap{max-width:1000px;margin:0 auto;padding-inline:20px;padding-block:28px 64px}
+h1,h2,h3,h4{font-family:"IBM Plex Sans Condensed","IBM Plex Sans",sans-serif;margin:0;text-wrap:balance}
+h1{font-size:clamp(26px,4vw,36px);font-weight:600}
+h2{font-size:24px;font-weight:600;margin-top:8px}
+h3{font-size:18px;font-weight:600;margin-bottom:4px}
+code{font:0.88em "IBM Plex Mono",ui-monospace,monospace;color:var(--accent)}
+.eyebrow{font:500 12px "IBM Plex Mono",monospace;letter-spacing:.09em;text-transform:uppercase;color:var(--accent);margin:0 0 6px}
+.lede{color:var(--muted);max-width:74ch}
+header.hero{border-bottom:1px solid var(--rule);padding-bottom:18px;margin-bottom:26px}
+section{background:var(--paper);border:1px solid var(--rule);border-radius:10px;padding:20px 22px;margin-bottom:18px}
+section>p,li{max-width:80ch}
+.tag{display:inline-block;font:500 11px "IBM Plex Mono",monospace;text-transform:uppercase;letter-spacing:.06em;padding:2px 9px;border-radius:999px;border:1px solid currentColor}
+.t-ok{color:var(--ok)} .t-open{color:var(--open)} .t-warn{color:var(--warn)} .t-crit{color:var(--crit)}
+.shead{display:flex;align-items:center;gap:12px;margin-bottom:10px;flex-wrap:wrap}
+.num{font:500 14px "IBM Plex Mono",monospace;background:var(--accent);color:var(--paper);width:28px;height:28px;border-radius:50%;display:grid;place-items:center}
+.tw{overflow-x:auto;margin:12px 0}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th{text-align:left;font-weight:600;color:var(--muted);border-bottom:1.5px solid var(--rule);padding:7px 9px;white-space:nowrap}
+td{border-bottom:1px solid var(--rule);padding:7px 9px;vertical-align:top}
+td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
+.pick{background:color-mix(in srgb, var(--ok) 10%, transparent)}
+.callout{border-left:3px solid var(--accent);padding:10px 14px;margin:14px 0;background:color-mix(in srgb, var(--accent) 7%, transparent);font-size:14px}
+.callout.w{border-color:var(--warn);background:color-mix(in srgb, var(--warn) 9%, transparent)}
+ul.tight{margin:8px 0;padding-left:20px}
+ul.tight li{margin-bottom:5px}
+.meta{font:12.5px "IBM Plex Mono",monospace;color:var(--muted);margin:0}
+.q{border:1px dashed var(--open);border-radius:8px;padding:12px 14px;margin:10px 0}
+.q b{color:var(--open)}
+footer{font-size:12.5px;color:var(--muted);border-top:1px solid var(--rule);padding-top:12px}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-size:14px}
+.kv dt{color:var(--muted)} .kv dd{margin:0}
+
+/* --- esquematico --- */
+figure{margin:16px 0}
+.sx{overflow-x:auto;border:1px solid var(--rule);border-radius:8px;background:var(--bg);padding:8px}
+.sx svg{display:block;max-width:none;height:auto}
+figcaption{font-size:13px;color:var(--muted);margin-top:6px}
+svg text{font-family:"IBM Plex Mono",ui-monospace,monospace}
+.w{fill:none;stroke:var(--ink);stroke-width:1.5;stroke-linejoin:round}
+.sym{fill:none;stroke:var(--ink);stroke-width:1.6;stroke-linejoin:round}
+.fillsym{fill:var(--ink);stroke:var(--ink);stroke-width:1}
+.dot{fill:var(--ink)}
+.op{fill:var(--paper);stroke:var(--ink);stroke-width:1.7}
+.ic{fill:var(--paper);stroke:var(--ink);stroke-width:1.5}
+.hdr{fill:none;stroke:var(--open);stroke-width:1.5;stroke-dasharray:3 2}
+.grp{fill:none;stroke:var(--muted);stroke-width:1.1;stroke-dasharray:5 4}
+.grp-t{font-size:10.5px;fill:var(--muted)}
+.blade{stroke:var(--ink);stroke-width:2}
+.ct{fill:var(--paper);stroke:var(--ink);stroke-width:1.3}
+.gnd line{stroke:var(--ink);stroke-width:1.5}
+.railbar{stroke:var(--crit);stroke-width:2.2}
+.rail{font-size:10.5px;fill:var(--crit);font-weight:500}
+.railsm{font-size:9px;fill:var(--crit)}
+.port{fill:color-mix(in srgb, var(--accent) 14%, transparent);stroke:var(--accent);stroke-width:1.3}
+.portt{font-size:10.5px;fill:var(--ink)}
+.tp{fill:none;stroke:var(--ok);stroke-width:1.6}
+.tpt{font-size:9.5px;fill:var(--ok)}
+.ref{font-size:11px;font-weight:500;fill:var(--ink)}
+.val{font-size:10px;fill:var(--muted)}
+.net{font-size:10px;fill:var(--accent2)}
+.pin{font-size:9.5px;fill:var(--muted)}
+.pm{font-size:15px;fill:var(--ink)}
+.note{font-size:10.5px;fill:var(--muted);font-style:italic}
+
+.lesson td:first-child{font-weight:600}
+.kv{display:grid;grid-template-columns:max-content 1fr;gap:4px 16px;margin:10px 0;font-size:14px}
+.kv dt{color:var(--muted)} .kv dd{margin:0}
+pre.mermaid{background:var(--paper);border:1px solid var(--rule);border-radius:8px;padding:12px;overflow-x:auto}
+.meta{color:var(--muted);font-size:13px}
+.toc{columns:2 260px;column-gap:28px;margin:6px 0 0;padding-left:20px;font-size:14px}
+.toc li{break-inside:avoid;margin:2px 0}
+.toc a{color:var(--accent);text-decoration:none} .toc a:hover{text-decoration:underline}
+</style>
+<div class="wrap">
+<header class="hero">
+  <p class="eyebrow">S3G4 LAB · referencia para el AFE rev 2.1</p>
+  <h1>Anatomía del OpenScope MZ</h1>
+  <p class="lede">El instrumento multifunción abierto de Digilent: un canal que sólo atenúa, pero una arquitectura de referencia y autocalibración que merece copiarse. Completa la serie con <code>S3G4_LAB_rev2.1/02_referencias/analisis_dso112.html</code> y <code>S3G4_LAB_rev2.1/02_referencias/analisis_wave2.html</code>.</p>
+</header>
+<section id="resumen">
+  <div class="shead"><span class="num">★</span><h2>Lo que nos llevamos</h2><span class="tag t-open">Con propuestas</span></div>
+
+  <p>El OpenScope MZ es el único de nuestros referentes que se diseñó como <b>instrumento multifunción</b>: osciloscopio, generador, fuentes de continua, analizador lógico y WiFi. Su punto fuerte no es el canal analógico, que renuncia a las escalas finas, sino <b>cómo se calibra a sí mismo</b>. Cada fila remite a su sección; nada está decidido.</p>
+  <div class="tw"><table class="lesson">
+    <thead><tr><th>Hallazgo</th><th>En el OpenScope</th><th>Para la rev 2.1</th><th>Veredicto</th></tr></thead>
+    <tbody>
+      <tr><td>Entrada inversora a tierra virtual</td><td>1 MΩ hacia una tierra virtual, ×0.2; la entrada nunca ve tensión (§2)</td><td>Sin relé y protegida por construcción, pero con un suelo de ruido de 0.56 mV: <b>no sirve para escalas finas</b>. No cambia la decisión P4/P7 (§3)</td><td><span class="tag t-open">Contexto</span></td></tr>
+      <tr><td>Ganancia conmutada en la tierra virtual</td><td>TS3A5017 de 3.3 V en un nodo fijo a 1.5 V: sin distorsión (§2)</td><td>Idea para la etapa final: P8</td><td><span class="tag t-warn">Adaptar</span></td></tr>
+      <tr><td>Filtro anti-alias dentro de la ganancia</td><td>Un condensador por rama de realimentación: 1.3–1.6 MHz (§2)</td><td>Sección D sin etapa aparte: P8</td><td><span class="tag t-warn">Adaptar</span></td></tr>
+      <tr><td>La etapa final se alimenta como el ADC</td><td>IC6A a 3.3 V: no puede sacar una tensión que dañe el ADC (§2)</td><td>Sección F</td><td><span class="tag t-ok">Adoptar</span></td></tr>
+      <tr><td>Referencia única y ratiométrica</td><td>LM4040 de 3.000 V como VREF+ del ADC; de ella salen 3.0 V y 1.5 V con resistencias del 0.1 % (§4)</td><td>Secciones E y F: P9</td><td><span class="tag t-ok">Adoptar</span></td></tr>
+      <tr><td>Red de realimentación</td><td>El ADC mide rieles, referencias, generador y fuentes con divisores del 0.1 % (§5)</td><td>Autodiagnóstico y base de la autocalibración: P10</td><td><span class="tag t-ok">Adoptar</span></td></tr>
+      <tr><td>Calibración encadenada</td><td>Referencia → fuentes de continua → entradas del osciloscopio, con detección de cable no conectado (§5)</td><td>Con nuestro AWG en continua como fuente: P10</td><td><span class="tag t-ok">Adoptar</span></td></tr>
+      <tr><td>Disparo con comparadores del ADC</td><td>Dos umbrales, uno arma y otro dispara: histéresis sobre la muestra digitalizada (§8)</td><td>Alternativa con los analog watchdog del G4: P11</td><td><span class="tag t-open">Estudiar</span></td></tr>
+      <tr><td>Generador R-2R con mapa de corrección</td><td>Mide sus 1024 códigos y construye una tabla (§6)</td><td>No hace falta con el DAC del G4; sí la idea de medir y corregir la salida</td><td><span class="tag t-warn">Adaptar</span></td></tr>
+      <tr><td>Sin acoplo AC en placa</td><td>Sólo DC; un adaptador de terceros lo añade (§10)</td><td>Nuestro D-04 ya lo cubre</td><td><span class="tag t-ok">Confirmado</span></td></tr>
+      <tr><td>Offset por PWM lento</td><td>500 ms de espera cada vez que cambia (§8)</td><td>Si usamos PWM, filtrar más rápido</td><td><span class="tag t-crit">Evitar</span></td></tr>
+    </tbody>
+  </table></div>
+
+</section>
+<section id="fuentes">
+  <div class="shead"><span class="num">i</span><h2>Qué se analizó y cómo</h2></div>
+
+  <dl class="kv">
+    <dt>Esquemático</dt><dd><code>research_and_tests/openscope-mz/openscope-mz-sch-revg.pdf</code>, revisión G, 12 hojas. Su texto no se puede extraer, por eso <b>nunca lo habíamos leído</b>; ahora se renderizó hoja por hoja.</dd>
+    <dt>Firmware</dt><dd>Clon del repositorio oficial de Digilent: <code>AnalogIn.c</code>, <code>Trigger.c</code>, <code>AWG.c</code>, <code>DCInstruments.c</code>, <code>FeedBack.c</code>, <code>LA.c</code>, <code>Config.cpp</code>, <code>WiFi.cpp</code>, <code>OpenScope.h</code>, el analizador JSON y la prueba de fabricación.</dd>
+    <dt>Aplicación</dt><dd><code>research_and_tests/waveforms-live</code>, versión 1.4.10.</dd>
+    <dt>Adaptador</dt><dd><code>OpenScopeMZ-Adapter_Schema.pdf</code> y <code>openscope-Adapter.zip</code> (gerbers): una placa de terceros de 2021.</dd>
+    <dt>Especificaciones</dt><dd>Del manual de referencia de Digilent publicado en Farnell (fuente al pie); la web de Digilent rechaza las descargas automáticas.</dd>
+    <dt>Método</dt><dd>El mismo que con el DSO112 y el WAVE2. El dibujo es un redibujo propio, revisado con el comprobador y a la vista.</dd>
+  </dl>
+  <ol class="toc">
+    <li><a href="#que-es">Qué es</a></li><li><a href="#canal">Canal analógico</a></li>
+    <li><a href="#p4p7">¿Cambia la decisión del grueso?</a></li><li><a href="#referencias">Referencias y alimentación</a></li>
+    <li><a href="#calibracion">Realimentación y autocalibración</a></li><li><a href="#generador">Generador</a></li>
+    <li><a href="#dc">Fuentes de continua</a></li><li><a href="#captura">Captura y disparo</a></li>
+    <li><a href="#protocolo">Protocolo y aplicación</a></li><li><a href="#adaptador">El adaptador de terceros</a></li>
+    <li><a href="#evitar">Lo que no conviene copiar</a></li><li><a href="#propuestas">Propuestas</a></li>
+  </ol>
+
+</section>
+<section id="que-es">
+  <div class="shead"><span class="num">1</span><h2>Qué es</h2></div>
+
+  <div class="tw"><table>
+    <thead><tr><th>Función</th><th>OpenScope MZ</th></tr></thead>
+    <tbody>
+      <tr><td>Osciloscopio</td><td>2 canales, 12 bits, 6.25 MSa/s, <b>2 MHz a −3 dB</b>, 1 MΩ, <b>±20 V</b>, 32 640 muestras por canal</td></tr>
+      <tr><td>Generador</td><td>10 bits, de 1 Hz a 1 MHz, 3 Vpp con ±1.5 V de offset, 10 mA; senoidal, triangular, diente de sierra, cuadrada y continua</td></tr>
+      <tr><td>Fuentes de continua</td><td>2 canales, ±4 V, 50 mA</td></tr>
+      <tr><td>Analizador lógico / GPIO</td><td>10 canales compartidos, 10 MSa/s</td></tr>
+      <tr><td>Conectividad</td><td>WiFi 802.11g (módulo MRF24WG0MA) y USB (FT232RQ); microSD</td></tr>
+      <tr><td>Alimentación</td><td><b>Sólo USB de 5 V</b>: regulador de 3.3 V y bomba de carga LM2660 para −5 V. Sin batería</td></tr>
+    </tbody>
+  </table></div>
+  <p>Un único micro, el <b>PIC32MZ</b> a 200 MHz, lo hace todo: captura, generador, fuentes, analizador, pila TCP/IP, servidor HTTP y protocolo JSON. Nosotros lo repartimos entre el STM32 (medida) y el ESP32 (comunicación e interfaz), que es más robusto.</p>
+
+</section>
+<section id="canal">
+  <div class="shead"><span class="num">2</span><h2>Canal analógico</h2></div>
+  <figure><div class="sx"><svg class="sch" viewBox="0 0 1300 650" width="1300" role="img" aria-label="OpenScope MZ - canal analogico 1" xmlns="http://www.w3.org/2000/svg"><polygon class="port" points="20,352 108.19999999999999,352 116.19999999999999,360 108.19999999999999,368 20,368"/><text class="portt" x="25" y="364" text-anchor="start">AIN1 · ±20 V</text><polyline class="w" points="117,360 150,360"/><polyline class="w" points="150,360 190.0,360.0"/><polyline class="w" points="230.0,360.0 270,360"/><polyline class="sym" points="-20,0 -15,-6 -10,6 -5,-6 0,6 5,-6 10,6 15,-6 20,0" transform="translate(210.0,360.0) rotate(0.0)"/><text class="ref" x="210.0" y="348.0" text-anchor="middle">R31</text><text class="val" x="210.0" y="382.0" text-anchor="middle">1 MΩ</text><polyline class="w" points="270,360 320,360"/><circle class="dot" cx="300" cy="360" r="3.2"/><polygon class="op" points="330,344 330,408 392,376"/><text class="pm" x="337" y="365" text-anchor="start">−</text><text class="pm" x="337" y="397" text-anchor="start">+</text><polyline class="w" points="320,360 330,360"/><polyline class="w" points="320,392 330,392"/><polyline class="w" points="392,376 402,376"/><text class="ref" x="340" y="338" text-anchor="start">IC5A</text><text class="val" x="340" y="422" text-anchor="start">LMV116 · ±5 V</text><polyline class="w" points="320,392 310,392 310,420"/><polyline class="w" points="310,420 310,428"/><g class="gnd"><line x1="300" y1="428" x2="320" y2="428"/><line x1="304" y1="432" x2="316" y2="432"/><line x1="308" y1="436" x2="312" y2="436"/></g><polyline class="w" points="300,360 300,290"/><circle class="dot" cx="300" cy="290" r="3.2"/><polyline class="w" points="300,290 350.0,290.0"/><polyline class="w" points="390.0,290.0 440,290"/><polyline class="sym" points="-20,0 -15,-6 -10,6 -5,-6 0,6 5,-6 10,6 15,-6 20,0" transform="translate(370.0,290.0) rotate(0.0)"/><text class="ref" x="370.0" y="278.0" text-anchor="middle">R30</text><text class="val" x="370.0" y="312.0" text-anchor="middle">200 kΩ</text><polyline class="w" points="300,290 300,240"/><polyline class="w" points="440,290 440,240"/><polyline class="w" points="300,240 366.0,240.0"/><polyline class="w" points="374.0,240.0 440,240"/><g transform="translate(370.0,240.0) rotate(0.0)"><line class="sym" x1="-4" y1="-11" x2="-4" y2="11"/><line class="sym" x1="4" y1="-11" x2="4" y2="11"/></g><text class="ref" x="370.0" y="228.0" text-anchor="middle">C27</text><text class="val" x="370.0" y="262.0" text-anchor="middle">0.3 pF</text><circle class="dot" cx="440" cy="290" r="3.2"/><polyline class="w" points="440,290 440,376"/><polyline class="w" points="402,376 440,376"/><circle class="dot" cx="440" cy="376" r="3.2"/><polyline class="w" points="440,376 480.0,376.0"/><polyline class="w" points="520.0,376.0 560,376"/><polyline class="sym" points="-20,0 -15,-6 -10,6 -5,-6 0,6 5,-6 10,6 15,-6 20,0" transform="translate(500.0,376.0) rotate(0.0)"/><text class="ref" x="500.0" y="364.0" text-anchor="middle">R32</text><text class="val" x="500.0" y="398.0" text-anchor="middle">3.6 kΩ</text><polyline class="w" points="440,376 440,440"/><polyline class="w" points="560,376 560,440"/><polyline class="w" points="440,440 496.0,440.0"/><polyline class="w" points="504.0,440.0 560,440"/><g transform="translate(500.0,440.0) rotate(0.0)"><line class="sym" x1="-4" y1="-11" x2="-4" y2="11"/><line class="sym" x1="4" y1="-11" x2="4" y2="11"/></g><text class="ref" x="500.0" y="466.0" text-anchor="middle">C28</text><text class="val" x="500.0" y="478.0" text-anchor="middle">33 pF</text><circle class="dot" cx="560" cy="376" r="3.2"/><polyline class="w" points="560,376 690,376"/><circle class="dot" cx="600" cy="376" r="3.2"/><text class="net" x="610" y="370" text-anchor="start">S</text><polygon class="port" points="330,512 385.2,512 393.2,520 385.2,528 330,528"/><text class="portt" x="335" y="524" text-anchor="start">VREF3V0</text><polyline class="w" points="394,520 470,520"/><polyline class="w" points="470,520 505.0,520.0"/><polyline class="w" points="545.0,520.0 580,520"/><polyline class="sym" points="-20,0 -15,-6 -10,6 -5,-6 0,6 5,-6 10,6 15,-6 20,0" transform="translate(525.0,520.0) rotate(0.0)"/><text class="ref" x="525.0" y="546.0" text-anchor="middle">R33+R34</text><text class="val" x="525.0" y="558.0" text-anchor="middle">3.41 kΩ</text><polygon class="port" points="200,582 374.0,582 382.0,590 374.0,598 200,598"/><text class="portt" x="205" y="594" text-anchor="start">offset · PWM OC8 filtrado</text><polyline class="w" points="389,590 470,590"/><polyline class="w" points="470,590 505.0,590.0"/><polyline class="w" points="545.0,590.0 580,590"/><polyline class="sym" points="-20,0 -15,-6 -10,6 -5,-6 0,6 5,-6 10,6 15,-6 20,0" transform="translate(525.0,590.0) rotate(0.0)"/><text class="ref" x="525.0" y="616.0" text-anchor="middle">R2Sx</text><text class="val" x="525.0" y="628.0" text-anchor="middle">10 k / 2.4 k / 1.37 k / 1.02 k</text><polyline class="w" points="580,520 600,520"/><polyline class="w" points="580,590 600,590"/><polyline class="w" points="600,590 600,376"/><circle class="dot" cx="600" cy="520" r="3.2"/><polygon class="op" points="700,360 700,424 762,392"/><text class="pm" x="707" y="381" text-anchor="start">−</text><text class="pm" x="707" y="413" text-anchor="start">+</text><polyline class="w" points="690,376 700,376"/><polyline class="w" points="690,408 700,408"/><polyline class="w" points="762,392 772,392"/><text class="ref" x="710" y="354" text-anchor="start">IC6A</text><text class="val" x="710" y="438" text-anchor="start">LMV116 · 3.3 V</text><polyline class="w" points="690,408 680,408 680,470"/><polygon class="port" points="680,462 735.2,462 743.2,470 735.2,478 680,478"/><text class="portt" x="685" y="474" text-anchor="start">VREF1V5</text><polyline class="w" points="600,376 600,205"/><rect class="ic" x="620" y="150" width="180" height="110" rx="3"/><text class="ref" x="710.0" y="142" text-anchor="middle">IC4 · TS3A5017 + ramas R∥C</text><polyline class="w" points="620,205 608,205"/><text class="pin" x="625" y="209" text-anchor="start"></text><polyline class="w" points="800,205 812,205"/><text class="pin" x="795" y="209" text-anchor="end"></text><polyline class="w" points="600,205 608,205"/><text class="pin" x="630" y="176" text-anchor="start">18 kΩ → ×1</text><text class="pin" x="630" y="196" text-anchor="start">4.53 kΩ ∥ 22 pF → ×1/4</text><text class="pin" x="630" y="216" text-anchor="start">2.26 kΩ ∥ 51 pF → ×1/8</text><text class="pin" x="630" y="236" text-anchor="start">1.33 kΩ ∥ 91 pF → ×3/40</text><polyline class="w" points="812,205 840,205 840,392"/><polyline class="w" points="772,392 860,392"/><circle class="dot" cx="840" cy="392" r="3.2"/><polyline class="w" points="860,392 890.0,392.0"/><polyline class="w" points="930.0,392.0 960,392"/><polyline class="sym" points="-20,0 -15,-6 -10,6 -5,-6 0,6 5,-6 10,6 15,-6 20,0" transform="translate(910.0,392.0) rotate(0.0)"/><text class="ref" x="910.0" y="380.0" text-anchor="middle">R35</text><text class="val" x="910.0" y="414.0" text-anchor="middle">68 Ω</text><circle class="dot" cx="980" cy="392" r="3.2"/><polyline class="w" points="960,392 1010,392"/><polyline class="w" points="980,392 980.0,427.0"/><polyline class="w" points="980.0,435.0 980,470"/><g transform="translate(980.0,431.0) rotate(90.0)"><line class="sym" x1="-4" y1="-11" x2="-4" y2="11"/><line class="sym" x1="4" y1="-11" x2="4" y2="11"/></g><text class="ref" x="966.0" y="428.0" text-anchor="end">C31</text><text class="val" x="966.0" y="442.0" text-anchor="end">470 pF</text><polyline class="w" points="980,470 980,478"/><g class="gnd"><line x1="970" y1="478" x2="990" y2="478"/><line x1="974" y1="482" x2="986" y2="482"/><line x1="978" y1="486" x2="982" y2="486"/></g><polygon class="port" points="1010,384 1131.2,384 1139.2,392 1131.2,400 1010,400"/><text class="portt" x="1015" y="396" text-anchor="start">AN0 + AN1 · 0–3 V</text><text class="note" x="1290" y="60" text-anchor="end">La entrada nunca ve la tensión de la BNC: R31 entra a una tierra virtual.</text><text class="note" x="1290" y="78" text-anchor="end">IC5A invierte y divide ×0.2; IC6A invierte otra vez y elige la ganancia.</text><text class="note" x="1290" y="96" text-anchor="end">El conmutador trabaja a 1.5 V fijos (la tierra virtual de IC6A): sin distorsión.</text><text class="note" x="1290" y="130" text-anchor="end">IC6A se alimenta a 3.3 V, como el ADC: no puede sacar una tensión que lo dañe.</text><text class="note" x="1290" y="148" text-anchor="end">La otra mitad del TS3A5017 elige R2Sx: el offset escala con la ganancia.</text><text class="note" x="1290" y="166" text-anchor="end">Los condensadores de cada rama limitan la banda a 1.3–1.6 MHz: filtro anti-alias.</text></svg></div><figcaption>Redibujo del canal 1 (hoja 4). El canal 2 (hoja 5) es idéntico, con IC8A, IC9A e IC7.</figcaption></figure>
+
+  <h3>Dos etapas inversoras</h3>
+  <ul class="tight">
+    <li><b>IC5A (LMV116 a ±5 V):</b> R31 de 1 MΩ entra a su tierra virtual. La ganancia es −R30/R31 = <b>−0.2</b> y la impedancia de entrada, 1 MΩ. El amplificador no ve la tensión de la entrada, sólo la corriente que deja pasar R31. C27 (0.3 pF) compensa R30 frente a la capacidad parásita de R31.</li>
+    <li><b>IC6A (LMV116 a 3.3 V):</b> sumador inversor con su entrada no inversora en VREF1V5. Al nodo suma S llegan tres cosas: la señal por R32 (3.6 kΩ, puenteada por C28 en alta frecuencia), una corriente fija desde VREF3V0 (centra la salida en el rango del ADC) y el offset desde un PWM.</li>
+    <li><b>La ganancia se elige en la realimentación</b> con un TS3A5017, dos multiplexores 4:1 de 3.3 V. Como el conmutador está en la tierra virtual, su tensión es siempre 1.5 V: no distorsiona y basta un chip barato. Su resistencia de ~10 Ω está descontada en el cálculo de cada rama.</li>
+    <li><b>La otra mitad del TS3A5017</b> elige la resistencia del offset, así que el recorrido del offset escala con la ganancia.</li>
+  </ul>
+  <div class="tw"><table>
+    <thead><tr><th>Ganancia total</th><th>Realimentación</th><th>Cálculo: 5 · G · 3.6 kΩ</th><th>Polo del condensador</th></tr></thead>
+    <tbody>
+      <tr><td>×1</td><td>18 kΩ</td><td class="n">18.0 kΩ</td><td>sin condensador</td></tr>
+      <tr><td>×1/4</td><td>4.53 kΩ ∥ 22 pF</td><td class="n">4.50 kΩ</td><td class="n">1.60 MHz</td></tr>
+      <tr><td>×1/8</td><td>2.26 kΩ ∥ 51 pF</td><td class="n">2.25 kΩ</td><td class="n">1.38 MHz</td></tr>
+      <tr><td>×3/40</td><td>1.33 kΩ ∥ 91 pF</td><td class="n">1.35 kΩ</td><td class="n">1.32 MHz</td></tr>
+    </tbody>
+  </table></div>
+  <p>Los condensadores de realimentación <b>hacen de filtro anti-alias</b> de primer orden dentro de la propia etapa de ganancia. La salida pasa por R35 (68 Ω) y C31 (470 pF) y llega <b>a dos pines del ADC a la vez</b> (AN0 y AN1): son los dos convertidores que se entrelazan. Rango de entrada del ADC: 0–3 V.</p>
+  <p><b>Toda la ganancia es atenuación:</b> el canal nunca amplifica. Con ×1, los 3 V del ADC corresponden a 3 Vpp en la entrada (≈ 300 mV/div con 10 divisiones); lo que se vea más fino es zoom digital.</p>
+
+</section>
+<section id="p4p7">
+  <div class="shead"><span class="num">3</span><h2>¿Cambia la decisión del grueso (P4 o P7)?</h2><span class="tag t-ok">Resuelto</span></div>
+
+  <p>No. La entrada inversora del OpenScope tiene un <b>suelo de ruido que sale sólo de sus resistencias</b>, y a diferencia de un divisor compensado no hay condensador que lo cortocircuite: R31 va a una tierra virtual y el ruido de R30 aparece directamente en la salida.</p>
+  <div class="tw"><table>
+    <thead><tr><th>Fuente</th><th>Densidad referida a la entrada</th></tr></thead>
+    <tbody>
+      <tr><td>R31 (1 MΩ)</td><td class="n">129 nV/√Hz</td></tr>
+      <tr><td>R30 (200 kΩ), dividido por la ganancia 0.2</td><td class="n">288 nV/√Hz</td></tr>
+      <tr><td><b>Suelo con 2 MHz de banda</b></td><td class="n"><b>≈ 0.56 mV rms</b></td></tr>
+    </tbody>
+  </table></div>
+  <p>Eso es un 0.19 % de división a 300 mV/div, su escala nativa; un 1.1 % a 50 mV/div; y <b>un 11 % a 5 mV/div</b>, sin contar el amplificador. Es decir, la técnica funciona porque renuncia a las escalas finas.</p>
+  <div class="tw"><table>
+    <thead><tr><th></th><th>DSO112</th><th>WAVE2 rev E</th><th>OpenScope MZ</th></tr></thead>
+    <tbody>
+      <tr><td>Grueso</td><td>relé ×1 / ÷100</td><td>dos divisores bufferizados + 74HC4053</td><td>ninguno: ÷5 fijo a tierra virtual</td></tr>
+      <tr><td>Escala fina real</td><td>5 mV/div</td><td>5 mV/div a 200 kHz</td><td>~300 mV/div; lo demás es zoom</td></tr>
+      <tr><td>Equivalente nuestro</td><td>P4 (relé)</td><td>P7 (sin relé)</td><td>—</td></tr>
+    </tbody>
+  </table></div>
+  <p>La elección sigue siendo entre P4 y P7, y conviene simularla. Lo que el OpenScope sí aporta son técnicas para las etapas que vienen <b>después</b> del grueso: P8 y P9.</p>
+
+</section>
+<section id="referencias">
+  <div class="shead"><span class="num">4</span><h2>Referencias y alimentación</h2></div>
+
+  <ul class="tight">
+    <li><b>Una sola referencia:</b> un LM4040 de 3.000 V, alimentado desde 3.3 V por 56 Ω, es la <b>VREF+ del ADC</b> del PIC32.</li>
+    <li>De ese mismo nodo salen <b>VREF3V0</b> (filtrada 10 kΩ · 1 µF y bufferizada con un LMV324) y <b>VREF1V5</b> (divisor de 5.36 k + 4.64 k y 10 k al <b>0.1 %</b>, filtrado y bufferizado).</li>
+    <li>Todo el canal se refiere a esas dos tensiones. <b>Si la referencia deriva, la mitad de escala y los offsets derivan igual que el ADC</b> y el error se cancela: diseño ratiométrico.</li>
+    <li>El manual lo dice expresamente: el diseño da por buena la referencia de 3 V con su realimentación, resistencias del 0.1 % y condensadores del 10 %, y todo lo demás se calibra.</li>
+    <li><b>Alimentación:</b> sólo USB. NCP1117 para 3.3 V y bomba de carga LM2660 para −5 V (sin regular). Un puente elige entre el USB y una entrada de 5 V.</li>
+  </ul>
+
+</section>
+<section id="calibracion">
+  <div class="shead"><span class="num">5</span><h2>Realimentación y autocalibración</h2><span class="tag t-ok">Adoptar</span></div>
+
+  <p>La hoja 11 lleva divisores del 0.1 % que llevan al ADC <b>los rieles de 3.3 V, +5 V y −5 V, las dos referencias, la salida del generador y las dos fuentes de continua</b>. Con eso el firmware se calibra en cadena:</p>
+  <pre class="mermaid">%%{init: {'theme':'neutral'}}%%
+flowchart LR
+  REF["LM4040 3.000 V<br/>VREF+ del ADC"] --> ADC["ADC del PIC32<br/>con sobremuestreo"]
+  FB["Red de realimentación<br/>divisores 0.1 %"] --> ADC
+  DC["Fuentes DC por PWM"] --> FB
+  AWG["Generador R-2R"] --> FB
+  RAIL["Rieles y referencias"] --> FB
+  DC -. "cable del usuario" .-> OSC["Entradas del osciloscopio"]
+  OSC --> ADC
+</pre>
+  <ol class="tight">
+    <li><b>Fuentes de continua:</b> las lleva a +3 V y −3 V, mide el valor real por la realimentación y obtiene su recta PWM → tensión.</li>
+    <li><b>Generador:</b> calibra su offset y después <b>mide los 1024 códigos</b> de la escalera R-2R, los ordena y guarda una tabla de corrección (§6).</li>
+    <li><b>Osciloscopio, por cada una de las 4 ganancias:</b> pide al usuario unir cada fuente de continua a su entrada. La pone a +V y a −V (medidas por la realimentación) y deduce la pendiente <b>A</b>. Si la lectura no cambia, avisa de que el cable no está conectado. Con 0 V a la entrada mueve el PWM de offset y obtiene <b>B</b>; con todo a cero, <b>C</b>. Modelo: Vin = A · código + B · PWM + C.</li>
+    <li>Las medidas usan el <b>sobremuestreo por hardware del ADC</b>, y el resultado se guarda como archivo en un sistema FAT de la flash interna (con copia en microSD si la hay).</li>
+  </ol>
+  <p>La aplicación WaveForms Live tiene una página «calibrate» que guía al usuario. Es la pieza que más nos conviene copiar: con nuestro AWG en modo continua como fuente, y con la masa y VCHECK del 4051 (P3), podríamos calibrar toda la cadena con un solo cable.</p>
+
+</section>
+<section id="generador">
+  <div class="shead"><span class="num">6</span><h2>Generador</h2></div>
+
+  <ul class="tight">
+    <li><b>DAC de 10 bits hecho con resistencias:</b> una escalera R-2R (1500 Ω y 750 Ω; tres tramos son de 732 Ω, un 2.5 % menores que el resto) conectada a 10 pines del puerto H del PIC32. El DMA escribe el puerto hasta <b>10 MSa/s</b>, con búferes de hasta 25 000 muestras; señales de hasta 1 MHz.</li>
+    <li><b>Filtro de reconstrucción:</b> dos RC (750 Ω · 36 pF y 750 Ω · 43 pF) y 5.6 pF en la realimentación del amplificador.</li>
+    <li><b>Salida:</b> amplificador inversor MCP6H91 a ±5 V, referido a VREF1V5, con el offset por PWM (OC7) filtrado en dos polos. Rango de ±3 V.</li>
+    <li><b>Calibración de la escalera:</b> una escalera de resistencias baratas no es lineal ni siquiera monótona. El firmware mide los 1024 códigos por la realimentación, los ordena y guarda qué código da cada tensión. Así el DAC barato se comporta como uno bueno.</li>
+  </ul>
+  <p>Nuestro G473 tiene DAC de 12 bits a 15 MSa/s y no necesita la escalera. Sí nos sirve la idea de <b>medir la salida real del generador por la realimentación y corregirla</b>, que cubre también el error de la etapa de salida.</p>
+
+</section>
+<section id="dc">
+  <div class="shead"><span class="num">7</span><h2>Fuentes de continua</h2></div>
+
+  <p>Cada fuente: un PWM → dos RC de 1 kΩ · 4.7 µF y 1 kΩ hacia el nodo suma → amplificador inversor MCP6H82 con ganancia −4 (12 kΩ / 3 kΩ), referido a VREF1V5 y centrado con VREF3V0. Salida de ±4 V y 50 mA. El firmware calcula el PWM con la recta calibrada y verifica el resultado por la realimentación. Nuestro instrumento no tiene fuentes, pero la técnica es la misma que la del offset.</p>
+
+</section>
+<section id="captura">
+  <div class="shead"><span class="num">8</span><h2>Captura y disparo</h2></div>
+
+  <ul class="tight">
+    <li><b>Entrelazado:</b> cada canal va a dos ADC dedicados de 12 bits. Un temporizador dispara uno y una salida de comparación, desfasada medio periodo, dispara el otro; dos canales de DMA recogen los datos. Máximo 2 × 3.125 = <b>6.25 MSa/s</b>. Por debajo de ~2 kSa/s usa un solo ADC. Es lo mismo que nuestro ADC1+ADC2 sobre PA0.</li>
+    <li><b>Disparo:</b> usa los <b>comparadores digitales del ADC</b>. El primero se arma cuando la muestra cruza un umbral bajo; al dispararse, activa el segundo, que detecta el cruce del umbral alto. Son dos umbrales, es decir histéresis, y se trabaja sobre la misma muestra que se dibuja. Después el firmware afina el punto exacto recorriendo el búfer. El STM32G4 puede hacer lo mismo con sus «analog watchdog».</li>
+    <li><b>Analizador lógico:</b> DMA desde el puerto E, 10 MSa/s y 32 K muestras. El disparo digital usa la interrupción por cambio de pin.</li>
+    <li><b>Offset:</b> PWM de 303 kHz con 330 pasos (10 mV), filtrado en dos polos de ~72 Hz. Tras cada cambio el firmware <b>espera 500 ms</b> a que se asiente.</li>
+  </ul>
+
+</section>
+<section id="protocolo">
+  <div class="shead"><span class="num">9</span><h2>Protocolo y aplicación</h2></div>
+
+  <ul class="tight">
+    <li><b>Digilent Instrumentation Protocol:</b> órdenes en JSON agrupadas por objeto (<code>device</code>, <code>osc</code>, <code>awg</code>, <code>dc</code>, <code>la</code>, <code>trigger</code>, <code>file</code>, <code>log</code>, <code>gpio</code>, <code>mode</code>, <code>test</code>). Las formas de onda vuelven como binario dentro de una transferencia fragmentada: un trozo JSON que describe los datos y otro con los datos en bruto.</li>
+    <li>El mismo protocolo viaja por <b>HTTP en el puerto 80</b> sobre WiFi o por el puerto serie USB.</li>
+    <li>Hay un modo de <b>prueba de fabricación</b> con el mismo formato JSON (<code>"test"</code>).</li>
+    <li><b>WaveForms Live</b> (Ionic 2 / Angular 2) tiene páginas de panel de instrumentos, calibración, configuración WiFi, actualización de firmware, registrador de datos, diagrama de Bode, matemáticas y explorador de archivos.</li>
+  </ul>
+  <p class="meta">Nuestro S3G4-IP es binario y ya tiene SCPI. Para contrastar con él: la separación JSON + binario para las formas de onda, la página de calibración guiada y el modo de prueba de fabricación.</p>
+
+</section>
+<section id="adaptador">
+  <div class="shead"><span class="num">10</span><h2>El adaptador de terceros</h2></div>
+
+  <p>Una placa de 2021 hecha en KiCad (C. Feyer, fpb-synths) para usar el OpenScope con conectores normales. Añade:</p>
+  <ul class="tight">
+    <li><b>BNC</b> para los dos canales, el disparo y el generador.</li>
+    <li><b>Acoplo AC/DC</b> con un puente: 100 nF en serie y 27 MΩ de polarización.</li>
+    <li>Entrada de disparo por BNC con un transistor.</li>
+    <li>Adaptadores de nivel a 5 V para las líneas digitales.</li>
+    <li>Un convertidor ±12 V para las fuentes y un amplificador con salida balanceada para el generador.</li>
+  </ul>
+  <p>Lo relevante: <b>el OpenScope no tiene acoplo AC en hardware</b> y hubo que añadírselo fuera. Nuestro conmutador AC/DC/GND (D-04) ya lo resuelve en placa.</p>
+
+</section>
+<section id="evitar">
+  <div class="shead"><span class="num">11</span><h2>Lo que no conviene copiar</h2></div>
+
+  <ul class="tight">
+    <li><b>Canal que sólo atenúa:</b> sin escalas finas reales.</li>
+    <li><b>Una sola resistencia de 1 MΩ</b> como única barrera: limita la corriente, pero una 0805 no aguanta cientos de voltios entre sus terminales.</li>
+    <li><b>Sin acoplo AC.</b></li>
+    <li><b>Offset por PWM con 500 ms de espera.</b></li>
+    <li><b>Un único micro para medir y para la pila TCP/IP.</b></li>
+    <li><b>Sólo USB:</b> sin batería.</li>
+  </ul>
+
+</section>
+<section id="propuestas">
+  <div class="shead"><span class="num">12</span><h2>Propuestas para la rev 2.1</h2></div>
+
+  <p>Continúan la numeración del DSO112 (P1–P6) y del WAVE2 (P7). Ninguna está aplicada.</p>
+  <h3>P8 · Una sola etapa final por canal, al estilo del OpenScope <span class="tag t-open">Decidir</span></h3>
+  <p>Un sumador inversor <b>alimentado igual que el ADC</b> que haga a la vez la ganancia fija, el filtro anti-alias de primer orden (condensador de realimentación), el desplazamiento a mitad de escala desde la referencia y la inyección del offset. Las secciones D, E y F quedarían en una etapa por canal, y el ADC quedaría protegido por construcción. Hay que comprobar que un filtro de primer orden basta: con 3.47 MSa/s en CH2 y CH3 el margen hasta Nyquist es corto. Se estudia en la sección D.</p>
+  <h3>P9 · Referencia única y ratiométrica <span class="tag t-ok">Adoptar</span></h3>
+  <p>La referencia del ADC, sea VREFBUF del G473 o una externa, genera la mitad de escala con un divisor del 0.1 % y un buffer, y todo el canal se refiere a ella. Se decide en la sección F.</p>
+  <h3>P10 · Autocalibración encadenada <span class="tag t-ok">Adoptar</span></h3>
+  <ul class="tight">
+    <li>Divisores del 0.1 % que lleven a canales lentos del ADC la salida del AWG, los rieles y las referencias.</li>
+    <li>El AWG en modo continua como fuente de calibración de los tres canales, con un cable del usuario y detección de cable no conectado.</li>
+    <li>La masa y VCHECK del 4051 (P3) para la parte interna de la cadena.</li>
+    <li>Modelo por escala: Vin = A · código + B · offset + C, guardado en flash, y una pantalla de calibración guiada en la S3G4-UI.</li>
+    <li><b>Requisito:</b> pines libres de ADC para la realimentación; hay que revisar el mapa firmado.</li>
+  </ul>
+  <h3>P11 · Disparo con los analog watchdog del ADC <span class="tag t-open">Estudiar</span></h3>
+  <p>Dos umbrales, uno para armar y otro para disparar, sobre la muestra digitalizada, como alternativa o complemento del COMP + DAC del mapa firmado. Hay que resolverlo junto con el entrelazado de CH1 en el firmware.</p>
+
+</section>
+<footer><p class="meta">Análisis de Claude Code, 23 sep 2026. Fuentes locales en <code>research_and_tests/openscope-mz/</code> y <code>research_and_tests/waveforms-live/</code>. Especificaciones: <a href="https://www.farnell.com/datasheets/2339652.pdf">OpenScope MZ Reference Manual (Farnell)</a> y <a href="https://www.manualslib.com/manual/1517997/Digilent-Openscope-Mz.html">ManualsLib</a>. Adaptador: <a href="https://fpb-synths.de/en/projects/openscope-mz-adapter">fpb-synths</a>.</p></footer>
+</div>

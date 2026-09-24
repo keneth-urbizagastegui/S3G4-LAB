@@ -1,0 +1,60 @@
+{
+  "files": [
+    "README.md",
+    "docs/propuesta_arquitectura_s3g4.md",
+    "docs/S3G4-UI_v1.0_cliente_remoto.md",
+    "docs/MAPA_PINES_FIRMADO.md",
+    "docs/ACTA_VERIFICACION_MAPA_PINES.md",
+    "docs/esbozo_hardware_s3g4.html",
+    "S3G4_LAB_rev2.1/01_diseno/rediseno_afe_rev21.html",
+    "S3G4_LAB_rev2.1/00_requisitos/requisitos_osciloscopio.html",
+    "S3G4_LAB_rev2.1/00_requisitos/requisitos_dmm_awg.html",
+    "S3G4_LAB_rev2.1/02_referencias/analisis_dso112.html",
+    "S3G4_LAB_rev2.1/02_referencias/analisis_wave2.html",
+    "S3G4_LAB_rev2.1/02_referencias/analisis_openscope.html",
+    "S3G4_LAB_rev2.1/02_referencias/analisis_black_scope.html",
+    "S3G4_LAB_rev2.1/02_referencias/g473_analogico.html",
+    "comm_testbench/README.md",
+    "comm_testbench/shared/s3g4_frame.h",
+    "comm_testbench/shared/s3g4_cmd.h",
+    "client_app_testbench/README.md",
+    "client_app_testbench/app/package.json",
+    "software/web_client/package.json",
+    "firmware/esp32_firmware/main/CMakeLists.txt",
+    "firmware/esp32_firmware/main/idf_component.yml",
+    "S3G4_LAB_rev2.1/03_simulaciones/P4_P7_grueso/PLAN_SIMULACION.md",
+    "S3G4_LAB_rev2.1/03_simulaciones/P4_P7_grueso/ENCARGO_CODEX.md",
+    "S3G4_LAB_rev2.1/03_simulaciones/P4_P7_grueso/ACTA_RESULTADOS_P4_P7.md",
+    "S3G4_LAB_rev2.1/03_simulaciones/P4_P7_grueso/AUDITORIA_CLAUDE_P4_P7.md"
+  ],
+  "directories": [
+    {
+      "path": "ai-context",
+      "extensions": [
+        ".md"
+      ],
+      "recursive": true
+    },
+    {
+      "path": "comm_testbench/docs",
+      "extensions": [
+        ".md"
+      ],
+      "recursive": false
+    },
+    {
+      "path": "client_app_testbench/docs",
+      "extensions": [
+        ".md"
+      ],
+      "recursive": false
+    },
+    {
+      "path": "S3G4_LAB_rev2.1",
+      "extensions": [
+        ".md"
+      ],
+      "recursive": true
+    }
+  ]
+}

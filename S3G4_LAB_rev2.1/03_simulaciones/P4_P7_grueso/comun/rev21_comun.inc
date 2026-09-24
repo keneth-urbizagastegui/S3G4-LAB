@@ -1,0 +1,108 @@
+* S3G4 LAB rev. 2.1 -- parametros comunes P4/P7
+* Todos los valores derivados permanecen como expresiones .param.
+.param CBNC=3p CIN_BUF=3p
+.param CPAR_SEL=5p CPAR_FINO=5p CPAR_GRUESO=5p CPAR_TAP=5p
+.param COFF_RELE=1p COFF_4053=5p CS_4053=5p
+.param RON_RELE=0.1 RON_4053=100 RON_4051=100 CS_4051=20p
+.param RT_P4=990k CT_P4=10p RB_P4=10k RS_P4=100k CS_P4=1n RBIAS_P4=10Meg
+.param RTF_P7=1Meg CTF_P7=10p RBF_P7=1Meg
+.param RTG_P7=1.99Meg CTG_P7=10p RBG_P7=10k
+.param CBN_P4=CT_P4*RT_P4/RB_P4-(CPAR_TAP+CPAR_SEL+CIN_BUF+COFF_RELE)
+.param CBF_P7=CTF_P7*RTF_P7/RBF_P7-CPAR_FINO-CIN_BUF
+.param CBG_P7=CTG_P7*RTG_P7/RBG_P7-CPAR_GRUESO-CIN_BUF
+.param AVOL_OP=1e5 GBW_OP=100Meg SLEW_OP=50Meg EN_OP=7n IN_OP=5f
+.model DBAV199 D(IS=1e-12 N=1.9 RS=1.5 CJO=1.5p M=0.3 VJ=0.6 BV=85 IBV=1n)
+.model DTVS5 D(IS=1e-12 N=1.0 RS=0.5 CJO=3p BV=6.0 IBV=1m)
+.model SRELE SW(Ron={RON_RELE} Roff=1G Vt=0.5 Vh=0)
+.model S4053 SW(Ron={RON_4053} Roff=1G Vt=0.5 Vh=0)
+.lib UniversalOpAmp2.lib
+
+* Alimentacion ideal con 1 ohm de fuente; VPI/VNI son fuentes ideales internas.
+.subckt RAILS VP VN
+VPI vpi 0 5
+RVP vpi VP 1
+VNI vni 0 -5
+RVN vni VN 1
+.ends RAILS
+
+* Seguidor UniversalOpamp2 exigido por el plan.
+.subckt BUF IN OUT VP VN
+Cin IN 0 {CIN_BUF}
+XU IN OUT VP VN OUT level2 Avol={AVOL_OP} GBW={GBW_OP} Slew={SLEW_OP} Ilimit=1 Rail=0 Vos=0 phimargin=60 En={EN_OP} Enk=0 In={IN_OP} Ink=0 Rin=1T
+.ends BUF
+
+* Escalera DSO112 completa, mux 4051 y dos etapas no inversoras.
+* TAP: 1=1/1, 2=1/2, 4=1/4, 10=1/10, 20=1/20, 40=1/40.
+.subckt COMMON IN SAL SALF VP VN params: TAP=1 GFIX=50
+XBUF IN B VP VN BUF
+R1 B N2 499
+R2 N2 N4 249
+R3 N4 N10 150
+R4 N10 N20 49.9
+R5 N20 N40 24.9
+R6 N40 0 24.9
+RSEL1 B MUX {if(TAP==1,RON_4051,1G)}
+RSEL2 N2 MUX {if(TAP==2,RON_4051,1G)}
+RSEL4 N4 MUX {if(TAP==4,RON_4051,1G)}
+RSEL10 N10 MUX {if(TAP==10,RON_4051,1G)}
+RSEL20 N20 MUX {if(TAP==20,RON_4051,1G)}
+RSEL40 N40 MUX {if(TAP==40,RON_4051,1G)}
+C4051 MUX 0 {CS_4051}
+R10G N10M 0 1k
+R10F O1 N10M {if(GFIX==50,4k,9k)}
+XU1 MUX N10M VP VN O1 level2 Avol={AVOL_OP} GBW={GBW_OP} Slew={SLEW_OP} Ilimit=1 Rail=0 Vos=0 phimargin=60 En={EN_OP} Enk=0 In={IN_OP} Ink=0 Rin=1T
+R20G N20M 0 1k
+R20F SAL N20M 9k
+XU2 O1 N20M VP VN SAL level2 Avol={AVOL_OP} GBW={GBW_OP} Slew={SLEW_OP} Ilimit=1 Rail=0 Vos=0 phimargin=60 En={EN_OP} Enk=0 In={IN_OP} Ink=0 Rin=1T
+EAAF SALF 0 LAPLACE {V(SAL)} {1/(1+s/(2*pi*1.5Meg))}
+.ends COMMON
+
+* P4: POS=1 selecciona x1; POS=100 es reposo /100.
+.subckt FRONT_P4 BNC OUT VP VN params: POS=100
+Rt BNC TAP {RT_P4}
+Ct BNC TAP {CT_P4}
+Rb TAP 0 {RB_P4}
+Cb TAP 0 {CBN_P4}
+Rs BNC X1 {RS_P4}
+Cs BNC X1 {CS_P4}
+V1 CTRL1 0 {if(POS==1,1,0)}
+V100 CTRL100 0 {if(POS==100,1,0)}
+S1 X1 OUT CTRL1 0 SRELE
+S100 TAP OUT CTRL100 0 SRELE
+Coff1 X1 OUT {COFF_RELE}
+Coff100 TAP OUT {COFF_RELE}
+Rbias OUT 0 {RBIAS_P4}
+Csel OUT 0 {CPAR_SEL}
+Ctap TAP 0 {CPAR_TAP}
+DHP OUT VP DBAV199
+DLP VN OUT DBAV199
+DT1 OUT TVM DTVS5
+DT2 0 TVM DTVS5
+.ends FRONT_P4
+
+* P7: POS=2 selecciona fina /2; POS=200 selecciona gruesa /200.
+.subckt FRONT_P7 BNC OUT VP VN params: POS=2
+RtF BNC FINO {RTF_P7}
+CtF BNC FINO {CTF_P7}
+RbF FINO 0 {RBF_P7}
+CbF FINO 0 {CBF_P7}
+Cfpar FINO 0 {CPAR_FINO}
+RtG BNC GRUESO {RTG_P7}
+CtG BNC GRUESO {CTG_P7}
+RbG GRUESO 0 {RBG_P7}
+CbG GRUESO 0 {CBG_P7}
+Cgpar GRUESO 0 {CPAR_GRUESO}
+XF FINO BF VP VN BUF
+XG GRUESO BG VP VN BUF
+V2 CTRL2 0 {if(POS==2,1,0)}
+V200 CTRL200 0 {if(POS==200,1,0)}
+SF BF OUT CTRL2 0 S4053
+SG BG OUT CTRL200 0 S4053
+CoffF BF OUT {COFF_4053}
+CoffG BG OUT {COFF_4053}
+Cout OUT 0 {CS_4053}
+DHF FINO VP DBAV199
+DLF VN FINO DBAV199
+DTF1 FINO TVMF DTVS5
+DTF2 0 TVMF DTVS5
+.ends FRONT_P7

@@ -1,0 +1,338 @@
+<title>Anatomía del WAVE2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@500;600&display=swap">
+<style>
+:root{
+  --bg:#f4f6f5; --paper:#fff; --ink:#1b2a2e; --muted:#5d6d72; --rule:#dde3e1;
+  --accent:#12667f; --accent2:#a9541c; --ok:#2f7d54; --warn:#9a6100; --crit:#b22d22; --open:#6a4fa3;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#11181a; --paper:#182125; --ink:#dce6e7; --muted:#93a3a8; --rule:#2a3639;
+  --accent:#5fb9d2; --accent2:#f0a06a; --ok:#63c891; --warn:#f0b75a; --crit:#ff8d80; --open:#b79ae8;}}
+:root[data-theme="dark"]{
+  --bg:#11181a; --paper:#182125; --ink:#dce6e7; --muted:#93a3a8; --rule:#2a3639;
+  --accent:#5fb9d2; --accent2:#f0a06a; --ok:#63c891; --warn:#f0b75a; --crit:#ff8d80; --open:#b79ae8;}
+body{background:var(--bg);color:var(--ink);font:15px/1.6 "IBM Plex Sans",system-ui,sans-serif}
+.wrap{max-width:1000px;margin:0 auto;padding-inline:20px;padding-block:28px 64px}
+h1,h2,h3,h4{font-family:"IBM Plex Sans Condensed","IBM Plex Sans",sans-serif;margin:0;text-wrap:balance}
+h1{font-size:clamp(26px,4vw,36px);font-weight:600}
+h2{font-size:24px;font-weight:600;margin-top:8px}
+h3{font-size:18px;font-weight:600;margin-bottom:4px}
+code{font:0.88em "IBM Plex Mono",ui-monospace,monospace;color:var(--accent)}
+.eyebrow{font:500 12px "IBM Plex Mono",monospace;letter-spacing:.09em;text-transform:uppercase;color:var(--accent);margin:0 0 6px}
+.lede{color:var(--muted);max-width:74ch}
+header.hero{border-bottom:1px solid var(--rule);padding-bottom:18px;margin-bottom:26px}
+section{background:var(--paper);border:1px solid var(--rule);border-radius:10px;padding:20px 22px;margin-bottom:18px}
+section>p,li{max-width:80ch}
+.tag{display:inline-block;font:500 11px "IBM Plex Mono",monospace;text-transform:uppercase;letter-spacing:.06em;padding:2px 9px;border-radius:999px;border:1px solid currentColor}
+.t-ok{color:var(--ok)} .t-open{color:var(--open)} .t-warn{color:var(--warn)} .t-crit{color:var(--crit)}
+.shead{display:flex;align-items:center;gap:12px;margin-bottom:10px;flex-wrap:wrap}
+.num{font:500 14px "IBM Plex Mono",monospace;background:var(--accent);color:var(--paper);width:28px;height:28px;border-radius:50%;display:grid;place-items:center}
+.tw{overflow-x:auto;margin:12px 0}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th{text-align:left;font-weight:600;color:var(--muted);border-bottom:1.5px solid var(--rule);padding:7px 9px;white-space:nowrap}
+td{border-bottom:1px solid var(--rule);padding:7px 9px;vertical-align:top}
+td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
+.pick{background:color-mix(in srgb, var(--ok) 10%, transparent)}
+.callout{border-left:3px solid var(--accent);padding:10px 14px;margin:14px 0;background:color-mix(in srgb, var(--accent) 7%, transparent);font-size:14px}
+.callout.w{border-color:var(--warn);background:color-mix(in srgb, var(--warn) 9%, transparent)}
+ul.tight{margin:8px 0;padding-left:20px}
+ul.tight li{margin-bottom:5px}
+.meta{font:12.5px "IBM Plex Mono",monospace;color:var(--muted);margin:0}
+.q{border:1px dashed var(--open);border-radius:8px;padding:12px 14px;margin:10px 0}
+.q b{color:var(--open)}
+footer{font-size:12.5px;color:var(--muted);border-top:1px solid var(--rule);padding-top:12px}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-size:14px}
+.kv dt{color:var(--muted)} .kv dd{margin:0}
+
+/* --- esquematico --- */
+figure{margin:16px 0}
+.sx{overflow-x:auto;border:1px solid var(--rule);border-radius:8px;background:var(--bg);padding:8px}
+.sx svg{display:block;max-width:none;height:auto}
+figcaption{font-size:13px;color:var(--muted);margin-top:6px}
+svg text{font-family:"IBM Plex Mono",ui-monospace,monospace}
+.w{fill:none;stroke:var(--ink);stroke-width:1.5;stroke-linejoin:round}
+.sym{fill:none;stroke:var(--ink);stroke-width:1.6;stroke-linejoin:round}
+.fillsym{fill:var(--ink);stroke:var(--ink);stroke-width:1}
+.dot{fill:var(--ink)}
+.op{fill:var(--paper);stroke:var(--ink);stroke-width:1.7}
+.ic{fill:var(--paper);stroke:var(--ink);stroke-width:1.5}
+.hdr{fill:none;stroke:var(--open);stroke-width:1.5;stroke-dasharray:3 2}
+.grp{fill:none;stroke:var(--muted);stroke-width:1.1;stroke-dasharray:5 4}
+.grp-t{font-size:10.5px;fill:var(--muted)}
+.blade{stroke:var(--ink);stroke-width:2}
+.ct{fill:var(--paper);stroke:var(--ink);stroke-width:1.3}
+.gnd line{stroke:var(--ink);stroke-width:1.5}
+.railbar{stroke:var(--crit);stroke-width:2.2}
+.rail{font-size:10.5px;fill:var(--crit);font-weight:500}
+.railsm{font-size:9px;fill:var(--crit)}
+.port{fill:color-mix(in srgb, var(--accent) 14%, transparent);stroke:var(--accent);stroke-width:1.3}
+.portt{font-size:10.5px;fill:var(--ink)}
+.tp{fill:none;stroke:var(--ok);stroke-width:1.6}
+.tpt{font-size:9.5px;fill:var(--ok)}
+.ref{font-size:11px;font-weight:500;fill:var(--ink)}
+.val{font-size:10px;fill:var(--muted)}
+.net{font-size:10px;fill:var(--accent2)}
+.pin{font-size:9.5px;fill:var(--muted)}
+.pm{font-size:15px;fill:var(--ink)}
+.note{font-size:10.5px;fill:var(--muted);font-style:italic}
+
+.lesson td:first-child{font-weight:600}
+.kv{display:grid;grid-template-columns:max-content 1fr;gap:4px 16px;margin:10px 0;font-size:14px}
+.kv dt{color:var(--muted)} .kv dd{margin:0}
+pre.mermaid{background:var(--paper);border:1px solid var(--rule);border-radius:8px;padding:12px;overflow-x:auto}
+.meta{color:var(--muted);font-size:13px}
+.toc{columns:2 260px;column-gap:28px;margin:6px 0 0;padding-left:20px;font-size:14px}
+.toc li{break-inside:avoid;margin:2px 0}
+.toc a{color:var(--accent);text-decoration:none} .toc a:hover{text-decoration:underline}
+</style>
+<div class="wrap">
+<header class="hero">
+  <p class="eyebrow">S3G4 LAB · referencia para el AFE rev 2.1</p>
+  <h1>Anatomía del WAVE2</h1>
+  <p class="lede">El osciloscopio de dos canales con generador de JYE Tech, heredero del DSO112: cómo resuelve el grueso sin relé, qué simplificó en su segunda revisión y qué nos sirve. Complementa <code>S3G4_LAB_rev2.1/02_referencias/analisis_dso112.html</code> y el documento vivo <code>S3G4_LAB_rev2.1/01_diseno/rediseno_afe_rev21.html</code>.</p>
+</header>
+<section id="resumen">
+  <div class="shead"><span class="num">★</span><h2>Lo que nos llevamos</h2><span class="tag t-open">Con propuestas</span></div>
+
+  <p>El WAVE2 es el paso del DSO112 a dos canales, con generador, sobre dos STM32. Su ancho de banda es de 200 kHz, siete veces menos que el nuestro, y eso explica casi todas sus decisiones. Cada fila remite a su sección. <b>Nada de esto está decidido.</b></p>
+  <div class="tw"><table class="lesson">
+    <thead><tr><th>Hallazgo</th><th>En el WAVE2</th><th>Para la rev 2.1</th><th>Veredicto</th></tr></thead>
+    <tbody>
+      <tr><td>Grueso sin relé</td><td>Un divisor y un buffer por rama; un 74HC4053 conmuta las salidas ya bufferizadas (§2)</td><td>Alternativa real a P4, que llamo P7: algo más de ruido que con relé (0.8 % frente a 0.3 %), pero sin relé y a prueba de red en todas las escalas (§5)</td><td><span class="tag t-open">Decidir</span></td></tr>
+      <tr><td>El ruido de un divisor está acotado por kT/C</td><td>Aparece al calcular su rama ÷7.67 (§4)</td><td><b>Corrige cifras nuestras</b>: el ÷20 aporta 91 µV, no 864 µV. Las decisiones siguen en pie</td><td><span class="tag t-crit">Corregido</span></td></tr>
+      <tr><td>Divisor fijo único (revisión A)</td><td>÷20.6 permanente y sólo 6 ganancias de hardware; las demás, por software (§3)</td><td>Viable a 200 kHz; a 1.5 MHz exigiría ×1000 y multiplicaría ×20 el ruido de los amplificadores</td><td><span class="tag t-crit">Evitar</span></td></tr>
+      <tr><td>Posición vertical digital</td><td>Sin offset analógico: el ADC ve 20 mV por división y la pantalla es una ventana (§6)</td><td>Opción para la sección E: se ahorra el DAC/PWM de offset a cambio de resolución</td><td><span class="tag t-open">Decidir</span></td></tr>
+      <tr><td>Rieles y masas por canal</td><td>L de 100 µH + 10 µF por riel y por canal; AGND1/AGND2 unidas por resistencias de 0 Ω (§9)</td><td>Con tres canales, para limitar la diafonía</td><td><span class="tag t-ok">Adoptar</span></td></tr>
+      <tr><td>Regulador aparte para VDDA</td><td>Un BL8060 sólo para la referencia del ADC (§9)</td><td>Revisar en la sección G / F</td><td><span class="tag t-ok">Adoptar</span></td></tr>
+      <tr><td>Generador con dos trucos de GPIO</td><td>Filtro de reconstrucción que conecta un pin; offset de dos niveles con otro pin (§7)</td><td>El primero sirve para nuestro AWG; el segundo se queda corto</td><td><span class="tag t-warn">Adaptar</span></td></tr>
+      <tr><td>Disparo externo y salida de disparo</td><td>Entrada LVTTL hasta 15 V con umbral de 1.65 V, y TRIGOUT (§8)</td><td>Funciones baratas que no teníamos en la lista</td><td><span class="tag t-open">Decidir</span></td></tr>
+      <tr><td>Actualización por el bootloader de fábrica</td><td>BOOT0/BOOT1 + UART, sin bootloader propio (§8)</td><td>Idea: que el ESP32 reprograme el STM32 por su bootloader de fábrica</td><td><span class="tag t-warn">Adaptar</span></td></tr>
+      <tr><td>Protocolo con modo texto</td><td>Órdenes legibles «nombre = valor», consulta con «?» y pasos ++/-- (§10)</td><td>Ya tenemos SCPI: confirma la elección</td><td><span class="tag t-ok">Confirmado</span></td></tr>
+    </tbody>
+  </table></div>
+
+</section>
+<section id="fuentes">
+  <div class="shead"><span class="num">i</span><h2>Qué se analizó y cómo</h2></div>
+
+  <dl class="kv">
+    <dt>Carpeta</dt><dd><code>research_and_tests/Wave2/</code>, reorganizada por Keneth el 23 sep. Material nuevo: dos versiones de la placa principal, el firmware <code>113-15801-092.hex</code>, <code>Wave2_SerialInterface.pdf</code> y <code>WAVE2_HowToUpgradeFirmware.pdf</code>.</dd>
+    <dt>Placa analógica</dt><dd>Dos revisiones: <b>105-15801-00E</b> (oct 2018) y <b>105-15803-00A</b> (oct 2019).</dd>
+    <dt>Placa principal</dt><dd><b>00G</b> (nov 2018), <b>00J</b> (jul 2019) y <b>00M</b> (nov 2020, el <code>105-15800-00M.pdf</code> suelto). Más las placas 117 (interruptor), 118 (cargador) y 161 (interfaz).</dd>
+    <dt>Método</dt><dd>El mismo que con el DSO112: esquemáticos renderizados con PyMuPDF y leídos por zonas, tablas del protocolo extraídas y firmware descodificado. Los esquemas de esta página son redibujos propios, revisados con el comprobador y a la vista.</dd>
+    <dt>Especificaciones</dt><dd>Los documentos locales no traen tabla de especificaciones; las oficiales vienen de la web del fabricante (fuentes al pie).</dd>
+  </dl>
+  <ol class="toc">
+    <li><a href="#que-es">Qué es y cómo está repartido</a></li><li><a href="#rev-e">Canal analógico, revisión E</a></li>
+    <li><a href="#rev-a">Canal analógico, revisión A</a></li><li><a href="#ruido">El ruido de un divisor: corrección</a></li>
+    <li><a href="#p7">¿Nos sirve el grueso sin relé?</a></li><li><a href="#offset">Offset vertical digital</a></li>
+    <li><a href="#generador">Generador</a></li><li><a href="#sistema">Placa principal y sistema</a></li>
+    <li><a href="#energia">Alimentación y masas</a></li><li><a href="#protocolo">Protocolo serie</a></li>
+    <li><a href="#firmware">Firmware</a></li><li><a href="#evitar">Lo que no conviene copiar</a></li>
+  </ol>
+
+</section>
+<section id="que-es">
+  <div class="shead"><span class="num">1</span><h2>Qué es y cómo está repartido</h2></div>
+
+  <div class="tw"><table>
+    <thead><tr><th>Dato</th><th>WAVE2</th><th>DSO112A</th><th>S3G4 rev 2.1</th></tr></thead>
+    <tbody>
+      <tr><td>Canales</td><td>2</td><td>1</td><td>3</td></tr>
+      <tr><td>Ancho de banda</td><td><b>200 kHz</b></td><td>2 MHz</td><td>1.5 MHz</td></tr>
+      <tr><td>Muestreo en tiempo real</td><td>1 MSa/s</td><td>2.5 MSa/s</td><td>6.5 / 3.47 MSa/s</td></tr>
+      <tr><td>Escalas</td><td>5 mV – 20 V/div</td><td>5 mV – 20 V/div</td><td>5 mV – 10 V/div</td></tr>
+      <tr><td>Máx. entrada · Zin</td><td>50 Vpk · 1 MΩ / 25 pF</td><td>50 Vpk · 1 MΩ</td><td>50 Vpk · 1 MΩ</td></tr>
+      <tr><td>Generador</td><td>2 canales, 0–20 kHz, hasta 3 Vpk</td><td>sólo señal de prueba</td><td>AWG hasta 1 MHz</td></tr>
+      <tr><td>Registro</td><td>1024 puntos</td><td>512 / 1024</td><td>—</td></tr>
+    </tbody>
+  </table></div>
+  <p>Dos microcontroladores, con el mismo reparto que el DSO112 pero con más peso en el ayudante:</p>
+  <pre class="mermaid">%%{init: {'theme':'neutral'}}%%
+flowchart LR
+  AN["Placa analógica<br/>2 canales"] -->|"CH1ADC · CH2ADC"| F103["STM32F103CB<br/>captura, pantalla,<br/>microSD, USB"]
+  F100["STM32F100<br/>táctil, botones,<br/>energía, generador"] -->|"74HC595 por SPI de software"| AN
+  F103 -->|"MCO: reloj de 8 MHz"| F100
+  F103 ---|"UART"| F100
+  F100 -->|"DAC ×2"| GEN["Salidas A y B<br/>TL082"]
+  F103 --- LCD["TFT 2.4 pulgadas<br/>bus de 8 bits"]
+  F103 --- SD["microSD por SPI"]
+  F103 --- EXT["Disparo externo<br/>y TRIGOUT"]
+</pre>
+  <p>El F103 captura los dos canales con sus ADC internos, que reciben CH1ADC y CH2ADC por 100 Ω en PA0 y PA1. El F100 gobierna la placa analógica a través de un 74HC595: acoplo y selección de escala de los dos canales.</p>
+
+</section>
+<section id="rev-e">
+  <div class="shead"><span class="num">2</span><h2>Canal analógico, revisión E (2018): el grueso sin relé</h2></div>
+  <figure><div class="sx"><svg class="sch" viewBox="0 0 1300 560" width="1300" role="img" aria-label="WAVE2 rev E - dos divisores bufferizados y conmutacion en baja impedancia" xmlns="http://www.w3.org/2000/svg"><circle class="sym" cx="50" cy="190" r="11"/><circle class="fillsym" cx="50" cy="190" r="3"/><polyline class="w" points="50,201 50,210"/><polyline class="w" points="50,210 50,218"/><g class="gnd"><line x1="40" y1="218" x2="60" y2="218"/><line x1="44" y1="222" x2="56" y2="222"/><line x1="48" y1="226" x2="52" y2="226"/></g><text class="ref" x="50" y="172" text-anchor="middle">J1</text><text class="val" x="50" y="158" text-anchor="middle">BNC</text><polyline class="w" points="61,190 110,190"/><circle class="dot" cx="110" cy="190" r="3.2"/><polyline class="w" points="110,190 166.0,190.0"/><polyline class="w" points="174.0,190.0 230,190"/><g transform="translate(170.0,190.0) rotate(0.0)"><line class="sym" x1="-4" y1="-11" x2="-4" y2="11"/><line class="sym" x1="4" y1="-11" x2="4" y2="11"/></g><text class="ref" x="170.0" y="216.0" text-anchor="middle">C1</text><text class="val" x="170.0" y="228.0" text-anchor="middle">0.1 µF 100 V</text><rect class="ic" x="130" y="80" width="80" height="40" rx="3"/><text class="ref" x="170.0" y="72" text-anchor="middle">RLY1 · CPC1017N</text><polyline class="w" points="130,100 118,100"/><text class="pin" x="135" y="104" text-anchor="start"></text><polyline class="w" points="210,100 222,100"/><text class="pin" x="205" y="104" text-anchor="end"></text><text class="pin" x="170" y="105" text-anchor="middle">PhotoMOS</text><polyline class="w" points="110,190 110,100 118,100"/><polyline class="w" points="222,100 230,100 230,190"/><circle class="dot" cx="230" cy="190" r="3.2"/><polyline class="w" points="230,190 280,190"/><circle class="dot" cx="280" cy="190" r="3.2"/><polyline class="w" points="280,190 280,110"/><polyline class="w" points="280,110 320.0,110.0"/><polyline class="w" points="360.0,110.0 400,110"/><polyline class="sym" points="-20,0 -15,-6 -10,6 -5,-6 0,6 5,-6 10,6 15,-6 20,0" transform="translate(340.0,110.0) rotate(0.0)"/><text class="ref" x="340.0" y="98.0" text-anchor="middle">R1</text><text class="val" x="340.0" y="132.0" text-anchor="middle">1.8 MΩ</text><polyline class="w" points="280,110 280,60"/><polyline class="w" points="400,110 400,60"/><polyline class="w" points="280,60 336.0,60.0"/><polyline class="w" points="344.0,60.0 400,60"/><g transform="translate(340.0,60.0) rotate(0.0)"><line class="sym" x1="-4" y1="-11" x2="-4" y2="11"/><line class="sym" x1="4" y1="-11" x2="4" y2="11"/></g><text class="ref" x="340.0" y="48.0" text-anchor="middle">C2</text><text class="val" x="340.0" y="82.0" text-anchor="middle">3 pF</text><circle class="dot" cx="280" cy="110" r="3.2"/><circle class="dot" cx="400" cy="110" r="3.2"/><polyline class="w" points="400,110 520,110"/><circle class="dot" cx="440" cy="110" r="3.2"/><polyline class="w" points="440,110 440.0,135.0"/><polyline class="w" points="440.0,175.0 440,200"/><polyline class="sym" points="-20,0 -15,-6 -10,6 -5,-6 0,6 5,-6 10,6 15,-6 20,0" transform="translate(440.0,155.0) rotate(90.0)"/><text class="ref" x="426.0" y="152.0" text-anchor="end">R2</text><text class="val" x="426.0" y="166.0" text-anchor="end">270 kΩ</text><polyline class="w" points="440,200 440,208"/><g class="gnd"><line x1="430" y1="208" x2="450" y2="208"/><line x1="434" y1="212" x2="446" y2="212"/><line x1="438" y1="216" x2="442" y2="216"/></g><circle class="dot" cx="490" cy="110" r="3.2"/><polyline class="w" points="490,110 490.0,151.0"/><polyline class="w" points="490.0,159.0 490,200"/><g transform="translate(490.0,155.0) rotate(90.0)"><line class="sym" x1="-4" y1="-11" x2="-4" y2="11"/><line class="sym" x1="4" y1="-11" x2="4" y2="11"/><line class="sym" x1="-12" y1="12" x2="12" y2="-12"/><polyline class="sym" points="6,-12 12,-12 12,-6"/></g><text class="ref" x="504.0" y="152.0" text-anchor="start">C3</text><text class="val" x="504.0" y="166.0" text-anchor="start">25 pF aj.</text><polyline class="w" points="490,200 490,208"/><g class="gnd"><line x1="480" y1="208" x2="500" y2="208"/><line x1="484" y1="212" x2="496" y2="212"/><line x1="488" y1="216" x2="492" y2="216"/></g><polygon class="op" points="600,94 600,158 662,126"/><text class="pm" x="607" y="115" text-anchor="start">+</text><text class="pm" x="607" y="147" text-anchor="start">−</text><polyline class="w" points="590,110 600,110"/><polyline class="w" points="590,142 600,142"/><polyline class="w" points="662,126 672,126"/><text class="ref" x="610" y="88" text-anchor="start">U1D</text><text class="val" x="610" y="172" text-anchor="start">×7.67</text><polyline class="w" points="520,110 590,110"/><polyline class="w" points="590,142 580,142 580,210"/><circle class="dot" cx="580" cy="210" r="3.2"/><polyline class="w" points="580,210 620.0,210.0"/><polyline class="w" points="660.0,210.0 700,210"/><polyline class="sym" points="-20,0 -15,-6 -10,6 -5,-6 0,6 5,-6 10,6 15,-6 20,0" transform="translate(640.0,210.0) rotate(0.0)"/><text class="ref" x="640.0" y="236.0" text-anchor="middle">R35</text><text class="val" x="640.0" y="248.0" text-anchor="middle">1 kΩ</text><polyline class="w" points="580,210 580.0,225.0"/><polyline class="w" points="580.0,265.0 580,280"/><polyline class="sym" points="-20,0 -15,-6 -10,6 -5,-6 0,6 5,-6 10,6 15,-6 20,0" transform="translate(580.0,245.0) rotate(90.0)"/><text class="ref" x="566.0" y="242.0" text-anchor="end">R36</text><text class="val" x="566.0" y="256.0" text-anchor="end">150 Ω</text><polyline class="w" points="580,280 580,288"/><g class="gnd"><line x1="570" y1="288" x2="590" y2="288"/><line x1="574" y1="292" x2="586" y2="292"/><line x1="578" y1="296" x2="582" y2="296"/></g><polyline class="w" points="672,126 740,126"/><circle class="dot" cx="700" cy="126" r="3.2"/><polyline class="w" points="700,210 700,126"/><text class="net" x="708" y="121" text-anchor="start">V11 (×1)</text><polyline class="w" points="280,190 280,370"/><polyline class="w" points="280,370 320.0,370.0"/><polyline class="w" points="360.0,370.0 400,370"/><polyline class="sym" points="-20,0 -15,-6 -10,6 -5,-6 0,6 5,-6 10,6 15,-6 20,0" transform="translate(340.0,370.0) rotate(0.0)"/><text class="ref" x="340.0" y="358.0" text-anchor="middle">R3</text><text class="val" x="340.0" y="392.0" text-anchor="middle">2.0 MΩ</text><polyline class="w" points="280,370 280,430"/><polyline class="w" points="400,370 400,430"/><polyline class="w" points="280,430 336.0,430.0"/><polyline class="w" points="344.0,430.0 400,430"/><g transform="translate(340.0,430.0) rotate(0.0)"><line class="sym" x1="-4" y1="-11" x2="-4" y2="11"/><line class="sym" x1="4" y1="-11" x2="4" y2="11"/><line class="sym" x1="-12" y1="12" x2="12" y2="-12"/><polyline class="sym" points="6,-12 12,-12 12,-6"/></g><text class="ref" x="340.0" y="456.0" text-anchor="middle">C5</text><text class="val" x="340.0" y="468.0" text-anchor="middle">6 pF aj.</text><circle class="dot" cx="280" cy="370" r="3.2"/><circle class="dot" cx="400" cy="370" r="3.2"/><polyline class="w" points="400,370 520,370"/><circle class="dot" cx="460" cy="370" r="3.2"/><polyline class="w" points="460,370 460.0,405.0"/><polyline class="w" points="460.0,445.0 460,480"/><polyline class="sym" points="-20,0 -15,-6 -10,6 -5,-6 0,6 5,-6 10,6 15,-6 20,0" transform="translate(460.0,425.0) rotate(90.0)"/><text class="ref" x="446.0" y="422.0" text-anchor="end">R4</text><text class="val" x="446.0" y="436.0" text-anchor="end">20 kΩ</text><polyline class="w" points="460,480 460,488"/><g class="gnd"><line x1="450" y1="488" x2="470" y2="488"/><line x1="454" y1="492" x2="466" y2="492"/><line x1="458" y1="496" x2="462" y2="496"/></g><circle class="dot" cx="510" cy="370" r="3.2"/><polyline class="w" points="510,370 510.0,421.0"/><polyline class="w" points="510.0,429.0 510,480"/><g transform="translate(510.0,425.0) rotate(90.0)"><line class="sym" x1="-4" y1="-11" x2="-4" y2="11"/><line class="sym" x1="4" y1="-11" x2="4" y2="11"/></g><text class="ref" x="524.0" y="422.0" text-anchor="start">C6</text><text class="val" x="524.0" y="436.0" text-anchor="start">510 pF</text><polyline class="w" points="510,480 510,488"/><g class="gnd"><line x1="500" y1="488" x2="520" y2="488"/><line x1="504" y1="492" x2="516" y2="492"/><line x1="508" y1="496" x2="512" y2="496"/></g><polygon class="op" points="600,354 600,418 662,386"/><text class="pm" x="607" y="375" text-anchor="start">+</text><text class="pm" x="607" y="407" text-anchor="start">−</text><polyline class="w" points="590,370 600,370"/><polyline class="w" points="590,402 600,402"/><polyline class="w" points="662,386 672,386"/><text class="ref" x="610" y="348" text-anchor="start">U1C</text><text class="val" x="610" y="432" text-anchor="start">×1</text><polyline class="w" points="520,370 590,370"/><polyline class="w" points="590,402 580,402 580,440 690,440 690,386"/><circle class="dot" cx="690" cy="386" r="3.2"/><polyline class="w" points="672,386 740,386"/><text class="net" x="698" y="381" text-anchor="start">V12 (÷101)</text><rect class="ic" x="790" y="200" width="120" height="130" rx="3"/><text class="ref" x="850.0" y="192" text-anchor="middle">U3 · 74HC4053 (2 canales)</text><polyline class="w" points="790,230 778,230"/><text class="pin" x="795" y="234" text-anchor="start">Y0</text><polyline class="w" points="790,300 778,300"/><text class="pin" x="795" y="304" text-anchor="start">Y1</text><polyline class="w" points="910,260 922,260"/><text class="pin" x="905" y="264" text-anchor="end">Y</text><polyline class="w" points="850,330 850,342"/><text class="pin" x="850" y="325" text-anchor="middle">B</text><polyline class="w" points="740,126 760,126 760,230 778,230"/><polyline class="w" points="740,386 760,386 760,300 778,300"/><polyline class="w" points="850,342 850,360"/><text class="pin" x="850" y="376" text-anchor="middle">CH1SSEL3</text><polyline class="w" points="922,260 980,260"/><polygon class="port" points="980,252 1226.6,252 1234.6,260 1226.6,268 980,268"/><text class="portt" x="985" y="264" text-anchor="start">U1A ×2 → escalera 1…1/40 → 4051 → ×8</text><text class="note" x="20" y="520" text-anchor="start">Zin = 2.07 MΩ ∥ 2.02 MΩ ≈ 1.02 MΩ: las dos ramas están siempre conectadas; ninguna ve más de microamperios. El 4053 conmuta salidas de amplificador,</text><text class="note" x="20" y="538" text-anchor="start">de baja impedancia: su capacidad en abierto no importa. Rama A: ÷7.67 y ×7.67 = ×1 neto; su entrada nunca ve la tensión completa de la BNC.</text></svg></div><figcaption>Redibujo del canal 1 de la placa 105-15801-00E. El canal 2 es idéntico y usa la otra mitad del mismo 74HC4053.</figcaption></figure>
+
+  <p>Es la pieza que motivó esta revisión. El DSO112 usa un relé porque su rama ×1 conecta la entrada directamente al buffer y hay que desconectarla cuando no se usa. El WAVE2 lo evita así:</p>
+  <ul class="tight">
+    <li><b>Dos divisores compensados, los dos siempre conectados.</b> Rama A: 1.8 MΩ / 270 kΩ, ÷7.67. Rama B: 2.0 MΩ / 20 kΩ, ÷101. En paralelo dan 1.02 MΩ.</li>
+    <li><b>Cada rama tiene su propio buffer.</b> El de la rama A tiene ganancia ×7.67 (R35 1 kΩ / R36 150 Ω), así que la rama A queda en ×1 neto, pero su amplificador <b>nunca ve la tensión completa de la BNC</b>. El de la rama B es un seguidor.</li>
+    <li><b>El 74HC4053 conmuta después de los buffers</b>, en baja impedancia. La capacidad del interruptor abierto, que era el problema de conmutar tomas de un divisor (el «fallo B» de nuestro análisis), aquí no importa.</li>
+    <li><b>Protección:</b> ninguna rama deja pasar más que microamperios; no hay clamps.</li>
+  </ul>
+  <p>Detrás del 4053: U1A ×2 → escalera de <b>601 Ω</b> (300, 150, 91, 30, 15, 15 Ω) con las mismas seis tomas que el DSO112 (1…1/40) → 74HC4051 → U1B ×8 con un desplazamiento fijo de +1.67 V hacia la mitad del ADC. Salen <b>12 escalas de hardware</b>, como en el DSO112. Todo con un TL084 por canal (3 MHz de GBW), coherente con 200 kHz de banda. Cada canal lleva dos condensadores ajustables: C3 y C5.</p>
+
+</section>
+<section id="rev-a">
+  <div class="shead"><span class="num">3</span><h2>Canal analógico, revisión A (2019): simplificar</h2></div>
+
+  <p>Un año después JYE rehízo la placa en la dirección contraria: menos piezas.</p>
+  <div class="tw"><table>
+    <thead><tr><th></th><th>Revisión E (2018)</th><th>Revisión A (2019)</th></tr></thead>
+    <tbody>
+      <tr><td>Entrada</td><td>dos divisores, dos buffers, 74HC4053</td><td><b>un divisor fijo ÷20.6</b> (1 MΩ ∥ 1 pF / 51 kΩ ∥ 25 pF ajustable)</td></tr>
+      <tr><td>Tras el buffer</td><td>×2 y escalera de 6 tomas</td><td>escalera 1/5, 1/20, 1/100 (1019 Ω) y dos etapas de ×4.92 y ×4</td></tr>
+      <tr><td>Selector</td><td>74HC4051 con 6 tomas</td><td>74HC4051 con 6 señales, <b>una entrada a masa</b> y una libre</td></tr>
+      <tr><td>Etapa final</td><td>×8 + 1.67 V</td><td>×4.11 + 1.67 V</td></tr>
+      <tr><td>Ganancias de hardware</td><td>12</td><td><b>6, separadas ×5</b></td></tr>
+      <tr><td>Tensión por división en el ADC</td><td>80 mV (≈ 99 códigos), calculado desde el esquemático</td><td><b>20 mV (≈ 25 códigos)</b></td></tr>
+      <tr><td>Ajustables por canal</td><td>2</td><td>1</td></tr>
+    </tbody>
+  </table></div>
+  <p><b>Verificado contra el protocolo.</b> La Tabla 5 de <code>Wave2_SerialInterface.pdf</code> da la «ganancia analógica» de cada escala: 4, 2, 1, 0.4, 0.2, 0.1, 0.04, 0.02, 0.01, 0.004, 0.002 y 0.001. Las ganancias de la revisión A calculadas desde el esquemático son 3.93, 0.98, 0.20, 0.039, 0.0096 y 0.0020, justo las de 5 mV, 20 mV, 0.1 V, 0.5 V, 2 V y 10 V/div. <b>Las otras seis escalas no tienen hardware propio: salen de la escala vecina por software</b>, escalando ×2 o ×2.5, algo posible porque sobra rango en el ADC.</p>
+  <p>¿Por qué pudieron simplificar tanto? Porque a 200 kHz el ruido de un divisor fijo y la ganancia que exige no son un problema. A nuestros 1.5 MHz sí (§4, §5).</p>
+
+</section>
+<section id="ruido">
+  <div class="shead"><span class="num">4</span><h2>El ruido de un divisor: una corrección importante</h2><span class="tag t-crit">Corrección</span></div>
+
+  <p>Al calcular el ruido de la rama A del WAVE2 me di cuenta de que <b>lo había calculado mal en todo el rediseño</b>. Había tratado el ruido térmico de las resistencias del divisor como ruido blanco hasta 1.5 MHz. Pero en un divisor compensado, los condensadores cortocircuitan ese ruido por encima de la frecuencia de esquina R·C, que está en decenas de kHz. El total queda acotado por <b>√(kT/C)</b> de la capacidad del nodo:</p>
+  <div class="tw"><table>
+    <thead><tr><th>Divisor</th><th>R del nodo</th><th>C del nodo</th><th>Esquina</th><th>Antes (blanco)</th><th>Real (kT/C)</th></tr></thead>
+    <tbody>
+      <tr><td>Nuestro ÷20 (sección B)</td><td class="n">47.4 kΩ</td><td class="n">200 pF</td><td class="n">16.8 kHz</td><td class="n">864 µV</td><td class="n"><b>91 µV</b></td></tr>
+      <tr><td>÷100 de la propuesta P1</td><td class="n">9.9 kΩ</td><td class="n">1000 pF</td><td class="n">16.1 kHz</td><td class="n">1965 µV</td><td class="n"><b>202 µV</b></td></tr>
+      <tr><td>WAVE2 E, rama A ÷7.67</td><td class="n">235 kΩ</td><td class="n">28 pF</td><td class="n">24 kHz</td><td class="n">734 µV</td><td class="n"><b>93 µV</b></td></tr>
+      <tr><td>WAVE2 A, ÷20.6 fijo</td><td class="n">48.5 kΩ</td><td class="n">26 pF</td><td class="n">126 kHz</td><td class="n">896 µV</td><td class="n"><b>250 µV</b></td></tr>
+    </tbody>
+  </table></div>
+  <p class="meta">Ruido referido a la entrada con 1.5 MHz de banda. Calculado integrando R ∥ C con el polo del sistema; coincide con √(kT/C) multiplicado por la atenuación.</p>
+  <h3>Qué cambia y qué no</h3>
+  <ul class="tight">
+    <li><b>Cambian las cifras.</b> «El ÷20 fijo deja la escala de 5 mV/div en el 17 % de división» era falso: el divisor aporta un 1.8 %. Lo que de verdad pesa es que <b>multiplica ×20 el ruido de los amplificadores</b> que vienen detrás y obliga a una ganancia ×1000. Con eso el total es ≈ 0.32 mV rms, <b>≈ 6 %</b> de división: sigue siendo peor que el 0.3 % de la rama ×1.</li>
+    <li><b>No cambian las decisiones.</b> D-05 (rama ×1) y D-06 siguen justificadas, por el ruido de los amplificadores y por la ganancia necesaria.</li>
+    <li><b>Ya corregido</b> en <code>S3G4_LAB_rev2.1/01_diseno/rediseno_afe_rev21.html</code> (D-05, aviso de B.8 y tabla de C.5) y en <code>S3G4_LAB_rev2.1/02_referencias/analisis_dso112.html</code> (tabla de P1), con notas visibles de corrección.</li>
+    <li><b>Abre una puerta:</b> con el modelo correcto, un divisor pequeño bufferizado deja de ser inaceptable. Eso hace viable la propuesta de la sección siguiente.</li>
+  </ul>
+
+</section>
+<section id="p7">
+  <div class="shead"><span class="num">5</span><h2>¿Nos sirve el grueso sin relé? Propuesta P7</h2><span class="tag t-open">Decidir</span></div>
+
+  <p>Adaptado a nuestra especificación, el esquema de la revisión E queda así: <b>rama fina ÷2</b> (1 MΩ / 1 MΩ, 10 pF / 10 pF) y <b>rama gruesa ÷200</b> (1.99 MΩ / 10 kΩ), cada una con su buffer de entrada FET, y <b>un solo 74HC4053</b> que conmuta los tres canales detrás de los buffers. La escalera es la del DSO112 (1…1/40) y la ganancia fija sube a ×100. La relación 100 entre ramas mantiene la serie 1-2-5 de 5 mV a 20 V/div, y deja libres las entradas de masa y VCHECK del 4051, como en P1 y P3.</p>
+  <div class="tw"><table>
+    <thead><tr><th></th><th>Con relé (P1 + P2 + P4)</th><th>Sin relé (P7)</th></tr></thead>
+    <tbody>
+      <tr><td>Piezas por canal</td><td>relé + transistor + diodo</td><td>un amplificador de entrada más</td></tr>
+      <tr><td>Piezas comunes</td><td>—</td><td>un 74HC4053 para los tres canales</td></tr>
+      <tr><td>Consumo</td><td>monoestable: 100–140 mW por canal en escalas finas; latching: sólo pulsos</td><td>~30 mW por canal, siempre</td></tr>
+      <tr><td>Ruido a 5 mV/div</td><td class="n">15 µV · 0.3 %</td><td class="n">42 µV · 0.8 %</td></tr>
+      <tr><td>Ruido a 500 mV/div</td><td class="n">1.5 mV · 0.3 %</td><td class="n">3.1 mV · 0.6 %</td></tr>
+      <tr><td>Ganancia fija</td><td>×50</td><td>×100 (dos etapas de ×10)</td></tr>
+      <tr><td>Sobrevive a la red</td><td>en ÷100 siempre; en ×1 sólo con las piezas de alta tensión de P2</td><td><b>en todas las escalas</b>: cada rama es un divisor de ≥ 1 MΩ (0.35 mA, 0.12 W con 353 V)</td></tr>
+      <tr><td>Ajustes de fábrica</td><td>1 ajustable por canal</td><td>2 ajustables por canal (o condensadores C0G muy ajustados)</td></tr>
+      <tr><td>Piezas mecánicas</td><td>un relé por canal</td><td>ninguna</td></tr>
+    </tbody>
+  </table></div>
+  <div class="callout w"><b>La limitación de P7.</b> En las escalas gruesas, si la entrada pasa de <b>±11.2 V</b> la rama fina recorta en sus clamps y empieza a consumir corriente: la impedancia de entrada efectiva baja a 820 kΩ con 20 V y a 735 kΩ con 40 V. Con una fuente de baja impedancia el error es despreciable (0.4 % con 10 kΩ de fuente a 40 V). Con una <b>sonda ×10</b>, cuya impedancia es de 9 MΩ, la forma de onda se deforma a partir de ±112 V en la punta. Hay que escribirlo en la especificación.</div>
+  <p><b>Lectura:</b> P7 cumple los dos deseos con los que empezó este rediseño —sin relés y protección contra la red— a cambio de algo más de ruido (0.8 % frente a 0.3 %, los dos por debajo de un par de LSB) y una limitación acotada. Antes de elegirlo conviene <b>simularlo en LTspice</b>: el recorte de la rama fina, la compensación de las dos ramas con las parásitas reales y el ruido. La carpeta <code>Simulation_LTSpice/</code> ya existe.</p>
+
+</section>
+<section id="offset">
+  <div class="shead"><span class="num">6</span><h2>Offset vertical: la alternativa digital</h2><span class="tag t-open">Para la sección E</span></div>
+
+  <p>La revisión A no tiene offset analógico. Suma 1.67 V fijos para centrar la señal en el ADC y hace que cada división valga sólo 20 mV en el ADC. El convertidor ve así ~165 divisiones y la pantalla es una ventana que se mueve por software. Se ahorra todo el circuito de posición vertical a cambio de resolución (≈ 25 códigos por división).</p>
+  <p>Con nuestro ADC de 12 bits el reparto es más cómodo. Opciones para la sección E:</p>
+  <div class="tw"><table>
+    <thead><tr><th>8 divisiones ocupan…</th><th>Códigos por división</th><th>Margen digital fuera de pantalla</th><th>Offset analógico</th></tr></thead>
+    <tbody>
+      <tr><td>2.0 V (C.1 actual)</td><td class="n">≈ 410</td><td class="n">±1 div</td><td>necesario (PWM o DAC)</td></tr>
+      <tr><td>1.0 V</td><td class="n">≈ 205</td><td class="n">±6 div</td><td>opcional</td></tr>
+      <tr><td>0.5 V</td><td class="n">≈ 102</td><td class="n">±16 div</td><td>innecesario en la práctica</td></tr>
+    </tbody>
+  </table></div>
+  <p>Incluso con 0.5 V seguimos teniendo cuatro veces la resolución del WAVE2 y del DSO112, y la ganancia fija necesaria se reduce en la misma proporción, lo que alivia el ancho de banda de C.4. La contrapartida es que un nivel de continua grande en una escala sensible sólo se puede mirar con acoplo AC.</p>
+
+</section>
+<section id="generador">
+  <div class="shead"><span class="num">7</span><h2>Generador</h2></div>
+  <figure><div class="sx"><svg class="sch" viewBox="0 0 1300 330" width="1300" role="img" aria-label="WAVE2 - salida del generador, un canal" xmlns="http://www.w3.org/2000/svg"><polygon class="port" points="20,142 180.79999999999998,142 188.79999999999998,150 180.79999999999998,158 20,158"/><text class="portt" x="25" y="154" text-anchor="start">DAC · PA4 del STM32F100</text><polyline class="w" points="190,150 240,150"/><polyline class="w" points="240,150 270.0,150.0"/><polyline class="w" points="310.0,150.0 340,150"/><polyline class="sym" points="-20,0 -15,-6 -10,6 -5,-6 0,6 5,-6 10,6 15,-6 20,0" transform="translate(290.0,150.0) rotate(0.0)"/><text class="ref" x="290.0" y="138.0" text-anchor="middle">R73</text><text class="val" x="290.0" y="172.0" text-anchor="middle">470 Ω</text><circle class="dot" cx="380" cy="150" r="3.2"/><polyline class="w" points="340,150 440,150"/><polyline class="w" points="380,150 380.0,191.0"/><polyline class="w" points="380.0,199.0 380,240"/><g transform="translate(380.0,195.0) rotate(90.0)"><line class="sym" x1="-4" y1="-11" x2="-4" y2="11"/><line class="sym" x1="4" y1="-11" x2="4" y2="11"/></g><text class="ref" x="366.0" y="192.0" text-anchor="end">C34</text><text class="val" x="366.0" y="206.0" text-anchor="end">20 nF</text><polygon class="port" points="380,248 455.0,248 463.0,256 455.0,264 380,264"/><text class="portt" x="385" y="260" text-anchor="start">LFA · GPIO</text><polygon class="op" points="480,134 480,198 542,166"/><text class="pm" x="487" y="155" text-anchor="start">+</text><text class="pm" x="487" y="187" text-anchor="start">−</text><polyline class="w" points="470,150 480,150"/><polyline class="w" points="470,182 480,182"/><polyline class="w" points="542,166 552,166"/><text class="ref" x="490" y="128" text-anchor="start">U17A</text><text class="val" x="490" y="212" text-anchor="start">TL082</text><polyline class="w" points="440,150 470,150"/><polyline class="w" points="470,182 460,182 460,240"/><circle class="dot" cx="460" cy="240" r="3.2"/><polyline class="w" points="460,240 510.0,240.0"/><polyline class="w" points="550.0,240.0 600,240"/><polyline class="sym" points="-20,0 -15,-6 -10,6 -5,-6 0,6 5,-6 10,6 15,-6 20,0" transform="translate(530.0,240.0) rotate(0.0)"/><text class="ref" x="530.0" y="266.0" text-anchor="middle">R68</text><text class="val" x="530.0" y="278.0" text-anchor="middle">10 kΩ</text><polyline class="w" points="460,240 460.0,250.0"/><polyline class="w" points="460.0,290.0 460,300"/><polyline class="sym" points="-20,0 -15,-6 -10,6 -5,-6 0,6 5,-6 10,6 15,-6 20,0" transform="translate(460.0,270.0) rotate(90.0)"/><text class="ref" x="474.0" y="267.0" text-anchor="start">R67</text><text class="val" x="474.0" y="281.0" text-anchor="start">10 kΩ</text><polygon class="port" points="460,300 620.8,300 628.8,308 620.8,316 460,316"/><text class="portt" x="465" y="312" text-anchor="start">TSIGA_R · GPIO (offset)</text><polyline class="w" points="552,166 640,166"/><circle class="dot" cx="600" cy="166" r="3.2"/><polyline class="w" points="600,240 600,166"/><polyline class="w" points="640,166 680.0,166.0"/><polyline class="w" points="720.0,166.0 760,166"/><polyline class="sym" points="-20,0 -15,-6 -10,6 -5,-6 0,6 5,-6 10,6 15,-6 20,0" transform="translate(700.0,166.0) rotate(0.0)"/><text class="ref" x="700.0" y="154.0" text-anchor="middle">R74</text><text class="val" x="700.0" y="188.0" text-anchor="middle">100 Ω</text><polygon class="port" points="760,158 861.4,158 869.4,166 861.4,174 760,174"/><text class="portt" x="765" y="170" text-anchor="start">TSIGA (salida)</text><text class="note" x="1290" y="60" text-anchor="end">LFA a nivel bajo: C34 conecta y forma con R73 un filtro de 16.9 kHz.</text><text class="note" x="1290" y="78" text-anchor="end">LFA en alta impedancia: el filtro desaparece. Un GPIO hace de interruptor.</text><text class="note" x="1290" y="110" text-anchor="end">Ganancia ×2. TSIGA_R a 0 V: sin offset; a 3.3 V: resta 3.3 V a la salida.</text><text class="note" x="1290" y="128" text-anchor="end">Por eso el protocolo sólo admite offset de 0 o 3.3 V.</text><text class="note" x="1290" y="160" text-anchor="end">R74 protege la salida contra cortocircuitos breves.</text></svg></div><figcaption>Redibujo de la salida del canal A (placa principal 00J). El canal B es igual, con PA5, U17B y LFB.</figcaption></figure>
+
+  <p>Dos canales desde los DAC del STM32F100, <b>de 0 a 20 kHz</b>, amplitud de 0 a 3 V de pico, senoidal, cuadrada, diente de sierra o escalera, con ciclo de trabajo y desfase entre canales. El protocolo sólo admite <b>dos valores de offset, 0 o 3.3 V</b>.</p>
+  <ul class="tight">
+    <li><b>Filtro de reconstrucción conmutable con un pin:</b> C34 va a un GPIO. A nivel bajo, el condensador forma con R73 un paso bajo de 16.9 kHz que suaviza los escalones del DAC; en alta impedancia, el filtro desaparece. Sirve para nuestro AWG: filtro fuerte en frecuencias bajas y sin filtro en las altas, sin interruptor analógico.</li>
+    <li><b>Offset con otro pin:</b> R67 lleva la entrada inversora del TL082 a un GPIO. A 0 V no hay offset; a 3.3 V se restan 3.3 V a la salida. Por eso sólo hay dos niveles. Para nosotros se queda corto.</li>
+    <li><b>100 Ω en serie</b> a la salida, contra cortocircuitos breves.</li>
+  </ul>
+
+</section>
+<section id="sistema">
+  <div class="shead"><span class="num">8</span><h2>Placa principal y sistema</h2></div>
+
+  <div class="tw"><table>
+    <thead><tr><th>Micro</th><th>Funciones</th></tr></thead>
+    <tbody>
+      <tr><td>STM32F103CB</td><td>ADC de los dos canales (PA0, PA1); TFT por bus de 8 bits (PB0–PB7 y PC13–PC15); microSD por SPI1; USB nativo (placas 00G y 00J); EEPROM 24LC32A por I²C; disparo externo en PB9 y salida de disparo TRIGOUT en PB10; da su reloj por MCO al otro micro</td></tr>
+      <tr><td>STM32F100</td><td>Táctil resistivo, cinco botones y un codificador rotatorio; control de la placa analógica por 74HC595; generador con sus dos DAC; señal de prueba de 1 kHz (3.3 V o 0.14 V); vigilancia de batería y USB; apagado</td></tr>
+    </tbody>
+  </table></div>
+  <ul class="tight">
+    <li><b>Disparo:</b> el F103 no tiene comparador analógico, así que el disparo interno debe hacerse con el ADC; su «perro guardián analógico» sirve para eso. No lo he comprobado en el firmware. El externo es LVTTL: el firmware habla de 1.65 V de umbral y el manual de 15 V como máximo.</li>
+    <li><b>Actualización:</b> se puentean BOOT0 y BOOT1 en el puerto auxiliar y se usa el bootloader grabado de fábrica en el STM32 con la aplicación de ST, a través de un convertidor USB-UART. <b>Idea para nosotros:</b> si el ESP32-S3 controla BOOT0 y NRST del G473, puede reprogramarlo por su bootloader de fábrica, es decir, actualizar el STM32 por WiFi. Hay que comprobar esos pines en el mapa firmado.</li>
+    <li><b>Evolución de la placa principal:</b> la 00G usaba módulos soldados para el cargador (JYE118) y el interruptor (JYE117). La 00J añadió la EEPROM y diodos ESD PESD5V0 en las cuatro líneas del táctil. La 00M (2020) integró el cargador LTC4054 en la placa y cambió el USB nativo por un CH340N. Son los cambios típicos de un producto que se fabrica en serie: menos módulos, protección donde hubo fallos y el USB que menos problemas da.</li>
+  </ul>
+
+</section>
+<section id="energia">
+  <div class="shead"><span class="num">9</span><h2>Alimentación y masas</h2></div>
+
+  <ul class="tight">
+    <li><b>Rieles:</b> un elevador AX5511 para V+ y un inversor MC34063 para V− (−7 V), igual que el DSO112. En la placa analógica, 78L05 y 79L05.</li>
+    <li><b>Filtrado por canal:</b> cada riel de cada canal pasa por su propia bobina de 100 µH con 10 µF (AV1+, AV1−, AV2+, AV2−). Así un canal no contamina al otro por la alimentación.</li>
+    <li><b>Masas por canal:</b> AGND1 y AGND2 son redes distintas, unidas a la masa general por resistencias de 0 Ω (R33, R34). Es una masa en estrella que se puede abrir para pruebas.</li>
+    <li><b>VDDA aparte:</b> dos BL8060-3.3, uno para la lógica y otro sólo para VDDA, la alimentación analógica y referencia del ADC.</li>
+    <li><b>Encendido y carga:</b> interruptor suave (SI2301 + 8550 + 3904, placa 117) y cargador LTC4054 (placa 118), el mismo concepto que el DSO112.</li>
+  </ul>
+  <p>Para nuestros tres canales, los dos primeros puntos son baratos y deberían entrar en la sección G.</p>
+
+</section>
+<section id="protocolo">
+  <div class="shead"><span class="num">10</span><h2>Protocolo serie</h2></div>
+
+  <ul class="tight">
+    <li><b>Modo texto:</b> órdenes legibles del tipo <code>Vsen2 = 5mV</code>, <code>TB = 0.2ms</code> o <code>trigsrc = ch2</code>; consulta con <code>?</code>; órdenes de paso <code>FREQ++</code>, <code>AMP--</code> con tamaño de paso configurable; y órdenes de acción (HOLD, RUN, SENDDATA, SAVEWF…). Hay además un modo binario con los mismos parámetros codificados.</li>
+    <li><b>La Tabla 5 incluye la ganancia analógica de cada escala.</b> Documentar la ganancia real junto al código de la escala es una buena práctica: con ella se pudo verificar este análisis.</li>
+    <li>La tabla de velocidades llega a <b>2.5 MSa/s</b>, pero la especificación oficial dice 1 MSa/s en tiempo real. Puede ser muestreo entrelazado con los dos ADC en un solo canal o equivalente en el tiempo; <b>no está verificado</b>.</li>
+  </ul>
+  <p class="meta">Nuestro SCPI cumple el mismo papel que su modo texto. Dos ideas para contrastar con él: las órdenes de paso (útiles para un mando giratorio remoto) y la orden que devuelve frecuencias y medidas de todos los canales en una sola línea.</p>
+
+</section>
+<section id="firmware">
+  <div class="shead"><span class="num">11</span><h2>Firmware</h2></div>
+
+  <ul class="tight">
+    <li><code>113-15801-092.hex</code>: 98 816 bytes desde 0x08000000, pila inicial en 0x20005000. Encaja con el STM32F103CB (128 KB de flash, 20 KB de RAM).</li>
+    <li>Escrito con la biblioteca Standard Peripheral de ST; usa el perro guardián independiente (IWDG).</li>
+    <li>Contiene los mensajes «Read ATSHA204A failed» y un aviso para enviar el PID al soporte: el firmware busca un <b>chip de autenticación ATSHA204A</b> para impedir copias. No aparece en ningún esquemático; mi hipótesis es que se monta en la huella de la EEPROM, que usa el mismo encapsulado y bus. No lo he verificado, y a nosotros no nos afecta.</li>
+    <li>Otros textos: «1.65V for Ext. Trigger», «Aux port testing», «Touch Panel Calibration», «STB: Roll», «Pers. OFF».</li>
+  </ul>
+
+</section>
+<section id="evitar">
+  <div class="shead"><span class="num">12</span><h2>Lo que no conviene copiar</h2></div>
+
+  <ul class="tight">
+    <li><b>Un divisor fijo para las escalas finas</b> (revisión A): a 1.5 MHz exige ×1000 de ganancia y multiplica ×20 el ruido de los amplificadores.</li>
+    <li><b>20 mV por división en el ADC:</b> 25 códigos por división desperdician un ADC de 12 bits. Si adoptamos el offset digital, no bajar de ~100 códigos por división.</li>
+    <li><b>TL084 en la cadena de señal:</b> 3 MHz de GBW; sirve para 200 kHz, no para nosotros.</li>
+    <li><b>Offset del generador de sólo dos niveles.</b></li>
+    <li><b>Dos ajustables por canal</b> si se puede evitar: ellos mismos los redujeron en la revisión A.</li>
+  </ul>
+
+</section>
+<footer><p class="meta">Análisis de Claude Code, 23 sep 2026. Fuentes locales en <code>research_and_tests/Wave2/</code>. Especificaciones oficiales: <a href="https://jyetech.com/wave2-2-channel-portable-oscilloscope/">JYE Tech · WAVE2</a> y <a href="https://www.nooelec.com/store/test-equipment/oscilloscopes/wave2.html">Nooelec · WAVE2</a>.</p></footer>
+</div>

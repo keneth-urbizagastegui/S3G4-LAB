@@ -1,0 +1,44 @@
+LTspice 26.0.2 for Windows
+Circuit: C:\Users\Keneth\Desktop\S3G4 LAB\S3G4_LAB_rev2.1\03_simulaciones\P4_P7_grueso\P4_rele\T02_respuesta.net
+Start Time: Thu Sep 24 08:02:21 2026
+solver = Normal
+Maximum thread count: 12
+tnom = 27
+temp = 27
+method = trap
+Direct Newton iteration succeeded in finding operating point.
+Total elapsed time: 0.195 seconds.
+
+Files loaded:
+C:\Users\Keneth\Desktop\S3G4 LAB\S3G4_LAB_rev2.1\03_simulaciones\P4_P7_grueso\P4_rele\T02_respuesta.net
+C:\Users\Keneth\Desktop\S3G4 LAB\S3G4_LAB_rev2.1\03_simulaciones\P4_P7_grueso\comun\rev21_comun.inc
+C:\Users\Keneth\AppData\Local\LTspice\lib\sub\UniversalOpAmp2.lib
+
+p4_s5_g100: mag(V(SALs5)) =(33.8901514987dB,0°) at 100
+p4_s5_g100k: mag(V(SALs5)) =(33.8730998894dB,0°) at 100000
+p4_s5_g1m5: mag(V(SALs5)) =(33.7491700912dB,0°) at 1500000
+p4_s5_gmax: MAX(mag(V(SALs5)) )=(33.8902161375dB,0°) FROM 10 TO 100000
+p4_s5_gmin: MIN(mag(V(SALs5)) )=(33.8730998894dB,0°) FROM 10 TO 100000
+p4_s5_peak: MAX(mag(V(SALs5)) )=(33.8902161375dB,0°) FROM 10 TO 100000000
+p4_s5_f3: mag(V(SALs5))=50/sqrt(2)  AT 8034859.48526
+p4_s200_g100: mag(V(SALs200)) =(1.83421336818dB,0°) at 100
+p4_s200_g100k: mag(V(SALs200)) =(1.81719393142dB,0°) at 100000
+p4_s200_g1m5: mag(V(SALs200)) =(1.6918758354dB,0°) at 1500000
+p4_s200_gmax: MAX(mag(V(SALs200)) )=(1.83427785773dB,0°) FROM 10 TO 100000
+p4_s200_gmin: MIN(mag(V(SALs200)) )=(1.81719393142dB,0°) FROM 10 TO 100000
+p4_s200_peak: MAX(mag(V(SALs200)) )=(1.83427785773dB,0°) FROM 10 TO 100000000
+p4_s200_f3: mag(V(SALs200))=1.25/sqrt(2)  AT 7946756.96317
+p4_s500_g100: mag(V(SALs500)) =(-6.02248665926dB,0°) at 100
+p4_s500_g100k: mag(V(SALs500)) =(-5.24068084798dB,0°) at 100000
+p4_s500_g1m5: mag(V(SALs500)) =(-5.3458927628dB,0°) at 1500000
+p4_s500_gmax: MAX(mag(V(SALs500)) )=(-5.24068084798dB,0°) FROM 10 TO 100000
+p4_s500_gmin: MIN(mag(V(SALs500)) )=(-6.02252077652dB,0°) FROM 10 TO 100000
+p4_s500_peak: MAX(mag(V(SALs500)) )=(-5.22819760028dB,0°) FROM 10 TO 100000000
+p4_s500_f3: mag(V(SALs500))=0.5/sqrt(2)  AT 9538421.95979
+p4_s5v_g100: mag(V(SALs5v)) =(-26.0285601453dB,0°) at 100
+p4_s5v_g100k: mag(V(SALs5v)) =(-25.246739568dB,0°) at 100000
+p4_s5v_g1m5: mag(V(SALs5v)) =(-25.3564954315dB,0°) at 1500000
+p4_s5v_gmax: MAX(mag(V(SALs5v)) )=(-25.246739568dB,0°) FROM 10 TO 100000
+p4_s5v_gmin: MIN(mag(V(SALs5v)) )=(-26.028594264dB,0°) FROM 10 TO 100000
+p4_s5v_peak: MAX(mag(V(SALs5v)) )=(-25.2343497726dB,0°) FROM 10 TO 100000000
+p4_s5v_f3: mag(V(SALs5v))=0.05/sqrt(2)  AT 9257114.1702
