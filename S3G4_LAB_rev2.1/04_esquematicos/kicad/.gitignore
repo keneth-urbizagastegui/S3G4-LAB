@@ -1,0 +1,17 @@
+# KiCad 10 — archivos locales y generados (este repo es la raíz S3G4 LAB; este .gitignore sólo afecta a esta carpeta)
+*-backups/
+fp-info-cache
+*.kicad_prl
+_autosave-*
+~*.lck
+*.lck
+*.bak
+*-bak
+
+# Salidas de fabricación: se generan desde un tag release/*, no se versionan
+production/
+output/
+
+# Caches de herramientas
+*.kicad_sch-bak
+*.kicad_pcb-bak
