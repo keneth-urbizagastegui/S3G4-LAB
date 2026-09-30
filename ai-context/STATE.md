@@ -70,3 +70,10 @@ No se ha elegido automáticamente uno de estos frentes como nueva tarea de ingen
 - **Simulación P4/P7 planificada (23 sep):** carpeta nueva `S3G4_LAB_rev2.1/03_simulaciones/` (separada de la rev 2.0). Plan en `S3G4_LAB_rev2.1/03_simulaciones/P4_P7_grueso/PLAN_SIMULACION.md` y encargo en `ENCARGO_CODEX.md`. Construye Codex con **gpt-5.6-sol**, esfuerzo medium (se pidió GPT-6-Sol, pero la cuenta de ChatGPT no lo admite y Keneth eligió gpt-5.6-sol); audita Claude. En ejecución desde las 17:14 del 23 sep; sin auditar.
 - Evidencia nueva recogida de `research_and_tests` (DSO112, DSO150, DSO138 mini, DSO158/wave2, TI TIDA-01012, Micro-DMM, EMBO, black_scope) y correcciones a cifras de ruido que yo mismo había dado mal. Todo el detalle, con valores y designadores, en `ai-context/journal/2026-09-22-claude-rediseno-afe-rev21.md`.
 - No se tocó firmware, `.ioc`, PCB, Altium ni los netlists de la rev. 2.0.
+
+
+## Entorno KiCad 10 + IA para la rev 2.1 (30 sep 2026, Claude Code)
+
+- Keneth migra el diseño de Altium a KiCad 10.0.6. Instalados y verificados: plugins del PCM (Interactive Html BOM, Fabrication Toolkit 5.3.0, KiKit 1.8.1 con backend), plugin kicad-happy 2.2.1, MCP de usuario pcbparts y ltspice, y Konnect 0.12.1 (MCP de proyecto, pendiente de aprobación).
+- Esqueleto del proyecto en `S3G4_LAB_rev2.1/04_esquematicos/kicad/` (proyecto `s3g4` vacío, PCB de 2 capas por defecto, reglas para IA en su `AGENTS.md`). Todavía no hay diseño: ni contorno, ni stackup de 4 capas, ni reglas DRC. Trabajo en la rama `ai/prueba-konnect`. Detalle y pendientes en `ai-context/journal/2026-09-30-claude-entorno-kicad10-ia.md`.
+
