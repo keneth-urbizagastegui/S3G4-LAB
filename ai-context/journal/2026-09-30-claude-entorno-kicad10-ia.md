@@ -22,13 +22,26 @@
 - Konnect, hablado por stdio sin pasar por el cliente MCP: `initialize` correcto (0.12.1), 21 herramientas base, 21 toolsets bajo demanda (incluye `pcb_board`, `verification`, `design_review`, `manufacturing`). `get_installation_info` ve KiCad 10.0.6, `kicad-cli` y el socket IPC. `get_project_info` y `get_board_info` (vía IPC, `source: ipc`) leen el proyecto `s3g4`. Ningún archivo cambió.
 - `get_layer_list` falla con «No (layers) section» porque el `.kicad_pcb` recién creado no tiene sección de capas; es esperable hasta que se guarde con contenido.
 - El PCB nuevo es de **2 capas de cobre**. Las 4 capas y el stackup son decisión de Keneth y se fijan a mano en KiCad (Configuración de la placa); Konnect no debe tocar el stackup.
-- No probado: escritura con Konnect, kicad-happy sobre un diseño real, pcbparts y ltspice con consultas reales.
+- Keneth aprobó el servidor `konnect` en una sesión de `claude` abierta en `04_esquematicos/kicad/`; desde ahí Claude cargó `pcb_board` y `get_board_info` devolvió 2 capas de cobre, 0 redes, `source: ipc`. Solo lectura.
+- Pruebas de humo (hablando por MCP directamente; las herramientas no estaban cargadas en la sesión de escritorio):
+  - `ltspice` 0.6.1: filtro RC 10 kΩ/10 nF con LTspice real; `analyze_results`/`bode_filter` mide fc = 1587,7 Hz (teórico 1591,5 Hz, −0,24 % con 20 pts/década) y −19,96 dB/dec. Solo opera dentro del directorio desde el que arranca; arrancado en `03_simulaciones/` dejó `ltspice-mcp.toml` y `.ltspice-mcp/` (borrados; reaparecerán si se usa ahí).
+  - `pcbparts` 3.4.3 (14 herramientas): `jlc_search` TPL7407LADR → C2149826, SOIC-16, 1053 en stock, 0,40 USD, extended; OPA313IDBVR → C2057303, SOT-23-5, 635 en stock, 0,47 USD, extended (datos de ese momento, no vigentes).
+  - `kicad-happy` 2.2.1: `analyze_schematic.py` y `analyze_pcb.py` procesan el proyecto vacío sin errores; no aportan hallazgos hasta que haya diseño.
+
+## pcb-inspector (instalado, sin MCP)
+
+- Instalado con `uv tool install` desde el `.whl` de la release **v0.1.0** (06/09/2026) de `github.com/takzen/pcb-inspector` (MIT), no desde `main`. Ejecutable: `C:\Users\Keneth\.local\bin\pcb-inspector.exe`.
+- **El README y el informe dicen `uv pip install pcb-inspector`, pero ese nombre no existe en PyPI (404).** No instalar por nombre: si alguien lo registra más adelante sería otro paquete. El extra `[live]` del README tampoco existe en v0.1.0; `kicad-python` ya viene como dependencia normal.
+- Prueba: `version` detecta `kicad-cli` 10.0.6; 7 reglas registradas; `drc` sobre `s3g4.kicad_pcb` da 1 crítico (`invalid_outline`, el mismo de `kicad-cli`); `analyze`, 0 hallazgos. El repo no cambió.
+- **No usar `check` ni `vision` sin decidirlo:** la capa de visión envía imágenes de la placa a un proveedor externo. No hay ninguna API key configurada, así que hoy no puede hacerlo. Para auditar, usar `drc` y `analyze`.
+- No se registró como servidor MCP de Claude Code (`pcb-inspector mcp --transport stdio`); se hará cuando exista una placa.
 
 ## Pendientes
 
-1. Keneth: abrir `claude` en `04_esquematicos/kicad/` y aprobar el servidor `konnect`.
-2. Decidir número de capas y stackup; dibujar el contorno (Edge.Cuts).
-3. Escribir las reglas DRC reales (clearance/creepage de la entrada según RF-xx) y las clases de red en `s3g4.kicad_dru`.
-4. `s3g4.kicad_pro` aparece modificado sin commit (lo reescribe KiCad).
-5. No probado aún: `incidencia #610` de Konnect (`set_active_layer` puede dejar la placa ilegible en 10.0.6); no usarla.
-6. Opcional: añadir `Scripts` de KiKit al PATH; JLCPCB Tools de Bouni (no instalar junto a Fabrication Toolkit sin decidir); pcb-inspector; KiBot/CI.
+1. Decidir número de capas y stackup; dibujar el contorno (Edge.Cuts).
+2. Escribir las reglas DRC reales (clearance/creepage de la entrada según RF-xx) y las clases de red en `s3g4.kicad_dru`.
+3. Decidir el punto de partida del diseño: importar la rev 2.0 desde Altium como referencia o dibujar la rev 2.1 desde cero (RF-01…RF-19).
+4. No probado aún: escritura con Konnect. Incidencia #610 (`set_active_layer` puede dejar la placa ilegible en 10.0.6): no usar esa herramienta.
+5. Elegir una sola herramienta de BOM/CPL para JLCPCB: Fabrication Toolkit 5.3.0 (instalado) o JLCPCB Tools de Bouni (no instalado). No tener las dos.
+6. Remoto privado en GitHub (`gh auth login` pendiente) y KiBot en CI con la imagen `dev_k10` anclada; ambos dependen de que haya placa.
+7. Opcional: añadir `Scripts` de KiKit al PATH.

@@ -74,6 +74,6 @@ No se ha elegido automáticamente uno de estos frentes como nueva tarea de ingen
 
 ## Entorno KiCad 10 + IA para la rev 2.1 (30 sep 2026, Claude Code)
 
-- Keneth migra el diseño de Altium a KiCad 10.0.6. Instalados y verificados: plugins del PCM (Interactive Html BOM, Fabrication Toolkit 5.3.0, KiKit 1.8.1 con backend), plugin kicad-happy 2.2.1, MCP de usuario pcbparts y ltspice, y Konnect 0.12.1 (MCP de proyecto, pendiente de aprobación).
+- Keneth migra el diseño de Altium a KiCad 10.0.6. Instalados y verificados: plugins del PCM (Interactive Html BOM, Fabrication Toolkit 5.3.0, KiKit 1.8.1 con backend), plugin kicad-happy 2.2.1, MCP de usuario pcbparts y ltspice, y Konnect 0.12.1 (MCP de proyecto, aprobado por Keneth; lectura de la placa por IPC probada, escritura sin probar) y pcb-inspector 0.1.0 (instalado desde la release de GitHub, no por nombre de PyPI; sin visión ni MCP).
 - Esqueleto del proyecto en `S3G4_LAB_rev2.1/04_esquematicos/kicad/` (proyecto `s3g4` vacío, PCB de 2 capas por defecto, reglas para IA en su `AGENTS.md`). Todavía no hay diseño: ni contorno, ni stackup de 4 capas, ni reglas DRC. Trabajo en la rama `ai/prueba-konnect`. Detalle y pendientes en `ai-context/journal/2026-09-30-claude-entorno-kicad10-ia.md`.
 
