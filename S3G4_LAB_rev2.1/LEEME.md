@@ -4,11 +4,11 @@ Carpeta de trabajo del rediseño **rev 2.1**: AFE a batería con 3 canales, DMM 
 
 | Carpeta | Qué hay | Estado |
 |---|---|---|
-| `00_requisitos/` | `requisitos_osciloscopio.html` (RF-01…RF-19) y `requisitos_dmm_awg.html` (RD y RG) | Acordados el 23 sep |
+| `00_requisitos/` | `requisitos_osciloscopio.html` (RF-01…RF-19), `requisitos_dmm_awg.html` (RD y RG) y `especificaciones_osciloscopio.html` (hoja preliminar) | Acordados el 23 sep; revisados el 30 sep |
 | `01_diseno/` | `rediseno_afe_rev21.html`, el documento vivo: decisiones D-01…D-09 y secciones A, B, C y G | En curso |
 | `02_referencias/` | Anatomías del DSO112, el WAVE2, el OpenScope MZ y black_scope, y revisión analógica del STM32G473 | Cerradas |
 | `03_simulaciones/` | `P4_P7_grueso/`: plan, encargo, acta de Codex, auditoría de Claude, ejecutor y resultados | Auditada; P4 queda por RF-07 |
-| `04_esquematicos/` | Esquemas de la rev 2.1 | Vacía |
+| `04_esquematicos/` | Esquemas de la rev 2.1: proyecto KiCad 10 `s3g4` en `kicad/` | Creado el 30 sep, sin dibujar |
 | `05_informes/` | Índice de actas y material para el informe | — |
 | `06_plan/` | `PLAN.md`: lo que falta y las decisiones abiertas | Vivo |
 | `herramientas/` | Scripts de dibujos, cálculos y páginas | — |

@@ -3,7 +3,7 @@
 from sch import Sch
 
 def grueso():
-    s = Sch(1300, 430, "Rev 2.1 - seleccion gruesa x1 / :20 por rele latching")
+    s = Sch(1300, 430, "Rev 2.1 - seleccion gruesa x1 / :20 por rele monoestable")
     y = 155
     p = s.bnc(60, y, "J101", "KH-BNC50-3511")
     s.wire(p, (150, y)); s.net(80, y, "NET_IN_CH"); s.dot(150, y)
@@ -33,7 +33,7 @@ def grueso():
     s.note(20, 350, "En ÷20 la rama ×1 queda abierta: su nodo está a la tensión de la BNC pero no conduce; la capacidad", "start")
     s.note(20, 366, "del contacto abierto (~1 pF) queda en paralelo con C1A–C1C y el ajuste de compensación la absorbe.", "start")
     s.note(20, 390, "R_S·C_S = 100 µs ≈ R_BIAS·C_in: la rama ×1 es un divisor compensado de relación 1.001 → plano, sin ajuste.", "start")
-    s.note(20, 414, "K101 latching no tiene reposo: el firmware lo lleva a ÷20 al arrancar, al apagar y al detectar saturación.", "start")
+    s.note(20, 414, "K101 monoestable: en reposo (sin corriente) está en ÷20; el firmware también lo lleva a ÷20 al detectar saturación.", "start")
     return s.svg()
 
 LAD = [("RL1", "499 Ω", "1/1"), ("RL2", "249 Ω", "1/2"), ("RL3", "49.9 Ω", "1/4"), ("RL4", "100 Ω", "1/5"),

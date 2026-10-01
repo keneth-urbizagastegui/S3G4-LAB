@@ -46,5 +46,5 @@
 
 ## Pendientes
 
-1. Commit local en Git (en curso en esta sesión).
+1. Hecho: commit `e4f5ece` en la rama `rev2.1`, local y sin push. Tiene 141 archivos: la carpeta nueva sin `.raw` ni `.db`, `ai-context/`, la configuración de los agentes y `tools/ai-context`. Este diario, retocado después del commit, entrará en el siguiente.
 2. El resto del proyecto sigue sin confirmar en Git: firmware, bancos, esquemas de la rev 2.0, informes… No entraba en este encargo.
