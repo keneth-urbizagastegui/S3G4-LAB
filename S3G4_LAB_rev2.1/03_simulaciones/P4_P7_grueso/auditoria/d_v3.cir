@@ -1,0 +1,17 @@
+* Diagnostico P7 gruesa, variante v3
+.include v3.inc
+VC VSC 0 AC 1
+RC VSC BNCC 50
+CC BNCC 0 {CBNC}
+XRC VPC VNC RAILS
+XFC BNCC PREC VPC VNC FRONT_P7 POS=200
+XCC PREC SALC SALFC VPC VNC COMMON TAP=1 GFIX=100
+.ac dec 40 10 100Meg
+.meas ac g100 FIND mag(V(SALC)) AT=100
+.meas ac g1m5 FIND mag(V(SALC)) AT=1.5Meg
+.meas ac peak MAX mag(V(SALC)) FROM=10 TO=100Meg
+.meas ac fpeak WHEN mag(V(SALC))=peak
+.meas ac fr1m5 FIND mag(V(PREC)/V(BNCC)) AT=1.5Meg
+.meas ac fr5m FIND mag(V(PREC)/V(BNCC)) AT=5Meg
+.meas ac ch1m5 FIND mag(V(SALC)/V(PREC)) AT=1.5Meg
+.end

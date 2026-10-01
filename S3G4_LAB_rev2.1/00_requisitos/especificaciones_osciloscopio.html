@@ -1,0 +1,258 @@
+<title>Osciloscopio S3G4 rev 2.1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Source+Sans+3:wght@400;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: hoja de datos de fabricante; una columna de grupos con puntos guía, tabla por canal y notas al pie */
+:root{
+  --paper:#fbfcfc; --ink:#16232a; --muted:#5a6b72; --rule:#d5dee1; --lead:#a9b7bc;
+  --accent:#0b5c78; --band:#e8f0f2;
+  --r:#2f6f4f; --c:#0b5c78; --s:#6a4fa3; --p:#a3470f;
+  --display:"Barlow Condensed","Arial Narrow",sans-serif;
+  --body:"Source Sans 3","Segoe UI",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#10181b; --ink:#dfe8ea; --muted:#93a4aa; --rule:#29373c; --lead:#4a5b61;
+  --accent:#6cc0dc; --band:#16242a; --r:#6fcf9b; --c:#6cc0dc; --s:#b9a0ec; --p:#f2a36b; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#10181b; --ink:#dfe8ea; --muted:#93a4aa; --rule:#29373c; --lead:#4a5b61;
+  --accent:#6cc0dc; --band:#16242a; --r:#6fcf9b; --c:#6cc0dc; --s:#b9a0ec; --p:#f2a36b; color-scheme:dark}
+body{background:var(--paper);color:var(--ink);font:15px/1.5 var(--body)}
+.wrap{max-width:980px;margin:0 auto;padding-inline:20px;padding-block:28px 56px}
+h1,h2,h3{font-family:var(--display);margin:0;text-wrap:balance}
+.top{display:flex;justify-content:space-between;align-items:flex-end;gap:12px 24px;flex-wrap:wrap;border-bottom:3px solid var(--accent);padding-bottom:12px}
+.brand{font:600 13px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+h1{font-size:clamp(30px,5vw,44px);font-weight:700;line-height:1.05;letter-spacing:.01em}
+.docid{font:12.5px/1.6 var(--mono);color:var(--muted);text-align:right}
+.warn{border:1px solid var(--p);color:var(--ink);padding:10px 14px;margin:18px 0;font-size:14px;background:color-mix(in srgb,var(--p) 7%,transparent)}
+.warn b{color:var(--p)}
+.keys{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1px;background:var(--rule);border:1px solid var(--rule);margin:18px 0 8px}
+.keys div{background:var(--paper);padding:10px 12px}
+.keys .v{font:600 26px/1.1 var(--display);color:var(--accent)}
+.keys .l{font-size:12.5px;color:var(--muted)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12.5px;color:var(--muted);margin:14px 0 4px}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:8px 40px;margin-top:10px}
+@media (max-width:760px){.cols{grid-template-columns:1fr}}
+.grp{min-width:0;margin-top:18px}
+.grp>h2{font-size:21px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;background:var(--band);padding:4px 10px;margin-bottom:6px;border-left:4px solid var(--accent)}
+dl{margin:0}
+.row{display:flex;align-items:baseline;gap:6px;padding:3px 0}
+.row dt{flex:0 1 auto;min-width:0}
+.row .dots{flex:1 1 20px;border-bottom:1.5px dotted var(--lead);transform:translateY(-4px);min-width:16px}
+.row dd{margin:0;flex:0 1 auto;text-align:right;font-family:var(--mono);font-size:13.5px;font-variant-numeric:tabular-nums;min-width:0}
+.sub dt{padding-left:16px;color:var(--muted)}
+.hd dt{font-weight:600}
+.cond{font-size:12.5px;color:var(--muted);padding:0 0 4px 16px;margin:0}
+.t{display:inline-block;font:600 10px/1 var(--mono);padding:3px 4px;border-radius:3px;border:1px solid currentColor;margin-left:5px;vertical-align:2px}
+.t.r{color:var(--r)} .t.c{color:var(--c)} .t.s{color:var(--s)} .t.p{color:var(--p)}
+sup{font:500 10px var(--mono);color:var(--accent)}
+.tw{overflow-x:auto;margin-top:8px}
+table{border-collapse:collapse;width:100%;font-size:14px;min-width:560px}
+th,td{padding:6px 10px;border-bottom:1px solid var(--rule);text-align:left;vertical-align:top}
+th{font:600 13px var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.05em;border-bottom:2px solid var(--accent)}
+td.n{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+.notes{margin-top:26px;border-top:1px solid var(--rule);padding-top:12px;font-size:13.5px;color:var(--muted)}
+.notes ol{padding-left:22px;margin:6px 0}
+.notes li{margin-bottom:5px;max-width:95ch}
+.notes h3{font-size:17px;color:var(--ink);text-transform:uppercase;letter-spacing:.05em;margin-top:14px}
+code{font:0.9em var(--mono);color:var(--accent)}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div>
+      <div class="brand">S3G4 LAB · Instrumento portátil</div>
+      <h1>Osciloscopio de 3 canales<br>Especificaciones</h1>
+    </div>
+    <div class="docid">S3G4-SCOPE · hardware rev 2.1<br>Hoja preliminar · 30 sep 2026<br>UTEC · Ingeniería Electrónica</div>
+  </header>
+
+  <p class="warn"><b>Preliminar: objetivos de diseño, no valores medidos.</b> No existe todavía ninguna unidad de la rev 2.1. Cada cifra lleva su origen: un requisito acordado, un cálculo del documento de diseño o una simulación. Los fabricantes publican valores garantizados y típicos medidos en producción; esta hoja se convertirá en eso cuando haya placas y ensayos de banco.</p>
+
+  <div class="keys">
+    <div><div class="v">3</div><div class="l">canales simultáneos</div></div>
+    <div><div class="v">2 MHz</div><div class="l">ancho de banda en CH1 (1 MHz en CH2 y CH3)</div></div>
+    <div><div class="v">6.5 MSa/s</div><div class="l">muestreo en CH1 (3.47 MSa/s en CH2 y CH3)</div></div>
+    <div><div class="v">12 bits</div><div class="l">resolución del ADC</div></div>
+    <div><div class="v">8 k</div><div class="l">muestras por canal</div></div>
+    <div><div class="v">±40 V</div><div class="l">fondo de escala; ±400 V con sonda ×10</div></div>
+  </div>
+
+  <div class="legend">
+    <span><span class="t r">R</span> requisito acordado (RF-xx)</span>
+    <span><span class="t c">C</span> calculado en el diseño</span>
+    <span><span class="t s">S</span> simulado (LTspice)</span>
+    <span><span class="t p">!</span> todavía no se cumple o está por definir</span>
+  </div>
+
+  <div class="cols">
+    <section class="grp">
+      <h2>Entradas analógicas</h2>
+      <dl>
+        <div class="row hd"><dt>Canales</dt><span class="dots"></span><dd>3, masa común<span class="t r">R</span></dd></div>
+        <div class="row hd"><dt>Conector</dt><span class="dots"></span><dd>BNC hembra, 500 V rms</dd></div>
+        <div class="row hd"><dt>Modo de muestreo</dt><span class="dots"></span><dd>simultáneo<span class="t r">R</span></dd></div>
+        <div class="row hd"><dt>Acoplo de entrada</dt><span class="dots"></span><dd>AC, DC, GND<span class="t r">R</span></dd></div>
+        <p class="cond">Conmutador deslizante por canal; el firmware lee su posición</p>
+        <div class="row hd"><dt>Corte del acoplo AC (−3 dB)</dt><span class="dots"></span><dd>≤ 10 Hz<span class="t r">R</span></dd></div>
+        <div class="row hd"><dt>Impedancia de entrada</dt><span class="dots"></span><dd>1 MΩ ±2 % ∥ 10–30 pF<span class="t r">R</span><span class="t p">!</span><sup>1</sup></dd></div>
+        <div class="row sub"><dt>Diferencia de capacidad entre escalas</dt><span class="dots"></span><dd>≤ 2 pF<span class="t r">R</span><span class="t p">!</span></dd></div>
+        <div class="row hd"><dt>Ancho de banda (−3 dB)</dt><span class="dots"></span><dd></dd></div>
+        <div class="row sub"><dt>CH1</dt><span class="dots"></span><dd>2 MHz<span class="t r">R</span></dd></div>
+        <div class="row sub"><dt>CH2, CH3</dt><span class="dots"></span><dd>1 MHz<span class="t r">R</span></dd></div>
+        <p class="cond">Mismo ancho de banda en todas las escalas: la ganancia es fija y la escalera atenúa<sup>2</sup></p>
+        <div class="row hd"><dt>Tiempo de subida (0.35 / BW)</dt><span class="dots"></span><dd></dd></div>
+        <div class="row sub"><dt>CH1</dt><span class="dots"></span><dd>175 ns<span class="t c">C</span></dd></div>
+        <div class="row sub"><dt>CH2, CH3</dt><span class="dots"></span><dd>350 ns<span class="t c">C</span></dd></div>
+        <div class="row hd"><dt>Resolución</dt><span class="dots"></span><dd>12 bits</dd></div>
+        <p class="cond">8 divisiones = 2.0 V del ADC (VREF+ 2.5 V): ≈ 410 códigos por división<sup>3</sup></p>
+        <div class="row hd"><dt>Sensibilidad vertical</dt><span class="dots"></span><dd>5 mV/div a 10 V/div<span class="t r">R</span></dd></div>
+        <div class="row sub"><dt>Pasos</dt><span class="dots"></span><dd>11, secuencia 1-2-5</dd></div>
+        <div class="row sub"><dt>Por software</dt><span class="dots"></span><dd>20 V/div</dd></div>
+        <div class="row hd"><dt>Fondo de escala</dt><span class="dots"></span><dd>±40 V (10 V/div)<span class="t r">R</span></dd></div>
+        <div class="row hd"><dt>Rango de offset vertical</dt><span class="dots"></span><dd>±5 div<span class="t r">R</span><span class="t p">!</span><sup>4</sup></dd></div>
+        <div class="row hd"><dt>Precisión de ganancia en DC</dt><span class="dots"></span><dd>±1 %<span class="t r">R</span></dd></div>
+        <p class="cond">Tras la autocalibración interna, sin instrumentos externos</p>
+        <div class="row hd"><dt>Ruido (rms)</dt><span class="dots"></span><dd>≈ 0.2–0.3 % de div<span class="t c">C</span></dd></div>
+        <div class="row sub"><dt>a 5 mV/div</dt><span class="dots"></span><dd>≈ 15 µV<span class="t c">C</span></dd></div>
+        <p class="cond">Estimado para CH2 y CH3; en CH1, ≈ ×1.15 por su mayor ancho de banda</p>
+        <div class="row hd"><dt>Diafonía, THD, ENOB</dt><span class="dots"></span><dd>por especificar<span class="t p">!</span></dd></div>
+      </dl>
+    </section>
+
+    <div>
+      <section class="grp">
+        <h2>Sonda</h2>
+        <dl>
+          <div class="row hd"><dt>Atenuación</dt><span class="dots"></span><dd>×1, ×10 (seleccionable)</dd></div>
+          <div class="row hd"><dt>Rango lineal con sonda ×10</dt><span class="dots"></span><dd>±400 V en la punta<span class="t r">R</span><span class="t s">S</span></dd></div>
+          <div class="row hd"><dt>Compensación</dt><span class="dots"></span><dd>única para todas las escalas<span class="t r">R</span></dd></div>
+        </dl>
+      </section>
+
+      <section class="grp">
+        <h2>Horizontal y adquisición</h2>
+        <dl>
+          <div class="row hd"><dt>Frecuencia de muestreo máxima</dt><span class="dots"></span><dd></dd></div>
+          <div class="row sub"><dt>CH1 (ADC1 + ADC2 entrelazados)</dt><span class="dots"></span><dd>6.5 MSa/s<span class="t r">R</span></dd></div>
+          <div class="row sub"><dt>CH2, CH3 (ADC3, ADC4)</dt><span class="dots"></span><dd>3.47 MSa/s<span class="t r">R</span></dd></div>
+          <div class="row hd"><dt>Frecuencia de muestreo mínima</dt><span class="dots"></span><dd>16.4 Sa/s<span class="t c">C</span></dd></div>
+          <p class="cond">8192 muestras en 50 s/div × 10 div</p>
+          <div class="row hd"><dt>Profundidad de memoria</dt><span class="dots"></span><dd>8 k muestras por canal<span class="t r">R</span></dd></div>
+          <div class="row hd"><dt>Base de tiempos</dt><span class="dots"></span><dd>1 µs/div a 50 s/div<span class="t r">R</span></dd></div>
+          <div class="row sub"><dt>Divisiones horizontales</dt><span class="dots"></span><dd>10</dd></div>
+          <div class="row sub"><dt>Interpolación</dt><span class="dots"></span><dd>sin(x)/x en las bases rápidas</dd></div>
+          <div class="row sub"><dt>Modo roll</dt><span class="dots"></span><dd>en las bases lentas</dd></div>
+          <div class="row hd"><dt>Precisión de la base de tiempos</dt><span class="dots"></span><dd>por especificar<span class="t p">!</span><sup>5</sup></dd></div>
+          <div class="row hd"><dt>Modos de adquisición</dt><span class="dots"></span><dd>normal, único, roll,<span class="t r">R</span></dd></div>
+          <div class="row sub"><dt></dt><span class="dots" style="border:0"></span><dd>detección de picos, promedio</dd></div>
+        </dl>
+      </section>
+
+      <section class="grp">
+        <h2>Disparo</h2>
+        <dl>
+          <div class="row hd"><dt>Tipo</dt><span class="dots"></span><dd>flanco, subida o bajada<span class="t r">R</span></dd></div>
+          <div class="row hd"><dt>Fuentes</dt><span class="dots"></span><dd>CH1, CH2, CH3<span class="t r">R</span></dd></div>
+          <div class="row hd"><dt>Modos</dt><span class="dots"></span><dd>auto, normal, único<span class="t r">R</span></dd></div>
+          <div class="row hd"><dt>Ajustes</dt><span class="dots"></span><dd>nivel, posición, histéresis<span class="t r">R</span></dd></div>
+          <div class="row hd"><dt>Implementación</dt><span class="dots"></span><dd>watchdog analógico del ADC<sup>6</sup></dd></div>
+          <div class="row hd"><dt>Disparo externo</dt><span class="dots"></span><dd>no</dd></div>
+        </dl>
+      </section>
+    </div>
+
+    <section class="grp">
+      <h2>Protección de entrada</h2>
+      <dl>
+        <div class="row hd"><dt>Entrada máxima declarada</dt><span class="dots"></span><dd>50 Vpk, todas las escalas<span class="t r">R</span></dd></div>
+        <div class="row hd"><dt>Supervivencia a sobrecarga</dt><span class="dots"></span><dd>250 Vrms, ≤ 10 s<span class="t r">R</span><span class="t s">S</span></dd></div>
+        <p class="cond">Sólo en las escalas de 200 mV/div a 10 V/div (atenuador ÷20), que es también el estado con el equipo apagado o arrancando<sup>7</sup></p>
+        <div class="row hd"><dt>Escalas de 5 a 100 mV/div</dt><span class="dots"></span><dd>50 Vpk continuos; no la red</dd></div>
+        <div class="row hd"><dt>Categoría de medida</dt><span class="dots"></span><dd>ninguna: no mide la red</dd></div>
+        <div class="row hd"><dt>Aislamiento</dt><span class="dots"></span><dd>no aislado; masa común con USB</dd></div>
+      </dl>
+    </section>
+
+    <section class="grp">
+      <h2>Análisis y visualización</h2>
+      <dl>
+        <div class="row hd"><dt>Medidas automáticas</dt><span class="dots"></span><dd>Vpp, Vrms, media, f, T,<span class="t r">R</span></dd></div>
+        <div class="row sub"><dt></dt><span class="dots" style="border:0"></span><dd>ciclo de trabajo, subida, bajada</dd></div>
+        <div class="row hd"><dt>Cursores</dt><span class="dots"></span><dd>tiempo y tensión<span class="t r">R</span></dd></div>
+        <div class="row hd"><dt>Matemáticas</dt><span class="dots"></span><dd>A ± B, A × B, FFT, XY<span class="t r">R</span></dd></div>
+        <div class="row hd"><dt>Bode</dt><span class="dots"></span><dd>con el AWG interno y 2 canales<span class="t r">R</span></dd></div>
+        <div class="row hd"><dt>Pantalla local</dt><span class="dots"></span><dd>TFT IPS de 3.5 pulgadas, táctil</dd></div>
+        <div class="row hd"><dt>Cuadrícula</dt><span class="dots"></span><dd>10 × 8 divisiones</dd></div>
+        <div class="row hd"><dt>Control remoto</dt><span class="dots"></span><dd>S3G4-UI: web, escritorio, móvil</dd></div>
+      </dl>
+    </section>
+
+    <section class="grp">
+      <h2>General</h2>
+      <dl>
+        <div class="row hd"><dt>Funciones simultáneas</dt><span class="dots"></span><dd>osciloscopio + AWG + DMM<span class="t r">R</span></dd></div>
+        <div class="row hd"><dt>Alimentación</dt><span class="dots"></span><dd>batería Li-ion 1S, 5000 mAh</dd></div>
+        <div class="row hd"><dt>Carga</dt><span class="dots"></span><dd>USB-C; funciona mientras carga</dd></div>
+        <div class="row hd"><dt>Autonomía, todo activo con Wi-Fi</dt><span class="dots"></span><dd>≥ 4 h<span class="t r">R</span></dd></div>
+        <div class="row sub"><dt>Peor caso estimado</dt><span class="dots"></span><dd>6.0 h<span class="t c">C</span></dd></div>
+        <div class="row sub"><dt>Uso típico estimado</dt><span class="dots"></span><dd>8.1 h<span class="t c">C</span></dd></div>
+        <div class="row hd"><dt>Gestión de energía</dt><span class="dots"></span><dd>apagado por canal y por función<span class="t r">R</span></dd></div>
+        <div class="row hd"><dt>Conectividad</dt><span class="dots"></span><dd>Wi-Fi 2.4 GHz, USB-C</dd></div>
+        <div class="row hd"><dt>Procesadores</dt><span class="dots"></span><dd>STM32G473 + ESP32-S3</dd></div>
+        <div class="row hd"><dt>Dimensiones, peso, temperatura</dt><span class="dots"></span><dd>por especificar<span class="t p">!</span></dd></div>
+      </dl>
+    </section>
+  </div>
+
+  <section class="grp">
+    <h2>Diferencias por canal</h2>
+    <div class="tw"><table>
+      <thead><tr><th>Parámetro</th><th>CH1</th><th>CH2 y CH3</th><th>Origen</th></tr></thead>
+      <tbody>
+        <tr><td>Convertidor</td><td>ADC1 + ADC2 entrelazados, entrada PA0</td><td>ADC3 y ADC4, entradas PE9 y PE15</td><td>D-02</td></tr>
+        <tr><td>Muestreo máximo</td><td class="n">6.5 MSa/s</td><td class="n">3.47 MSa/s</td><td>RF-02</td></tr>
+        <tr><td>Ancho de banda (−3 dB)</td><td class="n">2 MHz</td><td class="n">1 MHz</td><td>RF-03</td></tr>
+        <tr><td>Muestras por periodo en el ancho de banda</td><td class="n">3.3</td><td class="n">3.5</td><td>calculado</td></tr>
+        <tr><td>Tiempo de subida</td><td class="n">175 ns</td><td class="n">350 ns</td><td>0.35 / BW</td></tr>
+        <tr><td>Registro de 8 k al muestreo máximo</td><td class="n">1.26 ms</td><td class="n">2.36 ms</td><td>8192 / fs</td></tr>
+        <tr><td>Amplificadores de la ganancia fija</td><td>GBW ≥ 100 MHz</td><td>GBW ≥ 50 MHz</td><td>sección C.4</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section class="grp">
+    <h2>Escalas verticales</h2>
+    <div class="tw"><table>
+      <thead><tr><th>V/div</th><th>Pantalla completa</th><th>Atenuador</th><th>Toma</th><th>Resolución por código</th><th>Protección a la red</th></tr></thead>
+      <tbody>
+        <tr><td class="n">5 mV</td><td class="n">40 mVpp</td><td>×1</td><td class="n">1/1</td><td class="n">12.2 µV</td><td>no</td></tr>
+        <tr><td class="n">10 mV</td><td class="n">80 mVpp</td><td>×1</td><td class="n">1/2</td><td class="n">24.4 µV</td><td>no</td></tr>
+        <tr><td class="n">20 mV</td><td class="n">160 mVpp</td><td>×1</td><td class="n">1/4</td><td class="n">48.8 µV</td><td>no</td></tr>
+        <tr><td class="n">50 mV</td><td class="n">0.4 Vpp</td><td>×1</td><td class="n">1/10</td><td class="n">122 µV</td><td>no</td></tr>
+        <tr><td class="n">100 mV</td><td class="n">0.8 Vpp</td><td>×1</td><td class="n">1/20</td><td class="n">244 µV</td><td>no</td></tr>
+        <tr><td class="n">200 mV</td><td class="n">1.6 Vpp</td><td>÷20</td><td class="n">1/2</td><td class="n">488 µV</td><td>250 Vrms ≤ 10 s</td></tr>
+        <tr><td class="n">500 mV</td><td class="n">4 Vpp</td><td>÷20</td><td class="n">1/5</td><td class="n">1.22 mV</td><td>250 Vrms ≤ 10 s</td></tr>
+        <tr><td class="n">1 V</td><td class="n">8 Vpp</td><td>÷20</td><td class="n">1/10</td><td class="n">2.44 mV</td><td>250 Vrms ≤ 10 s</td></tr>
+        <tr><td class="n">2 V</td><td class="n">16 Vpp</td><td>÷20</td><td class="n">1/20</td><td class="n">4.88 mV</td><td>250 Vrms ≤ 10 s</td></tr>
+        <tr><td class="n">5 V</td><td class="n">40 Vpp</td><td>÷20</td><td class="n">1/50</td><td class="n">12.2 mV</td><td>250 Vrms ≤ 10 s</td></tr>
+        <tr><td class="n">10 V</td><td class="n">80 Vpp</td><td>÷20</td><td class="n">1/100</td><td class="n">24.4 mV</td><td>250 Vrms ≤ 10 s</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <div class="notes">
+    <h3>Notas</h3>
+    <ol>
+      <li><b>Todavía no se cumple.</b> El atenuador simulado (P4) da 0.909 MΩ en las escalas ×1 y 8 pF de diferencia entre escalas. La corrección está planificada y sin simular: <code>03_simulaciones/P4_P7_grueso/AUDITORIA_CLAUDE_P4_P7.md</code>.</li>
+      <li>Presupuesto de ancho de banda del amplificador: −0.2 dB a 1.5 MHz y −0.37 dB a 2 MHz. El corte final lo pone el filtro anti-alias de la sección D, que falta por diseñar.</li>
+      <li>Pendiente de confirmar en la sección F (driver del ADC y referencia REF3325).</li>
+      <li>El circuito de offset (sección E) no está diseñado. Candidatos: PWM filtrado o DAC del G473 en sample-and-hold.</li>
+      <li>Depende del cristal del STM32G473, que aún no se ha elegido. El NI ELVIS II publica 50 ppm.</li>
+      <li>Watchdog de 12 bits (AWD1) de cada ADC con la cadena de disparo por hardware P12. Por eso CH2 y CH3 no necesitan comparador.</li>
+      <li>Un relé monoestable por canal: sin alimentación vuelve solo a ÷20. En las escalas ×1, 250 Vrms queman la resistencia serie de la rama ×1; es un riesgo aceptado en D-06.</li>
+    </ol>
+    <h3>Fuentes</h3>
+    <p>Requisitos RF-01…RF-19 (<code>00_requisitos/requisitos_osciloscopio.html</code>), decisiones D-01…D-09 y secciones B, C y G del documento vivo (<code>01_diseno/rediseno_afe_rev21.html</code>), y <code>ai-context/DECISIONS.md</code>. Formato tomado de la hoja del NI ELVIS II (<code>research_and_tests/NI ELVIS II Series.pdf</code>).</p>
+  </div>
+</div>

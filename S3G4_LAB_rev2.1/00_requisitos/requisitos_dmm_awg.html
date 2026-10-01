@@ -1,0 +1,145 @@
+<title>Requisitos del DMM y del AWG</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@500;600&display=swap">
+<style>
+:root{
+  --bg:#f4f6f5; --paper:#fff; --ink:#1b2a2e; --muted:#5d6d72; --rule:#dde3e1;
+  --accent:#12667f; --accent2:#a9541c; --ok:#2f7d54; --warn:#9a6100; --crit:#b22d22; --open:#6a4fa3;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#11181a; --paper:#182125; --ink:#dce6e7; --muted:#93a3a8; --rule:#2a3639;
+  --accent:#5fb9d2; --accent2:#f0a06a; --ok:#63c891; --warn:#f0b75a; --crit:#ff8d80; --open:#b79ae8;}}
+:root[data-theme="dark"]{
+  --bg:#11181a; --paper:#182125; --ink:#dce6e7; --muted:#93a3a8; --rule:#2a3639;
+  --accent:#5fb9d2; --accent2:#f0a06a; --ok:#63c891; --warn:#f0b75a; --crit:#ff8d80; --open:#b79ae8;}
+body{background:var(--bg);color:var(--ink);font:15px/1.6 "IBM Plex Sans",system-ui,sans-serif}
+.wrap{max-width:1000px;margin:0 auto;padding-inline:20px;padding-block:28px 64px}
+h1,h2,h3,h4{font-family:"IBM Plex Sans Condensed","IBM Plex Sans",sans-serif;margin:0;text-wrap:balance}
+h1{font-size:clamp(26px,4vw,36px);font-weight:600}
+h2{font-size:24px;font-weight:600;margin-top:8px}
+h3{font-size:18px;font-weight:600;margin-bottom:4px}
+code{font:0.88em "IBM Plex Mono",ui-monospace,monospace;color:var(--accent)}
+.eyebrow{font:500 12px "IBM Plex Mono",monospace;letter-spacing:.09em;text-transform:uppercase;color:var(--accent);margin:0 0 6px}
+.lede{color:var(--muted);max-width:74ch}
+header.hero{border-bottom:1px solid var(--rule);padding-bottom:18px;margin-bottom:26px}
+section{background:var(--paper);border:1px solid var(--rule);border-radius:10px;padding:20px 22px;margin-bottom:18px}
+section>p,li{max-width:80ch}
+.tag{display:inline-block;font:500 11px "IBM Plex Mono",monospace;text-transform:uppercase;letter-spacing:.06em;padding:2px 9px;border-radius:999px;border:1px solid currentColor}
+.t-ok{color:var(--ok)} .t-open{color:var(--open)} .t-warn{color:var(--warn)} .t-crit{color:var(--crit)}
+.shead{display:flex;align-items:center;gap:12px;margin-bottom:10px;flex-wrap:wrap}
+.num{font:500 14px "IBM Plex Mono",monospace;background:var(--accent);color:var(--paper);width:28px;height:28px;border-radius:50%;display:grid;place-items:center}
+.tw{overflow-x:auto;margin:12px 0}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th{text-align:left;font-weight:600;color:var(--muted);border-bottom:1.5px solid var(--rule);padding:7px 9px;white-space:nowrap}
+td{border-bottom:1px solid var(--rule);padding:7px 9px;vertical-align:top}
+td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
+.pick{background:color-mix(in srgb, var(--ok) 10%, transparent)}
+.callout{border-left:3px solid var(--accent);padding:10px 14px;margin:14px 0;background:color-mix(in srgb, var(--accent) 7%, transparent);font-size:14px}
+.callout.w{border-color:var(--warn);background:color-mix(in srgb, var(--warn) 9%, transparent)}
+ul.tight{margin:8px 0;padding-left:20px}
+ul.tight li{margin-bottom:5px}
+.meta{font:12.5px "IBM Plex Mono",monospace;color:var(--muted);margin:0}
+.q{border:1px dashed var(--open);border-radius:8px;padding:12px 14px;margin:10px 0}
+.q b{color:var(--open)}
+footer{font-size:12.5px;color:var(--muted);border-top:1px solid var(--rule);padding-top:12px}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-size:14px}
+.kv dt{color:var(--muted)} .kv dd{margin:0}
+
+/* --- esquematico --- */
+figure{margin:16px 0}
+.sx{overflow-x:auto;border:1px solid var(--rule);border-radius:8px;background:var(--bg);padding:8px}
+.sx svg{display:block;max-width:none;height:auto}
+figcaption{font-size:13px;color:var(--muted);margin-top:6px}
+svg text{font-family:"IBM Plex Mono",ui-monospace,monospace}
+.w{fill:none;stroke:var(--ink);stroke-width:1.5;stroke-linejoin:round}
+.sym{fill:none;stroke:var(--ink);stroke-width:1.6;stroke-linejoin:round}
+.fillsym{fill:var(--ink);stroke:var(--ink);stroke-width:1}
+.dot{fill:var(--ink)}
+.op{fill:var(--paper);stroke:var(--ink);stroke-width:1.7}
+.ic{fill:var(--paper);stroke:var(--ink);stroke-width:1.5}
+.hdr{fill:none;stroke:var(--open);stroke-width:1.5;stroke-dasharray:3 2}
+.grp{fill:none;stroke:var(--muted);stroke-width:1.1;stroke-dasharray:5 4}
+.grp-t{font-size:10.5px;fill:var(--muted)}
+.blade{stroke:var(--ink);stroke-width:2}
+.ct{fill:var(--paper);stroke:var(--ink);stroke-width:1.3}
+.gnd line{stroke:var(--ink);stroke-width:1.5}
+.railbar{stroke:var(--crit);stroke-width:2.2}
+.rail{font-size:10.5px;fill:var(--crit);font-weight:500}
+.railsm{font-size:9px;fill:var(--crit)}
+.port{fill:color-mix(in srgb, var(--accent) 14%, transparent);stroke:var(--accent);stroke-width:1.3}
+.portt{font-size:10.5px;fill:var(--ink)}
+.tp{fill:none;stroke:var(--ok);stroke-width:1.6}
+.tpt{font-size:9.5px;fill:var(--ok)}
+.ref{font-size:11px;font-weight:500;fill:var(--ink)}
+.val{font-size:10px;fill:var(--muted)}
+.net{font-size:10px;fill:var(--accent2)}
+.pin{font-size:9.5px;fill:var(--muted)}
+.pm{font-size:15px;fill:var(--ink)}
+.note{font-size:10.5px;fill:var(--muted);font-style:italic}
+.src{color:var(--muted);font-size:12.5px}
+
+.meta{color:var(--muted);font-size:13px}
+.src{color:var(--muted);font-size:12.5px}
+td.id{font-family:"IBM Plex Mono",monospace;white-space:nowrap;font-weight:500}
+</style>
+<div class="wrap">
+<header class="hero">
+  <p class="eyebrow">S3G4 LAB · rev 2.1 · acordado el 23 sep 2026</p>
+  <h1>Requisitos del DMM y del AWG</h1>
+  <p class="lede">Qué deben hacer el multímetro y el generador, fijado por Keneth pregunta a pregunta. Completa los requisitos del osciloscopio (<code>S3G4_LAB_rev2.1/00_requisitos/requisitos_osciloscopio.html</code>).</p>
+</header>
+<section id="contexto">
+  <div class="shead"><span class="num">i</span><h2>De dónde salen</h2></div>
+
+  <p>Dos rondas de preguntas para el DMM y dos para el AWG, igual que con el osciloscopio. Cada pregunta partía de lo que ya existía:</p>
+  <ul class="tight">
+    <li>El mapa de pines firmado. El DMM va en PD13/PD14 (ADC5 diferencial) y en PB14 (OPAMP5), con zumbador en PA7. El AWG sale de DAC3 por OPAMP6 hacia PB11 y por OPAMP3 hacia PB1.</li>
+    <li>El firmware del banco. El DMM ya calcula continua, verdadero valor eficaz, Vpp y frecuencia, con sobremuestreo de ×16 a ×1024. El AWG ya tiene comandos SCPI de 1 Hz a 1 MHz y 512 puntos de forma arbitraria.</li>
+    <li>La rev 2.0: cuatro bornes en el DMM y dos rangos de amplitud en el generador.</li>
+    <li>Las referencias: el NI ELVIS II para el DMM, el OpenScope para el generador y las fuentes, y el Micro-DMM para la seguridad.</li>
+    <li>La revisión del G473 y los requisitos del osciloscopio (RF-01…RF-19, <code>S3G4_LAB_rev2.1/00_requisitos/requisitos_osciloscopio.html</code>).</li>
+  </ul>
+
+</section>
+<section id="dmm">
+  <div class="shead"><span class="num">1</span><h2>Requisitos del DMM</h2></div>
+
+  <div class="tw"><table>
+    <thead><tr><th>Id</th><th>Tema</th><th>Requisito</th><th>Estado</th></tr></thead>
+    <tbody><tr><td class="id">RD-01</td><td><b>Funciones</b></td><td>Tensión continua y alterna (verdadero valor eficaz), corriente continua y alterna, resistencia, prueba de diodo y continuidad con zumbador</td><td><span class="tag t-ok">Acordado hoy</span></td></tr><tr><td class="id">RD-02</td><td><b>Bornes</b></td><td>Tres, como el NI ELVIS II: V/Ω, COM y A</td><td><span class="tag t-ok">Acordado hoy</span></td></tr><tr><td class="id">RD-03</td><td><b>Resolución</b></td><td>20 000 cuentas (4½ dígitos), con el ADC5 en diferencial y sobremuestreo: ×256 por hardware (P16, el máximo del G473) y ×4 más en firmware, ×1024 en total. <i>Corregido el 30 sep: decía «por hardware», que sólo llega a ×256</i></td><td><span class="tag t-ok">Acordado hoy</span></td></tr><tr><td class="id">RD-04</td><td><b>Tensión máxima</b></td><td>Sólo baja tensión: hasta 50 V en continua y 50 Vrms en alterna (≈ 71 Vpk), como el rango de 50 V del TI TIDA-01012 (<code>research_and_tests/tidubv5b (1).pdf</code>, tabla 1, p. 4). El equipo no mide la red. <i>Revisado por Keneth el 30 sep: antes decía 60 V DC / 30 Vrms «como el ELVIS II», que en realidad es 60 V DC / 20 Vrms.</i> Sustituye a CAT II 600 V</td><td><span class="tag t-warn">Revisado</span></td></tr><tr><td class="id">RD-05</td><td><b>Aislamiento</b></td><td>Sin aislamiento. El COM es la masa común del equipo: blindaje de las BNC, masa del AWG y USB. La pinza del osciloscopio y el COM van siempre al mismo punto (sección G.7). Sustituye al enclavamiento</td><td><span class="tag t-warn">Revisado</span></td></tr><tr><td class="id">RD-06</td><td><b>Corriente</b></td><td>Hasta 2 A con un único derivador, como el ELVIS II, y ganancia conmutada para los rangos bajos. Fusible rápido, como el de 3.15 A del ELVIS: sin la red ya no hace falta uno de 600 V</td><td><span class="tag t-ok">Acordado hoy</span></td></tr><tr><td class="id">RD-07</td><td><b>Alterna</b></td><td>De 40 Hz a 20 kHz en tensión y en corriente</td><td><span class="tag t-ok">Acordado hoy</span></td></tr><tr><td class="id">RD-08</td><td><b>Prueba de diodo</b></td><td>Hasta ~3.5 V: enciende LED de cualquier color</td><td><span class="tag t-ok">Acordado hoy</span></td></tr><tr><td class="id">RD-09</td><td><b>Ayudas</b></td><td>Autorango, relativo, mínimo y máximo, retención, registro en el tiempo con exportación y detección de cable abierto</td><td><span class="tag t-ok">Acordado hoy</span></td></tr><tr><td class="id">RD-10</td><td><b>Protección de red</b></td><td>Ya no aplica: el DMM no mide la red (D-06 revisada). Queda por decidir cuánto debe aguantar si alguien lo conecta por error</td><td><span class="tag t-warn">Revisado</span></td></tr></tbody>
+  </table></div>
+  <p class="src">Referencia del ELVIS II (<code>research_and_tests/NI ELVIS II Series.pdf</code>): derivador de 0.1 Ω, 2 A en continua, 500 mA o 2 A en alterna, caída menor de 0.6 V, fusible rápido de 3.15 A, alterna de 40 Hz a 20 kHz en tensión y de 40 Hz a 5 kHz en corriente. Su DMM está aislado, pero sólo es CAT I de 60 V DC / 20 Vrms; sus rangos son 100 mV, 1 V, 10 V y 60 V en continua y 200 mV, 2 V y 20 V en alterna.</p>
+  <p><b>RD-07, confirmado por Keneth:</b> de 40 Hz a 20 kHz tanto en tensión como en corriente, aunque el ELVIS sólo llega a 5 kHz en corriente.</p>
+
+</section>
+<section id="awg">
+  <div class="shead"><span class="num">2</span><h2>Requisitos del AWG</h2></div>
+
+  <div class="tw"><table>
+    <thead><tr><th>Id</th><th>Tema</th><th>Requisito</th><th>Estado</th></tr></thead>
+    <tbody><tr><td class="id">RG-01</td><td><b>Canales</b></td><td>Dos</td><td><span class="tag t-ok">Acordado hoy</span></td></tr><tr><td class="id">RG-02</td><td><b>Frecuencia</b></td><td>Seno de 1 Hz a 1 MHz, con síntesis DDS a frecuencia de actualización fija. Cuadrada, triángulo y rampa con un tiempo de subida de ≈ 175 ns (filtro de 2 MHz), útiles con buena forma hasta 100–200 kHz. <i>Revisado por Keneth el 30 sep: decía 1 MHz en todas las formas</i></td><td><span class="tag t-warn">Revisado</span></td></tr><tr><td class="id">RG-03</td><td><b>Amplitud y offset</b></td><td>Hasta 10 Vpp (±5 V) en vacío, en dos rangos: uno fino, de ~1 Vpp, y uno grueso, de 10 Vpp; offset de ±5 V</td><td><span class="tag t-ok">Acordado hoy</span></td></tr><tr><td class="id">RG-04</td><td><b>Salida</b></td><td>50 Ω y ±50 mA. Soporta un cortocircuito indefinido y ±15 V aplicados desde fuera sin dañarse</td><td><span class="tag t-ok">Acordado hoy</span></td></tr><tr><td class="id">RG-05</td><td><b>Formas</b></td><td>Seno, cuadrada con ciclo de trabajo ajustable, triángulo, rampa y continua. Pulso, PWM, ruido, arbitraria, barrido y AM/FM se pueden añadir después por firmware</td><td><span class="tag t-ok">Acordado hoy</span></td></tr><tr><td class="id">RG-06</td><td><b>Arbitraria</b></td><td>4096 puntos por canal, reservados en RAM</td><td><span class="tag t-ok">Acordado hoy</span></td></tr><tr><td class="id">RG-07</td><td><b>Fuentes de continua</b></td><td>Sin fuentes aparte: el AWG en continua (±5 V, ±50 mA) cubre ese uso y es la fuente de la autocalibración (P10). <b>En conflicto con RG-04:</b> a través de 50 Ω, con 50 mA caen 2.5 V. Se decide al definir los rieles del AWG (30 sep)</td><td><span class="tag t-open">Por decidir</span></td></tr><tr><td class="id">RG-08</td><td><b>Sincronización</b></td><td>Interna: el osciloscopio puede disparar con el ciclo del AWG. Sin conector de sincronismo</td><td><span class="tag t-ok">Acordado hoy</span></td></tr></tbody>
+  </table></div>
+  <p><b>Formas de onda y hardware.</b> Las formas que se añadan después (pulso, PWM, ruido, arbitraria, barrido, AM/FM) son firmware sobre el mismo DAC y el mismo filtro: no cambian el hardware. La excepción serían pulsos de flanco muy rápido o señales por encima de ~1 MHz, que el filtro de reconstrucción redondea. Para eso haría falta una ruta aparte por temporizador.</p>
+
+</section>
+<section id="consecuencias">
+  <div class="shead"><span class="num">3</span><h2>Qué obliga cada requisito en el diseño</h2></div>
+
+  <div class="tw"><table>
+    <thead><tr><th>Requisito</th><th>Consecuencia</th><th>Dónde</th><th>Estado</th></tr></thead>
+    <tbody><tr><td class="id">RD-03</td><td>En diferencial el ADC5 da ~10.9 bits efectivos; con ×1024 gana ~5 bits, unos 61 000 niveles en todo el tramo: caben las ±19 999 cuentas con margen. La exactitud pide una referencia externa (tipo REF3325: 0.15 %, 30 ppm/°C), divisores del 0.1 % de baja deriva y la calibración de P10</td><td>Sección DMM, referencia (F)</td><td><span class="tag t-open">Por diseñar</span></td></tr><tr><td class="id">RD-04, RD-10</td><td>50 Vrms son ≈ 71 Vpk: más que los 50 Vpk del osciloscopio y más que el umbral de 30 Vrms de IEC 61010-1, así que el borne V/Ω lleva tensión peligrosa y necesita aviso en el panel y en el manual. La entrada V/Ω y su protección se dimensionan para 71 Vpk continuos. Distancias de baja tensión en la placa. La protección frente a errores de conexión (resistencia serie, PTC, sujeción) está por decidir</td><td>Sección DMM</td><td><span class="tag t-open">Por decidir</span></td></tr><tr><td class="id">RD-05</td><td>Masa común y sin enclavamiento. Las reglas de uso van en el panel y en el manual (sección G.7). Sin aislamiento, un COM en la fase dejaría con tensión el metal de las BNC y del USB: por eso se renuncia a medir la red</td><td>Panel y manual</td><td><span class="tag t-ok">Decidido</span></td></tr><tr><td class="id">RD-06</td><td>Derivador de 0.1 Ω: 200 mV y 0.4 W a 2 A (pieza de ≥ 1 W). Para los rangos bajos hace falta un amplificador de deriva cero: un error de 10 µV ya son 0.1 mA</td><td>Sección DMM</td><td><span class="tag t-open">Por diseñar</span></td></tr><tr><td class="id">RD-07</td><td>El divisor de ~10 MΩ se compensa para que sea plano hasta 20 kHz. El verdadero valor eficaz ya está en el firmware del banco (etapa J1). Hace falta un filtro anti-alias antes del ADC5 (acta del mapa de pines, H-2)</td><td>Sección DMM</td><td><span class="tag t-open">Por diseñar</span></td></tr><tr><td class="id">RD-08</td><td>Fuente de corriente alimentada desde 5 V. Antes de PB14 hace falta un divisor (≈ ÷2) además de la sujeción: 3.5 V superan VREF+ = 2.5 V y V_DDA (P14), y una sujeción sola recortaría la lectura. <i>Corregido el 30 sep</i></td><td>Sección DMM</td><td><span class="tag t-open">Por diseñar</span></td></tr><tr><td class="id">RD-09</td><td>La detección de cable abierto necesita una pequeña corriente de prueba en la entrada, como en el Micro-DMM. El resto es firmware y S3G4-UI</td><td>Sección DMM y firmware</td><td><span class="tag t-open">Por diseñar</span></td></tr><tr><td class="id">RG-02</td><td>DAC3 a 15 MSa/s pasa por OPAMP6/OPAMP3 en modo de alta velocidad, después por un filtro de reconstrucción de ~2 MHz y después por la etapa de salida. Con un acumulador de fase de 32 bits la resolución de frecuencia es de 3.5 mHz; la exactitud la da el cristal</td><td>Sección AWG</td><td><span class="tag t-open">Por diseñar</span></td></tr><tr><td class="id">RG-03</td><td>Resuelto en la sección G (23 sep): el AWG tiene su propio convertidor de ±6.5 V, así que la etapa de salida dispone de 1.5 V de margen para dar ±5 V. Límite de uso: |offset| + amplitud/2 ≤ 5 V en vacío</td><td>Sección AWG y G</td><td><span class="tag t-ok">Decidido</span></td></tr><tr><td class="id">RG-04</td><td>Con +15 V aplicados y la salida sujetada a +6.5 V, por la resistencia de 50 Ω pasan ≈ 156 mA y se disipan ≈ 1.2 W: hace falta un PTC y sujeción a la salida, y una resistencia que aguante el pulso hasta que el PTC actúe. Con el AWG apagado, la sujeción no puede descargar en un riel sin alimentar (G.6). En cortocircuito, sin límite de corriente, la salida pide 100 mA de pico; los 50 mA de RG-04 obligan a limitar la corriente en la etapa, y G.5 dimensiona el convertidor con ese límite</td><td>Sección AWG</td><td><span class="tag t-open">Por diseñar</span></td></tr><tr><td class="id">RG-06</td><td>Osciloscopio 48 KiB + arbitraria 16 KiB = 64 KiB de los 128 KiB de RAM del G473</td><td>Firmware</td><td><span class="tag t-ok">Cabe</span></td></tr><tr><td class="id">RG-01, RG-04</td><td>Calculado en la sección G.3: los dos canales con un seno a fondo sobre 50 Ω gastan 0.68 W de batería (32 mA por riel). Con todo activo, 6.0 h; RF-17 se cumple</td><td>Sección G</td><td><span class="tag t-ok">Calculado</span></td></tr></tbody>
+  </table></div>
+
+</section>
+<section id="abierto">
+  <div class="shead"><span class="num">4</span><h2>Lo que queda abierto</h2></div>
+
+  <ul class="tight">
+    <li>Rangos concretos del DMM (propuesta a validar en el diseño): en continua 200 mV, 2 V, 20 V y 50 V; en alterna 200 mV, 2 V, 20 V y 50 Vrms (RD-04); el rango alto de ±19 999 cuentas se limita a 50 V. El TIDA-01012 usa 50 mV, 500 mV, 5 V y 50 V con 50 000 cuentas. <i>Corregido el 30 sep: decía 200 V y 600 V, de cuando el DMM iba a medir la red</i>; de 200 Ω a 20 MΩ en resistencia; 200 mA y 2 A en corriente.</li>
+    <li>Elegir el convertidor de ±6.5 V del AWG (sección G.8) y decidir RG-07 (fuente de continua frente a la salida de 50 Ω). <i>Los rieles y el presupuesto de RF-17 ya están calculados en la sección G.</i></li>
+    <li>Protección del DMM frente a una conexión accidental a la red (RD-10) y texto de seguridad del manual.</li>
+  </ul>
+
+</section>
+<footer><p class="meta">Redacción de Claude Code, 23 sep 2026, a partir de las respuestas de Keneth. Las cifras derivadas salen de <code>S3G4_LAB_rev2.1/herramientas/build_requisitos_dmm_awg.py</code>.</p></footer>
+</div>

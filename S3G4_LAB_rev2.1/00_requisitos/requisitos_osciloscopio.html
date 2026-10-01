@@ -1,0 +1,155 @@
+<title>Requisitos del osciloscopio S3G4</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@500;600&display=swap">
+<style>
+:root{
+  --bg:#f4f6f5; --paper:#fff; --ink:#1b2a2e; --muted:#5d6d72; --rule:#dde3e1;
+  --accent:#12667f; --accent2:#a9541c; --ok:#2f7d54; --warn:#9a6100; --crit:#b22d22; --open:#6a4fa3;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#11181a; --paper:#182125; --ink:#dce6e7; --muted:#93a3a8; --rule:#2a3639;
+  --accent:#5fb9d2; --accent2:#f0a06a; --ok:#63c891; --warn:#f0b75a; --crit:#ff8d80; --open:#b79ae8;}}
+:root[data-theme="dark"]{
+  --bg:#11181a; --paper:#182125; --ink:#dce6e7; --muted:#93a3a8; --rule:#2a3639;
+  --accent:#5fb9d2; --accent2:#f0a06a; --ok:#63c891; --warn:#f0b75a; --crit:#ff8d80; --open:#b79ae8;}
+body{background:var(--bg);color:var(--ink);font:15px/1.6 "IBM Plex Sans",system-ui,sans-serif}
+.wrap{max-width:1000px;margin:0 auto;padding-inline:20px;padding-block:28px 64px}
+h1,h2,h3,h4{font-family:"IBM Plex Sans Condensed","IBM Plex Sans",sans-serif;margin:0;text-wrap:balance}
+h1{font-size:clamp(26px,4vw,36px);font-weight:600}
+h2{font-size:24px;font-weight:600;margin-top:8px}
+h3{font-size:18px;font-weight:600;margin-bottom:4px}
+code{font:0.88em "IBM Plex Mono",ui-monospace,monospace;color:var(--accent)}
+.eyebrow{font:500 12px "IBM Plex Mono",monospace;letter-spacing:.09em;text-transform:uppercase;color:var(--accent);margin:0 0 6px}
+.lede{color:var(--muted);max-width:74ch}
+header.hero{border-bottom:1px solid var(--rule);padding-bottom:18px;margin-bottom:26px}
+section{background:var(--paper);border:1px solid var(--rule);border-radius:10px;padding:20px 22px;margin-bottom:18px}
+section>p,li{max-width:80ch}
+.tag{display:inline-block;font:500 11px "IBM Plex Mono",monospace;text-transform:uppercase;letter-spacing:.06em;padding:2px 9px;border-radius:999px;border:1px solid currentColor}
+.t-ok{color:var(--ok)} .t-open{color:var(--open)} .t-warn{color:var(--warn)} .t-crit{color:var(--crit)}
+.shead{display:flex;align-items:center;gap:12px;margin-bottom:10px;flex-wrap:wrap}
+.num{font:500 14px "IBM Plex Mono",monospace;background:var(--accent);color:var(--paper);width:28px;height:28px;border-radius:50%;display:grid;place-items:center}
+.tw{overflow-x:auto;margin:12px 0}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th{text-align:left;font-weight:600;color:var(--muted);border-bottom:1.5px solid var(--rule);padding:7px 9px;white-space:nowrap}
+td{border-bottom:1px solid var(--rule);padding:7px 9px;vertical-align:top}
+td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
+.pick{background:color-mix(in srgb, var(--ok) 10%, transparent)}
+.callout{border-left:3px solid var(--accent);padding:10px 14px;margin:14px 0;background:color-mix(in srgb, var(--accent) 7%, transparent);font-size:14px}
+.callout.w{border-color:var(--warn);background:color-mix(in srgb, var(--warn) 9%, transparent)}
+ul.tight{margin:8px 0;padding-left:20px}
+ul.tight li{margin-bottom:5px}
+.meta{font:12.5px "IBM Plex Mono",monospace;color:var(--muted);margin:0}
+.q{border:1px dashed var(--open);border-radius:8px;padding:12px 14px;margin:10px 0}
+.q b{color:var(--open)}
+footer{font-size:12.5px;color:var(--muted);border-top:1px solid var(--rule);padding-top:12px}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-size:14px}
+.kv dt{color:var(--muted)} .kv dd{margin:0}
+
+/* --- esquematico --- */
+figure{margin:16px 0}
+.sx{overflow-x:auto;border:1px solid var(--rule);border-radius:8px;background:var(--bg);padding:8px}
+.sx svg{display:block;max-width:none;height:auto}
+figcaption{font-size:13px;color:var(--muted);margin-top:6px}
+svg text{font-family:"IBM Plex Mono",ui-monospace,monospace}
+.w{fill:none;stroke:var(--ink);stroke-width:1.5;stroke-linejoin:round}
+.sym{fill:none;stroke:var(--ink);stroke-width:1.6;stroke-linejoin:round}
+.fillsym{fill:var(--ink);stroke:var(--ink);stroke-width:1}
+.dot{fill:var(--ink)}
+.op{fill:var(--paper);stroke:var(--ink);stroke-width:1.7}
+.ic{fill:var(--paper);stroke:var(--ink);stroke-width:1.5}
+.hdr{fill:none;stroke:var(--open);stroke-width:1.5;stroke-dasharray:3 2}
+.grp{fill:none;stroke:var(--muted);stroke-width:1.1;stroke-dasharray:5 4}
+.grp-t{font-size:10.5px;fill:var(--muted)}
+.blade{stroke:var(--ink);stroke-width:2}
+.ct{fill:var(--paper);stroke:var(--ink);stroke-width:1.3}
+.gnd line{stroke:var(--ink);stroke-width:1.5}
+.railbar{stroke:var(--crit);stroke-width:2.2}
+.rail{font-size:10.5px;fill:var(--crit);font-weight:500}
+.railsm{font-size:9px;fill:var(--crit)}
+.port{fill:color-mix(in srgb, var(--accent) 14%, transparent);stroke:var(--accent);stroke-width:1.3}
+.portt{font-size:10.5px;fill:var(--ink)}
+.tp{fill:none;stroke:var(--ok);stroke-width:1.6}
+.tpt{font-size:9.5px;fill:var(--ok)}
+.ref{font-size:11px;font-weight:500;fill:var(--ink)}
+.val{font-size:10px;fill:var(--muted)}
+.net{font-size:10px;fill:var(--accent2)}
+.pin{font-size:9.5px;fill:var(--muted)}
+.pm{font-size:15px;fill:var(--ink)}
+.note{font-size:10.5px;fill:var(--muted);font-style:italic}
+.src{color:var(--muted);font-size:12.5px}
+
+.meta{color:var(--muted);font-size:13px}
+.src{color:var(--muted);font-size:12.5px}
+.tri{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin:14px 0}
+.tri div{border:1px solid var(--rule);border-radius:8px;padding:12px 14px;background:var(--paper)}
+.tri h3{margin:0 0 6px;font-size:15px}
+.tri ul{margin:0;padding-left:18px;font-size:14px}
+td.id{font-family:"IBM Plex Mono",monospace;white-space:nowrap;font-weight:500}
+</style>
+<div class="wrap">
+<header class="hero">
+  <p class="eyebrow">S3G4 LAB · AFE rev 2.1 · acordado el 23 sep 2026</p>
+  <h1>Requisitos del osciloscopio S3G4</h1>
+  <p class="lede">Qué debe hacer el osciloscopio, fijado por Keneth pregunta a pregunta y cruzado con los siete artefactos del proyecto. Cada requisito lleva su origen y lo que obliga en el diseño.</p>
+</header>
+<section id="triangulo">
+  <div class="shead"><span class="num">★</span><h2>El punto del triángulo</h2></div>
+
+  <p>Cada requisito sale de una pregunta cruzada con los siete artefactos: el esbozo de la rev 2.0, el documento vivo de la rev 2.1, las anatomías del DSO112, el WAVE2, el OpenScope MZ y black_scope, y la revisión analógica del G473. Donde había una tensión entre prestaciones, coste y energía, eligió Keneth. Esto es lo que quedó en cada vértice:</p>
+  <div class="tri">
+    <div><h3>Prestaciones</h3><ul><li>CH1 hasta 2 MHz; CH2 y CH3 hasta 1 MHz</li><li>Sonda ×10 hasta ±400 V</li><li>±1 % en continua con autocalibración</li><li>Osciloscopio, AWG y DMM a la vez</li></ul></div>
+    <div><h3>Coste</h3><ul><li>3 canales en vez de 4</li><li>Acoplo mecánico, sin relés</li><li>Un relé por canal, sólo para el grueso</li><li>Piezas de LCSC con alta disponibilidad y equivalentes que cumplan</li></ul></div>
+    <div><h3>Energía</h3><ul><li>≥ 4 h con todo activo y WiFi</li><li>Apagado por canal y por función</li><li>Relés monoestables con economizador: 72 mW por relé sólo mientras está en ×1</li><li>CPU del G473 más lenta si el firmware cabe (P13)</li></ul></div>
+  </div>
+
+</section>
+<section id="requisitos">
+  <div class="shead"><span class="num">1</span><h2>Requisitos funcionales del osciloscopio</h2></div>
+
+  <p>Los que ya eran decisiones (D-01 a D-06) se recogen para tener la lista completa. Los demás los fijó Keneth el 23 sep 2026 respondiendo al cuestionario.</p>
+  <div class="tw"><table>
+    <thead><tr><th>Id</th><th>Tema</th><th>Requisito</th><th>Origen</th><th>Estado</th></tr></thead>
+    <tbody><tr><td class="id">RF-01</td><td><b>Canales</b></td><td>3 canales simultáneos</td><td class="src">D-01</td><td><span class="tag t-ok">Acordado</span></td></tr><tr><td class="id">RF-02</td><td><b>Muestreo</b></td><td>CH1 a 6.5 MSa/s (ADC1 + ADC2 entrelazados sobre PA0); CH2 y CH3 a 3.47 MSa/s (ADC3 y ADC4)</td><td class="src">D-02</td><td><span class="tag t-ok">Acordado</span></td></tr><tr><td class="id">RF-03</td><td><b>Ancho de banda (−3 dB)</b></td><td>CH1 ≈ 2 MHz; CH2 y CH3 ≈ 1 MHz</td><td class="src">Respuesta de Keneth</td><td><span class="tag t-ok">Acordado hoy</span></td></tr><tr><td class="id">RF-04</td><td><b>Escalas</b></td><td>De 5 mV/div a 10 V/div en 11 pasos (20 V/div por software); fondo de escala ±40 V en la BNC</td><td class="src">D-05</td><td><span class="tag t-ok">Acordado</span></td></tr><tr><td class="id">RF-05</td><td><b>Acoplo</b></td><td>AC / DC / GND con conmutador deslizante; corte del acoplo AC ≤ 10 Hz</td><td class="src">D-04 + respuesta</td><td><span class="tag t-ok">Acordado hoy</span></td></tr><tr><td class="id">RF-06</td><td><b>Entrada máxima</b></td><td>50 Vpk declarados; sobrevive a 250 Vrms ≤ 10 s en el estado de arranque (÷20). El equipo no mide la red: el DMM se limita a baja tensión (RD-04)</td><td class="src">D-06 (revisada)</td><td><span class="tag t-ok">Acordado</span></td></tr><tr><td class="id">RF-07</td><td><b>Sonda ×10</b></td><td>Lineal hasta ±400 V en la punta: todo el fondo de escala con sonda estándar</td><td class="src">Respuesta de Keneth</td><td><span class="tag t-ok">Acordado hoy</span></td></tr><tr><td class="id">RF-08</td><td><b>Impedancia de entrada</b></td><td>1 MΩ ±2 %; 10–30 pF y ≤ 2 pF de diferencia entre escalas, para compensar la sonda una sola vez</td><td class="src">Respuesta de Keneth</td><td><span class="tag t-ok">Acordado hoy</span></td></tr><tr><td class="id">RF-09</td><td><b>Disparo</b></td><td>Flanco de subida o de bajada en CH1, CH2 o CH3, con nivel, posición e histéresis; modos auto, normal y único</td><td class="src">Respuesta de Keneth</td><td><span class="tag t-ok">Acordado hoy</span></td></tr><tr><td class="id">RF-10</td><td><b>Memoria</b></td><td>8 k muestras por canal en cada captura</td><td class="src">Respuesta de Keneth</td><td><span class="tag t-ok">Acordado hoy</span></td></tr><tr><td class="id">RF-11</td><td><b>Base de tiempos</b></td><td>De 1 µs/div a 50 s/div; interpolación sin(x)/x en las rápidas y roll en las lentas</td><td class="src">Respuesta de Keneth</td><td><span class="tag t-ok">Acordado hoy</span></td></tr><tr><td class="id">RF-12</td><td><b>Adquisición</b></td><td>Normal, único, roll, detección de picos y promedio</td><td class="src">Respuesta de Keneth</td><td><span class="tag t-ok">Acordado hoy</span></td></tr><tr><td class="id">RF-13</td><td><b>Análisis</b></td><td>Medidas automáticas (Vpp, Vrms, media, frecuencia, periodo, ciclo de trabajo, subida y bajada), cursores, FFT, Bode con el AWG, A ± B, A × B y XY</td><td class="src">Respuesta de Keneth</td><td><span class="tag t-ok">Acordado hoy</span></td></tr><tr><td class="id">RF-14</td><td><b>Offset vertical</b></td><td>±5 divisiones en todas las escalas</td><td class="src">Respuesta de Keneth</td><td><span class="tag t-ok">Acordado hoy</span></td></tr><tr><td class="id">RF-15</td><td><b>Precisión en continua</b></td><td>±1 % con autocalibración, sin instrumentos externos</td><td class="src">Respuesta de Keneth</td><td><span class="tag t-ok">Acordado hoy</span></td></tr><tr><td class="id">RF-16</td><td><b>Funciones a la vez</b></td><td>Osciloscopio, AWG y DMM funcionando a la vez, con masa común (sección G.7)</td><td class="src">Respuesta de Keneth</td><td><span class="tag t-ok">Acordado hoy</span></td></tr><tr><td class="id">RF-17</td><td><b>Autonomía</b></td><td>≥ 4 h de uso continuo con las tres funciones y el WiFi activos</td><td class="src">Respuesta de Keneth</td><td><span class="tag t-ok">Acordado hoy</span></td></tr><tr><td class="id">RF-18</td><td><b>Gestión de energía</b></td><td>Apagado por hardware de cada canal y de cada función que no se use</td><td class="src">Respuesta de Keneth</td><td><span class="tag t-ok">Acordado hoy</span></td></tr><tr><td class="id">RF-19</td><td><b>Componentes y coste</b></td><td>Coste relativo, sin tope nuevo. Prioridad: alta disponibilidad y bajo precio en LCSC, con montaje en JLCPCB. Se acepta un equivalente (3PEAK, SGMICRO, etc.) si su hoja de datos cumple las cifras clave del requisito</td><td class="src">Respuesta de Keneth</td><td><span class="tag t-ok">Acordado hoy</span></td></tr></tbody>
+  </table></div>
+  <p><b>Surgió para el DMM:</b> resolución de 16 bits con el ADC5 por sobremuestreo por hardware (P16). La alta resolución no es un modo del osciloscopio.</p>
+
+</section>
+<section id="consecuencias">
+  <div class="shead"><span class="num">2</span><h2>Qué obliga cada requisito en el diseño</h2></div>
+
+  <div class="tw"><table>
+    <thead><tr><th>Requisito</th><th>Consecuencia</th><th>Dónde</th><th>Estado</th></tr></thead>
+    <tbody><tr><td class="id">RF-07</td><td><b>P4, con un relé por canal, es el grueso.</b> P7 da 4.4 % de THD con 200–400 V en la punta y su entrada efectiva cae a 739 kΩ. P7 queda archivado</td><td>Sección C</td><td><span class="tag t-ok">Consecuencia directa</span></td></tr><tr><td class="id">RF-08</td><td>Corregir P4: R_BIAS delante del relé para que la impedancia no cambie, Rt + Rb elegidos para que el paralelo dé 1 MΩ, y la capacidad igualada con el segundo polo del relé. Hoy da 0.909 MΩ en ×1 y 8 pF de diferencia</td><td>Sección C + simulación</td><td><span class="tag t-open">Por diseñar</span></td></tr><tr><td class="id">RF-06</td><td>Rama ×1 en su variante P2-AT (2 × 49.9 kΩ 1206): la 0805 de 100 kΩ no sobrevive a la red. Resistencia en serie entre el nodo sujetado y el buffer, porque la entrada llega a 6.1 V</td><td>Secciones B y C</td><td><span class="tag t-open">Por diseñar</span></td></tr><tr><td class="id">RF-03</td><td>CH1 necesita su propia cadena rápida y su filtro anti-alias. Con 6.5 MSa/s y 2 MHz, fs/BW ≈ 3.3: un filtro de primer orden casi no rechaza el alias. CH2 y CH3 siguen la sección C (1.5 MHz)</td><td>Sección D</td><td><span class="tag t-open">Por diseñar</span></td></tr><tr><td class="id">RF-09</td><td>Disparo con el watchdog de 12 bits (AWD1) de cada ADC y la cadena por hardware P12. CH2 y CH3 en PE9/PE15 no tienen comparador y no lo necesitan; en CH1 el comparador es opcional</td><td>Firmware y mapa de pines</td><td><span class="tag t-ok">Resuelto sin hardware</span></td></tr><tr><td class="id">RF-10</td><td>3 × 8192 × 2 B = 48 KiB de los 128 KiB de RAM del G473</td><td>Firmware</td><td><span class="tag t-ok">Cabe</span></td></tr><tr><td class="id">RF-11, RF-12</td><td>El G473 hace la decimación con mínimo y máximo (detección de picos) y el promedio. La interfaz interpola sin(x)/x</td><td>Firmware y S3G4-UI</td><td><span class="tag t-open">Por hacer</span></td></tr><tr><td class="id">RF-13</td><td>Se calcula en el ESP32-S3 o en el cliente web. El Bode usa el AWG y dos canales</td><td>S3G4-UI</td><td><span class="tag t-open">Por hacer</span></td></tr><tr><td class="id">RF-14</td><td>Un DAC o PWM de offset por canal, inyectado en la última etapa (P6/P8), con rango de ±5 divisiones</td><td>Sección E</td><td><span class="tag t-open">Por diseñar</span></td></tr><tr><td class="id">RF-15</td><td>P10 + P16: red de realimentación al 0.1 %, el AWG en continua como fuente y la corrección de ganancia y offset en el propio ADC</td><td>Sección F y firmware</td><td><span class="tag t-open">Por diseñar</span></td></tr><tr><td class="id">RF-16, RF-17, RF-18</td><td>Sección G: con 5000 mAh, 6.0 h en el peor caso (todo activo, WiFi, pantalla y AWG sobre 50 Ω) y 8.1 h en uso típico. Apagado por canal y por función, y el AWG con su propio convertidor de ±6.5 V</td><td>Sección G (rieles)</td><td><span class="tag t-open">En curso</span></td></tr><tr><td class="id">RF-19</td><td>Cada pieza nueva se busca en LCSC con stock alto. Se anotan el original y el equivalente, con las cifras de la hoja que lo justifican</td><td>Todas</td><td><span class="tag t-ok">Regla de trabajo</span></td></tr></tbody>
+  </table></div>
+  <p class="src">Evidencia: simulación P4/P7 de Codex y su auditoría (<code>S3G4_LAB_rev2.1/03_simulaciones/P4_P7_grueso/AUDITORIA_CLAUDE_P4_P7.md</code>), <code>S3G4_LAB_rev2.1/02_referencias/g473_analogico.html</code>, <code>S3G4_LAB_rev2.1/02_referencias/analisis_black_scope.html</code> y el documento vivo.</p>
+
+</section>
+<section id="verificacion">
+  <div class="shead"><span class="num">3</span><h2>Cómo se comprobará cada uno</h2></div>
+
+  <div class="tw"><table>
+    <thead><tr><th>Requisitos</th><th>En simulación</th><th>En banco</th></tr></thead>
+    <tbody>
+      <tr><td class="id">RF-03, RF-04</td><td>Respuesta en frecuencia de cada escala (T02)</td><td>Barrido con el AWG y un generador de referencia</td></tr>
+      <tr><td class="id">RF-07, RF-08</td><td>T01 y T05 con modelo de sonda ×10</td><td>Salida de compensación de 1 kHz con sonda real en todas las escalas</td></tr>
+      <tr><td class="id">RF-06</td><td>T06 (50 V continuos y 250 Vrms)</td><td>Ensayo destructivo en una placa de pruebas</td></tr>
+      <tr><td class="id">RF-09 a RF-14</td><td>—</td><td>Pruebas de firmware y de la S3G4-UI</td></tr>
+      <tr><td class="id">RF-15</td><td>—</td><td>Contra una referencia calibrada, antes y después de autocalibrar</td></tr>
+      <tr><td class="id">RF-16 a RF-18</td><td>Presupuesto de energía</td><td>Descarga de la batería con las tres funciones y el WiFi activos (plan de medición de la propuesta de arquitectura, §21)</td></tr>
+    </tbody>
+  </table></div>
+
+</section>
+<section id="abierto">
+  <div class="shead"><span class="num">4</span><h2>Lo que queda abierto</h2></div>
+
+  <ul class="tight">
+    <li><b>Requisitos del DMM y del AWG:</b> acordados el mismo día en <code>S3G4_LAB_rev2.1/00_requisitos/requisitos_dmm_awg.html</code> (RD-01…RD-10 y RG-01…RG-08).</li>
+    <li><b>El tope RE-01 de 120 USD de la tesis</b> no se discutió: RF-19 fija la prioridad (disponibilidad y precio), no una cifra.</li>
+    <li><b>Correcciones de P4</b> para RF-08 y RF-06, y T07 completo para decidir el ajustable.</li>
+    <li><b>Orden del filtro anti-alias de CH1</b> (sección D) y reloj de la CPU (P13), que depende del firmware y de RF-17.</li>
+  </ul>
+
+</section>
+<footer><p class="meta">Redacción de Claude Code, 23 sep 2026, a partir de las respuestas de Keneth. Fuentes: <code>ai-context/DECISIONS.md</code>, <code>S3G4_LAB_rev2.1/01_diseno/rediseno_afe_rev21.html</code>, las anatomías de <code>docs/</code> y la simulación de <code>S3G4_LAB_rev2.1/03_simulaciones/P4_P7_grueso/</code>.</p></footer>
+</div>

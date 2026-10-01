@@ -1,0 +1,1630 @@
+LTspice 26.0.2 for Windows
+Circuit: C:\Users\Keneth\Desktop\S3G4 LAB\S3G4_LAB_rev2.1\03_simulaciones\P4_P7_grueso\P7_sin_rele\T07_robustez.net
+Start Time: Thu Sep 24 08:07:53 2026
+
+.step run=1
+solver = Normal
+Maximum thread count: 12
+tnom = 27
+temp = 27
+method = trap
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=2
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=3
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=4
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=5
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=6
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=7
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=8
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=9
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=10
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=11
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=12
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=13
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=14
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=15
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=16
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=17
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=18
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=19
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=20
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=21
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=22
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=23
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=24
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=25
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=26
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=27
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=28
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=29
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=30
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=31
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=32
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=33
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=34
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=35
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=36
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=37
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=38
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=39
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=40
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=41
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=42
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=43
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=44
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=45
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=46
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=47
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=48
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=49
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=50
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=51
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=52
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=53
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=54
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=55
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=56
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=57
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=58
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=59
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=60
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=61
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=62
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=63
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=64
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=65
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=66
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=67
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=68
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=69
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=70
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=71
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=72
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=73
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=74
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=75
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=76
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=77
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=78
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=79
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=80
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=81
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=82
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=83
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=84
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=85
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=86
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=87
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=88
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=89
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=90
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=91
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=92
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=93
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=94
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=95
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=96
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=97
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=98
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=99
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=100
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=101
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=102
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=103
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=104
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=105
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=106
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=107
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=108
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=109
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=110
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=111
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=112
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=113
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=114
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=115
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=116
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=117
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=118
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=119
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=120
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=121
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=122
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=123
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=124
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=125
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=126
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=127
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=128
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=129
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=130
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=131
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=132
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=133
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=134
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=135
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=136
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=137
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=138
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=139
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=140
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=141
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=142
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=143
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=144
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=145
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=146
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=147
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=148
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=149
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=150
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=151
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=152
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=153
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=154
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=155
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=156
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=157
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=158
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=159
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=160
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=161
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=162
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=163
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=164
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=165
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=166
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=167
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=168
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=169
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=170
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=171
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=172
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=173
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=174
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=175
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=176
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=177
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=178
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=179
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=180
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=181
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=182
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=183
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=184
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=185
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=186
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=187
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=188
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=189
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=190
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=191
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=192
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=193
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=194
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=195
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=196
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=197
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=198
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=199
+Direct Newton iteration succeeded in finding operating point.
+
+.step run=200
+Direct Newton iteration succeeded in finding operating point.
+Total elapsed time: 12.375 seconds.
+
+Files loaded:
+C:\Users\Keneth\Desktop\S3G4 LAB\S3G4_LAB_rev2.1\03_simulaciones\P4_P7_grueso\P7_sin_rele\T07_robustez.net
+C:\Users\Keneth\Desktop\S3G4 LAB\S3G4_LAB_rev2.1\03_simulaciones\P4_P7_grueso\comun\rev21_comun.inc
+C:\Users\Keneth\AppData\Local\LTspice\lib\sub\UniversalOpAmp2.lib
+
+
+Measurement: p7_wc_gdc
+  step	mag(V(SAL)) 	at
+     1	(-6.02287508572dB,0°)	100
+     2	(-6.02288147608dB,0°)	100
+     3	(-6.02287711494dB,0°)	100
+     4	(-6.02287903954dB,0°)	100
+     5	(-6.02287973125dB,0°)	100
+     6	(-6.02287648783dB,0°)	100
+     7	(-6.02288198001dB,0°)	100
+     8	(-6.02287475204dB,0°)	100
+     9	(-6.02288304071dB,0°)	100
+    10	(-6.0228744655dB,0°)	100
+    11	(-6.02288252633dB,0°)	100
+    12	(-6.02287573277dB,0°)	100
+    13	(-6.02288062454dB,0°)	100
+    14	(-6.02287809145dB,0°)	100
+    15	(-6.02287802927dB,0°)	100
+    16	(-6.02288068091dB,0°)	100
+    17	(-6.02287568747dB,0°)	100
+    18	(-6.02288255632dB,0°)	100
+    19	(-6.02287445361dB,0°)	100
+    20	(-6.02288303339dB,0°)	100
+    21	(-6.0228747779dB,0°)	100
+    22	(-6.02288193804dB,0°)	100
+    23	(-6.02287654201dB,0°)	100
+    24	(-6.02287966994dB,0°)	100
+    25	(-6.02287910225dB,0°)	100
+    26	(-6.02287705667dB,0°)	100
+    27	(-6.02288152447dB,0°)	100
+    28	(-6.02287505175dB,0°)	100
+    29	(-6.02288292483dB,0°)	100
+    30	(-6.02287438673dB,0°)	100
+    31	(-6.02288279239dB,0°)	100
+    32	(-6.02287530426dB,0°)	100
+    33	(-6.02288117547dB,0°)	100
+    34	(-6.02287746955dB,0°)	100
+    35	(-6.02287866404dB,0°)	100
+    36	(-6.02288009255dB,0°)	100
+    37	(-6.02287617447dB,0°)	100
+    38	(-6.02288221617dB,0°)	100
+    39	(-6.02287461515dB,0°)	100
+    40	(-6.02288306556dB,0°)	100
+    41	(-6.02287455502dB,0°)	100
+    42	(-6.02288233079dB,0°)	100
+    43	(-6.02287601605dB,0°)	100
+    44	(-6.02288027998dB,0°)	100
+    45	(-6.02287846512dB,0°)	100
+    46	(-6.0228776614dB,0°)	100
+    47	(-6.02288100863dB,0°)	100
+    48	(-6.02287543052dB,0°)	100
+    49	(-6.02288271851dB,0°)	100
+    50	(-6.02287440133dB,0°)	100
+    51	(-6.02288297087dB,0°)	100
+    52	(-6.02287494937dB,0°)	100
+    53	(-6.02288167362dB,0°)	100
+    54	(-6.02287687466dB,0°)	100
+    55	(-6.02287930011dB,0°)	100
+    56	(-6.02287947472dB,0°)	100
+    57	(-6.02287671636dB,0°)	100
+    58	(-6.02288180083dB,0°)	100
+    59	(-6.02287486514dB,0°)	100
+    60	(-6.02288300426dB,0°)	100
+    61	(-6.0228744219dB,0°)	100
+    62	(-6.0228826459dB,0°)	100
+    63	(-6.02287554838dB,0°)	100
+    64	(-6.02288085651dB,0°)	100
+    65	(-6.02287783355dB,0°)	100
+    66	(-6.022878289dB,0°)	100
+    67	(-6.02288044361dB,0°)	100
+    68	(-6.02287588019dB,0°)	100
+    69	(-6.02288242619dB,0°)	100
+    70	(-6.022874509dB,0°)	100
+    71	(-6.02288305792dB,0°)	100
+    72	(-6.02287467574dB,0°)	100
+    73	(-6.02288210827dB,0°)	100
+    74	(-6.02287631958dB,0°)	100
+    75	(-6.02287992377dB,0°)	100
+    76	(-6.02287884072dB,0°)	100
+    77	(-6.02287730148dB,0°)	100
+    78	(-6.02288131925dB,0°)	100
+    79	(-6.02287519821dB,0°)	100
+    80	(-6.02288285081dB,0°)	100
+    81	(-6.0228743814dB,0°)	100
+    82	(-6.02288287657dB,0°)	100
+    83	(-6.02287514909dB,0°)	100
+    84	(-6.02288138714dB,0°)	100
+    85	(-6.02287722116dB,0°)	100
+    86	(-6.02287892597dB,0°)	100
+    87	(-6.02287984156dB,0°)	100
+    88	(-6.02287639108dB,0°)	100
+    89	(-6.02288205417dB,0°)	100
+    90	(-6.0228747074dB,0°)	100
+    91	(-6.02288305166dB,0°)	100
+    92	(-6.02287448927dB,0°)	100
+    93	(-6.02288247006dB,0°)	100
+    94	(-6.02287581627dB,0°)	100
+    95	(-6.0228805216dB,0°)	100
+    96	(-6.02287820421dB,0°)	100
+    97	(-6.02287791721dB,0°)	100
+    98	(-6.0228807818dB,0°)	100
+    99	(-6.02287560718dB,0°)	100
+   100	(-6.02288260852dB,0°)	100
+   101	(-6.02287443439dB,0°)	100
+   102	(-6.02288301785dB,0°)	100
+   103	(-6.02287482675dB,0°)	100
+   104	(-6.02288186043dB,0°)	100
+   105	(-6.02287664111dB,0°)	100
+   106	(-6.02287955859dB,0°)	100
+   107	(-6.02287921545dB,0°)	100
+   108	(-6.0228769522dB,0°)	100
+   109	(-6.02288161045dB,0°)	100
+   110	(-6.02287499228dB,0°)	100
+   111	(-6.02288295223dB,0°)	100
+   112	(-6.02287439396dB,0°)	100
+   113	(-6.02288275121dB,0°)	100
+   114	(-6.02287537555dB,0°)	100
+   115	(-6.02288108073dB,0°)	100
+   116	(-6.0228775789dB,0°)	100
+   117	(-6.02287855031dB,0°)	100
+   118	(-6.02288020004dB,0°)	100
+   119	(-6.02287608325dB,0°)	100
+   120	(-6.02288228259dB,0°)	100
+   121	(-6.02287457972dB,0°)	100
+   122	(-6.02288306668dB,0°)	100
+   123	(-6.02287458832dB,0°)	100
+   124	(-6.0228822662dB,0°)	100
+   125	(-6.02287610591dB,0°)	100
+   126	(-6.02288017323dB,0°)	100
+   127	(-6.02287857877dB,0°)	100
+   128	(-6.02287755146dB,0°)	100
+   129	(-6.02288110459dB,0°)	100
+   130	(-6.02287535749dB,0°)	100
+   131	(-6.02288276177dB,0°)	100
+   132	(-6.02287439187dB,0°)	100
+   133	(-6.02288294565dB,0°)	100
+   134	(-6.02287500692dB,0°)	100
+   135	(-6.02288158912dB,0°)	100
+   136	(-6.02287697823dB,0°)	100
+   137	(-6.02287918716dB,0°)	100
+   138	(-6.02287958651dB,0°)	100
+   139	(-6.02287661618dB,0°)	100
+   140	(-6.02288188005dB,0°)	100
+   141	(-6.02287481427dB,0°)	100
+   142	(-6.02288302201dB,0°)	100
+   143	(-6.02287443892dB,0°)	100
+   144	(-6.0228825957dB,0°)	100
+   145	(-6.02287562707dB,0°)	100
+   146	(-6.02288075668dB,0°)	100
+   147	(-6.0228779452dB,0°)	100
+   148	(-6.02287817596dB,0°)	100
+   149	(-6.02288054748dB,0°)	100
+   150	(-6.02287579519dB,0°)	100
+   151	(-6.02288248439dB,0°)	100
+   152	(-6.02287448305dB,0°)	100
+   153	(-6.0228830492dB,0°)	100
+   154	(-6.02287471831dB,0°)	100
+   155	(-6.02288203583dB,0°)	100
+   156	(-6.02287641514dB,0°)	100
+   157	(-6.02287981402dB,0°)	100
+   158	(-6.0228789544dB,0°)	100
+   159	(-6.02287719448dB,0°)	100
+   160	(-6.02288140957dB,0°)	100
+   161	(-6.022875133dB,0°)	100
+   162	(-6.02288288482dB,0°)	100
+   163	(-6.02287438177dB,0°)	100
+   164	(-6.02288284186dB,0°)	100
+   165	(-6.02287521491dB,0°)	100
+   166	(-6.02288129637dB,0°)	100
+   167	(-6.02287732841dB,0°)	100
+   168	(-6.02287881226dB,0°)	100
+   169	(-6.02287995111dB,0°)	100
+   170	(-6.02287629593dB,0°)	100
+   171	(-6.02288212604dB,0°)	100
+   172	(-6.02287466552dB,0°)	100
+   173	(-6.02288305963dB,0°)	100
+   174	(-6.02287451594dB,0°)	100
+   175	(-6.02288241123dB,0°)	100
+   176	(-6.02287590177dB,0°)	100
+   177	(-6.02288041743dB,0°)	100
+   178	(-6.02287831734dB,0°)	100
+   179	(-6.02287780571dB,0°)	100
+   180	(-6.02288088127dB,0°)	100
+   181	(-6.02287552903dB,0°)	100
+   182	(-6.02288265804dB,0°)	100
+   183	(-6.02287441811dB,0°)	100
+   184	(-6.02288299936dB,0°)	100
+   185	(-6.02287487828dB,0°)	100
+   186	(-6.02288178067dB,0°)	100
+   187	(-6.02287674165dB,0°)	100
+   188	(-6.02287944666dB,0°)	100
+   189	(-6.02287932832dB,0°)	100
+   190	(-6.02287684894dB,0°)	100
+   191	(-6.02288169446dB,0°)	100
+   192	(-6.02287493537dB,0°)	100
+   193	(-6.02288297673dB,0°)	100
+   194	(-6.02287440416dB,0°)	100
+   195	(-6.02288270726dB,0°)	100
+   196	(-6.02287544915dB,0°)	100
+   197	(-6.02288098437dB,0°)	100
+   198	(-6.02287768902dB,0°)	100
+   199	(-6.0228784367dB,0°)	100
+   200	(-6.02288030652dB,0°)	100
+
+Measurement: p7_wc_g100k
+  step	mag(V(SAL)) 	at
+     1	(-6.01564428695dB,0°)	100000
+     2	(-6.01565076045dB,0°)	100000
+     3	(-6.01564676894dB,0°)	100000
+     4	(-6.01564859429dB,0°)	100000
+     5	(-6.01564891139dB,0°)	100000
+     6	(-6.01564585222dB,0°)	100000
+     7	(-6.01565176535dB,0°)	100000
+     8	(-6.01564406595dB,0°)	100000
+     9	(-6.0156522749dB,0°)	100000
+    10	(-6.01564397078dB,0°)	100000
+    11	(-6.01565225362dB,0°)	100000
+    12	(-6.01564491727dB,0°)	100000
+    13	(-6.01564992552dB,0°)	100000
+    14	(-6.01564778198dB,0°)	100000
+    15	(-6.01564753047dB,0°)	100000
+    16	(-6.0156498675dB,0°)	100000
+    17	(-6.01564507778dB,0°)	100000
+    18	(-6.01565234652dB,0°)	100000
+    19	(-6.01564372728dB,0°)	100000
+    20	(-6.01565228224dB,0°)	100000
+    21	(-6.01564432177dB,0°)	100000
+    22	(-6.01565162742dB,0°)	100000
+    23	(-6.0156457157dB,0°)	100000
+    24	(-6.01564898895dB,0°)	100000
+    25	(-6.01564882501dB,0°)	100000
+    26	(-6.01564650422dB,0°)	100000
+    27	(-6.01565072073dB,0°)	100000
+    28	(-6.01564447063dB,0°)	100000
+    29	(-6.01565271065dB,0°)	100000
+    30	(-6.01564362573dB,0°)	100000
+    31	(-6.01565205699dB,0°)	100000
+    32	(-6.01564488734dB,0°)	100000
+    33	(-6.0156508206dB,0°)	100000
+    34	(-6.01564663805dB,0°)	100000
+    35	(-6.01564800268dB,0°)	100000
+    36	(-6.01564984191dB,0°)	100000
+    37	(-6.01564556981dB,0°)	100000
+    38	(-6.01565142477dB,0°)	100000
+    39	(-6.01564406516dB,0°)	100000
+    40	(-6.01565283765dB,0°)	100000
+    41	(-6.01564376542dB,0°)	100000
+    42	(-6.01565161206dB,0°)	100000
+    43	(-6.0156456379dB,0°)	100000
+    44	(-6.01564987595dB,0°)	100000
+    45	(-6.01564763358dB,0°)	100000
+    46	(-6.01564702147dB,0°)	100000
+    47	(-6.01565077776dB,0°)	100000
+    48	(-6.01564477649dB,0°)	100000
+    49	(-6.01565194158dB,0°)	100000
+    50	(-6.01564388477dB,0°)	100000
+    51	(-6.01565272018dB,0°)	100000
+    52	(-6.01564413747dB,0°)	100000
+    53	(-6.01565097244dB,0°)	100000
+    54	(-6.01564653365dB,0°)	100000
+    55	(-6.01564884365dB,0°)	100000
+    56	(-6.01564864779dB,0°)	100000
+    57	(-6.01564609989dB,0°)	100000
+    58	(-6.01565158188dB,0°)	100000
+    59	(-6.01564416578dB,0°)	100000
+    60	(-6.01565224346dB,0°)	100000
+    61	(-6.01564394063dB,0°)	100000
+    62	(-6.015652364dB,0°)	100000
+    63	(-6.01564472055dB,0°)	100000
+    64	(-6.0156501738dB,0°)	100000
+    65	(-6.01564752676dB,0°)	100000
+    66	(-6.01564777847dB,0°)	100000
+    67	(-6.01564962534dB,0°)	100000
+    68	(-6.0156452893dB,0°)	100000
+    69	(-6.01565221054dB,0°)	100000
+    70	(-6.01564376932dB,0°)	100000
+    71	(-6.01565231451dB,0°)	100000
+    72	(-6.01564423099dB,0°)	100000
+    73	(-6.0156517877dB,0°)	100000
+    74	(-6.01564548203dB,0°)	100000
+    75	(-6.01564926054dB,0°)	100000
+    76	(-6.01564856392dB,0°)	100000
+    77	(-6.01564673687dB,0°)	100000
+    78	(-6.01565051309dB,0°)	100000
+    79	(-6.0156446351dB,0°)	100000
+    80	(-6.01565262942dB,0°)	100000
+    81	(-6.01564360718dB,0°)	100000
+    82	(-6.01565215152dB,0°)	100000
+    83	(-6.01564474128dB,0°)	100000
+    84	(-6.01565102167dB,0°)	100000
+    85	(-6.01564637978dB,0°)	100000
+    86	(-6.01564828338dB,0°)	100000
+    87	(-6.01564958923dB,0°)	100000
+    88	(-6.01564577394dB,0°)	100000
+    89	(-6.01565126293dB,0°)	100000
+    90	(-6.0156441742dB,0°)	100000
+    91	(-6.01565281538dB,0°)	100000
+    92	(-6.01564368678dB,0°)	100000
+    93	(-6.0156517641dB,0°)	100000
+    94	(-6.01564544484dB,0°)	100000
+    95	(-6.01565010646dB,0°)	100000
+    96	(-6.01564736446dB,0°)	100000
+    97	(-6.01564729662dB,0°)	100000
+    98	(-6.01565054726dB,0°)	100000
+    99	(-6.01564494046dB,0°)	100000
+   100	(-6.01565183443dB,0°)	100000
+   101	(-6.01564393301dB,0°)	100000
+   102	(-6.01565275781dB,0°)	100000
+   103	(-6.01564400254dB,0°)	100000
+   104	(-6.01565117416dB,0°)	100000
+   105	(-6.01564630438dB,0°)	100000
+   106	(-6.01564909059dB,0°)	100000
+   107	(-6.01564838223dB,0°)	100000
+   108	(-6.01564635513dB,0°)	100000
+   109	(-6.01565138604dB,0°)	100000
+   110	(-6.01564428013dB,0°)	100000
+   111	(-6.015652197dB,0°)	100000
+   112	(-6.01564392594dB,0°)	100000
+   113	(-6.01565245917dB,0°)	100000
+   114	(-6.01564453624dB,0°)	100000
+   115	(-6.01565041473dB,0°)	100000
+   116	(-6.01564727395dB,0°)	100000
+   117	(-6.01564802792dB,0°)	100000
+   118	(-6.01564937765dB,0°)	100000
+   119	(-6.01564551136dB,0°)	100000
+   120	(-6.01565205992dB,0°)	100000
+   121	(-6.01564382732dB,0°)	100000
+   122	(-6.01565233152dB,0°)	100000
+   123	(-6.01564415462dB,0°)	100000
+   124	(-6.01565193487dB,0°)	100000
+   125	(-6.01564525796dB,0°)	100000
+   126	(-6.01564952814dB,0°)	100000
+   127	(-6.01564830145dB,0°)	100000
+   128	(-6.01564697474dB,0°)	100000
+   129	(-6.01565029668dB,0°)	100000
+   130	(-6.01564481251dB,0°)	100000
+   131	(-6.01565253201dB,0°)	100000
+   132	(-6.01564360515dB,0°)	100000
+   133	(-6.01565223141dB,0°)	100000
+   134	(-6.01564460776dB,0°)	100000
+   135	(-6.01565121242dB,0°)	100000
+   136	(-6.01564612781dB,0°)	100000
+   137	(-6.01564856369dB,0°)	100000
+   138	(-6.01564933144dB,0°)	100000
+   139	(-6.01564598678dB,0°)	100000
+   140	(-6.0156510896dB,0°)	100000
+   141	(-6.01564429788dB,0°)	100000
+   142	(-6.01565277626dB,0°)	100000
+   143	(-6.01564362434dB,0°)	100000
+   144	(-6.01565190294dB,0°)	100000
+   145	(-6.01564526177dB,0°)	100000
+   146	(-6.01565032996dB,0°)	100000
+   147	(-6.01564709804dB,0°)	100000
+   148	(-6.015647575dB,0°)	100000
+   149	(-6.01565030816dB,0°)	100000
+   150	(-6.01564511614dB,0°)	100000
+   151	(-6.01565171373dB,0°)	100000
+   152	(-6.01564399676dB,0°)	100000
+   153	(-6.01565277881dB,0°)	100000
+   154	(-6.01564388263dB,0°)	100000
+   155	(-6.01565136487dB,0°)	100000
+   156	(-6.01564608195dB,0°)	100000
+   157	(-6.01564933421dB,0°)	100000
+   158	(-6.01564811567dB,0°)	100000
+   159	(-6.01564661704dB,0°)	100000
+   160	(-6.01565117856dB,0°)	100000
+   161	(-6.01564440859dB,0°)	100000
+   162	(-6.01565213569dB,0°)	100000
+   163	(-6.01564392678dB,0°)	100000
+   164	(-6.01565253879dB,0°)	100000
+   165	(-6.01564436497dB,0°)	100000
+   166	(-6.01565064746dB,0°)	100000
+   167	(-6.01564702445dB,0°)	100000
+   168	(-6.01564827789dB,0°)	100000
+   169	(-6.01564912533dB,0°)	100000
+   170	(-6.01564574318dB,0°)	100000
+   171	(-6.01565189519dB,0°)	100000
+   172	(-6.01564390103dB,0°)	100000
+   173	(-6.01565233322dB,0°)	100000
+   174	(-6.01564409294dB,0°)	100000
+   175	(-6.01565206839dB,0°)	100000
+   176	(-6.01564504429dB,0°)	100000
+   177	(-6.0156497908dB,0°)	100000
+   178	(-6.01564803855dB,0°)	100000
+   179	(-6.01564721696dB,0°)	100000
+   180	(-6.01565007229dB,0°)	100000
+   181	(-6.01564500222dB,0°)	100000
+   182	(-6.01565241879dB,0°)	100000
+   183	(-6.01564361962dB,0°)	100000
+   184	(-6.0156522964dB,0°)	100000
+   185	(-6.01564448729dB,0°)	100000
+   186	(-6.01565139214dB,0°)	100000
+   187	(-6.01564588306dB,0°)	100000
+   188	(-6.01564884259dB,0°)	100000
+   189	(-6.01564906947dB,0°)	100000
+   190	(-6.01564620753dB,0°)	100000
+   191	(-6.01565090542dB,0°)	100000
+   192	(-6.01564443573dB,0°)	100000
+   193	(-6.01565272043dB,0°)	100000
+   194	(-6.0156435783dB,0°)	100000
+   195	(-6.0156520281dB,0°)	100000
+   196	(-6.01564508934dB,0°)	100000
+   197	(-6.01565054564dB,0°)	100000
+   198	(-6.0156468353dB,0°)	100000
+   199	(-6.01564785558dB,0°)	100000
+   200	(-6.01565006133dB,0°)	100000
+
+Measurement: p7_wc_g1m5
+  step	mag(V(SAL)) 	at
+     1	(-5.54079404487dB,0°)	1500000
+     2	(-5.54080697525dB,0°)	1500000
+     3	(-5.54089443965dB,0°)	1500000
+     4	(-5.54087026855dB,0°)	1500000
+     5	(-5.54078503236dB,0°)	1500000
+     6	(-5.54082961252dB,0°)	1500000
+     7	(-5.54091964665dB,0°)	1500000
+     8	(-5.54081980045dB,0°)	1500000
+     9	(-5.54079421138dB,0°)	1500000
+    10	(-5.54086328042dB,0°)	1500000
+    11	(-5.54090604151dB,0°)	1500000
+    12	(-5.54078967526dB,0°)	1500000
+    13	(-5.54081150808dB,0°)	1500000
+    14	(-5.54090179488dB,0°)	1500000
+    15	(-5.54085909831dB,0°)	1500000
+    16	(-5.54078562086dB,0°)	1500000
+    17	(-5.54083619861dB,0°)	1500000
+    18	(-5.54092021775dB,0°)	1500000
+    19	(-5.54081098447dB,0°)	1500000
+    20	(-5.54079753166dB,0°)	1500000
+    21	(-5.54087170906dB,0°)	1500000
+    22	(-5.54089801899dB,0°)	1500000
+    23	(-5.54078649463dB,0°)	1500000
+    24	(-5.54081645228dB,0°)	1500000
+    25	(-5.54090814881dB,0°)	1500000
+    26	(-5.54084787196dB,0°)	1500000
+    27	(-5.54078703464dB,0°)	1500000
+    28	(-5.54084323265dB,0°)	1500000
+    29	(-5.54091889135dB,0°)	1500000
+    30	(-5.54080321607dB,0°)	1500000
+    31	(-5.54080130751dB,0°)	1500000
+    32	(-5.5408800813dB,0°)	1500000
+    33	(-5.54088872196dB,0°)	1500000
+    34	(-5.54078447206dB,0°)	1500000
+    35	(-5.54082180531dB,0°)	1500000
+    36	(-5.54091325087dB,0°)	1500000
+    37	(-5.54083688895dB,0°)	1500000
+    38	(-5.5407891881dB,0°)	1500000
+    39	(-5.54085066147dB,0°)	1500000
+    40	(-5.54091566446dB,0°)	1500000
+    41	(-5.54079660139dB,0°)	1500000
+    42	(-5.54080549511dB,0°)	1500000
+    43	(-5.54088818522dB,0°)	1500000
+    44	(-5.54087844293dB,0°)	1500000
+    45	(-5.54078355461dB,0°)	1500000
+    46	(-5.54082756474dB,0°)	1500000
+    47	(-5.54091687674dB,0°)	1500000
+    48	(-5.54082641993dB,0°)	1500000
+    49	(-5.54079199629dB,0°)	1500000
+    50	(-5.5408584055dB,0°)	1500000
+    51	(-5.54091060644dB,0°)	1500000
+    52	(-5.5407912063dB,0°)	1500000
+    53	(-5.54081006026dB,0°)	1500000
+    54	(-5.54089578641dB,0°)	1500000
+    55	(-5.54086749808dB,0°)	1500000
+    56	(-5.54078367219dB,0°)	1500000
+    57	(-5.54083372397dB,0°)	1500000
+    58	(-5.5409188424dB,0°)	1500000
+    59	(-5.54081669934dB,0°)	1500000
+    60	(-5.54079537784dB,0°)	1500000
+    61	(-5.54086635551dB,0°)	1500000
+    62	(-5.54090385626dB,0°)	1500000
+    63	(-5.54078705972dB,0°)	1500000
+    64	(-5.54081497789dB,0°)	1500000
+    65	(-5.540902637dB,0°)	1500000
+    66	(-5.54085621199dB,0°)	1500000
+    67	(-5.54078474218dB,0°)	1500000
+    68	(-5.54084026746dB,0°)	1500000
+    69	(-5.54091901672dB,0°)	1500000
+    70	(-5.54080792094dB,0°)	1500000
+    71	(-5.54079925737dB,0°)	1500000
+    72	(-5.54087437099dB,0°)	1500000
+    73	(-5.54089561534dB,0°)	1500000
+    74	(-5.54078415778dB,0°)	1500000
+    75	(-5.54082023073dB,0°)	1500000
+    76	(-5.54090848706dB,0°)	1500000
+    77	(-5.54084490336dB,0°)	1500000
+    78	(-5.54078667365dB,0°)	1500000
+    79	(-5.54084716546dB,0°)	1500000
+    80	(-5.54091733127dB,0°)	1500000
+    81	(-5.54080023572dB,0°)	1500000
+    82	(-5.5408035674dB,0°)	1500000
+    83	(-5.54088228069dB,0°)	1500000
+    84	(-5.54088613681dB,0°)	1500000
+    85	(-5.54078246846dB,0°)	1500000
+    86	(-5.54082580709dB,0°)	1500000
+    87	(-5.54091309771dB,0°)	1500000
+    88	(-5.54083387248dB,0°)	1500000
+    89	(-5.54078937131dB,0°)	1500000
+    90	(-5.54085436901dB,0°)	1500000
+    91	(-5.54091378651dB,0°)	1500000
+    92	(-5.54079375215dB,0°)	1500000
+    93	(-5.54080824976dB,0°)	1500000
+    94	(-5.54088988572dB,0°)	1500000
+    95	(-5.54087571213dB,0°)	1500000
+    96	(-5.54078193633dB,0°)	1500000
+    97	(-5.54083169771dB,0°)	1500000
+    98	(-5.54091625518dB,0°)	1500000
+    99	(-5.54082339122dB,0°)	1500000
+   100	(-5.54079273893dB,0°)	1500000
+   101	(-5.54086180534dB,0°)	1500000
+   102	(-5.54090845361dB,0°)	1500000
+   103	(-5.54078853796dB,0°)	1500000
+   104	(-5.54081325635dB,0°)	1500000
+   105	(-5.54089696537dB,0°)	1500000
+   106	(-5.54086465634dB,0°)	1500000
+   107	(-5.54078248724dB,0°)	1500000
+   108	(-5.54083789186dB,0°)	1500000
+   109	(-5.54091778447dB,0°)	1500000
+   110	(-5.54081369562dB,0°)	1500000
+   111	(-5.54079668252dB,0°)	1500000
+   112	(-5.54086937436dB,0°)	1500000
+   113	(-5.54090147192dB,0°)	1500000
+   114	(-5.54078462336dB,0°)	1500000
+   115	(-5.54081854913dB,0°)	1500000
+   116	(-5.54090328561dB,0°)	1500000
+   117	(-5.54085329299dB,0°)	1500000
+   118	(-5.5407840328dB,0°)	1500000
+   119	(-5.54084437263dB,0°)	1500000
+   120	(-5.54091756167dB,0°)	1500000
+   121	(-5.54080498133dB,0°)	1500000
+   122	(-5.54080111303dB,0°)	1500000
+   123	(-5.54087694671dB,0°)	1500000
+   124	(-5.54089304205dB,0°)	1500000
+   125	(-5.5407820049dB,0°)	1500000
+   126	(-5.54082409935dB,0°)	1500000
+   127	(-5.54090860999dB,0°)	1500000
+   128	(-5.54084194005dB,0°)	1500000
+   129	(-5.5407864746dB,0°)	1500000
+   130	(-5.5408511119dB,0°)	1500000
+   131	(-5.54091552364dB,0°)	1500000
+   132	(-5.54079740144dB,0°)	1500000
+   133	(-5.54080594864dB,0°)	1500000
+   134	(-5.54088436399dB,0°)	1500000
+   135	(-5.54088341547dB,0°)	1500000
+   136	(-5.54078064988dB,0°)	1500000
+   137	(-5.54082988582dB,0°)	1500000
+   138	(-5.54091271225dB,0°)	1500000
+   139	(-5.54083089754dB,0°)	1500000
+   140	(-5.54078970807dB,0°)	1500000
+   141	(-5.54085806518dB,0°)	1500000
+   142	(-5.54091167414dB,0°)	1500000
+   143	(-5.54079106644dB,0°)	1500000
+   144	(-5.54081111668dB,0°)	1500000
+   145	(-5.54089144131dB,0°)	1500000
+   146	(-5.54087288148dB,0°)	1500000
+   147	(-5.54078050089dB,0°)	1500000
+   148	(-5.54083589222dB,0°)	1500000
+   149	(-5.5409153899dB,0°)	1500000
+   150	(-5.5408204376dB,0°)	1500000
+   151	(-5.54079362609dB,0°)	1500000
+   152	(-5.54086516695dB,0°)	1500000
+   153	(-5.54090608578dB,0°)	1500000
+   154	(-5.54078604599dB,0°)	1500000
+   155	(-5.54081655484dB,0°)	1500000
+   156	(-5.54089797265dB,0°)	1500000
+   157	(-5.54086175273dB,0°)	1500000
+   158	(-5.54078148028dB,0°)	1500000
+   159	(-5.54084210347dB,0°)	1500000
+   160	(-5.54091647753dB,0°)	1500000
+   161	(-5.54081079709dB,0°)	1500000
+   162	(-5.54079812228dB,0°)	1500000
+   163	(-5.54087232686dB,0°)	1500000
+   164	(-5.54089889764dB,0°)	1500000
+   165	(-5.54078237168dB,0°)	1500000
+   166	(-5.5408222118dB,0°)	1500000
+   167	(-5.5409037388dB,0°)	1500000
+   168	(-5.5408503505dB,0°)	1500000
+   169	(-5.54078349447dB,0°)	1500000
+   170	(-5.54084850131dB,0°)	1500000
+   171	(-5.54091585881dB,0°)	1500000
+   172	(-5.54080217296dB,0°)	1500000
+   173	(-5.54080309399dB,0°)	1500000
+   174	(-5.54087942751dB,0°)	1500000
+   175	(-5.54089030869dB,0°)	1500000
+   176	(-5.5407800408dB,0°)	1500000
+   177	(-5.540828047dB,0°)	1500000
+   178	(-5.54090851771dB,0°)	1500000
+   179	(-5.54083899088dB,0°)	1500000
+   180	(-5.54078643808dB,0°)	1500000
+   181	(-5.54085505934dB,0°)	1500000
+   182	(-5.54091347597dB,0°)	1500000
+   183	(-5.54079471995dB,0°)	1500000
+   184	(-5.54080844509dB,0°)	1500000
+   185	(-5.54088632413dB,0°)	1500000
+   186	(-5.54088056773dB,0°)	1500000
+   187	(-5.5407790204dB,0°)	1500000
+   188	(-5.54083402946dB,0°)	1500000
+   189	(-5.54091209657dB,0°)	1500000
+   190	(-5.54082797255dB,0°)	1500000
+   191	(-5.54079019774dB,0°)	1500000
+   192	(-5.54086173788dB,0°)	1500000
+   193	(-5.54090933592dB,0°)	1500000
+   194	(-5.54078855047dB,0°)	1500000
+   195	(-5.5408140882dB,0°)	1500000
+   196	(-5.54089284677dB,0°)	1500000
+   197	(-5.54086996073dB,0°)	1500000
+   198	(-5.54077925157dB,0°)	1500000
+   199	(-5.54084013552dB,0°)	1500000
+   200	(-5.54091428486dB,0°)	1500000
+
+Measurement: p7_wc_peak
+  step	MAX(mag(V(SAL)) )	FROM	TO
+     1	(-2.82176740697dB,0°)	10	10000000
+     2	(-2.82195465444dB,0°)	10	10000000
+     3	(-2.82451096574dB,0°)	10	10000000
+     4	(-2.82378512698dB,0°)	10	10000000
+     5	(-2.8213901552dB,0°)	10	10000000
+     6	(-2.82272100271dB,0°)	10	10000000
+     7	(-2.8250815895dB,0°)	10	10000000
+     8	(-2.82249452004dB,0°)	10	10000000
+     9	(-2.821556354dB,0°)	10	10000000
+    10	(-2.82371432847dB,0°)	10	10000000
+    11	(-2.82468764139dB,0°)	10	10000000
+    12	(-2.82162803005dB,0°)	10	10000000
+    13	(-2.8221041197dB,0°)	10	10000000
+    14	(-2.82468948346dB,0°)	10	10000000
+    15	(-2.82350115818dB,0°)	10	10000000
+    16	(-2.82138081378dB,0°)	10	10000000
+    17	(-2.82292630147dB,0°)	10	10000000
+    18	(-2.82508188675dB,0°)	10	10000000
+    19	(-2.82225683029dB,0°)	10	10000000
+    20	(-2.82164912936dB,0°)	10	10000000
+    21	(-2.82394078865dB,0°)	10	10000000
+    22	(-2.82448000487dB,0°)	10	10000000
+    23	(-2.82151740462dB,0°)	10	10000000
+    24	(-2.82226784472dB,0°)	10	10000000
+    25	(-2.82483916263dB,0°)	10	10000000
+    26	(-2.82321459099dB,0°)	10	10000000
+    27	(-2.82139736077dB,0°)	10	10000000
+    28	(-2.82313961718dB,0°)	10	10000000
+    29	(-2.82503493793dB,0°)	10	10000000
+    30	(-2.82204206076dB,0°)	10	10000000
+    31	(-2.82176094125dB,0°)	10	10000000
+    32	(-2.82415986953dB,0°)	10	10000000
+    33	(-2.82424156308dB,0°)	10	10000000
+    34	(-2.82143585937dB,0°)	10	10000000
+    35	(-2.82244435392dB,0°)	10	10000000
+    36	(-2.82495450776dB,0°)	10	10000000
+    37	(-2.82293234375dB,0°)	10	10000000
+    38	(-2.82143864958dB,0°)	10	10000000
+    39	(-2.82335853242dB,0°)	10	10000000
+    40	(-2.82494119997dB,0°)	10	10000000
+    41	(-2.82185307527dB,0°)	10	10000000
+    42	(-2.82189021262dB,0°)	10	10000000
+    43	(-2.82436643873dB,0°)	10	10000000
+    44	(-2.82397934444dB,0°)	10	10000000
+    45	(-2.821383283dB,0°)	10	10000000
+    46	(-2.82263209969dB,0°)	10	10000000
+    47	(-2.82503072461dB,0°)	10	10000000
+    48	(-2.82266066493dB,0°)	10	10000000
+    49	(-2.82150332841dB,0°)	10	10000000
+    50	(-2.82358018708dB,0°)	10	10000000
+    51	(-2.82480281085dB,0°)	10	10000000
+    52	(-2.82169195989dB,0°)	10	10000000
+    53	(-2.82203531047dB,0°)	10	10000000
+    54	(-2.82455501078dB,0°)	10	10000000
+    55	(-2.82370084274dB,0°)	10	10000000
+    56	(-2.82135918571dB,0°)	10	10000000
+    57	(-2.82282942373dB,0°)	10	10000000
+    58	(-2.82506403323dB,0°)	10	10000000
+    59	(-2.82240499895dB,0°)	10	10000000
+    60	(-2.8215898662dB,0°)	10	10000000
+    61	(-2.82380122186dB,0°)	10	10000000
+    62	(-2.82462350078dB,0°)	10	10000000
+    63	(-2.82156010265dB,0°)	10	10000000
+    64	(-2.8221945687dB,0°)	10	10000000
+    65	(-2.82471994139dB,0°)	10	10000000
+    66	(-2.82341366354dB,0°)	10	10000000
+    67	(-2.82136274816dB,0°)	10	10000000
+    68	(-2.82303450192dB,0°)	10	10000000
+    69	(-2.82505194417dB,0°)	10	10000000
+    70	(-2.82216991814dB,0°)	10	10000000
+    71	(-2.82169658031dB,0°)	10	10000000
+    72	(-2.82401775059dB,0°)	10	10000000
+    73	(-2.82440840196dB,0°)	10	10000000
+    74	(-2.82145827821dB,0°)	10	10000000
+    75	(-2.82236630347dB,0°)	10	10000000
+    76	(-2.82485567633dB,0°)	10	10000000
+    77	(-2.82312520334dB,0°)	10	10000000
+    78	(-2.82139285993dB,0°)	10	10000000
+    79	(-2.82324527581dB,0°)	10	10000000
+    80	(-2.8249934691dB,0°)	10	10000000
+    81	(-2.82195911157dB,0°)	10	10000000
+    82	(-2.82182166761dB,0°)	10	10000000
+    83	(-2.82422537408dB,0°)	10	10000000
+    84	(-2.82416377548dB,0°)	10	10000000
+    85	(-2.8213867287dB,0°)	10	10000000
+    86	(-2.82254881652dB,0°)	10	10000000
+    87	(-2.82495704118dB,0°)	10	10000000
+    88	(-2.82284238205dB,0°)	10	10000000
+    89	(-2.8214481506dB,0°)	10	10000000
+    90	(-2.82345937744dB,0°)	10	10000000
+    91	(-2.82488924289dB,0°)	10	10000000
+    92	(-2.82177541759dB,0°)	10	10000000
+    93	(-2.82196323869dB,0°)	10	10000000
+    94	(-2.8244192459dB,0°)	10	10000000
+    95	(-2.82389668213dB,0°)	10	10000000
+    96	(-2.82134523498dB,0°)	10	10000000
+    97	(-2.82274038247dB,0°)	10	10000000
+    98	(-2.82501955066dB,0°)	10	10000000
+    99	(-2.82257144112dB,0°)	10	10000000
+   100	(-2.82152701753dB,0°)	10	10000000
+   101	(-2.82367405657dB,0°)	10	10000000
+   102	(-2.82474154227dB,0°)	10	10000000
+   103	(-2.82162088619dB,0°)	10	10000000
+   104	(-2.82211935347dB,0°)	10	10000000
+   105	(-2.82459419678dB,0°)	10	10000000
+   106	(-2.82361462772dB,0°)	10	10000000
+   107	(-2.82133317548dB,0°)	10	10000000
+   108	(-2.82293921803dB,0°)	10	10000000
+   109	(-2.82503971123dB,0°)	10	10000000
+   110	(-2.82231781104dB,0°)	10	10000000
+   111	(-2.82162765413dB,0°)	10	10000000
+   112	(-2.82388612192dB,0°)	10	10000000
+   113	(-2.82455419736dB,0°)	10	10000000
+   114	(-2.82149685729dB,0°)	10	10000000
+   115	(-2.82228805439dB,0°)	10	10000000
+   116	(-2.82474491848dB,0°)	10	10000000
+   117	(-2.82332521389dB,0°)	10	10000000
+   118	(-2.82134957283dB,0°)	10	10000000
+   119	(-2.82314343283dB,0°)	10	10000000
+   120	(-2.82501528801dB,0°)	10	10000000
+   121	(-2.8220860444dB,0°)	10	10000000
+   122	(-2.82174808172dB,0°)	10	10000000
+   123	(-2.82409190947dB,0°)	10	10000000
+   124	(-2.82433240389dB,0°)	10	10000000
+   125	(-2.82140404343dB,0°)	10	10000000
+   126	(-2.82246739276dB,0°)	10	10000000
+   127	(-2.82486620124dB,0°)	10	10000000
+   128	(-2.82303582148dB,0°)	10	10000000
+   129	(-2.82139313028dB,0°)	10	10000000
+   130	(-2.82335096498dB,0°)	10	10000000
+   131	(-2.8249455084dB,0°)	10	10000000
+   132	(-2.82187980517dB,0°)	10	10000000
+   133	(-2.82188618684dB,0°)	10	10000000
+   134	(-2.82428729015dB,0°)	10	10000000
+   135	(-2.82408245417dB,0°)	10	10000000
+   136	(-2.82134260802dB,0°)	10	10000000
+   137	(-2.8226554428dB,0°)	10	10000000
+   138	(-2.82495321129dB,0°)	10	10000000
+   139	(-2.82275334666dB,0°)	10	10000000
+   140	(-2.82146226171dB,0°)	10	10000000
+   141	(-2.82355950766dB,0°)	10	10000000
+   142	(-2.82483117947dB,0°)	10	10000000
+   143	(-2.82170190103dB,0°)	10	10000000
+   144	(-2.82203976373dB,0°)	10	10000000
+   145	(-2.82446772759dB,0°)	10	10000000
+   146	(-2.82381141303dB,0°)	10	10000000
+   147	(-2.82131223349dB,0°)	10	10000000
+   148	(-2.82285029912dB,0°)	10	10000000
+   149	(-2.82500178792dB,0°)	10	10000000
+   150	(-2.82248400204dB,0°)	10	10000000
+   151	(-2.8215551196dB,0°)	10	10000000
+   152	(-2.82376643585dB,0°)	10	10000000
+   153	(-2.82467470483dB,0°)	10	10000000
+   154	(-2.8215543447dB,0°)	10	10000000
+   155	(-2.82220655984dB,0°)	10	10000000
+   156	(-2.82462839276dB,0°)	10	10000000
+   157	(-2.82352676902dB,0°)	10	10000000
+   158	(-2.82131217679dB,0°)	10	10000000
+   159	(-2.82305005428dB,0°)	10	10000000
+   160	(-2.82500873471dB,0°)	10	10000000
+   161	(-2.82223318644dB,0°)	10	10000000
+   162	(-2.8216696253dB,0°)	10	10000000
+   163	(-2.82396874489dB,0°)	10	10000000
+   164	(-2.82447999706dB,0°)	10	10000000
+   165	(-2.8214384304dB,0°)	10	10000000
+   166	(-2.82238432045dB,0°)	10	10000000
+   167	(-2.82476433648dB,0°)	10	10000000
+   168	(-2.82323609098dB,0°)	10	10000000
+   169	(-2.82134131272dB,0°)	10	10000000
+   170	(-2.82325275624dB,0°)	10	10000000
+   171	(-2.82497207661dB,0°)	10	10000000
+   172	(-2.82200541939dB,0°)	10	10000000
+   173	(-2.82180350504dB,0°)	10	10000000
+   174	(-2.82416301387dB,0°)	10	10000000
+   175	(-2.82425229321dB,0°)	10	10000000
+   176	(-2.82135481397dB,0°)	10	10000000
+   177	(-2.82257082683dB,0°)	10	10000000
+   178	(-2.82487071428dB,0°)	10	10000000
+   179	(-2.82294671689dB,0°)	10	10000000
+   180	(-2.8213981676dB,0°)	10	10000000
+   181	(-2.82345634814dB,0°)	10	10000000
+   182	(-2.82489125594dB,0°)	10	10000000
+   183	(-2.82180433083dB,0°)	10	10000000
+   184	(-2.82195433369dB,0°)	10	10000000
+   185	(-2.82434540632dB,0°)	10	10000000
+   186	(-2.82399789107dB,0°)	10	10000000
+   187	(-2.82130358774dB,0°)	10	10000000
+   188	(-2.8227639222dB,0°)	10	10000000
+   189	(-2.82494305075dB,0°)	10	10000000
+   190	(-2.82266549468dB,0°)	10	10000000
+   191	(-2.8214809475dB,0°)	10	10000000
+   192	(-2.82365859656dB,0°)	10	10000000
+   193	(-2.82476724517dB,0°)	10	10000000
+   194	(-2.82163269313dB,0°)	10	10000000
+   195	(-2.82211958592dB,0°)	10	10000000
+   196	(-2.82451171908dB,0°)	10	10000000
+   197	(-2.82372383162dB,0°)	10	10000000
+   198	(-2.82128434487dB,0°)	10	10000000
+   199	(-2.82296151996dB,0°)	10	10000000
+   200	(-2.82497752347dB,0°)	10	10000000
+
+Measurement: p7_wc_step2us_proxy
+  step	100*abs(p7_wc_peak/p7_wc_gdc-1)
+     1	(32.9793736741dB,0°)
+     2	(32.9787869521dB,0°)
+     3	(32.9704768809dB,0°)
+     4	(32.9728392284dB,0°)
+     5	(32.9806125045dB,0°)
+     6	(32.9762843363dB,0°)
+     7	(32.9686400995dB,0°)
+     8	(32.9770135832dB,0°)
+     9	(32.9800841254dB,0°)
+    10	(32.9730541735dB,0°)
+    11	(32.969920886dB,0°)
+    12	(32.9798279098dB,0°)
+    13	(32.9782992855dB,0°)
+    14	(32.9699005079dB,0°)
+    15	(32.9737576026dB,0°)
+    16	(32.9806458859dB,0°)
+    17	(32.9756155594dB,0°)
+    18	(32.9686410056dB,0°)
+    19	(32.9777838122dB,0°)
+    20	(32.9797831478dB,0°)
+    21	(32.9723201494dB,0°)
+    22	(32.9705930474dB,0°)
+    23	(32.9801893904dB,0°)
+    24	(32.9777650005dB,0°)
+    25	(32.9694178479dB,0°)
+    26	(32.9746844642dB,0°)
+    27	(32.9805949484dB,0°)
+    28	(32.9749212647dB,0°)
+    29	(32.9687946354dB,0°)
+    30	(32.9784803859dB,0°)
+    31	(32.9794196499dB,0°)
+    32	(32.9716107305dB,0°)
+    33	(32.971364605dB,0°)
+    34	(32.9804569156dB,0°)
+    35	(32.9771890468dB,0°)
+    36	(32.969046576dB,0°)
+    37	(32.9755975325dB,0°)
+    38	(32.9804632617dB,0°)
+    39	(32.9742094051dB,0°)
+    40	(32.969099435dB,0°)
+    41	(32.9790940377dB,0°)
+    42	(32.978998785dB,0°)
+    43	(32.9709424892dB,0°)
+    44	(32.972212861dB,0°)
+    45	(32.9806306891dB,0°)
+    46	(32.9765766172dB,0°)
+    47	(32.9688020936dB,0°)
+    48	(32.9764766906dB,0°)
+    49	(32.9802550867dB,0°)
+    50	(32.9734893373dB,0°)
+    51	(32.9695484275dB,0°)
+    52	(32.9796179831dB,0°)
+    53	(32.9785259263dB,0°)
+    54	(32.9703331147dB,0°)
+    55	(32.9731136353dB,0°)
+    56	(32.9807121285dB,0°)
+    57	(32.9759332639dB,0°)
+    58	(32.9686965196dB,0°)
+    59	(32.9773044118dB,0°)
+    60	(32.9799752978dB,0°)
+    61	(32.9727720009dB,0°)
+    62	(32.9701295041dB,0°)
+    63	(32.9800476612dB,0°)
+    64	(32.9780065891dB,0°)
+    65	(32.9698007889dB,0°)
+    66	(32.9740424057dB,0°)
+    67	(32.9807037158dB,0°)
+    68	(32.9752650678dB,0°)
+    69	(32.9687378008dB,0°)
+    70	(32.9780659713dB,0°)
+    71	(32.9796292985dB,0°)
+    72	(32.9720700071dB,0°)
+    73	(32.9708260434dB,0°)
+    74	(32.9803804637dB,0°)
+    75	(32.9774463746dB,0°)
+    76	(32.9693633851dB,0°)
+    77	(32.9749753411dB,0°)
+    78	(32.9806088822dB,0°)
+    79	(32.9745788525dB,0°)
+    80	(32.9689290345dB,0°)
+    81	(32.9787494757dB,0°)
+    82	(32.9792229232dB,0°)
+    83	(32.9713975939dB,0°)
+    84	(32.9716177969dB,0°)
+    85	(32.9806154771dB,0°)
+    86	(32.9768509519dB,0°)
+    87	(32.9690375359dB,0°)
+    88	(32.9758901594dB,0°)
+    89	(32.9804319171dB,0°)
+    90	(32.97388242dB,0°)
+    91	(32.9692680778dB,0°)
+    92	(32.9793457524dB,0°)
+    93	(32.9787623277dB,0°)
+    94	(32.9707704157dB,0°)
+    95	(32.9724819555dB,0°)
+    96	(32.9807532593dB,0°)
+    97	(32.97622609dB,0°)
+    98	(32.9688376364dB,0°)
+    99	(32.9767667732dB,0°)
+   100	(32.9801778865dB,0°)
+   101	(32.9731847814dB,0°)
+   102	(32.969747492dB,0°)
+   103	(32.9798481449dB,0°)
+   104	(32.9782538718dB,0°)
+   105	(32.9702051432dB,0°)
+   106	(32.9733942959dB,0°)
+   107	(32.9807956566dB,0°)
+   108	(32.975577749dB,0°)
+   109	(32.9687748701dB,0°)
+   110	(32.9775877091dB,0°)
+   111	(32.9798525486dB,0°)
+   112	(32.9724963429dB,0°)
+   113	(32.9703548329dB,0°)
+   114	(32.9802522586dB,0°)
+   115	(32.9777040082dB,0°)
+   116	(32.9697188733dB,0°)
+   117	(32.9743303069dB,0°)
+   118	(32.9807456625dB,0°)
+   119	(32.9749122296dB,0°)
+   120	(32.968856349dB,0°)
+   121	(32.9783383162dB,0°)
+   122	(32.9794622563dB,0°)
+   123	(32.9718290064dB,0°)
+   124	(32.9710732626dB,0°)
+   125	(32.9805556953dB,0°)
+   126	(32.9771191914dB,0°)
+   127	(32.969328364dB,0°)
+   128	(32.9752662092dB,0°)
+   129	(32.980607309dB,0°)
+   130	(32.9742363735dB,0°)
+   131	(32.9690844605dB,0°)
+   132	(32.9790067932dB,0°)
+   133	(32.9790138398dB,0°)
+   134	(32.9711961448dB,0°)
+   135	(32.9718824227dB,0°)
+   136	(32.9807578036dB,0°)
+   137	(32.9765058248dB,0°)
+   138	(32.9690491424dB,0°)
+   139	(32.9761798013dB,0°)
+   140	(32.980385579dB,0°)
+   141	(32.9735577937dB,0°)
+   142	(32.9694564921dB,0°)
+   143	(32.9795840782dB,0°)
+   144	(32.9785144702dB,0°)
+   145	(32.9706124159dB,0°)
+   146	(32.9727594841dB,0°)
+   147	(32.9808594652dB,0°)
+   148	(32.9758702608dB,0°)
+   149	(32.968894547dB,0°)
+   150	(32.9770510951dB,0°)
+   151	(32.980086325dB,0°)
+   152	(32.9728851056dB,0°)
+   153	(32.9699645818dB,0°)
+   154	(32.9800636466dB,0°)
+   155	(32.9779715112dB,0°)
+   156	(32.9700933948dB,0°)
+   157	(32.9736802749dB,0°)
+   158	(32.9808629226dB,0°)
+   159	(32.9752188637dB,0°)
+   160	(32.9688747915dB,0°)
+   161	(32.9778627276dB,0°)
+   162	(32.9797161781dB,0°)
+   163	(32.9722281211dB,0°)
+   164	(32.9705960069dB,0°)
+   165	(32.9804412622dB,0°)
+   166	(32.9773923711dB,0°)
+   167	(32.9696550186dB,0°)
+   168	(32.9746203884dB,0°)
+   169	(32.9807716482dB,0°)
+   170	(32.9745581388dB,0°)
+   171	(32.9689961371dB,0°)
+   172	(32.9786001645dB,0°)
+   173	(32.9792824378dB,0°)
+   174	(32.9715979649dB,0°)
+   175	(32.9713337851dB,0°)
+   176	(32.9807147195dB,0°)
+   177	(32.9767843743dB,0°)
+   178	(32.969312863dB,0°)
+   179	(32.9755561847dB,0°)
+   180	(32.9805902449dB,0°)
+   181	(32.973894918dB,0°)
+   182	(32.9692602642dB,0°)
+   183	(32.9792517251dB,0°)
+   184	(32.9787929344dB,0°)
+   185	(32.9710070715dB,0°)
+   186	(32.9721575316dB,0°)
+   187	(32.9808836051dB,0°)
+   188	(32.9761546696dB,0°)
+   189	(32.9690812924dB,0°)
+   190	(32.9764656216dB,0°)
+   191	(32.9803243642dB,0°)
+   192	(32.973236585dB,0°)
+   193	(32.9696639129dB,0°)
+   194	(32.9798084732dB,0°)
+   195	(32.9782558651dB,0°)
+   196	(32.9704690276dB,0°)
+   197	(32.9730444875dB,0°)
+   198	(32.9809490951dB,0°)
+   199	(32.9755101958dB,0°)
+   200	(32.9689725451dB,0°)

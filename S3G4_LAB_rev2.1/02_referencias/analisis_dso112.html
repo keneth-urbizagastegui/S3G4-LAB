@@ -1,0 +1,478 @@
+<title>Anatomía del DSO112</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@500;600&display=swap">
+<style>
+:root{
+  --bg:#f4f6f5; --paper:#fff; --ink:#1b2a2e; --muted:#5d6d72; --rule:#dde3e1;
+  --accent:#12667f; --accent2:#a9541c; --ok:#2f7d54; --warn:#9a6100; --crit:#b22d22; --open:#6a4fa3;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#11181a; --paper:#182125; --ink:#dce6e7; --muted:#93a3a8; --rule:#2a3639;
+  --accent:#5fb9d2; --accent2:#f0a06a; --ok:#63c891; --warn:#f0b75a; --crit:#ff8d80; --open:#b79ae8;}}
+:root[data-theme="dark"]{
+  --bg:#11181a; --paper:#182125; --ink:#dce6e7; --muted:#93a3a8; --rule:#2a3639;
+  --accent:#5fb9d2; --accent2:#f0a06a; --ok:#63c891; --warn:#f0b75a; --crit:#ff8d80; --open:#b79ae8;}
+body{background:var(--bg);color:var(--ink);font:15px/1.6 "IBM Plex Sans",system-ui,sans-serif}
+.wrap{max-width:1000px;margin:0 auto;padding-inline:20px;padding-block:28px 64px}
+h1,h2,h3,h4{font-family:"IBM Plex Sans Condensed","IBM Plex Sans",sans-serif;margin:0;text-wrap:balance}
+h1{font-size:clamp(26px,4vw,36px);font-weight:600}
+h2{font-size:24px;font-weight:600;margin-top:8px}
+h3{font-size:18px;font-weight:600;margin-bottom:4px}
+code{font:0.88em "IBM Plex Mono",ui-monospace,monospace;color:var(--accent)}
+.eyebrow{font:500 12px "IBM Plex Mono",monospace;letter-spacing:.09em;text-transform:uppercase;color:var(--accent);margin:0 0 6px}
+.lede{color:var(--muted);max-width:74ch}
+header.hero{border-bottom:1px solid var(--rule);padding-bottom:18px;margin-bottom:26px}
+section{background:var(--paper);border:1px solid var(--rule);border-radius:10px;padding:20px 22px;margin-bottom:18px}
+section>p,li{max-width:80ch}
+.tag{display:inline-block;font:500 11px "IBM Plex Mono",monospace;text-transform:uppercase;letter-spacing:.06em;padding:2px 9px;border-radius:999px;border:1px solid currentColor}
+.t-ok{color:var(--ok)} .t-open{color:var(--open)} .t-warn{color:var(--warn)} .t-crit{color:var(--crit)}
+.shead{display:flex;align-items:center;gap:12px;margin-bottom:10px;flex-wrap:wrap}
+.num{font:500 14px "IBM Plex Mono",monospace;background:var(--accent);color:var(--paper);width:28px;height:28px;border-radius:50%;display:grid;place-items:center}
+.tw{overflow-x:auto;margin:12px 0}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th{text-align:left;font-weight:600;color:var(--muted);border-bottom:1.5px solid var(--rule);padding:7px 9px;white-space:nowrap}
+td{border-bottom:1px solid var(--rule);padding:7px 9px;vertical-align:top}
+td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
+.pick{background:color-mix(in srgb, var(--ok) 10%, transparent)}
+.callout{border-left:3px solid var(--accent);padding:10px 14px;margin:14px 0;background:color-mix(in srgb, var(--accent) 7%, transparent);font-size:14px}
+.callout.w{border-color:var(--warn);background:color-mix(in srgb, var(--warn) 9%, transparent)}
+ul.tight{margin:8px 0;padding-left:20px}
+ul.tight li{margin-bottom:5px}
+.meta{font:12.5px "IBM Plex Mono",monospace;color:var(--muted);margin:0}
+.q{border:1px dashed var(--open);border-radius:8px;padding:12px 14px;margin:10px 0}
+.q b{color:var(--open)}
+footer{font-size:12.5px;color:var(--muted);border-top:1px solid var(--rule);padding-top:12px}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-size:14px}
+.kv dt{color:var(--muted)} .kv dd{margin:0}
+
+/* --- esquematico --- */
+figure{margin:16px 0}
+.sx{overflow-x:auto;border:1px solid var(--rule);border-radius:8px;background:var(--bg);padding:8px}
+.sx svg{display:block;max-width:none;height:auto}
+figcaption{font-size:13px;color:var(--muted);margin-top:6px}
+svg text{font-family:"IBM Plex Mono",ui-monospace,monospace}
+.w{fill:none;stroke:var(--ink);stroke-width:1.5;stroke-linejoin:round}
+.sym{fill:none;stroke:var(--ink);stroke-width:1.6;stroke-linejoin:round}
+.fillsym{fill:var(--ink);stroke:var(--ink);stroke-width:1}
+.dot{fill:var(--ink)}
+.op{fill:var(--paper);stroke:var(--ink);stroke-width:1.7}
+.ic{fill:var(--paper);stroke:var(--ink);stroke-width:1.5}
+.hdr{fill:none;stroke:var(--open);stroke-width:1.5;stroke-dasharray:3 2}
+.grp{fill:none;stroke:var(--muted);stroke-width:1.1;stroke-dasharray:5 4}
+.grp-t{font-size:10.5px;fill:var(--muted)}
+.blade{stroke:var(--ink);stroke-width:2}
+.ct{fill:var(--paper);stroke:var(--ink);stroke-width:1.3}
+.gnd line{stroke:var(--ink);stroke-width:1.5}
+.railbar{stroke:var(--crit);stroke-width:2.2}
+.rail{font-size:10.5px;fill:var(--crit);font-weight:500}
+.railsm{font-size:9px;fill:var(--crit)}
+.port{fill:color-mix(in srgb, var(--accent) 14%, transparent);stroke:var(--accent);stroke-width:1.3}
+.portt{font-size:10.5px;fill:var(--ink)}
+.tp{fill:none;stroke:var(--ok);stroke-width:1.6}
+.tpt{font-size:9.5px;fill:var(--ok)}
+.ref{font-size:11px;font-weight:500;fill:var(--ink)}
+.val{font-size:10px;fill:var(--muted)}
+.net{font-size:10px;fill:var(--accent2)}
+.pin{font-size:9.5px;fill:var(--muted)}
+.pm{font-size:15px;fill:var(--ink)}
+.note{font-size:10.5px;fill:var(--muted);font-style:italic}
+
+.lesson td:first-child{font-weight:600}
+.kv{display:grid;grid-template-columns:max-content 1fr;gap:4px 16px;margin:10px 0;font-size:14px}
+.kv dt{color:var(--muted)} .kv dd{margin:0}
+pre.mermaid{background:var(--paper);border:1px solid var(--rule);border-radius:8px;padding:12px;overflow-x:auto}
+.asm{font:12.5px/1.5 "IBM Plex Mono",ui-monospace,monospace}
+.asm td{padding:3px 9px}
+.meta{color:var(--muted);font-size:13px}
+.toc{columns:2 260px;column-gap:28px;margin:6px 0 0;padding-left:20px;font-size:14px}
+.toc li{break-inside:avoid;margin:2px 0}
+.toc a{color:var(--accent);text-decoration:none} .toc a:hover{text-decoration:underline}
+</style>
+<div class="wrap">
+<header class="hero">
+  <p class="eyebrow">S3G4 LAB · referencia para el AFE rev 2.1</p>
+  <h1>Anatomía del DSO112</h1>
+  <p class="lede">Lo que el esquemático, el firmware y el manual del JYE Tech DSO112 enseñan para nuestro rediseño: cómo está hecho cada bloque, con sus valores, qué nos confirma, qué conviene copiar y qué no. Complementa el documento vivo <code>S3G4_LAB_rev2.1/01_diseno/rediseno_afe_rev21.html</code>.</p>
+</header>
+<section id="resumen">
+  <div class="shead"><span class="num">★</span><h2>Lo que nos llevamos</h2><span class="tag t-open">Con propuestas</span></div>
+
+  <p>Resumen de todo el análisis en una tabla. Cada fila remite a su sección. El veredicto dice qué hacer con la idea en nuestra rev 2.1; <b>nada de esto está decidido</b>, las filas «Decidir» esperan tu respuesta.</p>
+  <div class="tw"><table class="lesson">
+    <thead><tr><th>Hallazgo</th><th>En el DSO112</th><th>Para la rev 2.1</th><th>Veredicto</th></tr></thead>
+    <tbody>
+      <tr><td>Divisor permanente + rama ×1</td><td>÷100 siempre conectado; el relé elige entre su toma y una rama ×1 (§2)</td><td>Es exactamente nuestra D-05. Confirma la arquitectura</td><td><span class="tag t-ok">Confirmado</span></td></tr>
+      <tr><td>Rama ×1 con 100 kΩ ∥ 270 pF</td><td>Limita la corriente de falla a 0.45 mA sin recortar el ancho de banda (§2)</td><td>Pasar nuestra rama de 10 kΩ ∥ 10 nF a <b>100 kΩ ∥ 1 nF</b>: diez veces menos corriente en los clamps (P2)</td><td><span class="tag t-ok">Adoptar</span></td></tr>
+      <tr><td>Grueso ÷100 y escalera de 6 tomas</td><td>12 escalas de 5 mV a 20 V/div con sólo 6 tomas (§4)</td><td>Cambiar nuestro ÷20 por ÷100 libera dos entradas del 4051 (P1)</td><td><span class="tag t-open">Decidir</span></td></tr>
+      <tr><td>Entrada del 4051 a masa y VCHECK</td><td>Autocero y comprobación de ganancia sin intervención del usuario (§4)</td><td>Las dos entradas que libera P1 sirven justo para esto (P3)</td><td><span class="tag t-ok">Adoptar</span></td></tr>
+      <tr><td>La escalera atenúa y la ganancia es fija</td><td>×20 · ×2 fijos tras el 4051 (§4)</td><td>Es nuestra D-09. Confirmado</td><td><span class="tag t-ok">Confirmado</span></td></tr>
+      <tr><td>Relé monoestable, reposo en ÷100</td><td>Sin corriente queda en el rango seguro; consume sólo en escalas finas (§2, §8)</td><td>Es la segunda opción de C.2. Elegir entre esto y latching (P4)</td><td><span class="tag t-open">Decidir</span></td></tr>
+      <tr><td>Disparo con el comparador del micro</td><td>Comparador analógico del ATmega64 contra un nivel PWM (§6, §7)</td><td>Ya está en nuestro mapa firmado, y mejor: COMP + DAC del G4</td><td><span class="tag t-ok">Confirmado</span></td></tr>
+      <tr><td>Filtro RC antes del comparador</td><td>1 kΩ / 150 pF (≈ 1 MHz) sólo en el camino del disparo (§6)</td><td>Añadir un RC igual o usar la histéresis del COMP (P5)</td><td><span class="tag t-warn">Adaptar</span></td></tr>
+      <tr><td>Offset por PWM filtrado</td><td>Tres polos RC y un inversor; se inyecta en la rama de masa de la última etapa (§5)</td><td>Candidato para la sección E, sin el condensador dentro de la red de ganancia (P6)</td><td><span class="tag t-warn">Adaptar</span></td></tr>
+      <tr><td>Alimentación: conmutada → LC → lineal</td><td>+7.6 V y −7.1 V conmutados, filtrados y regulados a ±5 V (§8)</td><td>Referencia directa para la sección G</td><td><span class="tag t-ok">Adoptar</span></td></tr>
+      <tr><td>Interruptor suave y autoapagado</td><td>Un botón, retención por el micro y apagado tras inactividad (§8)</td><td>Encaja con nuestro equipo a batería</td><td><span class="tag t-ok">Adoptar</span></td></tr>
+      <tr><td>Captura por software a 5 / 2.5 MSa/s, 8 bits, sin anti-alias</td><td>Bucles de instrucciones contadas; 2 MHz de banda con Nyquist de 1.25 MHz (§7)</td><td>Nuestro ADC+DMA del G4, 12 bits y el filtro de la sección D ya lo superan</td><td><span class="tag t-crit">Evitar</span></td></tr>
+    </tbody>
+  </table></div>
+
+</section>
+<section id="fuentes-metodo">
+  <div class="shead"><span class="num">i</span><h2>Qué se analizó y cómo</h2></div>
+
+  <dl class="kv">
+    <dt>Esquemático</dt><dd><code>research_and_tests/DSO112/schematic_112g.pdf</code>, documento 105-11200-00G. Hoja 1: digital. Hoja 2: canal analógico y alimentación. El cajetín dice «de 3», pero <b>la hoja 3 no está en el PDF</b>.</dd>
+    <dt>Manuales</dt><dd><code>dso112a-user-manual.pdf</code> y <code>dso112a-quick-guide.pdf</code>, del modelo DSO112<b>A</b>. El esquemático es de la placa G: las diferencias entre versiones se señalan donde aparecen.</dd>
+    <dt>Firmware</dt><dd><code>113-11201-211.hex</code> (programa principal del ATmega64, 56.8 KB) y <code>113-11205-024.hex</code> (su bootloader, 8 KB en 0xE000). El del ATmega48 no está en la carpeta.</dd>
+    <dt>Método</dt><dd>Hojas renderizadas a 250–330 ppp con PyMuPDF y leídas por zonas; firmware descodificado desde Intel HEX y desensamblado en las zonas de captura; manual extraído por secciones. Para contrastar: DSO150 (<code>105-15006-00A.pdf</code>) y DSO138 mini (<code>dso138-mini-schematic-analog-j.pdf</code>).</dd>
+    <dt>Límites</dt><dd>No hay placa física: todo es análisis de documentos. Donde un trazo del esquemático es ambiguo lo digo. Los esquemas de esta página son <b>redibujos propios</b> con los designadores del original, no copias.</dd>
+  </dl>
+  <ol class="toc">
+    <li><a href="#arquitectura">Arquitectura</a></li><li><a href="#entrada">Canal de entrada</a></li>
+    <li><a href="#buffer">Buffer y lazo de corrección</a></li><li><a href="#ganancia">Escalera, selector y ganancia</a></li>
+    <li><a href="#offset">Offset y posición vertical</a></li><li><a href="#adc">ADC, disparo y frecuencímetro</a></li>
+    <li><a href="#captura">Cómo captura: el firmware</a></li><li><a href="#energia">Alimentación y energía</a></li>
+    <li><a href="#sistema">Sistema digital y protocolo</a></li><li><a href="#funciones">Funciones de usuario</a></li>
+    <li><a href="#evitar">Lo que no conviene copiar</a></li><li><a href="#propuestas">Propuestas para la rev 2.1</a></li>
+    <li><a href="#comparativa">DSO112, OpenScope y S3G4</a></li><li><a href="#correcciones">Correcciones a lo dicho antes</a></li>
+  </ol>
+
+</section>
+<section id="arquitectura">
+  <div class="shead"><span class="num">1</span><h2>Arquitectura</h2></div>
+
+  <p>Dos microcontroladores. El <b>ATmega64</b> hace el trabajo de osciloscopio: captura, disparo, pantalla, USB y memoria. El <b>ATmega48</b> es un ayudante: lee el táctil resistivo, vigila batería y USB, gobierna el botón de encendido y genera la señal de prueba. Hablan entre sí por una UART (<code>KEYCMD</code> / <code>KEYDATA</code>), y el ATmega48 toma el reloj del ATmega64.</p>
+  <pre class="mermaid">%%{init: {'theme':'neutral'}}%%
+flowchart LR
+  J6["MCX J6"] --> CPL["Acoplo AC/DC<br/>C21 + PhotoMOS"]
+  CPL --> DIV["Divisor ÷100<br/>992 k / 10 k"]
+  CPL --> X1["Rama ×1<br/>100 k ∥ 270 pF"]
+  DIV --> RLY["Relé TQ2"]
+  X1 --> RLY
+  RLY --> BUF["Buffer J309 + Q4<br/>servo U7B"]
+  BUF --> LAD["Escalera 1 kΩ<br/>6 tomas"]
+  LAD --> MUX["74HC4051<br/>+ GND + VCHECK"]
+  MUX --> G1["U6A ×20"]
+  G1 --> G2["U6B ×2<br/>+ offset PWM"]
+  G2 --> ADC["TLC5510<br/>8 bits"]
+  G2 --> CMP["Comparador<br/>del ATmega64"]
+  G2 --> FC["Contador T1"]
+  ADC --> M64["ATmega64 20 MHz"]
+  CMP --> M64
+  FC --> M64
+  M64 --- LCD["TFT 2.4 pulgadas<br/>bus de 8 bits"]
+  M64 --- M48["ATmega48<br/>táctil, energía,<br/>señal de prueba"]
+  M64 --- USB["CP2102 USB"]
+  M64 --- EE["AT24C1024<br/>presets y forma de onda"]
+</pre>
+  <p class="meta">El canal completo cabe en dos amplificadores dobles (LM6172 y TL084), un 4051, un JFET, cuatro transistores y un relé. Todo lo que puede hacer el micro (nivel de disparo, offset, reloj del ADC, frecuencímetro, comparador) lo hace el micro.</p>
+
+</section>
+<section id="entrada">
+  <div class="shead"><span class="num">2</span><h2>Canal de entrada</h2></div>
+  <figure><div class="sx"><svg class="sch" viewBox="0 0 1300 480" width="1300" role="img" aria-label="DSO112 - entrada, acoplo, atenuador grueso y buffer" xmlns="http://www.w3.org/2000/svg"><circle class="sym" cx="60" cy="180" r="11"/><circle class="fillsym" cx="60" cy="180" r="3"/><polyline class="w" points="60,191 60,200"/><polyline class="w" points="60,200 60,208"/><g class="gnd"><line x1="50" y1="208" x2="70" y2="208"/><line x1="54" y1="212" x2="66" y2="212"/><line x1="58" y1="216" x2="62" y2="216"/></g><text class="ref" x="60" y="162" text-anchor="middle">J6</text><text class="val" x="60" y="148" text-anchor="middle">MCX-V</text><polyline class="w" points="71,180 120,180"/><circle class="dot" cx="120" cy="180" r="3.2"/><polyline class="w" points="120,180 181.0,180.0"/><polyline class="w" points="189.0,180.0 250,180"/><g transform="translate(185.0,180.0) rotate(0.0)"><line class="sym" x1="-4" y1="-11" x2="-4" y2="11"/><line class="sym" x1="4" y1="-11" x2="4" y2="11"/></g><text class="ref" x="185.0" y="206.0" text-anchor="middle">C21</text><text class="val" x="185.0" y="218.0" text-anchor="middle">0.1 µF 100 V</text><rect class="ic" x="145" y="70" width="80" height="40" rx="3"/><text class="ref" x="185.0" y="62" text-anchor="middle">RLY1 · CPC1017N</text><polyline class="w" points="145,90 133,90"/><text class="pin" x="150" y="94" text-anchor="start"></text><polyline class="w" points="225,90 237,90"/><text class="pin" x="220" y="94" text-anchor="end"></text><text class="pin" x="185" y="95" text-anchor="middle">PhotoMOS</text><polyline class="w" points="120,180 120,90 133,90"/><polyline class="w" points="237,90 250,90 250,180"/><text class="note" x="185" y="250" text-anchor="middle">CPLSEL = 0 → cortocircuita C21 → DC</text><circle class="dot" cx="250" cy="180" r="3.2"/><polyline class="w" points="250,180 300,180"/><circle class="dot" cx="300" cy="180" r="3.2"/><text class="net" x="260" y="175" text-anchor="start">N1</text><polyline class="w" points="300,180 300,100"/><polyline class="w" points="300,100 350.0,100.0"/><polyline class="w" points="390.0,100.0 440,100"/><polyline class="sym" points="-20,0 -15,-6 -10,6 -5,-6 0,6 5,-6 10,6 15,-6 20,0" transform="translate(370.0,100.0) rotate(0.0)"/><text class="ref" x="370.0" y="88.0" text-anchor="middle">R31</text><text class="val" x="370.0" y="122.0" text-anchor="middle">100 kΩ</text><polyline class="w" points="300,100 300,50"/><polyline class="w" points="440,100 440,50"/><polyline class="w" points="300,50 366.0,50.0"/><polyline class="w" points="374.0,50.0 440,50"/><g transform="translate(370.0,50.0) rotate(0.0)"><line class="sym" x1="-4" y1="-11" x2="-4" y2="11"/><line class="sym" x1="4" y1="-11" x2="4" y2="11"/></g><text class="ref" x="370.0" y="38.0" text-anchor="middle">C22</text><text class="val" x="370.0" y="72.0" text-anchor="middle">270 pF</text><circle class="dot" cx="300" cy="100" r="3.2"/><circle class="dot" cx="440" cy="100" r="3.2"/><polyline class="w" points="440,100 880,100"/><text class="net" x="474" y="95" text-anchor="start">rama ×1</text><polyline class="w" points="300,180 300,260"/><polyline class="w" points="300,260 330.0,260.0"/><polyline class="w" points="370.0,260.0 400,260"/><polyline class="sym" points="-20,0 -15,-6 -10,6 -5,-6 0,6 5,-6 10,6 15,-6 20,0" transform="translate(350.0,260.0) rotate(0.0)"/><text class="ref" x="350.0" y="248.0" text-anchor="middle">R37</text><text class="val" x="350.0" y="282.0" text-anchor="middle">910 kΩ 1 %</text><polyline class="w" points="400,260 430.0,260.0"/><polyline class="w" points="470.0,260.0 500,260"/><polyline class="sym" points="-20,0 -15,-6 -10,6 -5,-6 0,6 5,-6 10,6 15,-6 20,0" transform="translate(450.0,260.0) rotate(0.0)"/><text class="ref" x="450.0" y="248.0" text-anchor="middle">R38</text><text class="val" x="450.0" y="282.0" text-anchor="middle">82 kΩ 1 %</text><polyline class="w" points="300,260 300,320"/><polyline class="w" points="500,260 500,320"/><polyline class="w" points="300,320 396.0,320.0"/><polyline class="w" points="404.0,320.0 500,320"/><g transform="translate(400.0,320.0) rotate(0.0)"><line class="sym" x1="-4" y1="-11" x2="-4" y2="11"/><line class="sym" x1="4" y1="-11" x2="4" y2="11"/></g><text class="ref" x="400.0" y="346.0" text-anchor="middle">C23</text><text class="val" x="400.0" y="358.0" text-anchor="middle">3 pF</text><circle class="dot" cx="300" cy="260" r="3.2"/><circle class="dot" cx="500" cy="260" r="3.2"/><polyline class="w" points="500,260 880,260"/><circle class="dot" cx="530" cy="260" r="3.2"/><polyline class="w" points="530,260 530.0,295.0"/><polyline class="w" points="530.0,335.0 530,370"/><polyline class="sym" points="-20,0 -15,-6 -10,6 -5,-6 0,6 5,-6 10,6 15,-6 20,0" transform="translate(530.0,315.0) rotate(90.0)"/><text class="ref" x="544.0" y="312.0" text-anchor="start">R40</text><text class="val" x="544.0" y="326.0" text-anchor="start">10 kΩ 1 %</text><polyline class="w" points="530,370 530,378"/><g class="gnd"><line x1="520" y1="378" x2="540" y2="378"/><line x1="524" y1="382" x2="536" y2="382"/><line x1="528" y1="386" x2="532" y2="386"/></g><circle class="dot" cx="660" cy="260" r="3.2"/><polyline class="w" points="660,260 660.0,311.0"/><polyline class="w" points="660.0,319.0 660,370"/><g transform="translate(660.0,315.0) rotate(90.0)"><line class="sym" x1="-4" y1="-11" x2="-4" y2="11"/><line class="sym" x1="4" y1="-11" x2="4" y2="11"/><line class="sym" x1="-12" y1="12" x2="12" y2="-12"/><polyline class="sym" points="6,-12 12,-12 12,-6"/></g><text class="ref" x="674.0" y="312.0" text-anchor="start">C24</text><text class="val" x="674.0" y="326.0" text-anchor="start">25 pF aj.</text><polyline class="w" points="660,370 660,378"/><g class="gnd"><line x1="650" y1="378" x2="670" y2="378"/><line x1="654" y1="382" x2="666" y2="382"/><line x1="658" y1="386" x2="662" y2="386"/></g><circle class="dot" cx="790" cy="260" r="3.2"/><polyline class="w" points="790,260 790.0,311.0"/><polyline class="w" points="790.0,319.0 790,370"/><g transform="translate(790.0,315.0) rotate(90.0)"><line class="sym" x1="-4" y1="-11" x2="-4" y2="11"/><line class="sym" x1="4" y1="-11" x2="4" y2="11"/></g><text class="ref" x="804.0" y="312.0" text-anchor="start">C25</text><text class="val" x="804.0" y="326.0" text-anchor="start">150 pF</text><polyline class="w" points="790,370 790,378"/><g class="gnd"><line x1="780" y1="378" x2="800" y2="378"/><line x1="784" y1="382" x2="796" y2="382"/><line x1="788" y1="386" x2="792" y2="386"/></g><circle class="ct" cx="940" cy="180" r="2.6"/><circle class="ct" cx="880" cy="100" r="2.6"/><circle class="ct" cx="880" cy="260" r="2.6"/><line class="blade" x1="940" y1="180" x2="884" y2="255"/><text class="pin" x="874" y="96" text-anchor="end">1/1 · bobina ON</text><text class="pin" x="874" y="272" text-anchor="end">1/100 · reposo</text><text class="ref" x="940" y="86" text-anchor="middle">RLY2A · TQ2</text><polyline class="w" points="940,180 1010,180"/><circle class="dot" cx="1010" cy="180" r="3.2"/><text class="net" x="1020" y="174" text-anchor="start">G</text><polyline class="w" points="1010,300 1010.0,251.0"/><polyline class="w" points="1010.0,229.0 1010,180"/><g transform="translate(1010.0,240.0) rotate(-90.0)"><polygon class="fillsym" points="-7,-9 -7,9 6,0"/><line class="sym" x1="6" y1="-9" x2="6" y2="9"/></g><text class="ref" x="1024.0" y="237.0" text-anchor="start">D1</text><text class="val" x="1024.0" y="251.0" text-anchor="start">1N4148</text><polyline class="w" points="1010,300 1010,310"/><line class="railbar" x1="998" y1="310" x2="1022" y2="310"/><text class="rail" x="1010" y="324" text-anchor="middle">AV−</text><polyline class="w" points="1010,180 1010.0,145.0"/><polyline class="w" points="1010.0,105.0 1010,70"/><polyline class="sym" points="-20,0 -15,-6 -10,6 -5,-6 0,6 5,-6 10,6 15,-6 20,0" transform="translate(1010.0,125.0) rotate(-90.0)"/><text class="ref" x="1024.0" y="122.0" text-anchor="start">R50</text><text class="val" x="1024.0" y="136.0" text-anchor="start">10 MΩ</text><polygon class="port" points="1010,54 1078.4,54 1086.4,62 1078.4,70 1010,70"/><text class="portt" x="1015" y="66" text-anchor="start">servo U7B</text><rect class="ic" x="1090" y="150" width="110" height="60" rx="3"/><text class="ref" x="1145.0" y="142" text-anchor="middle">Q3 J309 + Q4</text><text class="val" x="1145.0" y="225" text-anchor="middle">buffer</text><polyline class="w" points="1090,180 1078,180"/><text class="pin" x="1095" y="184" text-anchor="start">G</text><polyline class="w" points="1200,180 1212,180"/><text class="pin" x="1195" y="184" text-anchor="end">S</text><polyline class="w" points="1010,180 1078,180"/><text class="net" x="1220" y="175" text-anchor="start">TP39</text><text class="note" x="20" y="420" text-anchor="start">Zin ≈ 1 MΩ en las dos posiciones: el divisor ÷100 (992 k + 10 k) está siempre conectado a N1; el relé sólo elige qué nodo va al buffer.</text><text class="note" x="20" y="438" text-anchor="start">Rama ×1: R31 limita la corriente de falla (0.45 mA con 50 V) y C22 la puentea en alta frecuencia: τ = 100 k · 270 p = 27 µs ≈ R50 · C_puerta.</text><text class="note" x="20" y="456" text-anchor="start">Protección: R31 + unión puerta-drenador del J309 hacia AV+ (positiva) + D1 hacia AV− (negativa). No hay TVS. RLY2B (segundo polo) no se usa.</text></svg></div><figcaption>Redibujo de la hoja 2, zona superior izquierda. Estado dibujado: relé en reposo (÷100) y acoplo en AC.</figcaption></figure>
+
+  <h3>Acoplo AC / DC</h3>
+  <p><b>C21</b> (0.1 µF, 100 V) va en serie con la entrada y el <b>PhotoMOS RLY1</b> (CPC1017N) la cortocircuita. El LED se alimenta desde +3.3 V por R24 (1 kΩ) y el micro lo enciende poniendo <code>CPLSEL</code> a cero: <b>CPLSEL = 0 → DC; CPLSEL = 1 o flotante → AC</b>. El condensador está delante del divisor, por eso necesita 100 V; el nuestro va detrás y le bastan 50 V. <b>No hay posición GND en hardware</b>: se hace por software con la entrada I/O0 del 4051 (§4).</p>
+
+  <h3>Divisor permanente y rama ×1: es nuestra D-05</h3>
+  <p>El nodo N1 alimenta a la vez un <b>divisor ÷100</b> (R37 910 k + R38 82 k sobre R40 10 k: 1002 kΩ, relación 100.2) y una <b>rama ×1</b> (R31 100 kΩ con C22 270 pF en paralelo). El relé RLY2A sólo elige qué nodo llega al buffer. El divisor no se desconecta nunca, así que la impedancia de entrada es ≈ 1 MΩ en las dos posiciones. <b>Es la misma topología que adoptamos en la sección C</b>, con otra relación (÷100 frente a nuestro ÷20).</p>
+
+  <h3>Cómo protege</h3>
+  <ul class="tight">
+    <li><b>En ÷100</b>, el propio divisor limita: 50 V entre 1 MΩ son 50 µA.</li>
+    <li><b>En ×1</b>, R31 limita: (50 − 5.6) V ÷ 100 kΩ = 0.44 mA. C22 la puentea en alta frecuencia, así que R31 <b>no recorta el ancho de banda</b>. La constante 100 k · 270 p = 27 µs está emparejada con R50 (10 MΩ) y la capacidad de la puerta (~2.7 pF): el mismo razonamiento que nuestra R_S ∥ C_S.</li>
+    <li><b>La sujeción la hace el JFET.</b> Hacia arriba, la unión puerta-drenador del J309 conduce contra AV+; hacia abajo, D1 (1N4148) contra AV−. No hay TVS ni BAV199: con 0.44 mA, la unión del JFET (máx. 10 mA) basta.</li>
+  </ul>
+
+  <h3>El relé</h3>
+  <p>RLY2A es un <b>TQ2 monoestable de una bobina</b>. Los pines 5 y 6 de la bobina y los tres del segundo polo (RLY2B) están marcados sin conexión. En reposo el contacto está en <b>1/100</b>; la bobina se alimenta sólo en las escalas finas, desde <code>VRAW</code> (la batería) a través de L1 (100 µH) y el transistor Q7, gobernado por <code>SENSEL3</code>. Es decir: <b>sin alimentación, el equipo está en el rango seguro</b>, y paga el consumo de la bobina sólo mientras se usan las escalas de 5 a 200 mV/div. No se ve diodo de rueda libre en la bobina (§11).</p>
+
+  <h3>La compensación no cuadra con los valores nominales</h3>
+  <p>El ÷100 necesita C<sub>abajo</sub> = 3 pF × 992 k ÷ 10 k ≈ <b>298 pF</b>. En la placa hay C25 150 pF + C64 15 pF (por JP2) + C24 ajustable de hasta 25 pF: <b>≤ 190 pF</b>. Con esos valores sólo se compensa si la capacidad efectiva de arriba es ~1.9 pF, no 3 pF. No encuentro qué lo explica en el dibujo; el valor impreso de C23 puede no ser el montado. Para nosotros no cambia nada: la condición de compensación es la de la sección B.</p>
+
+</section>
+<section id="buffer">
+  <div class="shead"><span class="num">3</span><h2>Buffer discreto y lazo de corrección</h2></div>
+
+  <p>El buffer está hecho con piezas sueltas, como en el Rigol DS1054Z:</p>
+  <div class="tw"><table>
+    <thead><tr><th>Pieza</th><th>Función</th><th>Valor clave</th></tr></thead>
+    <tbody>
+      <tr><td><code>Q3</code> J309</td><td>Seguidor de fuente: altísima impedancia de entrada</td><td>corriente fijada por Q6</td></tr>
+      <tr><td><code>R28</code></td><td>Aísla la fuente del JFET de la base de Q4; evita oscilaciones</td><td>100 Ω</td></tr>
+      <tr><td><code>Q4</code> MMBT3904</td><td>Seguidor de emisor: entrega la corriente que pide la escalera de 1 kΩ</td><td>—</td></tr>
+      <tr><td><code>Q5</code> + R26 / R46 / R45</td><td>Fuente de corriente para Q4</td><td>(10 V · 5.1/15.1 − 0.65) / 510 Ω ≈ <b>5.4 mA</b></td></tr>
+      <tr><td><code>Q6</code> + R43 / R44</td><td>Fuente de corriente para el JFET, <b>ajustada por el lazo U7B</b></td><td>R44 150 Ω</td></tr>
+    </tbody>
+  </table></div>
+  <h3>El lazo U7B: por qué hace falta y cómo funciona</h3>
+  <p>La tensión de trabajo de un J309 varía mucho de una pieza a otra y con la temperatura, así que la salida del buffer tendría un offset de cientos de mV distinto en cada placa. U7B (TL084) lo corrige despacio:</p>
+  <ul class="tight">
+    <li>Su entrada <b>+</b> ve la salida del buffer filtrada: R47 10 MΩ · C33 0.1 µF = <b>1 s</b>.</li>
+    <li>Su entrada <b>−</b> ve la continua de la puerta a través de R50 10 MΩ, filtrada por C35 (también 1 s). Por R50 no circula corriente en continua, así que ese nodo copia la continua de la entrada.</li>
+    <li>Integra la diferencia (C37 0.01 µF) y mueve la base de Q6, que cambia la corriente del JFET y con ella su tensión puerta-fuente.</li>
+  </ul>
+  <p><b>Resultado:</b> la continua de salida iguala a la de entrada. Offset cero sin ajuste, y sin borrar la componente continua de la señal, porque compara salida con entrada y no con masa. Es el precio de un buffer discreto: con un amplificador FET integrado (nuestra propuesta de C.7) el offset ya es de pocos mV y este lazo sobra.</p>
+
+</section>
+<section id="ganancia">
+  <div class="shead"><span class="num">4</span><h2>Escalera, selector y ganancia</h2></div>
+  <figure><div class="sx"><svg class="sch" viewBox="0 0 1300 600" width="1300" role="img" aria-label="DSO112 - escalera, selector, ganancia fija y ADC" xmlns="http://www.w3.org/2000/svg"><polygon class="port" points="20,112 101.6,112 109.6,120 101.6,128 20,128"/><text class="portt" x="25" y="124" text-anchor="start">TP39 buffer</text><polyline class="w" points="112,120 150,120"/><polyline class="w" points="150,120 150.0,131.0"/><polyline class="w" points="150.0,171.0 150,182"/><polyline class="sym" points="-20,0 -15,-6 -10,6 -5,-6 0,6 5,-6 10,6 15,-6 20,0" transform="translate(150.0,151.0) rotate(90.0)"/><text class="ref" x="136.0" y="148.0" text-anchor="end">R27</text><text class="val" x="136.0" y="162.0" text-anchor="end">499 Ω</text><circle class="dot" cx="150" cy="120" r="3.2"/><polyline class="w" points="150,120 290,120"/><text class="net" x="200" y="115" text-anchor="start">X1_1</text><polyline class="w" points="150,182 150.0,193.0"/><polyline class="w" points="150.0,233.0 150,244"/><polyline class="sym" points="-20,0 -15,-6 -10,6 -5,-6 0,6 5,-6 10,6 15,-6 20,0" transform="translate(150.0,213.0) rotate(90.0)"/><text class="ref" x="136.0" y="210.0" text-anchor="end">R29</text><text class="val" x="136.0" y="224.0" text-anchor="end">249 Ω</text><circle class="dot" cx="150" cy="182" r="3.2"/><polyline class="w" points="150,182 290,182"/><text class="net" x="200" y="177" text-anchor="start">X1_2</text><polyline class="w" points="150,244 150.0,255.0"/><polyline class="w" points="150.0,295.0 150,306"/><polyline class="sym" points="-20,0 -15,-6 -10,6 -5,-6 0,6 5,-6 10,6 15,-6 20,0" transform="translate(150.0,275.0) rotate(90.0)"/><text class="ref" x="136.0" y="272.0" text-anchor="end">R32</text><text class="val" x="136.0" y="286.0" text-anchor="end">150 Ω</text><circle class="dot" cx="150" cy="244" r="3.2"/><polyline class="w" points="150,244 290,244"/><text class="net" x="200" y="239" text-anchor="start">X1_4</text><polyline class="w" points="150,306 150.0,317.0"/><polyline class="w" points="150.0,357.0 150,368"/><polyline class="sym" points="-20,0 -15,-6 -10,6 -5,-6 0,6 5,-6 10,6 15,-6 20,0" transform="translate(150.0,337.0) rotate(90.0)"/><text class="ref" x="136.0" y="334.0" text-anchor="end">R34</text><text class="val" x="136.0" y="348.0" text-anchor="end">49.9 Ω</text><circle class="dot" cx="150" cy="306" r="3.2"/><polyline class="w" points="150,306 290,306"/><text class="net" x="200" y="301" text-anchor="start">X1_10</text><polyline class="w" points="150,368 150.0,379.0"/><polyline class="w" points="150.0,419.0 150,430"/><polyline class="sym" points="-20,0 -15,-6 -10,6 -5,-6 0,6 5,-6 10,6 15,-6 20,0" transform="translate(150.0,399.0) rotate(90.0)"/><text class="ref" x="136.0" y="396.0" text-anchor="end">R39</text><text class="val" x="136.0" y="410.0" text-anchor="end">24.9 Ω</text><circle class="dot" cx="150" cy="368" r="3.2"/><polyline class="w" points="150,368 290,368"/><text class="net" x="200" y="363" text-anchor="start">X1_20</text><polyline class="w" points="150,430 150.0,441.0"/><polyline class="w" points="150.0,481.0 150,492"/><polyline class="sym" points="-20,0 -15,-6 -10,6 -5,-6 0,6 5,-6 10,6 15,-6 20,0" transform="translate(150.0,461.0) rotate(90.0)"/><text class="ref" x="136.0" y="458.0" text-anchor="end">R41</text><text class="val" x="136.0" y="472.0" text-anchor="end">24.9 Ω</text><circle class="dot" cx="150" cy="430" r="3.2"/><polyline class="w" points="150,430 290,430"/><text class="net" x="200" y="425" text-anchor="start">X1_40</text><polyline class="w" points="150,492 150,500"/><g class="gnd"><line x1="140" y1="500" x2="160" y2="500"/><line x1="144" y1="504" x2="156" y2="504"/><line x1="148" y1="508" x2="152" y2="508"/></g><rect class="ic" x="400" y="100" width="140" height="400" rx="3"/><text class="ref" x="470.0" y="92" text-anchor="middle">U5 · 74HC4051</text><polyline class="w" points="400,130 388,130"/><text class="pin" x="405" y="134" text-anchor="start">I/O0</text><polyline class="w" points="400,178 388,178"/><text class="pin" x="405" y="182" text-anchor="start">I/O1</text><polyline class="w" points="400,226 388,226"/><text class="pin" x="405" y="230" text-anchor="start">I/O2</text><polyline class="w" points="400,274 388,274"/><text class="pin" x="405" y="278" text-anchor="start">I/O3</text><polyline class="w" points="400,322 388,322"/><text class="pin" x="405" y="326" text-anchor="start">I/O4</text><polyline class="w" points="400,370 388,370"/><text class="pin" x="405" y="374" text-anchor="start">I/O5</text><polyline class="w" points="400,418 388,418"/><text class="pin" x="405" y="422" text-anchor="start">I/O6</text><polyline class="w" points="400,466 388,466"/><text class="pin" x="405" y="470" text-anchor="start">I/O7</text><polyline class="w" points="540,320 552,320"/><text class="pin" x="535" y="324" text-anchor="end">I/O</text><polyline class="w" points="435,500 435,512"/><text class="pin" x="435" y="495" text-anchor="middle">A</text><polyline class="w" points="470,500 470,512"/><text class="pin" x="470" y="495" text-anchor="middle">B</text><polyline class="w" points="505,500 505,512"/><text class="pin" x="505" y="495" text-anchor="middle">C</text><polyline class="w" points="352,130 388,130"/><polyline class="w" points="352,130 352,138"/><g class="gnd"><line x1="342" y1="138" x2="362" y2="138"/><line x1="346" y1="142" x2="358" y2="142"/><line x1="350" y1="146" x2="354" y2="146"/></g><polyline class="w" points="300,178 388,178"/><text class="net" x="308" y="173" text-anchor="start">X1_40</text><polyline class="w" points="300,226 388,226"/><text class="net" x="308" y="221" text-anchor="start">X1_20</text><polyline class="w" points="300,274 388,274"/><text class="net" x="308" y="269" text-anchor="start">VCHECK</text><polyline class="w" points="300,322 388,322"/><text class="net" x="308" y="317" text-anchor="start">X1_10</text><polyline class="w" points="300,370 388,370"/><text class="net" x="308" y="365" text-anchor="start">X1_1</text><polyline class="w" points="300,418 388,418"/><text class="net" x="308" y="413" text-anchor="start">X1_4</text><polyline class="w" points="300,466 388,466"/><text class="net" x="308" y="461" text-anchor="start">X1_2</text><polyline class="w" points="435,512 435,530"/><polyline class="w" points="470,512 470,530"/><polyline class="w" points="505,512 505,530"/><text class="pin" x="470" y="548" text-anchor="middle">SENSEL0–2 ← ATmega64</text><polygon class="op" points="620,304 620,368 682,336"/><text class="pm" x="627" y="325" text-anchor="start">+</text><text class="pm" x="627" y="357" text-anchor="start">−</text><polyline class="w" points="610,320 620,320"/><polyline class="w" points="610,352 620,352"/><polyline class="w" points="682,336 692,336"/><text class="ref" x="630" y="298" text-anchor="start">U6A</text><text class="val" x="630" y="382" text-anchor="start">×20.07</text><polyline class="w" points="552,320 580,320 610,320"/><polyline class="w" points="610,352 600,352 600,420"/><circle class="dot" cx="600" cy="420" r="3.2"/><polyline class="w" points="600,420 640.0,420.0"/><polyline class="w" points="680.0,420.0 720,420"/><polyline class="sym" points="-20,0 -15,-6 -10,6 -5,-6 0,6 5,-6 10,6 15,-6 20,0" transform="translate(660.0,420.0) rotate(0.0)"/><text class="ref" x="660.0" y="446.0" text-anchor="middle">R30</text><text class="val" x="660.0" y="458.0" text-anchor="middle">1.43 kΩ</text><polyline class="w" points="600,420 600.0,440.0"/><polyline class="w" points="600.0,480.0 600,500"/><polyline class="sym" points="-20,0 -15,-6 -10,6 -5,-6 0,6 5,-6 10,6 15,-6 20,0" transform="translate(600.0,460.0) rotate(90.0)"/><text class="ref" x="586.0" y="457.0" text-anchor="end">R35</text><text class="val" x="586.0" y="471.0" text-anchor="end">75 Ω</text><polyline class="w" points="600,500 600,508"/><g class="gnd"><line x1="590" y1="508" x2="610" y2="508"/><line x1="594" y1="512" x2="606" y2="512"/><line x1="598" y1="516" x2="602" y2="516"/></g><polyline class="w" points="692,336 740,336"/><circle class="dot" cx="720" cy="336" r="3.2"/><polyline class="w" points="720,420 720,336"/><polyline class="w" points="740,336 760.0,336.0"/><polyline class="w" points="800.0,336.0 820,336"/><polyline class="sym" points="-20,0 -15,-6 -10,6 -5,-6 0,6 5,-6 10,6 15,-6 20,0" transform="translate(780.0,336.0) rotate(0.0)"/><text class="ref" x="780.0" y="324.0" text-anchor="middle">R25</text><text class="val" x="780.0" y="358.0" text-anchor="middle">499 Ω</text><polygon class="op" points="860,320 860,384 922,352"/><text class="pm" x="867" y="341" text-anchor="start">+</text><text class="pm" x="867" y="373" text-anchor="start">−</text><polyline class="w" points="850,336 860,336"/><polyline class="w" points="850,368 860,368"/><polyline class="w" points="922,352 932,352"/><text class="ref" x="870" y="314" text-anchor="start">U6B</text><text class="val" x="870" y="398" text-anchor="start">×2</text><polyline class="w" points="820,336 850,336"/><polyline class="w" points="850,368 840,368 840,440"/><circle class="dot" cx="840" cy="440" r="3.2"/><polyline class="w" points="840,440 880.0,440.0"/><polyline class="w" points="920.0,440.0 960,440"/><polyline class="sym" points="-20,0 -15,-6 -10,6 -5,-6 0,6 5,-6 10,6 15,-6 20,0" transform="translate(900.0,440.0) rotate(0.0)"/><text class="ref" x="900.0" y="466.0" text-anchor="middle">R33</text><text class="val" x="900.0" y="478.0" text-anchor="middle">1 kΩ</text><polyline class="w" points="932,352 1040,352"/><circle class="dot" cx="960" cy="352" r="3.2"/><polyline class="w" points="960,440 960,352"/><polyline class="w" points="840,440 840.0,455.0"/><polyline class="w" points="840.0,495.0 840,510"/><polyline class="sym" points="-20,0 -15,-6 -10,6 -5,-6 0,6 5,-6 10,6 15,-6 20,0" transform="translate(840.0,475.0) rotate(90.0)"/><text class="ref" x="826.0" y="472.0" text-anchor="end">R36</text><text class="val" x="826.0" y="486.0" text-anchor="end">909 Ω</text><circle class="dot" cx="840" cy="510" r="3.2"/><polyline class="w" points="840,510 780,510"/><polyline class="w" points="780,510 780.0,531.0"/><polyline class="w" points="780.0,539.0 780,560"/><g transform="translate(780.0,535.0) rotate(90.0)"><line class="sym" x1="-4" y1="-11" x2="-4" y2="11"/><line class="sym" x1="4" y1="-11" x2="4" y2="11"/></g><text class="ref" x="766.0" y="532.0" text-anchor="end">C26</text><text class="val" x="766.0" y="546.0" text-anchor="end">0.1 µF</text><polyline class="w" points="780,560 780,568"/><g class="gnd"><line x1="770" y1="568" x2="790" y2="568"/><line x1="774" y1="572" x2="786" y2="572"/><line x1="778" y1="576" x2="782" y2="576"/></g><polyline class="w" points="840,510 875.0,510.0"/><polyline class="w" points="915.0,510.0 950,510"/><polyline class="sym" points="-20,0 -15,-6 -10,6 -5,-6 0,6 5,-6 10,6 15,-6 20,0" transform="translate(895.0,510.0) rotate(0.0)"/><text class="ref" x="895.0" y="536.0" text-anchor="middle">R42</text><text class="val" x="895.0" y="548.0" text-anchor="middle">100 Ω</text><polygon class="port" points="950,502 1025.0,502 1033.0,510 1025.0,518 950,518"/><text class="portt" x="955" y="514" text-anchor="start">offset U7A</text><circle class="dot" cx="1040" cy="352" r="3.2"/><text class="net" x="976" y="347" text-anchor="start">ANALOG</text><polyline class="w" points="1040,352 1065.0,352.0"/><polyline class="w" points="1105.0,352.0 1130,352"/><polyline class="sym" points="-20,0 -15,-6 -10,6 -5,-6 0,6 5,-6 10,6 15,-6 20,0" transform="translate(1085.0,352.0) rotate(0.0)"/><text class="ref" x="1085.0" y="378.0" text-anchor="middle">R19</text><text class="val" x="1085.0" y="390.0" text-anchor="middle">100 Ω</text><circle class="dot" cx="1150" cy="352" r="3.2"/><polyline class="w" points="1130,352 1170,352"/><polyline class="w" points="1150,352 1150.0,382.0"/><polyline class="w" points="1150.0,390.0 1150,420"/><g transform="translate(1150.0,386.0) rotate(90.0)"><line class="sym" x1="-4" y1="-11" x2="-4" y2="11"/><line class="sym" x1="4" y1="-11" x2="4" y2="11"/></g><text class="ref" x="1136.0" y="383.0" text-anchor="end">C13</text><text class="val" x="1136.0" y="397.0" text-anchor="end">100 pF</text><polyline class="w" points="1150,420 1150,428"/><g class="gnd"><line x1="1140" y1="428" x2="1160" y2="428"/><line x1="1144" y1="432" x2="1156" y2="432"/><line x1="1148" y1="436" x2="1152" y2="436"/></g><polygon class="port" points="1170,344 1251.6,344 1259.6,352 1251.6,360 1170,360"/><text class="portt" x="1175" y="356" text-anchor="start">TLC5510 VIN</text><text class="note" x="1290" y="60" text-anchor="end">Ganancia fija ≈ ×40 (×20.07 · ×1.99); la escalera sólo atenúa.</text><text class="note" x="1290" y="78" text-anchor="end">I/O0 a masa: autocero y acoplo GND por software.</text><text class="note" x="1290" y="96" text-anchor="end">I/O3 = VCHECK: AREF 2.56 V · 75 / 10 075 = 19.1 mV.</text><text class="note" x="1290" y="130" text-anchor="end">ANALOG también va a R16 1 kΩ / C12 150 pF → comparador</text><text class="note" x="1290" y="148" text-anchor="end">del ATmega64 (disparo) y a R73 ∥ C57 → C5 → T1 (frecuencia).</text><text class="note" x="1290" y="250" text-anchor="end">ADC de 8 bits, 0.6–2.6 V por autopolarización (VRT/VRB).</text><text class="note" x="1290" y="268" text-anchor="end">No hay filtro anti-alias: R19/C13 cortan en 16 MHz.</text></svg></div><figcaption>Redibujo de la hoja 2, zona superior. Los nombres X1_n son los de las redes del original.</figcaption></figure>
+
+  <h3>La escalera: los mismos valores que la nuestra</h3>
+  <p>Cadena de <b>997.7 Ω</b> (R27 499, R29 249, R32 150, R34 49.9, R39 24.9, R41 24.9 Ω) con tomas en 1, 1/2, 1/4, 1/10, 1/20 y 1/40. Errores de relación ≤ 0.2 %. Llegamos a 1 kΩ por nuestra cuenta en C.3, con valores casi idénticos.</p>
+
+  <h3>Las 8 entradas del 4051 no son 8 escalas</h3>
+  <div class="tw"><table>
+    <thead><tr><th>Entrada</th><th>I/O0</th><th>I/O1</th><th>I/O2</th><th>I/O3</th><th>I/O4</th><th>I/O5</th><th>I/O6</th><th>I/O7</th></tr></thead>
+    <tbody><tr><td>Señal</td><td><b>masa</b></td><td>1/40</td><td>1/20</td><td><b>VCHECK</b></td><td>1/10</td><td>1/1</td><td>1/4</td><td>1/2</td></tr></tbody>
+  </table></div>
+  <ul class="tight">
+    <li><b>I/O0 a masa.</b> Con ella el micro mide el offset de toda la cadena posterior (4051, U6A, U6B, ADC) cuando quiera: <b>autocero</b>. Y es también como se implementa el acoplo «GND» del menú, sin pieza extra.</li>
+    <li><b>I/O3 = VCHECK</b>: AREF (2.56 V, la referencia interna del ATmega64) dividida por R72 10 kΩ y R68 75 Ω = <b>19.1 mV</b>. Tras la ganancia fija son ~0.76 V en el ADC (~97 códigos). Sirve para <b>comprobar la ganancia</b> sin señal externa. El firmware contiene una pantalla «Test Mode», que el manual no documenta, con lecturas V0/V50, Vavr en DC y en AC, Vext, Vraw y Vchr, que encaja con este uso de fábrica.</li>
+  </ul>
+
+  <h3>Ganancia fija ≈ ×40</h3>
+  <p>U6A (LM6172): 1 + R30/R35 = 1 + 1430/75 = <b>×20.07</b>; con 100 MHz de GBW le quedan ~5 MHz. U6B: 1 + R33/(R36 + R42) = <b>×1.99</b> en continua. Total ≈ <b>×39.95</b>. A 5 mV/div eso da 0.2 V por división en el ADC; los 2 V de su rango equivalen a <b>10 divisiones</b>, y quedan 25.6 códigos por división.</p>
+
+  <h3>Las 12 escalas</h3>
+  <div class="tw"><table>
+    <thead><tr><th>Relé</th><th colspan="6">Toma de la escalera</th></tr></thead>
+    <tbody>
+      <tr><td></td><td>1/1</td><td>1/2</td><td>1/4</td><td>1/10</td><td>1/20</td><td>1/40</td></tr>
+      <tr><td><b>1/1</b></td><td>5 mV</td><td>10 mV</td><td>20 mV</td><td>50 mV</td><td>0.1 V</td><td>0.2 V</td></tr>
+      <tr><td><b>1/100</b></td><td>0.5 V</td><td>1 V</td><td>2 V</td><td>5 V</td><td>10 V</td><td>20 V</td></tr>
+    </tbody>
+  </table></div>
+  <p>El salto de 0.2 V a 0.5 V/div (×2.5) mantiene la secuencia 1-2-5: por eso la relación gruesa es 100 y no otra. El DSO112A anuncia también <b>2 mV/div</b>, pero no hay hardware para ella: la toma de mayor ganancia ya es la de 5 mV/div. <b>Deduzco</b> que es una ampliación digital, con ~10 códigos por división.</p>
+
+</section>
+<section id="offset">
+  <div class="shead"><span class="num">5</span><h2>Offset y posición vertical</h2></div>
+
+  <p>El micro no tiene DAC. La posición vertical sale de un <b>PWM filtrado</b>:</p>
+  <div class="tw"><table>
+    <thead><tr><th>Etapa</th><th>Piezas</th><th>Polo</th></tr></thead>
+    <tbody>
+      <tr><td>RC de entrada</td><td><code>VPOS_PWM</code> → R53 510 kΩ · C38 0.1 µF</td><td class="n">3.1 Hz</td></tr>
+      <tr><td>Seguidor</td><td>U7D (TL084)</td><td>—</td></tr>
+      <tr><td>Inversor con filtro</td><td>U7A: R52 100 kΩ, R48 100 kΩ ∥ C34 0.1 µF</td><td class="n">16 Hz</td></tr>
+      <tr><td>Inyección</td><td>R42 100 Ω · C26 0.1 µF → R36 909 Ω → entrada − de U6B</td><td class="n">16 kHz</td></tr>
+    </tbody>
+  </table></div>
+  <p>El truco es <b>dónde</b> se inyecta: en la rama de masa de la red de ganancia de U6B. El offset se suma a la salida con ganancia −R33/(R36 + R42) ≈ −0.99 sin tocar la entrada de señal. De paso centra la señal bipolar en el rango unipolar del ADC (0.6–2.6 V). El inversor U7A convierte el PWM (0 a 3.3 V) en 0 a −3.3 V, que U6B vuelve a invertir.</p>
+  <div class="callout w"><b>Un efecto secundario que no debemos copiar.</b> C26 está dentro de la red de ganancia. En continua, la rama de masa de U6B ve R36 + R42 = 1009 Ω → ×1.99; por encima de ~16 kHz, C26 cortocircuita la unión y ve sólo R36 = 909 Ω → ×2.10. Con los valores nominales hay un <b>escalón de ganancia del +5.5 %</b> a partir de ~16 kHz. O compensa algo que no se ve en el dibujo, o es un defecto. La lección para nuestra sección E: filtrar el PWM antes, fuera de la red de ganancia.</div>
+  <p class="meta">Un PWM tan filtrado tarda del orden de 0.2 s en asentarse: vale para mover la traza, no para cambiar el offset durante una captura.</p>
+
+</section>
+<section id="adc">
+  <div class="shead"><span class="num">6</span><h2>ADC, disparo y frecuencímetro</h2></div>
+
+  <h3>TLC5510</h3>
+  <ul class="tight">
+    <li><b>8 bits, hasta 20 MSa/s</b>; aquí trabaja a 5 MSa/s como máximo.</li>
+    <li><b>Rango de 0.6 a 2.6 V sin referencia externa</b>: VRTS unido a VRT y VRBS a VRB, la autopolarización interna del chip.</li>
+    <li>Reloj <code>ADCLK</code> desde una salida de comparación del Timer1 del ATmega64 (PB6/OC1B): el instante de muestreo lo fija el hardware, no el software.</li>
+    <li>Las 8 salidas pasan por resistencias de 1 kΩ (RN1, RN2): el ADC funciona a 5 V y el micro a 3.3 V, y las resistencias limitan la corriente por los diodos de protección del micro. Es un adaptador de niveles improvisado.</li>
+    <li>Entrada con R19 100 Ω / C13 100 pF: aísla el muestreador del amplificador. Corta en 16 MHz: <b>no es un filtro anti-alias</b>.</li>
+  </ul>
+  <h3>Disparo: el comparador del micro</h3>
+  <p>Nivel de disparo: <code>TLVL_PWM</code> (PB4/OC0) → R7 100 kΩ · C1 0.1 µF (10 ms) → <b>AIN0</b> (PE2). Señal: <code>ANALOG</code> → R16 1 kΩ · C12 150 pF (≈ 1 MHz, quita ruido al disparo) → <code>ANALOGA</code> → PF3/ADC3, que el multiplexor del ADC puede llevar a la <b>entrada negativa del comparador analógico</b>. El pin AIN1 queda libre. El firmware consulta la bandera de ese comparador dentro del bucle de captura (§7).</p>
+  <h3>Frecuencímetro</h3>
+  <p><code>ANALOG</code> → R73 1 kΩ ∥ C57 150 pF → C5 10 µF → polarizado a 1.65 V por R12/R14 (2 MΩ + 2 MΩ) → <b>T1</b> (PD6), la entrada de reloj externo del Timer1. <code>CNT_EN</code> (PE5/OC3C) está unido a <b>ICP1</b> (PD4): todo indica que un temporizador abre la ventana de medida y otro captura la cuenta, aunque no lo he comprobado en el firmware. La entrada digital sólo conmuta con señales de al menos ~1/3 de pantalla.</p>
+
+</section>
+<section id="captura">
+  <div class="shead"><span class="num">7</span><h2>Cómo captura: el firmware</h2></div>
+
+  <p>Un AVR de 20 MHz no tiene DMA. El DSO112 captura con <b>bucles de instrucciones contadas</b>. Encontré el rápido en la dirección <code>0x0CF7C</code> del programa principal:</p>
+  <div class="tw"><table class="asm">
+    <thead><tr><th>Instrucción</th><th>Ciclos</th><th>Qué hace</th></tr></thead>
+    <tbody>
+      <tr><td>SBIC PINB,6 / RJMP −2</td><td>—</td><td>Espera a que ADCLK esté en bajo</td></tr>
+      <tr><td>SBIS PINB,6 / RJMP −2</td><td>—</td><td>Espera el flanco de subida: <b>sincroniza el bucle con el reloj del ADC</b></td></tr>
+      <tr><td>IN r24, PINC</td><td>1</td><td>Lee los 8 bits del TLC5510 (puerto C)</td></tr>
+      <tr><td>ST X+, r24</td><td>2</td><td>Guarda en SRAM desde 0x0800 y avanza</td></tr>
+      <tr><td>NOP</td><td>1</td><td>Completa 4 ciclos</td></tr>
+      <tr><td>… ×8 por vuelta, cierre con CP / BRNE</td><td>32 por vuelta</td><td>512 o 1024 muestras (2 o 4 páginas de 256 B)</td></tr>
+    </tbody>
+  </table></div>
+  <ul class="tight">
+    <li><b>4 ciclos por muestra a 20 MHz = 5 MSa/s.</b> El reparto dentro de la vuelta es 4-4-4-4-4-4-3-5, pero da igual: quien muestrea es el ADC con su reloj de hardware; el software sólo tiene que leer cada palabra mientras es válida.</li>
+    <li><b>Con disparo es la mitad.</b> El bucle de pre-disparo (<code>0x0D00C</code>) añade <code>SBIC ACSR,4</code> para vigilar la bandera del comparador y reinicia el puntero al llegar al final: búfer circular. Son 8 ciclos por muestra, <b>2.5 MSa/s</b>. De ahí salen los «2.5 MSPS en tiempo real» del manual frente a los «5 Msps» de la guía rápida.</li>
+    <li><b>Bases de tiempo lentas:</b> otros bucles (0x0D09C y siguientes) generan el reloj del ADC por software, con <code>OUT PORTB</code> y NOPs.</li>
+    <li>El ATmega64 corre a <b>20 MHz con 3.3 V</b>, por encima de lo que garantiza su hoja de datos: funciona, pero fuera de especificación.</li>
+  </ul>
+  <div class="callout"><b>La consecuencia que importa:</b> con disparo muestrea a 2.5 MSa/s (Nyquist 1.25 MHz) y anuncia 2 MHz de banda sin filtro anti-alias. Una señal entre 1.25 y 2 MHz se ve con una frecuencia falsa. Nosotros hacemos lo mismo por hardware (ADC + DMA + COMP + temporizadores del G4) a 6.5 / 3.47 MSa/s, con 12 bits y un filtro diseñado en la sección D.</div>
+
+</section>
+<section id="energia">
+  <div class="shead"><span class="num">8</span><h2>Alimentación y energía</h2></div>
+
+  <pre class="mermaid">%%{init: {'theme':'neutral'}}%%
+flowchart LR
+  VBUS["USB 5 V"] -->|"LTC4054 · 500 mA"| BAT["Li-ion 3.7 V<br/>1200 mAh"]
+  VBUS -->|"D3 Schottky"| P["Nodo de carga"]
+  BAT -->|"Q8 SI2301"| P
+  P -->|"Q9 SI2301<br/>interruptor suave"| VRAW["VRAW"]
+  VRAW -->|"AX5511 elevador"| VP["V+ 7.6 V"]
+  VP -->|"L5 + 78L05"| AVP["AV+ 5 V"]
+  VRAW -->|"MC34063 inversor"| VN["V− −7.1 V"]
+  VN -->|"L2 + 79L05"| AVN["AV− −5 V"]
+  VRAW -->|"MIC5255"| D33["+3.3 V"]
+  VRAW --> COIL["Bobina TQ2 vía L1"]
+</pre>
+  <div class="tw"><table>
+    <thead><tr><th>Bloque</th><th>Cómo</th><th>Cálculo</th></tr></thead>
+    <tbody>
+      <tr><td>Carga</td><td>LTC4054, lineal; LED de carga en nCHRG</td><td>1000 V ÷ R71 2 kΩ = <b>500 mA</b></td></tr>
+      <tr><td>Selección USB / batería</td><td>USB por D3; batería por Q8 (P-MOS) cuya puerta ve VBUS: con USB se apaga, sin USB conduce</td><td>diodo ideal con 1 transistor</td></tr>
+      <tr><td>Encendido</td><td>Q9 (P-MOS) + Q10: el botón SW1 enciende, el micro mantiene con <code>PWREN</code> y lee el botón por <code>PWRSW</code></td><td>autoapagado: 2 min por defecto</td></tr>
+      <tr><td>Riel positivo</td><td>AX5511 elevador → L5 100 µH → 78L05</td><td>1.2 · (1 + 330 k/62 k) = <b>7.59 V</b> → 5 V</td></tr>
+      <tr><td>Riel negativo</td><td>MC34063 inversor (su GND va a V−) → L2 100 µH → 79L05</td><td>1.25 · (1 + 4.7 k/1 k) = <b>7.13 V</b> → −5 V</td></tr>
+      <tr><td>Quién usa qué</td><td>LM6172 en V± (±7 V, más margen); JFET, 4051 y TL084 en AV± (±5 V); micros en 3.3 V</td><td>—</td></tr>
+      <tr><td>Vigilancia</td><td>VBAT, VEXT y VCHR a entradas analógicas del ATmega48</td><td>divisores 10 k / 1.43 k = <b>0.125</b></td></tr>
+    </tbody>
+  </table></div>
+  <p><b>Consumo total declarado: menos de 300 mA con 3.7 V</b> (~1.1 W), autonomía de unas 4 h con 1200 mAh. El esquema responde a la pregunta de la sección G: <b>conversión conmutada → filtro LC → regulador lineal</b>. Los amplificadores rápidos van a rieles más anchos que los analógicos lentos, y la bobina del relé va directa a la batería, sin pasar por ningún regulador.</p>
+
+</section>
+<section id="sistema">
+  <div class="shead"><span class="num">9</span><h2>Sistema digital, conectores y protocolo</h2></div>
+
+  <dl class="kv">
+    <dt>ATmega64</dt><dd>Puerto A: bus de 8 bits del TFT. Puerto C: datos del ADC. Puerto B: <code>SENSEL0–3</code>, <code>TLVL_PWM</code>, <code>CPLSEL</code>, <code>ADCLK</code>, <code>VPOS_PWM</code>. UART0 al CP2102 (USB) y UART1 al ATmega48. I²C a la EEPROM. PF1 lleva un puente de configuración (JP1).</dd>
+    <dt>ATmega48</dt><dd>Táctil resistivo de 4 hilos en ADC0–3, retroiluminación, VCHR/VEXT/VBAT, <code>PWRSW</code>/<code>PWREN</code>, señal de prueba (<code>TESTSIN</code> en OC1B) y su amplitud (<code>TS_AMP1/2</code>, <code>TS_CAP</code>). Su firmware se identifica como TS11202.</dd>
+    <dt>J5, conector doble</dt><dd>Sale la señal de prueba (3.3 V, 1 kΩ de salida; 1 Hz a 1 MHz y 440 Hz) y entra el disparo externo (0–15 V), según el modo. Un par complementario FDC6333 conmuta el pin. El detalle de cómo se reparten R76 (0 Ω) y TS_CAP es ambiguo en el dibujo.</dd>
+    <dt>Integración</dt><dd>J8 botón remoto, J9 alimentación de 4.5–5.5 V, J10 USB alternativo, J11 UART LVTTL con 3.3 V. El equipo está pensado para usarse como módulo dentro de otro sistema.</dd>
+    <dt>Arranque</dt><dd>El bootloader espera unos 2 s una orden de actualización por USB (herramienta AVRUBD); después arranca el programa, muestra versión 2 s y permite entrar al modo de ajuste (fábrica o calibración del táctil).</dd>
+  </dl>
+  <h3>Protocolo serie</h3>
+  <ul class="tight">
+    <li>115200 8N1. Tramas con <b>byte de sincronía 0xFE</b>, identificador, longitud de 16 bits y carga útil en little endian. Si un dato vale 0xFE se transmite seguido de 0x00 (<b>relleno de bytes</b>), así la sincronía nunca aparece dentro de la carga.</li>
+    <li>Órdenes: consulta de modelo, conectar y desconectar el <b>modo USB Scope</b> (apaga la pantalla y envía los datos), leer los rangos de cada parámetro, leer y escribir parámetros, y órdenes especiales (mediciones, valores de fábrica, alineación de offset, presets).</li>
+    <li>Datos: con 20 ms/div o más rápido, <b>un bloque con todo el búfer</b> por trama; con 50 ms/div o más lento, <b>una muestra por trama</b>, en modo desplazamiento.</li>
+    <li>Mediciones en enteros de 16 bits con signo, en unidades de <b>20 µV (VBU)</b>, y frecuencia en 32 bits sin signo: <b>sin coma flotante en el protocolo</b>.</li>
+  </ul>
+  <p class="meta">Nuestro S3G4-IP ya cubre este papel entre ESP32 y STM32. Ideas que podemos contrastar con él: el relleno de bytes, el «modo remoto» que libera la pantalla local, la orden que devuelve los rangos válidos de cada parámetro y la unidad fija de tensión.</p>
+
+</section>
+<section id="funciones">
+  <div class="shead"><span class="num">10</span><h2>Funciones de usuario</h2></div>
+
+  <p>Lista para comparar con la especificación de nuestra interfaz:</p>
+  <div class="tw"><table>
+    <thead><tr><th>Grupo</th><th>DSO112A</th></tr></thead>
+    <tbody>
+      <tr><td>Disparo</td><td>AUTO, NORM y SING; flanco de subida o de bajada; interno o externo; posición en 1/8, 1/4, 1/2, 3/4 o 7/8 del búfer; SING pasa a HOLD al disparar</td></tr>
+      <tr><td>Captura</td><td>512 o 1024 puntos; bases de 1 µs/div a 50 s/div; modo HOLD con el botón</td></tr>
+      <tr><td>Mediciones</td><td>Vmax, Vmin, Vpp, Vmedia, Vrms verdadero y frecuencia; se desactivan desde 50 ms/div</td></tr>
+      <tr><td>Cursores</td><td>ΔT y ΔV con lectura</td></tr>
+      <tr><td>Memoria</td><td>24 presets con nombre, una forma de onda guardada en EEPROM y envío como CSV</td></tr>
+      <tr><td>Calibración</td><td>«VPos Cal» (alineación del cero), calibración del táctil, restauración de fábrica y pantalla oculta de prueba</td></tr>
+      <tr><td>Energía</td><td>Autoapagado a 2, 5, 15, 30 o 60 min, o nunca; sólo con batería</td></tr>
+      <tr><td>Señal de prueba</td><td>1 Hz, 10 Hz, 100 Hz, 440 Hz, 1 kHz, 10 kHz, 100 kHz o 1 MHz, cuadrada de 3.3 V</td></tr>
+    </tbody>
+  </table></div>
+
+</section>
+<section id="evitar">
+  <div class="shead"><span class="num">11</span><h2>Lo que no conviene copiar</h2></div>
+
+  <ul class="tight">
+    <li><b>8 bits:</b> 25.6 códigos por división. Nosotros tenemos ~410 con 12 bits.</li>
+    <li><b>Error de sensibilidad de hasta el 5 %</b>, según su guía rápida. La calibración por escala con VCHECK y autocero debería bajarlo mucho.</li>
+    <li><b>Ancho de banda por encima de Nyquist sin filtro anti-alias</b> (§7).</li>
+    <li><b>Micro fuera de especificación:</b> 20 MHz con 3.3 V.</li>
+    <li><b>Niveles mezclados:</b> ADC a 5 V hacia un micro de 3.3 V por resistencias de 1 kΩ, y reloj de 3.3 V hacia una entrada de 5 V.</li>
+    <li><b>Bobina de relé sin diodo de rueda libre visible.</b> Un transistor que corta una bobina sin diodo sufre un pico de tensión en cada cambio. El nuestro lo llevará.</li>
+    <li><b>Condensador dentro de la red de ganancia</b> para filtrar el offset (§5).</li>
+    <li><b>Un solo canal</b> y búfer de 1024 puntos.</li>
+  </ul>
+
+</section>
+<section id="propuestas">
+  <div class="shead"><span class="num">12</span><h2>Propuestas para la rev 2.1</h2><span class="tag t-open">Pendiente de ti</span></div>
+
+  <p>Ninguna está aplicada. Cada una dice qué decisión tocaría.</p>
+
+  <h3>P1 · Grueso ÷100 en vez de ÷20 <span class="tag t-open">Decidir</span></h3>
+  <p>Con ÷100 y la escalera del DSO112 (1, 1/2, 1/4, 1/10, 1/20, 1/40) salen <b>12 escalas, de 5 mV a 20 V/div, con sólo 6 tomas</b>. Las mismas cuentas de C.1: a 500 mV/div, 4 Vpp ÷ 100 × 1 × 50 = 2.0 V; a 10 V/div, 80 Vpp ÷ 100 ÷ 20 × 50 = 2.0 V.</p>
+  <div class="tw"><table>
+    <thead><tr><th></th><th>÷20 (sección C actual)</th><th>÷100 (propuesta)</th></tr></thead>
+    <tbody>
+      <tr><td>Tomas de la escalera</td><td>8: no sobra ninguna</td><td><b>6: sobran 2</b> para masa y VCHECK</td></tr>
+      <tr><td>Escalas</td><td>11 (5 mV – 10 V/div)</td><td><b>12 (5 mV – 20 V/div)</b></td></tr>
+      <tr><td>Nodo protegido con ±40 V</td><td>±2 V</td><td><b>±0.4 V</b></td></tr>
+      <tr><td>Nodo con 353 V (red)</td><td>17.6 V → los clamps conducen</td><td><b>3.5 V → los clamps ni se enteran</b></td></tr>
+      <tr><td>Compensación</td><td>C<sub>abajo</sub> ≈ 190 pF: las parásitas pesan ~13 %</td><td>C<sub>abajo</sub> ≈ 990 pF: pesan ~2.5 %</td></tr>
+      <tr><td>Rama ×1 en uso</td><td>5 – 100 mV/div</td><td>5 – 200 mV/div</td></tr>
+      <tr><td>Ruido en la primera escala del divisor</td><td>~0.25 % div (200 mV/div)</td><td>~0.3 % div (500 mV/div)</td></tr>
+    </tbody>
+  </table></div>
+  <p>Valores: arriba 3 × 330 kΩ (116 V cada una con 353 V) y 3 × 30 pF; abajo 10.0 kΩ y ≈ 990 pF. Zin = 1.000 MΩ. <b>Tocaría D-09 y las tablas de C.1, C.3 y C.6</b>; D-05 (±40 V) no cambia. La única contrapartida es que la rama ×1 vuelve a usarse hasta 200 mV/div, como en el DSO112.</p>
+
+  <h3>P2 · Rama ×1 con 100 kΩ ∥ 1 nF <span class="tag t-ok">Adoptar</span></h3>
+  <p>Hoy: 10 kΩ ∥ 10 nF. Propuesta: <b>100 kΩ ∥ 1.0 nF</b>, la misma τ = 100 µs, emparejada con R_BIAS 10 MΩ × ~10 pF. En continua la relación es 10 M ÷ 10.1 M = 0.9901; en alta frecuencia, 1 n ÷ 1.01 n = 0.9901. Si C_in varía entre 7 y 13 pF, el desajuste queda en ±0.3 %.</p>
+  <ul class="tight">
+    <li>Corriente con 50 V: <b>0.44 mA</b> en vez de 4.4 mA. Con los tres canales, 1.3 mA hacia los rieles en vez de 13 mA: <b>desaparece el aviso de C.7 para la sección G</b>.</li>
+    <li>R_S disipa 20 mW con 50 V: sirve una 0805.</li>
+    <li>Su ruido térmico lo cortocircuita C_S por encima de 1.6 kHz, como antes.</li>
+    <li><b>Opción de bajo coste que cerraría el hueco de D-06:</b> R_S como dos 1206 de 49.9 kΩ en serie y C_S de 1 nF C0G de ≥ 630 V (o dos de 2.2 nF de 250 V en serie). Con 250 Vrms la rama ×1 disiparía ~0.31 W por resistencia durante ≤ 10 s y los clamps recibirían 3.5 mA de pico: <b>sobreviviría a la red también en las escalas finas</b>. Hay que confirmar en JLCPCB la tensión y la sobrecarga de corta duración de las piezas, y que el relé aguante ≥ 400 V entre contactos abiertos.</li>
+  </ul>
+
+  <h3>P3 · Autocero y VCHECK <span class="tag t-ok">Adoptar si P1</span></h3>
+  <p>Con las dos entradas libres de P1: <b>I/O a masa</b> para medir el offset de la cadena de ganancia y el ADC cuando el equipo quiera, y <b>VCHECK</b> para comprobar la ganancia. Un divisor desde la referencia del ADC (2.5 V × 100 / 12.5 k ≈ 20 mV) daría ~1 V en el ADC con la ganancia ×50: cuatro divisiones. Sin P1 habría que añadir un segundo 4051 o renunciar a una escala.</p>
+
+  <h3>P4 · Relé: monoestable con reposo en el divisor, o latching <span class="tag t-open">Decidir</span></h3>
+  <p>El DSO112 eligió el monoestable: sin corriente siempre queda en ÷100. Paga la bobina sólo en las escalas finas y, con P1, las escalas finas son sólo las de 5 a 200 mV/div. El latching ahorra ese consumo, pero depende del firmware para volver al rango seguro. Con cualquiera de los dos: <b>diodo de rueda libre</b>.</p>
+
+  <h3>P5 · Disparo por hardware con un filtro <span class="tag t-warn">Adaptar</span></h3>
+  <p>Nuestro mapa ya lleva COMP3 en PA0, COMP1 en PA1 y COMP6 en PD11, con umbrales desde DAC internos. Del DSO112 tomamos el <b>RC de 1 kΩ / 150 pF (≈ 1 MHz)</b> sólo en el camino del comparador, o su equivalente con la histéresis programable del COMP. El frecuencímetro sale del mismo comparador hacia un temporizador, sin piezas extra.</p>
+
+  <h3>P6 · Offset: PWM filtrado, inyectado en la rama de masa <span class="tag t-warn">Adaptar</span></h3>
+  <p>Para la sección E, si los DAC siguen asignados a los comparadores: PWM + dos o tres polos RC con un amplificador, inyectado en la rama de masa de la última etapa, como U6B. <b>Sin condensador dentro de la red de ganancia</b>, para no crear el escalón del +5.5 %.</p>
+
+</section>
+<section id="comparativa">
+  <div class="shead"><span class="num">13</span><h2>DSO112, OpenScope y S3G4</h2></div>
+
+  <div class="tw"><table>
+    <thead><tr><th></th><th>DSO112A</th><th>OpenScope MZ</th><th>S3G4 rev 2.1</th></tr></thead>
+    <tbody>
+      <tr><td>Canales</td><td>1</td><td>2</td><td><b>3</b></td></tr>
+      <tr><td>ADC</td><td>TLC5510, 8 bits</td><td>el del PIC32MZ, 12 bits</td><td>STM32G473, 12 bits</td></tr>
+      <tr><td>Muestreo</td><td>5 MSa/s; 2.5 con disparo</td><td>6.25 MSa/s máx.</td><td>6.5 MSa/s (CH1) · 3.47 (CH2, CH3)</td></tr>
+      <tr><td>Ancho de banda</td><td>2 MHz, sin anti-alias</td><td>2 MHz, filtro de 1.er orden en la ganancia</td><td>1.5 MHz con filtro (sección D)</td></tr>
+      <tr><td>Rango</td><td>±50 V útiles (50 Vpk)</td><td>±20 V</td><td><b>±40 V</b> (50 Vpk)</td></tr>
+      <tr><td>Escalas</td><td>12 + 2 mV digital</td><td>4 rangos analógicos (1, 1/4, 1/8, 3/40)</td><td>11 (12 con P1) + 20 V/div digital</td></tr>
+      <tr><td>Grueso</td><td>relé ×1 / ÷100</td><td>sin rama ×1</td><td>relé ×1 / ÷20 (÷100 con P1)</td></tr>
+      <tr><td>Protección de entrada</td><td>R31 + unión del JFET + 1N4148</td><td>sin protección dedicada; 1 MΩ a tierra virtual limita a 0.35 mA</td><td>divisor + BAV199 + TVS; red en ÷20</td></tr>
+      <tr><td>Offset</td><td>PWM filtrado</td><td>PWM filtrado</td><td>sección E pendiente</td></tr>
+      <tr><td>Disparo</td><td>comparador del micro + PWM</td><td>comparadores digitales del ADC</td><td>COMP + DAC del G4</td></tr>
+      <tr><td>Captura</td><td>bucles de software</td><td>ADC + DMA</td><td>ADC + DMA, entrelazado en CH1</td></tr>
+    </tbody>
+  </table></div>
+  <p class="meta">OpenScope: datos de su firmware en <code>research_and_tests/openscope-mz</code> (<code>ParseOpenScope.cpp</code>, <code>OpenScope.h</code>). Datos del OpenScope completados el 23 sep con su esquemático; detalle en <code>S3G4_LAB_rev2.1/02_referencias/analisis_openscope.html</code>.</p>
+
+</section>
+<section id="correcciones">
+  <div class="shead"><span class="num">14</span><h2>Correcciones a lo que dije antes</h2></div>
+
+  <p>Con el esquemático renderizado se ven cosas que el texto suelto del PDF no mostraba. Cinco afirmaciones mías de sesiones anteriores eran falsas o incompletas:</p>
+  <div class="tw"><table>
+    <thead><tr><th>Dije</th><th>Lo correcto</th></tr></thead>
+    <tbody>
+      <tr><td>La compensación del ÷100 del DSO112 «cuadra al 1 %»</td><td>Había tomado C22 (270 pF) como condensador de abajo, pero C22 pertenece a la rama ×1. Con los valores nominales <b>no cuadra</b> (§2).</td></tr>
+      <tr><td>El TQ2 es latching de dos bobinas</td><td><b>Monoestable de una bobina</b>; los pines 5 y 6 no se conectan.</td></tr>
+      <tr><td>El segundo polo pone a masa la rama no usada</td><td>En el DSO112 <b>el segundo polo no se usa</b>. El DSO150 sí usa los dos, pero para desconectar los dos extremos del divisor que no se usa, no para ponerlo a masa.</td></tr>
+      <tr><td>El DSO112 deja la rama ×1 sin proteger</td><td>La protegen <b>R31 (100 kΩ), la unión del J309 y D1</b>, hasta los 50 Vpk declarados.</td></tr>
+      <tr><td>Los 200 kHz del DSO138 mini y del DSO150 son el precio de su resistencia de 100 kΩ</td><td><b>Cierto sólo en el DSO150</b>: su R2 es la mitad superior de un divisor ×1.11 con 1 pF, sin compensar, y el polo cae en ~200 kHz. En el <b>DSO138 mini</b>, R1 lleva 220 pF en paralelo y no limita la banda.</td></tr>
+    </tbody>
+  </table></div>
+  <p class="meta">También dije en esta sesión que <code>113-11205-024</code> era el firmware del ATmega48. Es el bootloader del ATmega64. Las decisiones D-05 y D-06 no se ven afectadas por ninguna de estas correcciones.</p>
+
+</section>
+<footer><p class="meta">Análisis de Claude Code, 23 sep 2026. Fuentes en <code>research_and_tests/DSO112/</code>; contraste con <code>research_and_tests/105-15006-00A.pdf</code> (DSO150), <code>research_and_tests/dso138-mini-schematic-analog-j.pdf</code> y <code>research_and_tests/openscope-mz/</code>. Direcciones de firmware referidas a <code>113-11201-211.hex</code>.</p></footer>
+</div>

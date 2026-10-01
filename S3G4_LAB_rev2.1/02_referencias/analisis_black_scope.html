@@ -1,0 +1,310 @@
+<title>Anatomía de black_scope</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@500;600&display=swap">
+<style>
+:root{
+  --bg:#f4f6f5; --paper:#fff; --ink:#1b2a2e; --muted:#5d6d72; --rule:#dde3e1;
+  --accent:#12667f; --accent2:#a9541c; --ok:#2f7d54; --warn:#9a6100; --crit:#b22d22; --open:#6a4fa3;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#11181a; --paper:#182125; --ink:#dce6e7; --muted:#93a3a8; --rule:#2a3639;
+  --accent:#5fb9d2; --accent2:#f0a06a; --ok:#63c891; --warn:#f0b75a; --crit:#ff8d80; --open:#b79ae8;}}
+:root[data-theme="dark"]{
+  --bg:#11181a; --paper:#182125; --ink:#dce6e7; --muted:#93a3a8; --rule:#2a3639;
+  --accent:#5fb9d2; --accent2:#f0a06a; --ok:#63c891; --warn:#f0b75a; --crit:#ff8d80; --open:#b79ae8;}
+body{background:var(--bg);color:var(--ink);font:15px/1.6 "IBM Plex Sans",system-ui,sans-serif}
+.wrap{max-width:1000px;margin:0 auto;padding-inline:20px;padding-block:28px 64px}
+h1,h2,h3,h4{font-family:"IBM Plex Sans Condensed","IBM Plex Sans",sans-serif;margin:0;text-wrap:balance}
+h1{font-size:clamp(26px,4vw,36px);font-weight:600}
+h2{font-size:24px;font-weight:600;margin-top:8px}
+h3{font-size:18px;font-weight:600;margin-bottom:4px}
+code{font:0.88em "IBM Plex Mono",ui-monospace,monospace;color:var(--accent)}
+.eyebrow{font:500 12px "IBM Plex Mono",monospace;letter-spacing:.09em;text-transform:uppercase;color:var(--accent);margin:0 0 6px}
+.lede{color:var(--muted);max-width:74ch}
+header.hero{border-bottom:1px solid var(--rule);padding-bottom:18px;margin-bottom:26px}
+section{background:var(--paper);border:1px solid var(--rule);border-radius:10px;padding:20px 22px;margin-bottom:18px}
+section>p,li{max-width:80ch}
+.tag{display:inline-block;font:500 11px "IBM Plex Mono",monospace;text-transform:uppercase;letter-spacing:.06em;padding:2px 9px;border-radius:999px;border:1px solid currentColor}
+.t-ok{color:var(--ok)} .t-open{color:var(--open)} .t-warn{color:var(--warn)} .t-crit{color:var(--crit)}
+.shead{display:flex;align-items:center;gap:12px;margin-bottom:10px;flex-wrap:wrap}
+.num{font:500 14px "IBM Plex Mono",monospace;background:var(--accent);color:var(--paper);width:28px;height:28px;border-radius:50%;display:grid;place-items:center}
+.tw{overflow-x:auto;margin:12px 0}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th{text-align:left;font-weight:600;color:var(--muted);border-bottom:1.5px solid var(--rule);padding:7px 9px;white-space:nowrap}
+td{border-bottom:1px solid var(--rule);padding:7px 9px;vertical-align:top}
+td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
+.pick{background:color-mix(in srgb, var(--ok) 10%, transparent)}
+.callout{border-left:3px solid var(--accent);padding:10px 14px;margin:14px 0;background:color-mix(in srgb, var(--accent) 7%, transparent);font-size:14px}
+.callout.w{border-color:var(--warn);background:color-mix(in srgb, var(--warn) 9%, transparent)}
+ul.tight{margin:8px 0;padding-left:20px}
+ul.tight li{margin-bottom:5px}
+.meta{font:12.5px "IBM Plex Mono",monospace;color:var(--muted);margin:0}
+.q{border:1px dashed var(--open);border-radius:8px;padding:12px 14px;margin:10px 0}
+.q b{color:var(--open)}
+footer{font-size:12.5px;color:var(--muted);border-top:1px solid var(--rule);padding-top:12px}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-size:14px}
+.kv dt{color:var(--muted)} .kv dd{margin:0}
+
+/* --- esquematico --- */
+figure{margin:16px 0}
+.sx{overflow-x:auto;border:1px solid var(--rule);border-radius:8px;background:var(--bg);padding:8px}
+.sx svg{display:block;max-width:none;height:auto}
+figcaption{font-size:13px;color:var(--muted);margin-top:6px}
+svg text{font-family:"IBM Plex Mono",ui-monospace,monospace}
+.w{fill:none;stroke:var(--ink);stroke-width:1.5;stroke-linejoin:round}
+.sym{fill:none;stroke:var(--ink);stroke-width:1.6;stroke-linejoin:round}
+.fillsym{fill:var(--ink);stroke:var(--ink);stroke-width:1}
+.dot{fill:var(--ink)}
+.op{fill:var(--paper);stroke:var(--ink);stroke-width:1.7}
+.ic{fill:var(--paper);stroke:var(--ink);stroke-width:1.5}
+.hdr{fill:none;stroke:var(--open);stroke-width:1.5;stroke-dasharray:3 2}
+.grp{fill:none;stroke:var(--muted);stroke-width:1.1;stroke-dasharray:5 4}
+.grp-t{font-size:10.5px;fill:var(--muted)}
+.blade{stroke:var(--ink);stroke-width:2}
+.ct{fill:var(--paper);stroke:var(--ink);stroke-width:1.3}
+.gnd line{stroke:var(--ink);stroke-width:1.5}
+.railbar{stroke:var(--crit);stroke-width:2.2}
+.rail{font-size:10.5px;fill:var(--crit);font-weight:500}
+.railsm{font-size:9px;fill:var(--crit)}
+.port{fill:color-mix(in srgb, var(--accent) 14%, transparent);stroke:var(--accent);stroke-width:1.3}
+.portt{font-size:10.5px;fill:var(--ink)}
+.tp{fill:none;stroke:var(--ok);stroke-width:1.6}
+.tpt{font-size:9.5px;fill:var(--ok)}
+.ref{font-size:11px;font-weight:500;fill:var(--ink)}
+.val{font-size:10px;fill:var(--muted)}
+.net{font-size:10px;fill:var(--accent2)}
+.pin{font-size:9.5px;fill:var(--muted)}
+.pm{font-size:15px;fill:var(--ink)}
+.note{font-size:10.5px;fill:var(--muted);font-style:italic}
+.src{color:var(--muted);font-size:12.5px}
+
+.lesson td:first-child{font-weight:600}
+.kv{display:grid;grid-template-columns:max-content 1fr;gap:4px 16px;margin:10px 0;font-size:14px}
+.kv dt{color:var(--muted)} .kv dd{margin:0}
+pre.mermaid{background:var(--paper);border:1px solid var(--rule);border-radius:8px;padding:12px;overflow-x:auto}
+.meta{color:var(--muted);font-size:13px}
+.toc{columns:2 260px;column-gap:28px;margin:6px 0 0;padding-left:20px;font-size:14px}
+.toc li{break-inside:avoid;margin:2px 0}
+.toc a{color:var(--accent);text-decoration:none} .toc a:hover{text-decoration:underline}
+.eq{font-family:"IBM Plex Mono",monospace;font-size:13.5px;background:var(--paper);border:1px solid var(--rule);border-radius:6px;padding:8px 12px;margin:10px 0;overflow-x:auto;white-space:pre}
+@media (max-width:640px){.kv{grid-template-columns:1fr}.kv dt{margin-top:6px}}
+</style>
+<div class="wrap">
+<header class="hero">
+  <p class="eyebrow">S3G4 LAB · referencia para el AFE rev 2.1</p>
+  <h1>Anatomía de black_scope</h1>
+  <p class="lede">Un osciloscopio de cuatro canales hecho con nuestro mismo STM32G473, que usa sus OPAMP internos como etapa de ganancia. Sirve de prueba de lo que el G473 puede y no puede hacer. Completa la serie con <code>S3G4_LAB_rev2.1/02_referencias/analisis_dso112.html</code>, <code>S3G4_LAB_rev2.1/02_referencias/analisis_wave2.html</code> y <code>S3G4_LAB_rev2.1/02_referencias/analisis_openscope.html</code>.</p>
+</header>
+<section id="resumen">
+  <div class="shead"><span class="num">★</span><h2>Lo que nos llevamos</h2><span class="tag t-open">Con propuestas</span></div>
+
+  <p>black_scope es el único de nuestros referentes que usa <b>nuestro mismo microcontrolador</b>, el STM32G473VET6. Por eso su valor no está en el canal analógico, que es mínimo, sino en que <b>pone a prueba las partes analógicas internas del G473</b> que nosotros decidimos no usar como etapa principal. Cada fila remite a su sección; nada está decidido.</p>
+  <div class="tw"><table class="lesson">
+    <thead><tr><th>Hallazgo</th><th>En black_scope</th><th>Para la rev 2.1</th><th>Veredicto</th></tr></thead>
+    <tbody>
+      <tr><td>El PGA interno como ganancia del osciloscopio</td><td>OPAMP en PGA ×2…×64 leído por el canal interno del ADC (§3)</td><td>Ancho de banda de 203 kHz a ×64, ruido de 90 nV/√Hz y muestreo más corto que el mínimo del fabricante. <b>Confirma</b> que el OPAMP interno no sirve de etapa final</td><td><span class="tag t-ok">Confirmado</span></td></tr>
+      <tr><td>Muestreo del OPAMP interno</td><td>2.5 ciclos = 59 ns; el datasheet pide ≥ 200 ns (§3)</td><td>Si algún día usamos un OPAMP interno hacia el ADC (DMM, batería), programar ≥ 12.5 ciclos</td><td><span class="tag t-crit">Evitar</span></td></tr>
+      <tr><td>Entrada de 9.9 kΩ</td><td>Divisor resistivo hacia una polarización a mitad de riel (§2)</td><td>Incompatible con sondas ×10, que esperan 1 MΩ. Nuestra entrada ya es de 1 MΩ</td><td><span class="tag t-crit">Evitar</span></td></tr>
+      <tr><td>Un único DAC para el offset de los cuatro canales</td><td>DAC2 con buffer cargado con 100 nF: 2000 veces la carga permitida (§4)</td><td>Offset por canal (P6) y, si es continua, DAC en sample-and-hold (P15)</td><td><span class="tag t-crit">Evitar</span></td></tr>
+      <tr><td>Disparo con dos analog watchdog</td><td>AWD1 arma y AWD2 dispara; AWD2 sólo tiene 8 bits (§5)</td><td>Confirma P11. La latencia de la interrupción se evita con P12</td><td><span class="tag t-warn">Adaptar</span></td></tr>
+      <tr><td>DMA circular + temporizador de parada</td><td>Espera un búfer lleno antes de armar, y dos juegos de búfer alternos (§5)</td><td>Patrón del firmware de captura</td><td><span class="tag t-ok">Adoptar</span></td></tr>
+      <tr><td>Sólo CH1 dispara</td><td>La interfaz ofrece Ch1–Ch4, pero el código sólo programa el ADC1 (§5)</td><td>Disparo desde cualquier canal</td><td><span class="tag t-crit">Evitar</span></td></tr>
+      <tr><td>Reloj del ADC síncrono</td><td>PCLK/4 = 42.5 MHz: el disparo de TIM2 no añade incertidumbre (§3)</td><td>P13, en la revisión del G473</td><td><span class="tag t-ok">Adoptar</span></td></tr>
+      <tr><td>Referencia ratiométrica</td><td>VREF+, el DAC y el divisor de entrada cuelgan del mismo +3.3VA (§7)</td><td>Confirma P9</td><td><span class="tag t-ok">Confirmado</span></td></tr>
+      <tr><td>Generador con 512 puntos y prescaler entero</td><td>Error de frecuencia del 3.8 % a 10 kHz y el DAC fuera de especificación (§6)</td><td>Nuestro AWG usa DAC3 a 15 MSa/s; conviene un acumulador de fase</td><td><span class="tag t-crit">Evitar</span></td></tr>
+      <tr><td>Las notas del autor</td><td>«Cambiar el OPAMP, el ADC y el DAC por otros con más ancho de banda», «arreglar el ruido del ADC» (§9)</td><td>El propio autor llegó a nuestra conclusión</td><td><span class="tag t-ok">Confirmado</span></td></tr>
+    </tbody>
+  </table></div>
+
+</section>
+<section id="fuentes">
+  <div class="shead"><span class="num">i</span><h2>Qué se analizó y cómo</h2></div>
+
+  <dl class="kv">
+    <dt>Origen</dt><dd><code>research_and_tests/black_scope</code>, clon de <a href="https://github.com/jgpeiro/black_scope">github.com/jgpeiro/black_scope</a>. <code>black_scope_1</code> es el mismo clon con cambios locales en <code>wavegen.c/.h</code> (añade pulso, rectificada y seno con rizado; quita continua y cuadrada).</dd>
+    <dt>Hardware</dt><dd>KiCad 7.0.6: esquemático de una hoja (<code>outputs/pdf/black_scope.pdf</code>, con texto extraíble), netlist <code>black_scope.xml</code> (84 componentes, 137 redes) y BOM del 17 ago 2023.</dd>
+    <dt>Firmware</dt><dd><code>software/stm32g4_scope</code> (interfaz Nuklear) y <code>stm32g4_scope_lvgl</code> (interfaz LVGL), ambos con CubeMX 6.9 y FreeRTOS. Se leyeron el <code>.ioc</code>, <code>adc.c</code>, <code>opamp.c</code>, <code>dac.c</code>, <code>stm32g4xx_it.c</code>, <code>Lib/Scope</code>, <code>Lib/Tasks</code>, <code>Lib/WaveGen</code> y <code>Lib/Ui</code>. También <code>test_nucleo_f401re</code> y <code>firmware_15_sep.hex</code>.</dd>
+    <dt>Diagramas</dt><dd><code>images/capture engine.png</code> y <code>capture engine 2.png</code>: el autor documenta la máquina de estados de la captura.</dd>
+    <dt>Contraste</dt><dd>Cada cifra del G473 se contrastó con DS12712 Rev 5 y RM0440 Rev 9 (la revisión está en <code>S3G4_LAB_rev2.1/02_referencias/g473_analogico.html</code>). Las cifras derivadas salen de <code>S3G4_LAB_rev2.1/herramientas/calc_black_scope.py</code>.</dd>
+  </dl>
+  <ol class="toc">
+    <li><a href="#que-es">Qué es</a></li><li><a href="#canal">Canal analógico</a></li>
+    <li><a href="#pga">PGA interno y ADC</a></li><li><a href="#offset">Offset común desde DAC2</a></li>
+    <li><a href="#captura">Captura y disparo</a></li><li><a href="#generador">Generador</a></li>
+    <li><a href="#proteccion">Protección y alimentación</a></li><li><a href="#software">Firmware</a></li>
+    <li><a href="#notas">Las notas del autor</a></li><li><a href="#evitar">Lo que no conviene copiar</a></li>
+    <li><a href="#propuestas">Propuesta P12</a></li>
+  </ol>
+
+</section>
+<section id="que-es">
+  <div class="shead"><span class="num">1</span><h2>Qué es</h2></div>
+
+  <p>Un osciloscopio de <b>cuatro canales</b> y generador de <b>dos canales</b> con una sola placa y un solo microcontrolador. Todo pasa por el STM32G473: la captura, la pantalla y la interfaz táctil.</p>
+  <dl class="kv">
+    <dt>Entradas</dt><dd>4 canales por un conector de pines <code>J4</code> (2×4, 2.54 mm), sin BNC ni acoplo AC. Rango nominal de unos ±10 V.</dd>
+    <dt>Captura</dt><dd>4 ADC (ADC1, ADC3, ADC4, ADC5), uno por canal, 12 bits, hasta 2.5 MSa/s en la interfaz, <b>512 muestras por canal</b>.</dd>
+    <dt>Generador</dt><dd>DAC1 (PA4, PA5) → LMV358 → 51 Ω → <code>J5</code>.</dd>
+    <dt>Pantalla</dt><dd>TFT IPS de 3.5″ con ILI9488 por FMC de 16 bits, táctil resistivo con XPT2046 por SPI3 y PSRAM por QSPI para el framebuffer.</dd>
+    <dt>Alimentación</dt><dd>USB-C, batería LiPo (conector JST-PH) con cargador MCP73831 y regulador XC6206 de 3.3 V. <b>No mide la batería</b>, y una nota del autor lo pide.</dd>
+    <dt>Caja</dt><dd>Impresa en 3D (OpenSCAD).</dd>
+  </dl>
+  <p>La arquitectura que dibuja el autor es la de la figura <code>capture engine 2.png</code>: <b>ZIN → LMV324 → PGA → ADC → DMA</b>, con el DAC2 como offset, TIM2 como reloj de muestreo y TIM3 como parada. La misma figura trae un «borrador» sin PGA, del LMV324 directo al ADC por ADC1_IN11/IN12 y ADC3_IN8/IN9: son las rutas directas que la placa tiene cableadas y el firmware no usa.</p>
+
+</section>
+<section id="canal">
+  <div class="shead"><span class="num">2</span><h2>Canal analógico</h2></div>
+  <figure><div class="sx"><svg class="sch" viewBox="0 0 1300 730" width="1300" role="img" aria-label="black_scope - canal 1 completo" xmlns="http://www.w3.org/2000/svg"><polygon class="port" points="20,252 95.0,252 103.0,260 95.0,268 20,268"/><text class="portt" x="25" y="264" text-anchor="start">CH1 · J4-1</text><polyline class="w" points="103,260 130,260"/><polyline class="w" points="130,260 170.0,260.0"/><polyline class="w" points="210.0,260.0 250,260"/><polyline class="sym" points="-20,0 -15,-6 -10,6 -5,-6 0,6 5,-6 10,6 15,-6 20,0" transform="translate(190.0,260.0) rotate(0.0)"/><text class="ref" x="190.0" y="248.0" text-anchor="middle">R5</text><text class="val" x="190.0" y="282.0" text-anchor="middle">8k2 ±0.5 %</text><polyline class="w" points="250,260 430,260"/><circle class="dot" cx="300" cy="260" r="3.2"/><circle class="dot" cx="370" cy="260" r="3.2"/><text class="net" x="380" y="254" text-anchor="start">Vn</text><polyline class="w" points="300,260 300.0,225.0"/><polyline class="w" points="300.0,185.0 300,150"/><polyline class="sym" points="-20,0 -15,-6 -10,6 -5,-6 0,6 5,-6 10,6 15,-6 20,0" transform="translate(300.0,205.0) rotate(-90.0)"/><text class="ref" x="286.0" y="202.0" text-anchor="end">R11</text><text class="val" x="286.0" y="216.0" text-anchor="end">2k7</text><polyline class="w" points="300,150 300,140"/><line class="railbar" x1="288" y1="140" x2="312" y2="140"/><text class="rail" x="300" y="134" text-anchor="middle">+3.3VA</text><polyline class="w" points="300,260 300.0,300.0"/><polyline class="w" points="300.0,340.0 300,380"/><polyline class="sym" points="-20,0 -15,-6 -10,6 -5,-6 0,6 5,-6 10,6 15,-6 20,0" transform="translate(300.0,320.0) rotate(90.0)"/><text class="ref" x="286.0" y="317.0" text-anchor="end">R12</text><text class="val" x="286.0" y="331.0" text-anchor="end">4k3</text><polyline class="w" points="300,380 300,388"/><g class="gnd"><line x1="290" y1="388" x2="310" y2="388"/><line x1="294" y1="392" x2="306" y2="392"/><line x1="298" y1="396" x2="302" y2="396"/></g><polyline class="w" points="370,260 370.0,316.0"/><polyline class="w" points="370.0,324.0 370,380"/><g transform="translate(370.0,320.0) rotate(90.0)"><line class="sym" x1="-4" y1="-11" x2="-4" y2="11"/><line class="sym" x1="4" y1="-11" x2="4" y2="11"/></g><text class="ref" x="384.0" y="317.0" text-anchor="start">C23</text><text class="val" x="384.0" y="331.0" text-anchor="start">100 pF</text><polyline class="w" points="370,380 370,388"/><g class="gnd"><line x1="360" y1="388" x2="380" y2="388"/><line x1="364" y1="392" x2="376" y2="392"/><line x1="368" y1="396" x2="372" y2="396"/></g><polygon class="op" points="440,212 440,276 502,244"/><text class="pm" x="447" y="233" text-anchor="start">−</text><text class="pm" x="447" y="265" text-anchor="start">+</text><polyline class="w" points="430,228 440,228"/><polyline class="w" points="430,260 440,260"/><polyline class="w" points="502,244 512,244"/><text class="ref" x="450" y="206" text-anchor="start">U8A</text><text class="val" x="450" y="290" text-anchor="start">LMV324 · seguidor</text><polyline class="w" points="430,228 420,228 420,186 530,186 530,244"/><circle class="dot" cx="530" cy="244" r="3.2"/><polyline class="w" points="512,244 728,244"/><circle class="dot" cx="580" cy="244" r="3.2"/><text class="net" x="650" y="238" text-anchor="start">PA7</text><polyline class="w" points="580,244 580,510 652,510"/><polygon class="port" points="652,502 766.6,502 774.6,510 766.6,518 652,518"/><text class="portt" x="657" y="514" text-anchor="start">PB12 → ADC1_IN11</text><text class="note" x="652" y="534" text-anchor="start">(lento, sin usar)</text><rect class="grp" x="640" y="70" width="640" height="490" rx="6"/><text class="grp-t" x="648" y="85" text-anchor="start">STM32G473VET6</text><rect class="ic" x="740" y="190" width="190" height="110" rx="3"/><text class="ref" x="835.0" y="182" text-anchor="middle">OPAMP1 · PGA interno</text><polyline class="w" points="740,244 728,244"/><text class="pin" x="745" y="248" text-anchor="start">VINP</text><polyline class="w" points="930,228 942,228"/><text class="pin" x="925" y="232" text-anchor="end">OUT</text><polyline class="w" points="815,300 815,312"/><text class="pin" x="815" y="295" text-anchor="middle">VINM0</text><text class="pin" x="835" y="212" text-anchor="middle">G = 2 … 64 · R1 = 10 kΩ</text><text class="pin" x="835" y="262" text-anchor="middle">Vout = G·(VINP − VB) + VB</text><text class="pin" x="835" y="278" text-anchor="middle">BW = GBW/G: 203 kHz a ×64</text><polyline class="w" points="942,228 988,228"/><rect class="ic" x="1000" y="170" width="170" height="120" rx="3"/><text class="ref" x="1085.0" y="162" text-anchor="middle">ADC1 · 12 bits</text><polyline class="w" points="1000,228 988,228"/><text class="pin" x="1005" y="232" text-anchor="start">VOPAMP1</text><text class="pin" x="1085" y="196" text-anchor="middle">42.5 MHz (PCLK/4)</text><text class="pin" x="1085" y="262" text-anchor="middle">muestreo 2.5 ciclos = 58.8 ns</text><text class="pin" x="1085" y="278" text-anchor="middle">(mínimo 200 ns)</text><text class="note" x="1270" y="330" text-anchor="end">TIM2 marca cada muestra; DMA circular de 512 muestras.</text><text class="note" x="1270" y="348" text-anchor="end">AWD1 arma y AWD2 dispara (8 bits); la ISR arranca TIM3.</text><text class="note" x="1270" y="366" text-anchor="end">TIM3 cuenta las muestras restantes y para los 4 DMA.</text><text class="note" x="1270" y="384" text-anchor="end">Sólo CH1 puede disparar.</text><rect class="ic" x="900" y="440" width="110" height="44" rx="3"/><text class="ref" x="955.0" y="432" text-anchor="middle">DAC2</text><polyline class="w" points="955,484 955,496"/><text class="pin" x="955" y="479" text-anchor="middle"></text><text class="pin" x="955" y="466" text-anchor="middle">buffer ON</text><polyline class="w" points="955,496 955,600"/><circle class="dot" cx="955" cy="600" r="3.2"/><text class="net" x="964" y="571" text-anchor="start">PA6</text><polyline class="w" points="815,312 815,600 955,600"/><text class="net" x="824" y="571" text-anchor="start">PA3</text><polyline class="w" points="955,600 1080,600"/><circle class="dot" cx="1010" cy="600" r="3.2"/><polyline class="w" points="1010,600 1010.0,620.0"/><polyline class="w" points="1010.0,660.0 1010,680"/><polyline class="sym" points="-20,0 -15,-6 -10,6 -5,-6 0,6 5,-6 10,6 15,-6 20,0" transform="translate(1010.0,640.0) rotate(90.0)"/><text class="ref" x="996.0" y="637.0" text-anchor="end">R25</text><text class="val" x="996.0" y="651.0" text-anchor="end">10 kΩ</text><polyline class="w" points="1010,680 1010,688"/><g class="gnd"><line x1="1000" y1="688" x2="1020" y2="688"/><line x1="1004" y1="692" x2="1016" y2="692"/><line x1="1008" y1="696" x2="1012" y2="696"/></g><polyline class="w" points="1080,600 1080.0,636.0"/><polyline class="w" points="1080.0,644.0 1080,680"/><g transform="translate(1080.0,640.0) rotate(90.0)"><line class="sym" x1="-4" y1="-11" x2="-4" y2="11"/><line class="sym" x1="4" y1="-11" x2="4" y2="11"/></g><text class="ref" x="1094.0" y="637.0" text-anchor="start">C22</text><text class="val" x="1094.0" y="651.0" text-anchor="start">100 nF</text><polyline class="w" points="1080,680 1080,688"/><g class="gnd"><line x1="1070" y1="688" x2="1090" y2="688"/><line x1="1074" y1="692" x2="1086" y2="692"/><line x1="1078" y1="696" x2="1082" y2="696"/></g><text class="net" x="1104" y="599" text-anchor="start">VB · también PA1, PB2, PB15</text><text class="note" x="700" y="712" text-anchor="start">C22 es 2000 veces la carga máxima del DAC con buffer (50 pF).</text><text class="note" x="20" y="440" text-anchor="start">Vn = 0.168·Vin + 1.686 V · Zin = 9.86 kΩ</text><text class="note" x="20" y="458" text-anchor="start">Rango −10.0 V … +9.6 V; +4.8 V si el LMV324 es el de TI</text><text class="note" x="20" y="476" text-anchor="start">Polo de entrada 1.15 MHz · al aire lee +2.03 V</text><text class="note" x="20" y="512" text-anchor="start">CH2–CH4 iguales: U8C/U8D/U8B → OPAMP3/5/6 → ADC3/5/4.</text><text class="note" x="20" y="530" text-anchor="start">Rutas directas a PB1, PD11 y PD12, también sin usar.</text></svg></div><figcaption>Redibujo propio del canal 1, contrastado con el esquemático y la netlist. Los cuatro canales son iguales.</figcaption></figure>
+
+  <h3>El divisor a mitad de riel, paso a paso</h3>
+  <p>La entrada ve R5 en serie, y el nodo <code>Vn</code> cuelga de dos resistencias: R11 a +3.3 V y R12 a masa. Por Thévenin, R11 y R12 equivalen a una fuente <code>V<sub>th</sub></code> con una resistencia <code>R<sub>p</sub></code>:</p>
+  <div class="eq">R_p  = R11 ∥ R12 = 2.7k ∥ 4.3k = 1.6586 kΩ
+V_th = 3.3 V · 4.3k / (2.7k + 4.3k) = 2.0271 V
+Vn   = Vin · R_p/(R5 + R_p) + V_th · R5/(R5 + R_p)
+     = 0.16824 · Vin + 1.6861 V</div>
+  <ul class="tight">
+    <li><b>Impedancia de entrada:</b> R5 + R<sub>p</sub> = 9.86 kΩ, <b>hacia una fuente de 2.03 V</b>. Una sonda ×10 espera 1 MΩ, así que con ésta la atenuación saldría mal.</li>
+    <li><b>Rango:</b> el nodo va de 0 a 3.3 V si la entrada va de −10.0 a +9.6 V. Pero el LMV324 no es rail-to-rail en la entrada: el de TI admite hasta unos V<sub>CC</sub> − 0.8 V, y eso recorta el rango positivo a <b>+4.8 V</b>. Es un dato típico de TI; el repositorio no trae la hoja del LMV324 ni dice el fabricante. La nota del autor de pasar al OPA4322, rail-to-rail en entrada y salida, lo corregiría.</li>
+    <li><b>Entrada al aire:</b> el nodo se queda en V<sub>th</sub> y la pantalla muestra <b>+2.03 V</b> sin nada conectado. Nuestra entrada, con su resistencia a masa, marca 0 V.</li>
+    <li><b>Polo de entrada:</b> C23 con R5 ∥ R11 ∥ R12 = 1380 Ω da <b>1.15 MHz</b>. Es el único filtro anti-alias del canal.</li>
+    <li><b>Tolerancia:</b> con resistencias del 0.5 %, el cero de cada canal puede separarse ±8.2 mV en el nodo, <b>±49 mV en la entrada</b>. Como el offset es común (§4), el hardware no puede igualarlos.</li>
+  </ul>
+  <h3>Ruido</h3>
+  <p>El nodo aporta √(4kTR) = 4.8 nV/√Hz; el LMV324, unos 39 nV/√Hz (típico de TI); el OPAMP interno, 90 nV/√Hz a 10 kHz y 250 nV/√Hz a 1 kHz (DS12712, tabla 75). El OPAMP interno domina. Referido a la entrada (÷ 0.168) y con el ancho de banda de cada ganancia, el resultado ronda <b>0.73 mV rms</b> hasta ×8 y 0.33 mV rms a ×64. Frente al tramo de pantalla es poco, del 0.01 % al 0.11 %. Frente a nuestro objetivo de 5 mV/div es mucho: esta cadena no llega a escalas finas por ancho de banda, no por ruido.</p>
+
+</section>
+<section id="pga">
+  <div class="shead"><span class="num">3</span><h2>PGA interno y ADC</h2></div>
+
+  <p>Cada seguidor alimenta a la vez un pin del ADC (ruta directa) y la entrada VINP de un OPAMP interno. El firmware sólo usa el OPAMP: lo pone en <b>PGA con VINM0 como polarización</b> (<code>OPAMP_PGA_CONNECT_INVERTINGINPUT_IO0_BIAS</code>), así que la salida es</p>
+  <div class="eq">Vout = G · (VINP − VB) + VB      G ∈ {2, 4, 8, 16, 32, 64}</div>
+  <p>El ADC la lee por el canal interno (VOPAMP1 en ADC1, VOPAMP3 en ADC3, VOPAMP6 en ADC4 y VOPAMP5 en ADC5). La interfaz no muestra voltios por división: la escala es el índice de ganancia (0–5) y el offset es un código de DAC (0–4095).</p>
+  <div class="tw"><table>
+    <thead><tr><th>Ganancia</th><th>Tramo de entrada que cabe en el ADC</th><th>1 LSB en la entrada</th><th>Ancho de banda del PGA (GBW/G, mín–típ)</th><th>VB que centra 0 V</th><th>Paso del nivel de disparo (AWD2)</th><th>Desalineo entre canales en el ADC</th></tr></thead>
+    <tbody><tr><td class="n">×2</td><td class="n">9.808 V</td><td class="n">2394 µV</td><td class="n">3500–6500 kHz</td><td class="n">1.7222 V</td><td class="n">38.3 mV</td><td class="n">±16 mV</td></tr><tr><td class="n">×4</td><td class="n">4.904 V</td><td class="n">1197 µV</td><td class="n">1750–3250 kHz</td><td class="n">1.6981 V</td><td class="n">19.2 mV</td><td class="n">±33 mV</td></tr><tr><td class="n">×8</td><td class="n">2.452 V</td><td class="n">599 µV</td><td class="n">875–1625 kHz</td><td class="n">1.6913 V</td><td class="n">9.6 mV</td><td class="n">±66 mV</td></tr><tr><td class="n">×16</td><td class="n">1.226 V</td><td class="n">299 µV</td><td class="n">438–812 kHz</td><td class="n">1.6885 V</td><td class="n">4.8 mV</td><td class="n">±132 mV</td></tr><tr><td class="n">×32</td><td class="n">0.613 V</td><td class="n">150 µV</td><td class="n">219–406 kHz</td><td class="n">1.6873 V</td><td class="n">2.4 mV</td><td class="n">±264 mV</td></tr><tr><td class="n">×64</td><td class="n">0.306 V</td><td class="n">75 µV</td><td class="n">109–203 kHz</td><td class="n">1.6867 V</td><td class="n">1.2 mV</td><td class="n">±528 mV</td></tr></tbody>
+  </table></div>
+  <ul class="tight">
+    <li><b>Ancho de banda:</b> el PGA divide el GBW de 7–13 MHz por la ganancia (DS12712, tabla 75). A ×64 quedan 109–203 kHz. En modo normal el slew rate es de 2.5–6.5 V/µs: una salida de 3.2 Vpp sólo es limpia hasta 249–647 kHz. El firmware no activa el modo de alta velocidad.</li>
+    <li><b>Muestreo demasiado corto:</b> el ADC corre a 42.5 MHz (PCLK/4) con 2.5 ciclos de muestreo, es decir 58.8 ns. El datasheet exige <b>≥ 200 ns</b> para leer la salida del OPAMP por el canal interno (<code>TS_OPAMP_VOUT</code>, tabla 75). El primer valor válido a esa frecuencia es 12.5 ciclos, y entonces el máximo baja de 2.83 a <b>1.70 MSa/s</b>. La interfaz ofrece hasta 2.5 MSa/s. Es un buen candidato al «ruido del ADC» que el autor anota.</li>
+    <li><b>La ruta directa tampoco es rápida:</b> PB12, PB1, PD11 y PD12 son canales lentos. A 12 bits no admiten 2.5 ciclos (DS12712, tabla 62).</li>
+    <li><b>Ganancia:</b> ±1 % hasta ×16 y ±2 % a ×32 y ×64 (tabla 75). El firmware no calibra la ganancia; sólo llama a <code>HAL_OPAMP_SelfCalibrate</code>, que corrige el offset.</li>
+    <li><b>Reloj síncrono:</b> <code>ADC_CLOCK_SYNC_PCLK_DIV4</code> quita la incertidumbre entre el disparo de TIM2 y el inicio del muestreo (RM0440 §21.4.3). Es una buena decisión que conviene copiar (P13 en la revisión del G473).</li>
+  </ul>
+
+</section>
+<section id="offset">
+  <div class="shead"><span class="num">4</span><h2>Offset común desde DAC2</h2></div>
+
+  <p>DAC2_OUT1 (PA6) va por fuera del chip a los cuatro pines VINM0 (PA3, PB2, PB15 y PA1), con R25 de 10 kΩ y C22 de 100 nF a masa. Es un solo nivel VB para los cuatro canales.</p>
+  <ul class="tight">
+    <li><b>Carga fuera de especificación:</b> con el buffer activado, el DAC admite como mucho 50 pF y 5 kΩ (DS12712, tabla 69). C22 es <b>2000 veces</b> esa capacidad. Un buffer así cargado puede oscilar o tardar mucho en asentarse. Las notas «añadir pull-down» y «añadir condensador» sugieren que C22 llegó como remedio. El G4 tiene un modo pensado para esto, el <b>sample-and-hold</b>, que admite de 0.1 a 1 µF (tabla 69).</li>
+    <li><b>Corriente por VINM0:</b> en modo PGA con polarización, R1 = 10 kΩ va de la entrada inversora a VB. Por cada canal circula (VINP − VB)/R1: con el ADC a fondo, 82.5 µA a ×2 y 2.6 µA a ×64. Los cuatro canales cargan el mismo nodo, y lo que uno mueve lo ven los otros multiplicado por (G − 1).</li>
+    <li><b>Un offset para cuatro canales:</b> el desalineo de §2 multiplicado por la ganancia llega a <b>±528 mV en el ADC a ×64</b>, un 16 % del rango, y no hay forma de corregirlo canal a canal en hardware. Además, a ×64 un solo código del DAC mueve la traza 51 mV en el ADC.</li>
+  </ul>
+
+</section>
+<section id="captura">
+  <div class="shead"><span class="num">5</span><h2>Captura y disparo</h2></div>
+  <pre class="mermaid">%%{init: {'theme':'neutral'}}%%
+flowchart LR
+  I["IDLE"] -->|"scope_start: ADC + DMA circular + TIM2"| W["Espera búfer lleno"]
+  W -->|"DMA completo: habilita AWD1"| A["Espera armado"]
+  A -->|"AWD1: la señal pasa por debajo del nivel"| T["Espera disparo"]
+  T -->|"AWD2: la señal cruza el nivel; la ISR arranca TIM3"| P["Espera parada"]
+  P -->|"TIM3: len/2 + offset muestras; lee CNDTR y para los DMA"| I
+</pre>
+
+  <p>Es la máquina de estados de <code>Lib/Scope/scope.c</code>, la misma que el autor dibuja en <code>capture engine 2.png</code>. Los cuatro ADC convierten a la vez con el mismo TIM2 y DMA circular de 512 muestras por canal.</p>
+  <ul class="tight">
+    <li><b>Buena idea: esperar un búfer lleno antes de armar.</b> Así siempre hay muestras previas al disparo.</li>
+    <li><b>Buena idea: dos juegos de búfer</b> (8 × 512 × 2 B = 8 KiB): mientras uno se dibuja, el otro se llena.</li>
+    <li><b>Arma y dispara con dos analog watchdog</b>, como el OpenScope: para flanco de subida, AWD1 salta cuando la señal está por debajo del nivel y AWD2 cuando lo supera. La histéresis es cero. Además, AWD2 y AWD3 del G4 sólo tienen <b>8 bits</b> (RM0440 §21.4.28), así que el nivel se mueve de 16 en 16 LSB: 38 mV en la entrada a ×2.</li>
+    <li><b>Latencia de software:</b> entre el cruce y el arranque de TIM3 hay una interrupción con la HAL de por medio. En la parada, <code>TIM3_IRQHandler</code> lee <code>DMA1_Channel1-&gt;CNDTR</code> y el firmware <b>supone</b> que el disparo quedó 512/2 muestras antes. A 2.5 MSa/s, cada microsegundo de latencia son 2.5 muestras de error en la posición del disparo, y además variable. Hay un intento comentado de leer CNDTR en la propia interrupción del ADC.</li>
+    <li><b>Sólo CH1 dispara:</b> <code>scope_config_trigger</code> programa los watchdog sólo en el ADC1 aunque la interfaz ofrezca Ch1–Ch4.</li>
+    <li><b>Escalas lentas rotas en la versión Nuklear:</b> el prescaler de 16 bits desborda por debajo de 1.30 kSa/s. La versión LVGL lo arregla multiplicando también el periodo.</li>
+    <li>Las medidas (mínimo, máximo, media, periodo y ciclo de trabajo) se calculan en software sobre el búfer.</li>
+  </ul>
+  <p>El G4 tiene una salida que evita esa latencia: cada watchdog y cada comparador se puede llevar <b>por hardware</b> a la entrada ETR de varios temporizadores (RM0440, tablas 268 y 292). Es la propuesta P12, en §11.</p>
+
+</section>
+<section id="generador">
+  <div class="shead"><span class="num">6</span><h2>Generador</h2></div>
+
+  <p>DAC1 con buffer, disparado por TIM4 (canal 1) y TIM6 (canal 2), con DMA desde una tabla de <b>512 puntos</b>. Detrás, un LMV358 como seguidor y 51 Ω hacia <code>J5</code>. La frecuencia se fija con el prescaler: fs = 170 MHz / (2 · (PSC + 1)) y f = fs / 512.</p>
+  <div class="tw"><table><thead><tr><th>Pedida</th><th>Real</th><th>Error</th><th>Actualización del DAC</th></tr></thead><tbody><tr><td class="n">100 Hz</td><td class="n">100.0 Hz</td><td class="n">+0.01 %</td><td class="n">0.051 MSa/s</td></tr><tr><td class="n">1 000 Hz</td><td class="n">1 000.1 Hz</td><td class="n">+0.01 %</td><td class="n">0.512 MSa/s</td></tr><tr><td class="n">5 000 Hz</td><td class="n">5 030.8 Hz</td><td class="n">+0.62 %</td><td class="n">2.576 MSa/s</td></tr><tr><td class="n">10 000 Hz</td><td class="n">10 376.0 Hz</td><td class="n">+3.76 %</td><td class="n">5.312 MSa/s</td></tr><tr><td class="n">20 000 Hz</td><td class="n">20 752.0 Hz</td><td class="n">+3.76 %</td><td class="n">10.625 MSa/s</td></tr></tbody></table></div>
+  <p>El DAC1 con buffer está especificado hasta 1 MSa/s (DS12712 §3.19), así que con 512 puntos el límite limpio es <b>1953 Hz</b>. Por encima, el prescaler entero da saltos de frecuencia y el DAC trabaja fuera de especificación. Nuestro AWG usa DAC3, de 15 MSa/s y sin salida a pin, a través de un OPAMP (mapa firmado). La lección es otra: <b>usar un acumulador de fase (DDS)</b> con la frecuencia de actualización fija, en vez de estirar la tabla con el prescaler.</p>
+
+</section>
+<section id="proteccion">
+  <div class="shead"><span class="num">7</span><h2>Protección y alimentación</h2></div>
+
+  <p>La única protección es <b>R5 de 8.2 kΩ (0603)</b> frente a los diodos internos del LMV324, que descargan al riel +3.3VA. Cálculo con el nodo sujeto a 3.3 V + 0.6 V:</p>
+  <div class="tw"><table><thead><tr><th>Entrada</th><th>Corriente por R5</th><th>Al diodo del LMV324</th><th>Potencia en R5</th></tr></thead><tbody>
+    <tr><td>+20 V</td><td class="n">1.96 mA</td><td class="n">0.83 mA</td><td class="n">32 mW</td></tr>
+    <tr><td>+50 V</td><td class="n">5.62 mA</td><td class="n">4.49 mA</td><td class="n">0.26 W</td></tr>
+    <tr><td>Pico de 230 Vrms (325 V)</td><td class="n">39 mA</td><td class="n">38 mA</td><td class="n">12.6 W</td></tr>
+  </tbody></table></div>
+  <ul class="tight">
+    <li>Una 0603 suele admitir 0.1 W y 50–75 V: a 50 V ya se calienta, y con la red se destruye. Nuestra D-06 cubre ese caso.</li>
+    <li>La corriente del diodo entra en +3.3VA, que sale de un XC6206: un regulador lineal que no absorbe corriente. Con poca carga, el riel sube.</li>
+    <li><b>Ratiométrico:</b> VREF+ es +3.3VA a través de L2 (47 µH) y C8 (270 nF), y del mismo riel cuelgan los divisores y el DAC2. Si el riel cambia, cambian igual la referencia, el cero del divisor y el offset. Es la idea de P9.</li>
+    <li>LiPo → MCP73831 → XC6206: sin medida de batería y sin conmutación entre USB y batería (D4 está sin conectar en la netlist).</li>
+  </ul>
+
+</section>
+<section id="software">
+  <div class="shead"><span class="num">8</span><h2>Firmware</h2></div>
+
+  <ul class="tight">
+    <li><b>FreeRTOS con cinco tareas:</b> <code>taskTsc</code> (táctil), <code>taskUi</code>, <code>taskScope</code>, <code>taskWavegen</code> y la tarea por defecto. Se comunican por colas (<code>queueTscUi</code>, <code>queueUiScope</code>, <code>queueUiWavegen</code>, <code>queueUiLcd</code>) y un semáforo para la pantalla. Es la misma separación entre interfaz e instrumento que nosotros hacemos entre el ESP32-S3 y el G473.</li>
+    <li><b>Mensajes sin tipo:</b> la interfaz manda la configuración en <code>msgUiScope.data[0..16]</code>, con significado por índice. Nuestro protocolo con la S3G4-UI debe seguir tipado.</li>
+    <li><b>Dos interfaces:</b> Nuklear (modo inmediato) y LVGL. El núcleo de captura es casi idéntico en ambas: 29 líneas distintas en <code>scope.c</code>.</li>
+    <li><b>Framebuffer en PSRAM por QSPI</b> y pantalla por FMC con DMA, según <code>capture engine 2.png</code>. No nos aplica: la pantalla la lleva el ESP32-S3.</li>
+    <li><code>test_nucleo_f401re</code> es un prototipo previo en una Nucleo-F401RE (ADC a PCLK/4 y 3 ciclos). <code>firmware_15_sep.hex</code> es una imagen de 512 KB desde 0x0800 0000: no aporta nada que el código no diga.</li>
+  </ul>
+
+</section>
+<section id="notas">
+  <div class="shead"><span class="num">9</span><h2>Las notas del autor</h2></div>
+
+  <p>El esquemático trae una lista de pendientes. Las que tocan lo analógico:</p>
+  <ul class="tight">
+    <li>«Change OPAMP ADC and DAC IC with bigger BW», y al lado de la parte analógica: <b>OPA4322</b> y <b>OPA2322</b> (20 MHz, rail-to-rail en entrada y salida).</li>
+    <li>«Add capacitors to ADC channels» y «<b>Fix ADC noise issues</b>».</li>
+    <li>«Add pull-down to DAC2-OUT1» y «Add capacitor to DAC2-OUT1»: el origen de R25 y C22.</li>
+    <li>«Add battery measurement», «Add digital channels?», «bigger diodes footprint» y «Change schottky diodes to SOT23-3».</li>
+  </ul>
+  <p>Con los datos de §3 y §4 hay dos causas probables del ruido: <b>el muestreo de 59 ns sobre la salida del OPAMP</b> y <b>el buffer del DAC2 con 100 nF</b>. Ninguna se ha medido: es una hipótesis.</p>
+
+</section>
+<section id="evitar">
+  <div class="shead"><span class="num">10</span><h2>Lo que no conviene copiar</h2></div>
+
+  <ul class="tight">
+    <li>Entrada de 10 kΩ que lee +2 V al aire y no admite sondas ×10.</li>
+    <li>El OPAMP interno como etapa de ganancia del osciloscopio.</li>
+    <li>Muestrear la salida del OPAMP interno por debajo de 200 ns.</li>
+    <li>Un offset común a todos los canales, y un DAC con buffer cargado con 100 nF.</li>
+    <li>Disparo por software con latencia variable, sólo en CH1 y con histéresis cero.</li>
+    <li>Generador de tabla fija con el prescaler como control de frecuencia.</li>
+    <li>Una resistencia 0603 como única protección.</li>
+  </ul>
+
+</section>
+<section id="propuestas">
+  <div class="shead"><span class="num">11</span><h2>Propuesta para la rev 2.1</h2></div>
+
+  <p>Continúa la numeración de los referentes anteriores (P1–P11). Las propuestas P13–P16 salen de la revisión del G473 (<code>S3G4_LAB_rev2.1/02_referencias/g473_analogico.html</code>). Ninguna está aplicada.</p>
+  <h3>P12 · Cadena de disparo por hardware <span class="tag t-open">Estudiar</span></h3>
+  <p>El disparo no pasaría por ninguna interrupción:</p>
+  <ul class="tight">
+    <li>La fuente es un comparador (COMP) o un analog watchdog (AWD).</li>
+    <li>Su salida entra por la <b>ETR de un temporizador</b>, que arranca en modo de un solo pulso. Todas las salidas de comparador llegan a las ETR de TIM1/8/20 y TIM2/3/4/5; las de los watchdog, a TIM1/8/20 y TIM3 (RM0440, tablas 268 y 292).</li>
+    <li>Ese temporizador cuenta las muestras posteriores al disparo con el mismo reloj que el ADC y, al terminar, bloquea en hardware el temporizador de muestreo (modo esclavo con puerta).</li>
+    <li>El firmware sólo lee CNDTR con todo ya parado: la posición del disparo es exacta a la muestra y no depende de la latencia.</li>
+  </ul>
+  <p>Complementa P11. Queda por ver si el temporizador que da la puerta puede ser el mismo que marca el entrelazado de CH1 (D-02).</p>
+
+</section>
+<footer><p class="meta">Análisis de Claude Code, 23 sep 2026. Fuentes locales en <code>research_and_tests/black_scope/</code>; datasheet y manual en <code>datasheet/</code>. Proyecto original: <a href="https://github.com/jgpeiro/black_scope">jgpeiro/black_scope</a>.</p></footer>
+</div>

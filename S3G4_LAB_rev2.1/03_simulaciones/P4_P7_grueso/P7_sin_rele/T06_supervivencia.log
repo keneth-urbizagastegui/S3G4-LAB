@@ -1,0 +1,96 @@
+LTspice 26.0.2 for Windows
+Circuit: C:\Users\Keneth\Desktop\S3G4 LAB\S3G4_LAB_rev2.1\03_simulaciones\P4_P7_grueso\P7_sin_rele\T06_supervivencia.net
+Start Time: Thu Sep 24 08:07:50 2026
+solver = Normal
+Maximum thread count: 12
+tnom = 27
+temp = 27
+method = trap
+Direct Newton iteration succeeded in finding operating point.
+Total elapsed time: 0.999 seconds.
+
+Files loaded:
+C:\Users\Keneth\Desktop\S3G4 LAB\S3G4_LAB_rev2.1\03_simulaciones\P4_P7_grueso\P7_sin_rele\T06_supervivencia.net
+C:\Users\Keneth\Desktop\S3G4 LAB\S3G4_LAB_rev2.1\03_simulaciones\P4_P7_grueso\comun\rev21_comun.inc
+C:\Users\Keneth\AppData\Local\LTspice\lib\sub\UniversalOpAmp2.lib
+
+p7_low_dc_rtf_vmax: MAX(V(BNClow_dc,FINOlow_dc) )=44.1423354149 FROM 0.08 TO 0.1
+p7_low_dc_rtf_vmin: MIN(V(BNClow_dc,FINOlow_dc) )=44.1423354149 FROM 0.08 TO 0.1
+p7_low_dc_rtf_p: AVG(V(BNClow_dc,FINOlow_dc)*I(RtFlow_dc) )=0.00194854581338 FROM 0.08 TO 0.1
+p7_low_dc_rtg_vmax: MAX(V(BNClow_dc,GRUESOlow_dc) )=49.75 FROM 0.08 TO 0.1
+p7_low_dc_rtg_vmin: MIN(V(BNClow_dc,GRUESOlow_dc) )=49.75 FROM 0.08 TO 0.1
+p7_low_dc_rtg_p: AVG(V(BNClow_dc,GRUESOlow_dc)*I(RtGlow_dc) )=0.00124374996858 FROM 0.08 TO 0.1
+p7_low_dc_finomax: MAX(V(FINOlow_dc) )=5.85766458511 FROM 0.08 TO 0.1
+p7_low_dc_finomin: MIN(V(FINOlow_dc) )=5.85766458511 FROM 0.08 TO 0.1
+p7_low_dc_gruesomax: MAX(V(GRUESOlow_dc) )=0.25 FROM 0.08 TO 0.1
+p7_low_dc_gruesomin: MIN(V(GRUESOlow_dc) )=0.25 FROM 0.08 TO 0.1
+p7_low_dc_dhfmax: MAX(I(DHFlow_dc) )=3.8282632886e-05 FROM 0.08 TO 0.1
+p7_low_dc_dhfmin: MIN(I(DHFlow_dc) )=3.8282632886e-05 FROM 0.08 TO 0.1
+p7_low_dc_dlfmax: MAX(I(DLFlow_dc) )=-1.18565894949e-11 FROM 0.08 TO 0.1
+p7_low_dc_dlfmin: MIN(I(DLFlow_dc) )=-1.18577743111e-11 FROM 0.08 TO 0.1
+p7_low_dc_tvsmax: MAX(I(DTF1low_dc) )=2.02145500339e-09 FROM 0.08 TO 0.1
+p7_low_dc_tvsmin: MIN(I(DTF1low_dc) )=2.02144967432e-09 FROM 0.08 TO 0.1
+p7_low_dc_railpmax: MAX(I(RVPlow_dc) )=0.000461798656033 FROM 0.08 TO 0.1
+p7_low_dc_railpmin: MIN(I(RVPlow_dc) )=0.000461798656033 FROM 0.08 TO 0.1
+p7_low_dc_railnmax: MAX(I(RVNlow_dc) )=-0.000500692171045 FROM 0.08 TO 0.1
+p7_low_dc_railnmin: MIN(I(RVNlow_dc) )=-0.000500692171045 FROM 0.08 TO 0.1
+p7_low_ac_rtf_vmax: MAX(V(BNClow_ac,FINOlow_ac) )=347.587362766 FROM 0.08 TO 0.1
+p7_low_ac_rtf_vmin: MIN(V(BNClow_ac,FINOlow_ac) )=-347.587362766 FROM 0.08 TO 0.1
+p7_low_ac_rtf_p: AVG(V(BNClow_ac,FINOlow_ac)*I(RtFlow_ac) )=0.0598568092827 FROM 0.08 TO 0.1
+p7_low_ac_rtg_vmax: MAX(V(BNClow_ac,GRUESOlow_ac) )=351.785608411 FROM 0.08 TO 0.1
+p7_low_ac_rtg_vmin: MIN(V(BNClow_ac,GRUESOlow_ac) )=-351.785608411 FROM 0.08 TO 0.1
+p7_low_ac_rtg_p: AVG(V(BNClow_ac,GRUESOlow_ac)*I(RtGlow_ac) )=0.0310937372034 FROM 0.08 TO 0.1
+p7_low_ac_finomax: MAX(V(FINOlow_ac) )=5.96601295471 FROM 0.08 TO 0.1
+p7_low_ac_finomin: MIN(V(FINOlow_ac) )=-5.96601295471 FROM 0.08 TO 0.1
+p7_low_ac_gruesomax: MAX(V(GRUESOlow_ac) )=1.76776683331 FROM 0.08 TO 0.1
+p7_low_ac_gruesomin: MIN(V(GRUESOlow_ac) )=-1.76776683331 FROM 0.08 TO 0.1
+p7_low_ac_dhfmax: MAX(I(DHFlow_ac) )=0.000341607257724 FROM 0.08 TO 0.1
+p7_low_ac_dhfmin: MIN(I(DHFlow_ac) )=-8.79933423903e-08 FROM 0.08 TO 0.1
+p7_low_ac_dlfmax: MAX(I(DLFlow_ac) )=0.000341606762959 FROM 0.08 TO 0.1
+p7_low_ac_dlfmin: MIN(I(DLFlow_ac) )=-8.53889829955e-08 FROM 0.08 TO 0.1
+p7_low_ac_tvsmax: MAX(I(DTF1low_ac) )=4.89888840605e-08 FROM 0.08 TO 0.1
+p7_low_ac_tvsmin: MIN(I(DTF1low_ac) )=-4.83423221453e-08 FROM 0.08 TO 0.1
+p7_low_ac_railpmax: MAX(I(RVPlow_ac) )=0.000999926938675 FROM 0.08 TO 0.1
+p7_low_ac_railpmin: MIN(I(RVPlow_ac) )=0.000126815939439 FROM 0.08 TO 0.1
+p7_low_ac_railnmax: MAX(I(RVNlow_ac) )=-0.000126810744405 FROM 0.08 TO 0.1
+p7_low_ac_railnmin: MIN(I(RVNlow_ac) )=-0.000999937648885 FROM 0.08 TO 0.1
+p7_safe_dc_rtf_vmax: MAX(V(BNCsafe_dc,FINOsafe_dc) )=44.1423354149 FROM 0.08 TO 0.1
+p7_safe_dc_rtf_vmin: MIN(V(BNCsafe_dc,FINOsafe_dc) )=44.1423354149 FROM 0.08 TO 0.1
+p7_safe_dc_rtf_p: AVG(V(BNCsafe_dc,FINOsafe_dc)*I(RtFsafe_dc) )=0.00194854581338 FROM 0.08 TO 0.1
+p7_safe_dc_rtg_vmax: MAX(V(BNCsafe_dc,GRUESOsafe_dc) )=49.75 FROM 0.08 TO 0.1
+p7_safe_dc_rtg_vmin: MIN(V(BNCsafe_dc,GRUESOsafe_dc) )=49.75 FROM 0.08 TO 0.1
+p7_safe_dc_rtg_p: AVG(V(BNCsafe_dc,GRUESOsafe_dc)*I(RtGsafe_dc) )=0.00124374996858 FROM 0.08 TO 0.1
+p7_safe_dc_finomax: MAX(V(FINOsafe_dc) )=5.85766458511 FROM 0.08 TO 0.1
+p7_safe_dc_finomin: MIN(V(FINOsafe_dc) )=5.85766458511 FROM 0.08 TO 0.1
+p7_safe_dc_gruesomax: MAX(V(GRUESOsafe_dc) )=0.25 FROM 0.08 TO 0.1
+p7_safe_dc_gruesomin: MIN(V(GRUESOsafe_dc) )=0.25 FROM 0.08 TO 0.1
+p7_safe_dc_dhfmax: MAX(I(DHFsafe_dc) )=3.8282632886e-05 FROM 0.08 TO 0.1
+p7_safe_dc_dhfmin: MIN(I(DHFsafe_dc) )=3.8282632886e-05 FROM 0.08 TO 0.1
+p7_safe_dc_dlfmax: MAX(I(DLFsafe_dc) )=-1.18565894949e-11 FROM 0.08 TO 0.1
+p7_safe_dc_dlfmin: MIN(I(DLFsafe_dc) )=-1.18577743111e-11 FROM 0.08 TO 0.1
+p7_safe_dc_tvsmax: MAX(I(DTF1safe_dc) )=2.02145500339e-09 FROM 0.08 TO 0.1
+p7_safe_dc_tvsmin: MIN(I(DTF1safe_dc) )=2.02144967432e-09 FROM 0.08 TO 0.1
+p7_safe_dc_railpmax: MAX(I(RVPsafe_dc) )=0.000461798656033 FROM 0.08 TO 0.1
+p7_safe_dc_railpmin: MIN(I(RVPsafe_dc) )=0.000461798656033 FROM 0.08 TO 0.1
+p7_safe_dc_railnmax: MAX(I(RVNsafe_dc) )=-0.000500692171045 FROM 0.08 TO 0.1
+p7_safe_dc_railnmin: MIN(I(RVNsafe_dc) )=-0.000500692171045 FROM 0.08 TO 0.1
+p7_safe_ac_rtf_vmax: MAX(V(BNCsafe_ac,FINOsafe_ac) )=347.587362766 FROM 0.08 TO 0.1
+p7_safe_ac_rtf_vmin: MIN(V(BNCsafe_ac,FINOsafe_ac) )=-347.587362766 FROM 0.08 TO 0.1
+p7_safe_ac_rtf_p: AVG(V(BNCsafe_ac,FINOsafe_ac)*I(RtFsafe_ac) )=0.0598568092826 FROM 0.08 TO 0.1
+p7_safe_ac_rtg_vmax: MAX(V(BNCsafe_ac,GRUESOsafe_ac) )=351.785608411 FROM 0.08 TO 0.1
+p7_safe_ac_rtg_vmin: MIN(V(BNCsafe_ac,GRUESOsafe_ac) )=-351.785608411 FROM 0.08 TO 0.1
+p7_safe_ac_rtg_p: AVG(V(BNCsafe_ac,GRUESOsafe_ac)*I(RtGsafe_ac) )=0.0310937372034 FROM 0.08 TO 0.1
+p7_safe_ac_finomax: MAX(V(FINOsafe_ac) )=5.96601295471 FROM 0.08 TO 0.1
+p7_safe_ac_finomin: MIN(V(FINOsafe_ac) )=-5.96601295471 FROM 0.08 TO 0.1
+p7_safe_ac_gruesomax: MAX(V(GRUESOsafe_ac) )=1.76776683331 FROM 0.08 TO 0.1
+p7_safe_ac_gruesomin: MIN(V(GRUESOsafe_ac) )=-1.76776683331 FROM 0.08 TO 0.1
+p7_safe_ac_dhfmax: MAX(I(DHFsafe_ac) )=0.000341607286828 FROM 0.08 TO 0.1
+p7_safe_ac_dhfmin: MIN(I(DHFsafe_ac) )=-9.14490883019e-08 FROM 0.08 TO 0.1
+p7_safe_ac_dlfmax: MAX(I(DLFsafe_ac) )=0.000341606821166 FROM 0.08 TO 0.1
+p7_safe_ac_dlfmin: MIN(I(DLFsafe_ac) )=-8.77139783029e-08 FROM 0.08 TO 0.1
+p7_safe_ac_tvsmax: MAX(I(DTF1safe_ac) )=4.90038374323e-08 FROM 0.08 TO 0.1
+p7_safe_ac_tvsmin: MIN(I(DTF1safe_ac) )=-4.83617093039e-08 FROM 0.08 TO 0.1
+p7_safe_ac_railpmax: MAX(I(RVPsafe_ac) )=0.000999855576083 FROM 0.08 TO 0.1
+p7_safe_ac_railpmin: MIN(I(RVPsafe_ac) )=0.000126819315483 FROM 0.08 TO 0.1
+p7_safe_ac_railnmax: MAX(I(RVNsafe_ac) )=-0.000126814193209 FROM 0.08 TO 0.1
+p7_safe_ac_railnmin: MIN(I(RVNsafe_ac) )=-0.0009999104077 FROM 0.08 TO 0.1

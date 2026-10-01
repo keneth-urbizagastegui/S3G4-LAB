@@ -1,0 +1,9 @@
+(version 1)
+
+# Reglas DRC personalizadas de S3G4 LAB rev 2.1.
+# Vacío a propósito: los valores (clearance y creepage de la entrada, según el rango máximo de tensión
+# de los requisitos RF-xx) los define el humano. Ver AGENTS.md.
+# Ejemplo de forma, NO activo:
+# (rule "entrada_clearance"
+#    (condition "A.NetClass == 'AFE_IN' && B.NetClass != 'AFE_IN'")
+#    (constraint clearance (min 0.5mm)))

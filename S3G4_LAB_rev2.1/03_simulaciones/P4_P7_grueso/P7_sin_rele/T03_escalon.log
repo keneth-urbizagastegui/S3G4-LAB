@@ -1,0 +1,31 @@
+LTspice 26.0.2 for Windows
+Circuit: C:\Users\Keneth\Desktop\S3G4 LAB\S3G4_LAB_rev2.1\03_simulaciones\P4_P7_grueso\P7_sin_rele\T03_escalon.net
+Start Time: Thu Sep 24 08:04:53 2026
+Options:noopiter
+solver = Normal
+Maximum thread count: 12
+tnom = 27
+temp = 27
+method = trap
+noOpIter = true
+Laplace(xcs5:EAAF): Window=5.3458802µs Nfft=16384
+Laplace(xcs500:EAAF): Window=5.3458802µs Nfft=16384
+Direct Newton iteration for .op point skipped.
+Starting Gmin stepping
+Gmin stepping succeeded in finding the operating point.
+
+Total elapsed time: 25.366 seconds.
+
+Files loaded:
+C:\Users\Keneth\Desktop\S3G4 LAB\S3G4_LAB_rev2.1\03_simulaciones\P4_P7_grueso\P7_sin_rele\T03_escalon.net
+C:\Users\Keneth\Desktop\S3G4 LAB\S3G4_LAB_rev2.1\03_simulaciones\P4_P7_grueso\comun\rev21_comun.inc
+C:\Users\Keneth\AppData\Local\LTspice\lib\sub\UniversalOpAmp2.lib
+
+p7_s5_v2us: V(SALs5) =0.582766233399 at 0.00100201
+p7_s5_v20us: V(SALs5) =0.714768224191 at 0.00102001
+p7_s5_v200us: V(SALs5) =0.749787211418 at 0.00120001
+p7_s5_vsettled: V(SALs5) =0.749787211418 at 0.00140001
+p7_s500_v2us: V(SALs500) =0.750488620954 at 0.00100201
+p7_s500_v20us: V(SALs500) =0.749944984913 at 0.00102001
+p7_s500_v200us: V(SALs500) =0.749803245068 at 0.00120001
+p7_s500_vsettled: V(SALs500) =0.749803245068 at 0.00140001
