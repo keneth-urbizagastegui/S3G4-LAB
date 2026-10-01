@@ -1,0 +1,160 @@
+Iniciando captura en COM17 a 115200 baud...
+Archivos de salida: plan_antigravity\mediciones\F0_baseline.log, plan_antigravity\mediciones\F0_baseline.csv, plan_antigravity\mediciones\F0_baseline_media.csv
+  MEDIA,file=/sdcard/ariana.avi,size=69687956,w=480,h=320,us_per_frame=33333,fps_milli=30000,frames=9003,idx1=1,chunk_avg=7715,chunk_max=22505,subsampling=unknown
+  MEDIA,file=/sdcard/harry.avi,size=77294026,w=480,h=320,us_per_frame=33333,fps_milli=30000,frames=6029,idx1=1,chunk_avg=12794,chunk_max=28864,subsampling=unknown
+  MEDIA,file=/sdcard/lesserafim.avi,size=70497374,w=480,h=320,us_per_frame=33333,fps_milli=30000,frames=5988,idx1=1,chunk_avg=11747,chunk_max=35098,subsampling=unknown
+  MEDIA,file=/sdcard/meovv.avi,size=59188494,w=480,h=320,us_per_frame=33333,fps_milli=30000,frames=6136,idx1=1,chunk_avg=9620,chunk_max=19425,subsampling=unknown
+  PERF,t_ms=6186,dec_fps=20.6,pres_fps=14.2,drop=0,over=0,rd_avg=3.3,rd_max=12.2,dec_avg=32.7,dec_max=40.9,blit_avg=2.1,blit_max=2.8,late_max=0.0,heap_int=94111,heap_psram=7573600,track=0,scn=hidden
+  PERF,t_ms=8236,dec_fps=16.6,pres_fps=15.1,drop=0,over=0,rd_avg=12.3,rd_max=14.2,dec_avg=38.6,dec_max=40.1,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94111,heap_psram=7573600,track=0,scn=hidden
+  PERF,t_ms=10286,dec_fps=16.6,pres_fps=15.6,drop=0,over=0,rd_avg=12.1,rd_max=13.7,dec_avg=38.3,dec_max=39.8,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94111,heap_psram=7573600,track=0,scn=hidden
+  PERF,t_ms=12336,dec_fps=16.6,pres_fps=15.6,drop=0,over=0,rd_avg=12.6,rd_max=13.6,dec_avg=38.6,dec_max=40.3,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94111,heap_psram=7573600,track=0,scn=hidden
+  PERF,t_ms=14386,dec_fps=16.6,pres_fps=15.1,drop=0,over=0,rd_avg=12.0,rd_max=13.7,dec_avg=38.4,dec_max=39.9,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94111,heap_psram=7573600,track=0,scn=hidden
+  PERF,t_ms=16436,dec_fps=16.6,pres_fps=15.6,drop=0,over=0,rd_avg=11.6,rd_max=13.4,dec_avg=38.1,dec_max=39.4,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94119,heap_psram=7573600,track=0,scn=hidden
+  PERF,t_ms=18456,dec_fps=16.8,pres_fps=15.3,drop=0,over=0,rd_avg=9.0,rd_max=11.3,dec_avg=36.7,dec_max=38.9,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94159,heap_psram=7573600,track=0,scn=hidden
+  PERF,t_ms=20466,dec_fps=19.9,pres_fps=15.4,drop=0,over=0,rd_avg=4.9,rd_max=7.7,dec_avg=33.5,dec_max=35.4,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94203,heap_psram=7573600,track=0,scn=hidden
+  PERF,t_ms=22476,dec_fps=19.9,pres_fps=15.4,drop=0,over=0,rd_avg=4.8,rd_max=5.9,dec_avg=33.3,dec_max=35.2,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94191,heap_psram=7573600,track=0,scn=hidden
+  PERF,t_ms=24506,dec_fps=19.7,pres_fps=13.8,drop=0,over=0,rd_avg=4.9,rd_max=6.5,dec_avg=34.1,dec_max=40.2,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94199,heap_psram=7573600,track=0,scn=osd
+  PERF,t_ms=26516,dec_fps=18.9,pres_fps=8.0,drop=0,over=0,rd_avg=5.5,rd_max=7.1,dec_avg=36.4,dec_max=40.9,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94195,heap_psram=7573600,track=0,scn=osd
+  PERF,t_ms=28556,dec_fps=18.6,pres_fps=8.3,drop=0,over=0,rd_avg=5.6,rd_max=7.0,dec_avg=36.5,dec_max=41.0,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94203,heap_psram=7573600,track=0,scn=osd
+  PERF,t_ms=30596,dec_fps=18.6,pres_fps=8.3,drop=0,over=0,rd_avg=5.5,rd_max=6.7,dec_avg=36.7,dec_max=41.1,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94199,heap_psram=7573600,track=0,scn=osd
+  PERF,t_ms=32646,dec_fps=19.0,pres_fps=8.3,drop=0,over=0,rd_avg=5.0,rd_max=6.9,dec_avg=36.0,dec_max=40.8,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94227,heap_psram=7573600,track=0,scn=osd
+  PERF,t_ms=34646,dec_fps=18.5,pres_fps=8.0,drop=0,over=0,rd_avg=5.6,rd_max=7.0,dec_avg=36.6,dec_max=41.1,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94223,heap_psram=7573600,track=0,scn=osd
+  PERF,t_ms=36696,dec_fps=18.5,pres_fps=8.3,drop=0,over=0,rd_avg=5.6,rd_max=7.3,dec_avg=36.9,dec_max=40.8,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94187,heap_psram=7573600,track=0,scn=osd
+  PERF,t_ms=38706,dec_fps=18.4,pres_fps=8.0,drop=0,over=0,rd_avg=5.5,rd_max=6.8,dec_avg=36.7,dec_max=41.9,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94179,heap_psram=7573600,track=0,scn=osd
+  PERF,t_ms=40716,dec_fps=18.4,pres_fps=8.5,drop=0,over=0,rd_avg=5.9,rd_max=8.5,dec_avg=36.9,dec_max=41.0,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94183,heap_psram=7573600,track=0,scn=osd
+  PERF,t_ms=42756,dec_fps=16.7,pres_fps=8.3,drop=0,over=0,rd_avg=7.5,rd_max=9.1,dec_avg=39.5,dec_max=42.6,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94203,heap_psram=7573600,track=0,scn=osd
+  PERF,t_ms=44796,dec_fps=17.6,pres_fps=10.3,drop=0,over=0,rd_avg=7.0,rd_max=9.1,dec_avg=37.4,dec_max=41.1,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94219,heap_psram=7573600,track=0,scn=seek
+  PERF,t_ms=46826,dec_fps=18.7,pres_fps=15.3,drop=0,over=0,rd_avg=6.7,rd_max=10.6,dec_avg=34.7,dec_max=38.0,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94163,heap_psram=7573600,track=0,scn=seek
+  PERF,t_ms=48856,dec_fps=17.7,pres_fps=15.3,drop=0,over=0,rd_avg=7.7,rd_max=11.0,dec_avg=35.5,dec_max=37.8,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94219,heap_psram=7573600,track=0,scn=seek
+  PERF,t_ms=50886,dec_fps=19.7,pres_fps=14.8,drop=0,over=0,rd_avg=5.2,rd_max=7.6,dec_avg=33.8,dec_max=35.8,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94171,heap_psram=7573600,track=0,scn=seek
+  PERF,t_ms=52916,dec_fps=18.7,pres_fps=15.3,drop=0,over=0,rd_avg=7.3,rd_max=9.0,dec_avg=35.4,dec_max=37.5,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94167,heap_psram=7573600,track=0,scn=seek
+  PERF,t_ms=54926,dec_fps=17.9,pres_fps=15.4,drop=0,over=0,rd_avg=8.1,rd_max=9.7,dec_avg=36.2,dec_max=38.5,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94183,heap_psram=7573600,track=0,scn=seek
+  PERF,t_ms=56926,dec_fps=18.0,pres_fps=15.0,drop=0,over=0,rd_avg=7.7,rd_max=10.9,dec_avg=35.5,dec_max=37.8,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94191,heap_psram=7573600,track=0,scn=seek
+  PERF,t_ms=58966,dec_fps=19.1,pres_fps=14.7,drop=0,over=0,rd_avg=6.3,rd_max=9.5,dec_avg=34.7,dec_max=37.3,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94155,heap_psram=7573600,track=0,scn=seek
+  PERF,t_ms=60986,dec_fps=17.8,pres_fps=15.3,drop=0,over=0,rd_avg=7.6,rd_max=9.9,dec_avg=35.5,dec_max=37.8,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94183,heap_psram=7573600,track=0,scn=seek
+  PERF,t_ms=62986,dec_fps=19.5,pres_fps=15.5,drop=0,over=0,rd_avg=5.7,rd_max=8.0,dec_avg=34.1,dec_max=36.1,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94175,heap_psram=7573600,track=0,scn=seek
+  PERF,t_ms=65026,dec_fps=14.2,pres_fps=10.8,drop=0,over=0,rd_avg=6.2,rd_max=8.7,dec_avg=34.0,dec_max=36.0,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94247,heap_psram=7585888,track=1,scn=hidden
+  PERF,t_ms=67046,dec_fps=19.3,pres_fps=14.9,drop=0,over=0,rd_avg=7.6,rd_max=9.7,dec_avg=35.1,dec_max=36.8,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94167,heap_psram=7585888,track=1,scn=hidden
+  PERF,t_ms=69086,dec_fps=19.1,pres_fps=15.2,drop=0,over=0,rd_avg=7.9,rd_max=9.2,dec_avg=35.4,dec_max=37.4,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94167,heap_psram=7585888,track=1,scn=hidden
+  PERF,t_ms=71116,dec_fps=19.2,pres_fps=15.3,drop=0,over=0,rd_avg=7.3,rd_max=8.8,dec_avg=35.1,dec_max=37.5,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94171,heap_psram=7585888,track=1,scn=hidden
+  PERF,t_ms=73146,dec_fps=19.7,pres_fps=14.8,drop=0,over=0,rd_avg=7.1,rd_max=8.9,dec_avg=34.8,dec_max=36.5,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94191,heap_psram=7585888,track=1,scn=hidden
+  PERF,t_ms=75156,dec_fps=19.9,pres_fps=15.4,drop=0,over=0,rd_avg=6.4,rd_max=8.5,dec_avg=34.3,dec_max=36.7,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94175,heap_psram=7585888,track=1,scn=hidden
+  PERF,t_ms=77196,dec_fps=19.6,pres_fps=14.7,drop=0,over=0,rd_avg=7.4,rd_max=9.0,dec_avg=34.8,dec_max=36.5,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94159,heap_psram=7585888,track=1,scn=hidden
+  PERF,t_ms=79216,dec_fps=19.3,pres_fps=15.3,drop=0,over=0,rd_avg=7.7,rd_max=9.1,dec_avg=34.8,dec_max=37.3,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94163,heap_psram=7585888,track=1,scn=hidden
+  PERF,t_ms=81256,dec_fps=16.2,pres_fps=15.7,drop=0,over=0,rd_avg=11.4,rd_max=16.3,dec_avg=37.7,dec_max=41.6,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94135,heap_psram=7585888,track=1,scn=hidden
+  PERF,t_ms=83266,dec_fps=14.4,pres_fps=14.4,drop=0,over=0,rd_avg=15.3,rd_max=16.7,dec_avg=40.2,dec_max=41.8,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94135,heap_psram=7585888,track=1,scn=hidden
+  PERF,t_ms=85306,dec_fps=14.7,pres_fps=13.7,drop=0,over=0,rd_avg=14.8,rd_max=16.9,dec_avg=40.7,dec_max=48.5,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94139,heap_psram=7585888,track=1,scn=osd
+  PERF,t_ms=87366,dec_fps=14.1,pres_fps=8.3,drop=0,over=0,rd_avg=14.8,rd_max=16.8,dec_avg=44.6,dec_max=49.2,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94171,heap_psram=7585888,track=1,scn=osd
+  PERF,t_ms=89376,dec_fps=15.9,pres_fps=8.5,drop=0,over=0,rd_avg=10.2,rd_max=14.5,dec_avg=40.7,dec_max=46.0,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94143,heap_psram=7585888,track=1,scn=osd
+  PERF,t_ms=91376,dec_fps=15.5,pres_fps=8.0,drop=0,over=0,rd_avg=12.0,rd_max=14.4,dec_avg=41.3,dec_max=46.1,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94143,heap_psram=7585888,track=1,scn=osd
+  PERF,t_ms=93406,dec_fps=15.8,pres_fps=8.4,drop=0,over=0,rd_avg=11.3,rd_max=13.0,dec_avg=41.0,dec_max=45.1,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94139,heap_psram=7585888,track=1,scn=osd
+  PERF,t_ms=95466,dec_fps=16.5,pres_fps=8.3,drop=0,over=0,rd_avg=9.0,rd_max=11.2,dec_avg=40.0,dec_max=44.0,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94167,heap_psram=7585888,track=1,scn=osd
+  PERF,t_ms=97516,dec_fps=16.6,pres_fps=8.3,drop=0,over=0,rd_avg=9.0,rd_max=10.3,dec_avg=39.9,dec_max=43.3,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94155,heap_psram=7585888,track=1,scn=osd
+  PERF,t_ms=99566,dec_fps=16.6,pres_fps=8.3,drop=0,over=0,rd_avg=8.7,rd_max=10.2,dec_avg=39.8,dec_max=43.3,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94147,heap_psram=7585888,track=1,scn=osd
+  PERF,t_ms=101616,dec_fps=16.6,pres_fps=8.3,drop=0,over=0,rd_avg=9.1,rd_max=10.9,dec_avg=39.9,dec_max=43.6,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94199,heap_psram=7585888,track=1,scn=osd
+  PERF,t_ms=103646,dec_fps=17.7,pres_fps=8.4,drop=0,over=0,rd_avg=7.0,rd_max=10.4,dec_avg=37.8,dec_max=43.5,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94151,heap_psram=7585888,track=1,scn=osd
+  PERF,t_ms=105656,dec_fps=16.4,pres_fps=10.4,drop=0,over=0,rd_avg=10.2,rd_max=12.2,dec_avg=38.8,dec_max=44.3,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94167,heap_psram=7585888,track=1,scn=seek
+  PERF,t_ms=107676,dec_fps=16.8,pres_fps=15.8,drop=0,over=0,rd_avg=9.4,rd_max=12.2,dec_avg=37.0,dec_max=38.6,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94167,heap_psram=7585888,track=1,scn=seek
+  PERF,t_ms=109696,dec_fps=16.3,pres_fps=15.3,drop=0,over=0,rd_avg=10.0,rd_max=12.2,dec_avg=37.3,dec_max=39.0,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94175,heap_psram=7585888,track=1,scn=seek
+  PERF,t_ms=111746,dec_fps=16.6,pres_fps=15.1,drop=0,over=0,rd_avg=10.3,rd_max=11.9,dec_avg=37.4,dec_max=39.0,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94159,heap_psram=7585888,track=1,scn=seek
+  PERF,t_ms=113746,dec_fps=16.0,pres_fps=15.5,drop=0,over=0,rd_avg=12.3,rd_max=18.0,dec_avg=38.7,dec_max=42.2,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94147,heap_psram=7585888,track=1,scn=seek
+  PERF,t_ms=115776,dec_fps=17.2,pres_fps=15.3,drop=0,over=0,rd_avg=10.6,rd_max=13.9,dec_avg=37.5,dec_max=39.8,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94167,heap_psram=7585888,track=1,scn=seek
+  PERF,t_ms=117796,dec_fps=16.3,pres_fps=15.3,drop=0,over=0,rd_avg=10.8,rd_max=17.1,dec_avg=37.6,dec_max=42.4,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94139,heap_psram=7585888,track=1,scn=seek
+  PERF,t_ms=119826,dec_fps=16.3,pres_fps=14.8,drop=0,over=0,rd_avg=12.0,rd_max=17.2,dec_avg=38.2,dec_max=41.1,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94159,heap_psram=7585888,track=1,scn=seek
+  PERF,t_ms=121836,dec_fps=16.9,pres_fps=15.9,drop=0,over=0,rd_avg=8.9,rd_max=9.9,dec_avg=36.4,dec_max=37.7,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94167,heap_psram=7585888,track=1,scn=seek
+  PERF,t_ms=123896,dec_fps=16.5,pres_fps=15.0,drop=0,over=0,rd_avg=10.8,rd_max=15.1,dec_avg=37.3,dec_max=40.7,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94167,heap_psram=7585888,track=1,scn=seek
+  PERF,t_ms=125936,dec_fps=12.7,pres_fps=10.8,drop=0,over=0,rd_avg=8.0,rd_max=10.4,dec_avg=35.4,dec_max=38.3,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94219,heap_psram=7586400,track=2,scn=hidden
+  PERF,t_ms=127946,dec_fps=19.9,pres_fps=15.4,drop=0,over=0,rd_avg=5.0,rd_max=6.2,dec_avg=33.6,dec_max=35.4,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94211,heap_psram=7586400,track=2,scn=hidden
+  PERF,t_ms=129956,dec_fps=19.9,pres_fps=14.9,drop=0,over=0,rd_avg=6.6,rd_max=7.7,dec_avg=34.5,dec_max=36.6,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94179,heap_psram=7586400,track=2,scn=hidden
+  PERF,t_ms=131976,dec_fps=19.8,pres_fps=14.9,drop=0,over=0,rd_avg=6.5,rd_max=7.8,dec_avg=34.6,dec_max=36.3,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94171,heap_psram=7586400,track=2,scn=hidden
+  PERF,t_ms=133986,dec_fps=19.9,pres_fps=15.4,drop=0,over=0,rd_avg=6.3,rd_max=7.9,dec_avg=34.4,dec_max=36.5,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94179,heap_psram=7586400,track=2,scn=hidden
+  PERF,t_ms=136006,dec_fps=19.3,pres_fps=14.9,drop=0,over=0,rd_avg=6.7,rd_max=9.1,dec_avg=35.0,dec_max=37.6,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94187,heap_psram=7586400,track=2,scn=hidden
+  PERF,t_ms=138056,dec_fps=19.0,pres_fps=15.1,drop=0,over=0,rd_avg=7.7,rd_max=9.7,dec_avg=35.4,dec_max=37.7,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94183,heap_psram=7586400,track=2,scn=hidden
+  PERF,t_ms=140066,dec_fps=19.4,pres_fps=15.4,drop=0,over=0,rd_avg=7.2,rd_max=9.1,dec_avg=35.0,dec_max=37.2,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94167,heap_psram=7586400,track=2,scn=hidden
+  PERF,t_ms=142086,dec_fps=18.8,pres_fps=14.9,drop=0,over=0,rd_avg=7.8,rd_max=10.1,dec_avg=35.6,dec_max=37.8,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94167,heap_psram=7586400,track=2,scn=hidden
+  PERF,t_ms=144106,dec_fps=19.3,pres_fps=15.3,drop=0,over=0,rd_avg=7.6,rd_max=9.0,dec_avg=35.0,dec_max=36.5,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94195,heap_psram=7586400,track=2,scn=hidden
+  PERF,t_ms=146146,dec_fps=19.1,pres_fps=12.7,drop=0,over=0,rd_avg=6.3,rd_max=8.7,dec_avg=35.5,dec_max=41.5,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94179,heap_psram=7586400,track=2,scn=osd
+  PERF,t_ms=148166,dec_fps=17.3,pres_fps=8.4,drop=0,over=0,rd_avg=7.1,rd_max=8.9,dec_avg=38.4,dec_max=42.3,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94191,heap_psram=7586400,track=2,scn=osd
+  PERF,t_ms=150166,dec_fps=17.0,pres_fps=8.5,drop=0,over=0,rd_avg=7.1,rd_max=8.7,dec_avg=38.5,dec_max=42.0,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94187,heap_psram=7586400,track=2,scn=osd
+  PERF,t_ms=152186,dec_fps=17.3,pres_fps=7.9,drop=0,over=0,rd_avg=6.9,rd_max=8.5,dec_avg=38.4,dec_max=42.6,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94175,heap_psram=7586400,track=2,scn=osd
+  PERF,t_ms=154216,dec_fps=16.3,pres_fps=8.4,drop=0,over=0,rd_avg=8.9,rd_max=15.3,dec_avg=39.9,dec_max=47.7,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94155,heap_psram=7586400,track=2,scn=osd
+  PERF,t_ms=156236,dec_fps=14.4,pres_fps=8.4,drop=0,over=0,rd_avg=14.9,rd_max=16.8,dec_avg=44.5,dec_max=49.1,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94155,heap_psram=7586400,track=2,scn=osd
+  PERF,t_ms=158246,dec_fps=15.9,pres_fps=8.0,drop=0,over=0,rd_avg=11.0,rd_max=17.3,dec_avg=41.0,dec_max=48.1,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94207,heap_psram=7586400,track=2,scn=osd
+  PERF,t_ms=160286,dec_fps=17.2,pres_fps=8.3,drop=0,over=0,rd_avg=7.6,rd_max=9.3,dec_avg=38.5,dec_max=42.6,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94179,heap_psram=7586400,track=2,scn=osd
+  PERF,t_ms=162286,dec_fps=17.5,pres_fps=8.5,drop=0,over=0,rd_avg=7.5,rd_max=9.0,dec_avg=38.4,dec_max=42.8,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94183,heap_psram=7586400,track=2,scn=osd
+  PERF,t_ms=164306,dec_fps=18.3,pres_fps=7.9,drop=0,over=0,rd_avg=6.4,rd_max=7.8,dec_avg=37.0,dec_max=41.0,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94175,heap_psram=7586400,track=2,scn=osd
+  PERF,t_ms=166346,dec_fps=18.6,pres_fps=10.3,drop=0,over=0,rd_avg=6.1,rd_max=10.7,dec_avg=36.3,dec_max=43.6,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94183,heap_psram=7586400,track=2,scn=seek
+  PERF,t_ms=168366,dec_fps=19.8,pres_fps=15.3,drop=0,over=0,rd_avg=5.0,rd_max=10.9,dec_avg=33.9,dec_max=38.4,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94231,heap_psram=7586400,track=2,scn=seek
+  PERF,t_ms=170396,dec_fps=19.7,pres_fps=15.3,drop=0,over=0,rd_avg=5.6,rd_max=8.6,dec_avg=34.2,dec_max=37.4,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94199,heap_psram=7586400,track=2,scn=seek
+  PERF,t_ms=172406,dec_fps=19.4,pres_fps=14.9,drop=0,over=0,rd_avg=6.9,rd_max=8.5,dec_avg=35.0,dec_max=36.9,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94175,heap_psram=7586400,track=2,scn=seek
+  PERF,t_ms=174426,dec_fps=17.8,pres_fps=15.3,drop=0,over=0,rd_avg=8.5,rd_max=16.2,dec_avg=36.0,dec_max=43.5,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94159,heap_psram=7586400,track=2,scn=seek
+  PERF,t_ms=176436,dec_fps=15.9,pres_fps=15.4,drop=0,over=0,rd_avg=12.2,rd_max=15.0,dec_avg=38.9,dec_max=41.4,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94147,heap_psram=7586400,track=2,scn=seek
+  PERF,t_ms=178436,dec_fps=16.5,pres_fps=15.5,drop=0,over=0,rd_avg=10.5,rd_max=12.1,dec_avg=37.6,dec_max=39.7,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94159,heap_psram=7586400,track=2,scn=seek
+  PERF,t_ms=180496,dec_fps=15.5,pres_fps=15.5,drop=0,over=0,rd_avg=13.5,rd_max=17.4,dec_avg=39.6,dec_max=42.9,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94151,heap_psram=7586400,track=2,scn=seek
+  PERF,t_ms=182526,dec_fps=15.8,pres_fps=14.3,drop=0,over=0,rd_avg=13.9,rd_max=20.7,dec_avg=40.2,dec_max=44.9,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94183,heap_psram=7586400,track=2,scn=seek
+  PERF,t_ms=184536,dec_fps=17.4,pres_fps=15.4,drop=0,over=0,rd_avg=8.5,rd_max=10.7,dec_avg=36.3,dec_max=38.3,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94163,heap_psram=7586400,track=2,scn=seek
+  PERF,t_ms=186586,dec_fps=12.2,pres_fps=10.7,drop=0,over=0,rd_avg=9.7,rd_max=11.9,dec_avg=36.7,dec_max=38.7,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94151,heap_psram=7585888,track=3,scn=hidden
+  PERF,t_ms=188646,dec_fps=17.5,pres_fps=15.5,drop=0,over=0,rd_avg=8.4,rd_max=10.2,dec_avg=35.9,dec_max=37.1,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94155,heap_psram=7585888,track=3,scn=hidden
+  PERF,t_ms=190686,dec_fps=16.7,pres_fps=15.7,drop=0,over=0,rd_avg=10.3,rd_max=13.0,dec_avg=37.2,dec_max=39.1,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94139,heap_psram=7585888,track=3,scn=hidden
+  PERF,t_ms=192706,dec_fps=16.3,pres_fps=15.3,drop=0,over=0,rd_avg=12.4,rd_max=14.3,dec_avg=38.6,dec_max=40.3,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94159,heap_psram=7585888,track=3,scn=hidden
+  PERF,t_ms=194756,dec_fps=14.6,pres_fps=14.1,drop=0,over=0,rd_avg=14.6,rd_max=16.5,dec_avg=40.9,dec_max=42.1,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94151,heap_psram=7585888,track=3,scn=hidden
+  PERF,t_ms=196806,dec_fps=16.6,pres_fps=15.1,drop=0,over=0,rd_avg=10.9,rd_max=16.6,dec_avg=37.7,dec_max=41.8,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94211,heap_psram=7585888,track=3,scn=hidden
+  PERF,t_ms=198826,dec_fps=19.8,pres_fps=14.9,drop=0,over=0,rd_avg=5.9,rd_max=7.7,dec_avg=34.1,dec_max=36.3,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94143,heap_psram=7585888,track=3,scn=hidden
+  PERF,t_ms=200846,dec_fps=17.8,pres_fps=15.3,drop=0,over=0,rd_avg=8.5,rd_max=11.1,dec_avg=35.9,dec_max=37.6,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94127,heap_psram=7585888,track=3,scn=hidden
+  PERF,t_ms=202896,dec_fps=16.6,pres_fps=15.6,drop=0,over=0,rd_avg=11.6,rd_max=13.4,dec_avg=38.2,dec_max=40.1,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94143,heap_psram=7585888,track=3,scn=hidden
+  PERF,t_ms=204946,dec_fps=16.6,pres_fps=15.1,drop=0,over=0,rd_avg=11.6,rd_max=13.5,dec_avg=38.1,dec_max=39.8,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94131,heap_psram=7585888,track=3,scn=hidden
+  PERF,t_ms=206996,dec_fps=16.6,pres_fps=13.2,drop=0,over=0,rd_avg=10.9,rd_max=13.3,dec_avg=38.5,dec_max=45.5,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94159,heap_psram=7585888,track=3,scn=osd
+  PERF,t_ms=209046,dec_fps=16.6,pres_fps=8.3,drop=0,over=0,rd_avg=9.6,rd_max=13.3,dec_avg=39.7,dec_max=46.1,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94187,heap_psram=7585888,track=3,scn=osd
+  PERF,t_ms=211096,dec_fps=16.1,pres_fps=7.8,drop=0,over=0,rd_avg=10.1,rd_max=14.3,dec_avg=40.5,dec_max=46.4,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94123,heap_psram=7585888,track=3,scn=osd
+  PERF,t_ms=213136,dec_fps=15.7,pres_fps=8.3,drop=0,over=0,rd_avg=10.9,rd_max=14.1,dec_avg=40.8,dec_max=45.8,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94135,heap_psram=7585888,track=3,scn=osd
+  PERF,t_ms=215166,dec_fps=15.8,pres_fps=8.4,drop=0,over=0,rd_avg=11.0,rd_max=13.2,dec_avg=41.4,dec_max=46.0,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94135,heap_psram=7585888,track=3,scn=osd
+  PERF,t_ms=217186,dec_fps=16.3,pres_fps=8.4,drop=0,over=0,rd_avg=9.9,rd_max=12.9,dec_avg=39.9,dec_max=44.2,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94167,heap_psram=7585888,track=3,scn=osd
+  PERF,t_ms=219206,dec_fps=16.8,pres_fps=8.4,drop=0,over=0,rd_avg=8.9,rd_max=10.5,dec_avg=39.2,dec_max=43.5,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94167,heap_psram=7585888,track=3,scn=osd
+  PERF,t_ms=221266,dec_fps=17.5,pres_fps=8.3,drop=0,over=0,rd_avg=7.0,rd_max=10.3,dec_avg=38.2,dec_max=44.0,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94191,heap_psram=7585888,track=3,scn=osd
+  PERF,t_ms=223286,dec_fps=17.3,pres_fps=7.9,drop=0,over=0,rd_avg=8.2,rd_max=10.6,dec_avg=38.7,dec_max=43.0,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94159,heap_psram=7585888,track=3,scn=osd
+  PERF,t_ms=225326,dec_fps=16.2,pres_fps=8.3,drop=0,over=0,rd_avg=9.7,rd_max=12.5,dec_avg=40.4,dec_max=44.6,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94167,heap_psram=7585888,track=3,scn=osd
+  PERF,t_ms=227356,dec_fps=16.7,pres_fps=12.3,drop=0,over=0,rd_avg=9.3,rd_max=12.9,dec_avg=38.0,dec_max=40.7,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94151,heap_psram=7585888,track=3,scn=seek
+  PERF,t_ms=229376,dec_fps=16.3,pres_fps=14.9,drop=0,over=0,rd_avg=11.6,rd_max=14.7,dec_avg=38.2,dec_max=40.4,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94151,heap_psram=7585888,track=3,scn=seek
+  PERF,t_ms=231436,dec_fps=16.5,pres_fps=15.5,drop=0,over=0,rd_avg=11.4,rd_max=15.2,dec_avg=38.1,dec_max=40.6,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94127,heap_psram=7585888,track=3,scn=seek
+  PERF,t_ms=233466,dec_fps=16.7,pres_fps=15.8,drop=0,over=0,rd_avg=9.4,rd_max=10.9,dec_avg=36.7,dec_max=38.3,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94167,heap_psram=7585888,track=3,scn=seek
+  PERF,t_ms=235506,dec_fps=16.7,pres_fps=15.2,drop=0,over=0,rd_avg=9.7,rd_max=12.4,dec_avg=36.8,dec_max=39.0,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94159,heap_psram=7585888,track=3,scn=seek
+  PERF,t_ms=237546,dec_fps=18.1,pres_fps=15.2,drop=0,over=0,rd_avg=8.6,rd_max=11.9,dec_avg=36.1,dec_max=39.1,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94179,heap_psram=7585888,track=3,scn=seek
+  PERF,t_ms=239556,dec_fps=17.9,pres_fps=15.4,drop=0,over=0,rd_avg=9.0,rd_max=12.4,dec_avg=36.3,dec_max=39.0,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94159,heap_psram=7585888,track=3,scn=seek
+  PERF,t_ms=241576,dec_fps=16.3,pres_fps=15.3,drop=0,over=0,rd_avg=10.5,rd_max=14.5,dec_avg=37.3,dec_max=40.9,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94159,heap_psram=7585888,track=3,scn=seek
+  PERF,t_ms=243596,dec_fps=18.3,pres_fps=15.3,drop=0,over=0,rd_avg=7.1,rd_max=10.4,dec_avg=35.1,dec_max=38.2,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94163,heap_psram=7585888,track=3,scn=seek
+  PERF,t_ms=245606,dec_fps=16.9,pres_fps=15.4,drop=0,over=0,rd_avg=10.0,rd_max=12.5,dec_avg=37.0,dec_max=39.3,blit_avg=2.7,blit_max=2.8,late_max=0.0,heap_int=94131,heap_psram=7585888,track=3,scn=seek
+  AUTOTEST_DONE,tracks=4
+
+[AUTOTEST_DONE] Detectado final de autotest con 4 pistas.
+
+==============================================================================================
+RESUMEN DE RENDIMIENTO (F0) - (Primeros 2s descartados por escenario)
+==============================================================================================
+Track   Escenario     Muestras  Dec FPS     Pres FPS    rd_avg(ms)    dec_avg(ms)   blit_avg(ms)  
+----------------------------------------------------------------------------------------------
+0       hidden        8         17.4        15.4        9.9           36.9          2.7           
+0       osd           9         18.4        8.2         5.7           36.9          2.7           
+0       seek          9         18.6        15.2        6.9           35.0          2.7           
+1       hidden        9         18.5        15.1        8.7           35.8          2.7           
+1       osd           9         16.1        8.3         10.1          40.6          2.7           
+1       seek          9         16.5        15.3        10.6          37.5          2.7           
+2       hidden        9         19.5        15.1        6.8           34.8          2.7           
+2       osd           9         16.8        8.3         8.6           39.4          2.7           
+2       seek          9         17.5        15.2        9.4           36.9          2.7           
+3       hidden        9         16.9        15.2        10.5          37.4          2.7           
+3       osd           9         16.5        8.2         9.5           39.9          2.7           
+3       seek          9         17.1        15.3        9.7           36.8          2.7           
+==============================================================================================
+
+==============================================================================================
+RESUMEN DE MEDIA (Pistas escaneadas en MicroSD)
+==============================================================================================
+File                      Dim       FPS Real    Frames    Duracion  Chunk Avg(KB)  Chunk Max(KB)  Subsampling 
+----------------------------------------------------------------------------------------------
+/sdcard/ariana.avi        480x320   30.000      9003      05:00     7.5            22.0           unknown     
+/sdcard/harry.avi         480x320   30.000      6029      03:20     12.5           28.2           unknown     
+/sdcard/lesserafim.avi    480x320   30.000      5988      03:19     11.5           34.3           unknown     
+/sdcard/meovv.avi         480x320   30.000      6136      03:24     9.4            19.0           unknown     
+==============================================================================================
+
+[RESULTADO F0]: EXITO - Todos los criterios cumplidos satisfactoriamente.

@@ -1,0 +1,151 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&amp;display=swap">
+  <style>
+    body { margin: 0; background: #0B0C0F; font-family: Montserrat, "Segoe UI", sans-serif; color: #EDEDEA; }
+    a { color: #F2B33D; } a:hover { color: #FFCB6B; }
+    svg { display: block; }
+    .cap { font-size: 11px; color: #8E929B; }
+    .h { font-size: 13px; font-weight: 600; }
+    .cell { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
+    .row { display: flex; gap: 28px; align-items: flex-start; flex-wrap: wrap; }
+    .sec { display: flex; flex-direction: column; gap: 12px; }
+  </style>
+</helmet>
+<div style="width: 900px; min-height: 420px; padding: 24px; box-sizing: border-box; display: flex; flex-direction: column; gap: 22px;">
+  <div>
+    <div style="font-size: 20px; font-weight: 700;">Estados de los componentes</div>
+    <div class="cap" style="margin-top: 4px;">Cada estado es un estilo de EEZ (parte MAIN / KNOB / INDICATOR y estado DEFAULT / PRESSED / CHECKED). Zona táctil mínima 44 × 44.</div>
+  </div>
+
+  <div class="sec">
+    <div class="h">Botón de icono · st_icon_btn</div>
+    <div class="row">
+      <div class="cell">
+        <div style="width: 44px; height: 44px; border-radius: 22px; display: flex; align-items: center; justify-content: center; color: #EDEDEA;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><rect x="16.5" y="5" width="2.5" height="14" rx="1"></rect><path d="M5 5v14l10-7z"></path></svg>
+        </div>
+        <div class="cap">Normal · fondo transparente</div>
+      </div>
+      <div class="cell">
+        <div style="width: 44px; height: 44px; border-radius: 22px; background: #1F2228; display: flex; align-items: center; justify-content: center; color: #EDEDEA;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><rect x="16.5" y="5" width="2.5" height="14" rx="1"></rect><path d="M5 5v14l10-7z"></path></svg>
+        </div>
+        <div class="cap">Pulsado · bg c_surface_hi</div>
+      </div>
+      <div class="cell">
+        <div style="width: 44px; height: 44px; border-radius: 22px; display: flex; align-items: center; justify-content: center; color: #F2B33D;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 2l3 3-3 3"></path><path d="M4 11V9a4 4 0 0 1 4-4h12"></path><path d="M7 22l-3-3 3-3"></path><path d="M20 13v2a4 4 0 0 1-4 4H4"></path></svg>
+        </div>
+        <div class="cap">Activo (CHECKED) · icono c_accent</div>
+      </div>
+      <div class="cell">
+        <div style="width: 44px; height: 44px; border-radius: 22px; display: flex; align-items: center; justify-content: center; color: #4A4E57;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><rect x="16.5" y="5" width="2.5" height="14" rx="1"></rect><path d="M5 5v14l10-7z"></path></svg>
+        </div>
+        <div class="cap">Desactivado · opacidad 40 %</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="h">Botón principal · st_play_btn &nbsp;·&nbsp; Chip · st_chip</div>
+    <div class="row">
+      <div class="cell">
+        <div style="width: 44px; height: 44px; border-radius: 22px; background: #F2B33D; display: flex; align-items: center; justify-content: center; color: #1A1204;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1"></rect><rect x="14" y="5" width="4" height="14" rx="1"></rect></svg>
+        </div>
+        <div class="cap">Pausa (reproduciendo)</div>
+      </div>
+      <div class="cell">
+        <div style="width: 44px; height: 44px; border-radius: 22px; background: #F2B33D; display: flex; align-items: center; justify-content: center; color: #1A1204;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg>
+        </div>
+        <div class="cap">Reproducir (en pausa)</div>
+      </div>
+      <div class="cell">
+        <div style="width: 44px; height: 44px; border-radius: 22px; background: #F2B33D; opacity: 0.8; display: flex; align-items: center; justify-content: center; color: #1A1204;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg>
+        </div>
+        <div class="cap">Pulsado · opacidad 80 %</div>
+      </div>
+      <div class="cell">
+        <div style="height: 20px; padding: 0 10px; border-radius: 10px; background: #15171C; color: #F2B33D; font-size: 11px; font-weight: 600; display: flex; align-items: center;">29.9 fps</div>
+        <div class="cap">Chip de estadísticas</div>
+      </div>
+      <div class="cell">
+        <div style="height: 18px; padding: 0 8px; border-radius: 9px; background: #15171C; color: #F2B33D; font-size: 10px; font-weight: 600; display: flex; align-items: center;">Reproduciendo</div>
+        <div class="cap">Chip de tarjeta</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="h">Barra de progreso · st_seek</div>
+    <div class="row">
+      <div class="cell">
+        <div style="position: relative; width: 240px; height: 12px; display: flex; align-items: center;">
+          <div style="width: 240px; height: 4px; border-radius: 2px; background: #2A2D34;"><div style="width: 42%; height: 4px; border-radius: 2px; background: #F2B33D;"></div></div>
+          <div style="position: absolute; left: 95px; width: 12px; height: 12px; border-radius: 6px; background: #F2B33D;"></div>
+        </div>
+        <div class="cap">Normal · knob 12 px</div>
+      </div>
+      <div class="cell">
+        <div style="position: relative; width: 240px; height: 18px; display: flex; align-items: center;">
+          <div style="width: 240px; height: 4px; border-radius: 2px; background: #2A2D34;"><div style="width: 58%; height: 4px; border-radius: 2px; background: #F2B33D;"></div></div>
+          <div style="position: absolute; left: 132px; width: 18px; height: 18px; border-radius: 9px; background: #F2B33D;"></div>
+        </div>
+        <div class="cap">Arrastrando · knob 18 px, no se auto-oculta la OSD</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="h">Interruptor · Lista · Tarjeta de video</div>
+    <div class="row">
+      <div class="cell">
+        <div style="display: flex; gap: 12px;">
+          <div style="position: relative; width: 44px; height: 24px; border-radius: 12px; background: #F2B33D;"><div style="position: absolute; left: 22px; top: 2px; width: 20px; height: 20px; border-radius: 10px; background: #1A1204;"></div></div>
+          <div style="position: relative; width: 44px; height: 24px; border-radius: 12px; background: #2A2D34;"><div style="position: absolute; left: 2px; top: 2px; width: 20px; height: 20px; border-radius: 10px; background: #8E929B;"></div></div>
+        </div>
+        <div class="cap">Activado / desactivado</div>
+      </div>
+      <div class="cell">
+        <div style="width: 260px;">
+          <div style="height: 44px; display: flex; align-items: center; padding: 0 12px; border-bottom: 1px solid #2A2D34; font-size: 13px;">Elemento normal</div>
+          <div style="height: 44px; display: flex; align-items: center; padding: 0 12px; background: #1F2228; border-bottom: 1px solid #2A2D34; font-size: 13px;">Elemento pulsado</div>
+          <div style="height: 44px; display: flex; align-items: center; padding: 0 12px; background: #15171C; color: #F2B33D; font-size: 13px; font-weight: 600;">Elemento actual</div>
+        </div>
+        <div class="cap">st_list_item</div>
+      </div>
+      <div class="cell">
+        <div style="display: flex; gap: 12px;">
+          <div style="width: 144px;">
+            <div style="width: 144px; height: 80px; border-radius: 6px; background: linear-gradient(160deg, #3A4A6B 0%, #1B2233 60%, #0E1118 100%);"></div>
+            <div style="margin-top: 7px; font-size: 13px; font-weight: 600;">Video normal</div>
+            <div style="margin-top: 2px; font-size: 11px; color: #8E929B;">Artista · 3:02</div>
+          </div>
+          <div style="width: 144px;">
+            <div style="position: relative; width: 144px; height: 80px; border-radius: 6px; overflow: hidden; background: radial-gradient(120% 90% at 70% 40%, #C9683A 0%, #5B2A3F 45%, #16213A 100%);">
+              <div style="position: absolute; left: 6px; top: 6px; height: 18px; padding: 0 8px; border-radius: 9px; background: #15171C; color: #F2B33D; font-size: 10px; font-weight: 600; display: flex; align-items: center;">Reproduciendo</div>
+              <div style="position: absolute; left: 0; bottom: 0; width: 144px; height: 3px; background: #2A2D34;"><div style="width: 42%; height: 3px; background: #F2B33D;"></div></div>
+            </div>
+            <div style="margin-top: 7px; font-size: 13px; font-weight: 600; color: #F2B33D;">Video actual</div>
+            <div style="margin-top: 2px; font-size: 11px; color: #8E929B;">con posición guardada</div>
+          </div>
+        </div>
+        <div class="cap">uw_video_card</div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

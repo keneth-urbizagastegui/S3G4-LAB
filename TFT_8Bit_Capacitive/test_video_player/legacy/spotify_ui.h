@@ -1,0 +1,50 @@
+#ifndef SPOTIFY_UI_H
+#define SPOTIFY_UI_H
+
+#include <stdint.h>
+#include <stdbool.h>
+#include "lvgl.h"
+#include "player.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+typedef enum {
+    PLAYBACK_STATE_PLAYING = 0,
+    PLAYBACK_STATE_PAUSED,
+    PLAYBACK_STATE_STOPPED,
+} playback_state_t;
+
+typedef enum {
+    VIEW_MODE_STUDIO = 0,
+    VIEW_MODE_FULLSCREEN,
+} view_mode_t;
+
+typedef void (*track_change_cb_t)(int new_index);
+typedef void (*playback_ctrl_cb_t)(playback_state_t state);
+typedef void (*seek_cb_t)(int percent);
+
+void spotify_ui_init(track_change_cb_t track_cb, playback_ctrl_cb_t play_cb, seek_cb_t seek_cb);
+void spotify_ui_update_from_status(const player_status_t *status);
+bool spotify_ui_display_frame(uint16_t *buf, int width, int height);
+
+void spotify_ui_update_progress(uint32_t elapsed_sec, uint32_t duration_sec, int percent);
+void spotify_ui_update_fps(float fps);
+void spotify_ui_tick(void);
+
+void spotify_ui_set_track(int index);
+void spotify_ui_set_play_state(playback_state_t state);
+void spotify_ui_set_view_mode(view_mode_t mode);
+void spotify_ui_set_hud_forced(int mode);
+view_mode_t spotify_ui_get_view_mode(void);
+playback_state_t spotify_ui_get_play_state(void);
+
+// Consulta de estado interno para publicacion atomica por gui_task (X1, X4)
+void spotify_ui_get_published_info(char *title_buf, size_t max_len, int *track_idx, view_mode_t *vmode, int *hud_vis);
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif // SPOTIFY_UI_H

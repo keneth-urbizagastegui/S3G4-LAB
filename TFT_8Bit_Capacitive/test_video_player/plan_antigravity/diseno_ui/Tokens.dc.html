@@ -1,0 +1,73 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&amp;display=swap">
+  <style>
+    body { margin: 0; background: #0B0C0F; font-family: Montserrat, "Segoe UI", sans-serif; color: #EDEDEA; }
+    a { color: #F2B33D; } a:hover { color: #FFCB6B; }
+    .cap { font-size: 11px; color: #8E929B; }
+    .h { font-size: 13px; font-weight: 600; }
+  </style>
+</helmet>
+<div style="width: 620px; min-height: 420px; padding: 24px; box-sizing: border-box; display: flex; flex-direction: column; gap: 20px;">
+  <div>
+    <div style="font-size: 20px; font-weight: 700;">Tokens del reproductor</div>
+    <div class="cap" style="margin-top: 4px;">Colores como estilos de EEZ; tipografía Montserrat integrada en LVGL. Detalle en 03 §2.</div>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px;">
+    <div style="display: flex; align-items: center; gap: 10px;"><div style="width: 40px; height: 28px; border-radius: 4px; background: #0B0C0F; border: 1px solid #2A2D34;"></div><div><div class="h">c_bg</div><div class="cap">#0B0C0F · fondo y barras</div></div></div>
+    <div style="display: flex; align-items: center; gap: 10px;"><div style="width: 40px; height: 28px; border-radius: 4px; background: #15171C;"></div><div><div class="h">c_surface</div><div class="cap">#15171C · tarjetas y paneles</div></div></div>
+    <div style="display: flex; align-items: center; gap: 10px;"><div style="width: 40px; height: 28px; border-radius: 4px; background: #1F2228;"></div><div><div class="h">c_surface_hi</div><div class="cap">#1F2228 · pulsado</div></div></div>
+    <div style="display: flex; align-items: center; gap: 10px;"><div style="width: 40px; height: 28px; border-radius: 4px; background: #2A2D34;"></div><div><div class="h">c_line</div><div class="cap">#2A2D34 · separadores 1 px</div></div></div>
+    <div style="display: flex; align-items: center; gap: 10px;"><div style="width: 40px; height: 28px; border-radius: 4px; background: #EDEDEA;"></div><div><div class="h">c_text</div><div class="cap">#EDEDEA · texto e iconos</div></div></div>
+    <div style="display: flex; align-items: center; gap: 10px;"><div style="width: 40px; height: 28px; border-radius: 4px; background: #8E929B;"></div><div><div class="h">c_muted</div><div class="cap">#8E929B · secundario</div></div></div>
+    <div style="display: flex; align-items: center; gap: 10px;"><div style="width: 40px; height: 28px; border-radius: 4px; background: #F2B33D;"></div><div><div class="h">c_accent</div><div class="cap">#F2B33D · acento único</div></div></div>
+    <div style="display: flex; align-items: center; gap: 10px;"><div style="width: 40px; height: 28px; border-radius: 4px; background: #E5484D;"></div><div><div class="h">c_danger</div><div class="cap">#E5484D · errores</div></div></div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 8px; border-top: 1px solid #2A2D34; padding-top: 16px;">
+    <div class="h">Tipografía</div>
+    <div style="font-size: 20px; font-weight: 700;">Montserrat 20 · títulos de pantalla</div>
+    <div style="font-size: 14px; font-weight: 600;">Montserrat 14 · títulos de elemento y etiquetas</div>
+    <div style="font-size: 12px;">Montserrat 12 · metadatos, tiempos y estadísticas</div>
+    <div class="cap">Las tres vienen con LVGL: no se importan fuentes, no ocupan Flash extra.</div>
+  </div>
+
+  <div style="display: flex; gap: 28px; border-top: 1px solid #2A2D34; padding-top: 16px; flex-wrap: wrap;">
+    <div style="display: flex; flex-direction: column; gap: 8px;">
+      <div class="h">Radios</div>
+      <div style="display: flex; gap: 10px; align-items: flex-end;">
+        <div style="width: 48px; height: 34px; background: #15171C; border-radius: 6px;"></div>
+        <div style="width: 48px; height: 34px; background: #15171C; border-radius: 8px;"></div>
+        <div style="width: 34px; height: 34px; background: #15171C; border-radius: 17px;"></div>
+      </div>
+      <div class="cap">6 tarjetas · 8 paneles · circular en botones</div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 8px;">
+      <div class="h">Zona táctil mínima</div>
+      <div style="position: relative; width: 44px; height: 44px; border: 1px dashed #F2B33D; border-radius: 4px; display: flex; align-items: center; justify-content: center;">
+        <div style="width: 22px; height: 22px; border-radius: 11px; background: #2A2D34;"></div>
+      </div>
+      <div class="cap">44 × 44 px aunque el icono sea de 20–24 px</div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 8px;">
+      <div class="h">Regla del video</div>
+      <div style="width: 180px; height: 60px; border-radius: 4px; background: #101318; position: relative; overflow: hidden;">
+        <div style="position: absolute; left: 0; top: 0; width: 180px; height: 10px; background: #0B0C0F;"></div>
+        <div style="position: absolute; left: 0; bottom: 0; width: 180px; height: 16px; background: #0B0C0F;"></div>
+        <div style="position: absolute; left: 0; top: 10px; width: 180px; height: 34px; background: linear-gradient(120deg, #5B2A3F, #16213A);"></div>
+      </div>
+      <div class="cap">Barras OPACAS: el video se pinta directo entre ellas</div>
+    </div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

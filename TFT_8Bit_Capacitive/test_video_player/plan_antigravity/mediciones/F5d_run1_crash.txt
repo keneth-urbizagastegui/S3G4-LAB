@@ -1,0 +1,43 @@
+CRASH REASON: Crash / excepcion detectada: Backtrace: 0x4038070d:0x3fcdea50 0x403806d9:0x3fcdea70 0x4037f599:0x3fcdea90 0x4200bb32:0x3fcdebb0 0x4200bcd1:0x3fcdebf0 0x42027fd7:0x3fcdec30 0x42029261:0x3fcdec60 0x420331ba:0x3fcdecf0 0x42033319:0x3fcded20 0x4200be95:0x3fcded40
+
+ULTIMAS 40 LINEAS PREVIAS:
+E (2072) vfs_fat_sdmmc: sdmmc_card_init failed (0x107).
+E (2073) vfs_fat_sdmmc: esp_vfs_fat_sdspi_sdcard_init failed (0x107).
+E (2073) SDCARD_SPI: Fallo al montar sistema de archivos FATFS: ESP_ERR_TIMEOUT
+I (2080) SDCARD_SPI: Ciclo 7/10: FALLO
+I (2133) SDCARD_SPI: Iniciando montaje MicroSD SPI (CS:21, MOSI:11, CLK:13, MISO:15) @ 20000 kHz...
+E (2155) vfs_fat_sdmmc: sdmmc_card_init failed (0x107).
+E (2156) vfs_fat_sdmmc: esp_vfs_fat_sdspi_sdcard_init failed (0x107).
+E (2156) SDCARD_SPI: Fallo al montar sistema de archivos FATFS: ESP_ERR_TIMEOUT
+I (2163) SDCARD_SPI: Ciclo 8/10: FALLO
+I (2216) SDCARD_SPI: Iniciando montaje MicroSD SPI (CS:21, MOSI:11, CLK:13, MISO:15) @ 20000 kHz...
+E (2238) vfs_fat_sdmmc: sdmmc_card_init failed (0x107).
+E (2239) vfs_fat_sdmmc: esp_vfs_fat_sdspi_sdcard_init failed (0x107).
+E (2239) SDCARD_SPI: Fallo al montar sistema de archivos FATFS: ESP_ERR_TIMEOUT
+I (2246) SDCARD_SPI: Ciclo 9/10: FALLO
+I (2299) SDCARD_SPI: Iniciando montaje MicroSD SPI (CS:21, MOSI:11, CLK:13, MISO:15) @ 20000 kHz...
+E (2321) vfs_fat_sdmmc: sdmmc_card_init failed (0x107).
+E (2322) vfs_fat_sdmmc: esp_vfs_fat_sdspi_sdcard_init failed (0x107).
+E (2322) SDCARD_SPI: Fallo al montar sistema de archivos FATFS: ESP_ERR_TIMEOUT
+I (2329) SDCARD_SPI: Ciclo 10/10: FALLO
+I (2332) SDCARD_SPI: Prueba montaje: 0/10 ciclos exitosos a 20000 kHz
+SD_FREQ_TEST,freq_khz=20000,passed=0/10
+I (2342) SDCARD_SPI: Iniciando montaje MicroSD SPI (CS:21, MOSI:11, CLK:13, MISO:15) @ 20000 kHz...
+E (2372) vfs_fat_sdmmc: sdmmc_card_init failed (0x107).
+E (2373) vfs_fat_sdmmc: esp_vfs_fat_sdspi_sdcard_init failed (0x107).
+E (2373) SDCARD_SPI: Fallo al montar sistema de archivos FATFS: ESP_ERR_TIMEOUT
+E (2380) MAIN_APP: Fallo al inicializar MicroSD tras test.
+I (2385) AVI_PLAYER_SIMD: Inicializando motor de video SIMD (esp_new_jpeg) con prefetch task...
+I (2393) AVI_PLAYER_SIMD: Tarea avi_reader_task iniciada en Core 0.
+I (2399) AVI_PLAYER_SIMD: Decodificadores SIMD Fullscreen y Studio inicializados con éxito.
+I (2407) PLAYER: Iniciando subsistema player...
+I (2416) PLAYER: player_task iniciada con exito en CPU 1.
+I (2416) PLAYER: Tarea player_task ejecutandose en CPU 1.
+I (2417) MAIN_APP: Tarea touch_task iniciada en Core 0 (prioridad 6, intervalo 10 ms).
+I (2417) MAIN_APP: Iniciando gui_task en Core 0...
+I (2477) MAIN_APP: Bucle de eventos GUI LVGL iniciado en Core 0 (refresh: 250 ms).
+
+assert failed: draw_bitmap_oriented main.c:90 (s_rot_flush_buf != NULL)
+
+
+Backtrace: 0x4038070d:0x3fcdea50 0x403806d9:0x3fcdea70 0x4037f599:0x3fcdea90 0x4200bb32:0x3fcdebb0 0x4200bcd1:0x3fcdebf0 0x42027fd7:0x3fcdec30 0x42029261:0x3fcdec60 0x420331ba:0x3fcdecf0 0x42033319:0x3fcded20 0x4200be95:0x3fcded40

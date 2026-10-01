@@ -1,0 +1,79 @@
+menu "App perf"
+
+    config APP_PERF_AUTOTEST
+        bool "Habilitar modo autotest de rendimiento"
+        default n
+        help
+            Habilita la ejecucion automatica de pruebas de rendimiento sobre los archivos AVI en la MicroSD.
+
+    config APP_PERF_SECONDS_PER_TRACK
+        int "Segundos por pista en autotest"
+        default 60
+        help
+            Tiempo total en segundos para probar cada video AVI, dividido en 3 escenarios iguales (hidden, osd, seek).
+
+    config APP_UI_REFRESH_MS
+        int "Periodo de refresco de UI en milisegundos"
+        default 250
+        help
+            Intervalo en milisegundos del timer periodico de LVGL para refrescar estado de UI (Obs O1).
+
+    config APP_SD_FREQ_KHZ
+        int "Frecuencia SPI de la MicroSD en kHz"
+        default 20000
+        range 400 40000
+        help
+            Frecuencia máxima del bus SPI para la tarjeta MicroSD (20000, 26000 o 40000 kHz).
+
+    config APP_TE_SYNC
+        bool "Sincronizacion de envio con pin TE del display"
+        default y
+        help
+            Sincroniza el envio de cada fotograma de video al display con el flanco de subida del pin TE (GPIO 7).
+
+    config APP_LCD_B1_P1
+        hex "Parametro 1 de FRMCTR1 (0xB1) ILI9488"
+        default 0x80
+        help
+            Primer parametro de FRMCTR1 (0xB1): bits [7:4] FRS[3:0], bits [1:0] DIVA[1:0].
+            Original 60 Hz: 0xA0. Ajuste 45-48 Hz: 0x80.
+
+    config APP_LCD_B1_P2
+        hex "Parametro 2 de FRMCTR1 (0xB1) ILI9488"
+        default 0x12
+        help
+            Segundo parametro de FRMCTR1 (0xB1): bits [4:0] RTNA[4:0] (relojes por linea).
+            Original 60 Hz: 0x11 (17 relojes). Candidato oficial F5a 44.6 Hz: 0x12 (18 relojes).
+
+    config APP_TEAR_DIAG
+        bool "Habilitar modo de diagnostico de tearing (T2)"
+        default n
+        help
+            Habilita el modo de diagnostico para caracterizar el corte diagonal
+            (tiempo de transferencia vs orientacion del panel con MADCTL).
+
+    config APP_TEAR_DIAG_MODE
+        int "Modo de diagnostico inicial (0=OFF normal, 1=A medio fotograma, 2=B franja unica, 3=C patron color plano)"
+        depends on APP_TEAR_DIAG
+        default 0
+        range 0 3
+        help
+            1: Modo A 'medio fotograma' (escribe solo las 160 filas superiores, ~10.1 ms).
+            2: Modo B 'franja unica' (escribe una sola franja de 16 lineas, ~1 ms).
+    config APP_LCD_MADCTL_NATIVE
+        hex "Valor MADCTL para orientacion nativa (videos 320x480)"
+        default 0x48
+        help
+            Valor de MADCTL para panel en modo vertical nativo (sin bit MV).
+            0x48 = MX=1, BGR=1.
+
+    config APP_THUMB_CACHE_MAX
+        int "Tope de miniaturas en cache de PSRAM"
+        default 24
+        help
+            Numero maximo de miniaturas decodificadas y cacheadas en PSRAM (F5b §3).
+
+endmenu
+
+
+

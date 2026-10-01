@@ -1,0 +1,9 @@
+file,size,w,h,us_per_frame,fps_milli,frames,idx1,chunk_avg,chunk_max,subsampling,compat,reason
+/sdcard/ariana.avi,71532292,320,480,33333,30000,9003,1,7920,26667,420,1,ok
+/sdcard/harry.avi,74712162,320,480,33333,30000,6029,1,12366,28289,420,1,ok
+/sdcard/lesserafim.avi,70694708,320,480,33333,30000,5988,1,11780,35142,420,1,ok
+/sdcard/meovv.avi,62183914,320,480,33333,30000,6136,1,10108,20756,420,1,ok
+/sdcard/quinto.avi,62183914,320,480,33333,30000,6136,1,10108,20756,420,1,ok
+/sdcard/trampa_codec.avi,767844,480,320,33333,30000,60,1,12769,13398,420,1,ok
+/sdcard/trampa_roto.avi,511896,480,320,33333,30000,60,0,0,0,420,0,Archivo truncado
+/sdcard/trampa_tamano.avi,379176,240,160,33333,30000,60,1,6291,6496,420,0,Resolucion 240x160

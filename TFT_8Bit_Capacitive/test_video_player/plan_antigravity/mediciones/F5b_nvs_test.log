@@ -1,0 +1,891 @@
+#1
+ESP-ROM:esp32s3-20210327
+Build:Mar 27 2021
+rst:0x1 (POWERON),boot:0x8 (SPI_FAST_FLASH_BOOT)
+SPIWP:0xee
+mode:DIO, clock div:1
+load:0x3fce2820,len:0x14f0
+load:0x403c8700,len:0xda0
+load:0x403cb700,len:0x2f58
+entry 0x403c8908
+I (24) boot: ESP-IDF v6.0.1 2nd stage bootloader
+I (25) boot: compile time Sep 15 2026 13:58:05
+I (25) boot: Multicore bootloader
+I (25) boot: chip revision: v0.2
+I (28) boot: efuse block revision: v1.4
+I (31) boot.esp32s3: Boot SPI Speed : 80MHz
+I (35) boot.esp32s3: SPI Mode       : DIO
+I (39) boot.esp32s3: SPI Flash Size : 16MB
+I (43) boot: Enabling RNG early entropy source...
+I (47) boot: Partition Table:
+I (50) boot: ## Label            Usage          Type ST Offset   Length
+I (56) boot:  0 nvs              WiFi data        01 02 00009000 00006000
+I (63) boot:  1 phy_init         RF data          01 01 0000f000 00001000
+I (69) boot:  2 factory          factory app      00 00 00010000 00100000
+I (76) boot: End of partition table
+I (79) esp_image: segment 0: paddr=00010020 vaddr=3c0a0020 size=1915ch (102748) map
+I (105) esp_image: segment 1: paddr=00029184 vaddr=3fc96600 size=06234h ( 25140) load
+I (110) esp_image: segment 2: paddr=0002f3c0 vaddr=40374000 size=00c58h (  3160) load
+I (111) esp_image: segment 3: paddr=00030020 vaddr=42000020 size=9111ch (594204) map
+I (223) esp_image: segment 4: paddr=000c1144 vaddr=40374c58 size=11918h ( 71960) load
+I (239) esp_image: segment 5: paddr=000d2a64 vaddr=50000000 size=00024h (    36) load
+I (247) boot: Loaded app from partition at offset 0x10000
+I (248) boot: Disabling RNG early entropy source...
+I (258) octal_psram: vendor id    : 0x0d (AP)
+I (258) octal_psram: dev id       : 0x02 (generation 3)
+I (259) octal_psram: density      : 0x03 (64 Mbit)
+I (261) octal_psram: good-die     : 0x01 (Pass)
+I (265) octal_psram: Latency      : 0x01 (Fixed)
+I (269) octal_psram: VCC          : 0x01 (3V)
+I (273) octal_psram: SRF          : 0x01 (Fast Refresh)
+I (278) octal_psram: BurstType    : 0x01 (Hybrid Wrap)
+I (283) octal_psram: BurstLen     : 0x01 (32 Byte)
+I (288) octal_psram: Readlatency  : 0x02 (10 cycles@Fixed)
+I (293) octal_psram: DriveStrength: 0x00 (1/1)
+I (297) MSPI Timing: Enter psram timing tuning
+I (302) esp_psram: Found 8MB PSRAM device
+I (305) esp_psram: Speed: 80MHz
+I (308) cpu_start: Multicore app
+I (724) esp_psram: SPI SRAM memory test OK
+I (732) cpu_start: GPIO 44 and 43 are used as console UART I/O pins
+I (733) cpu_start: Pro cpu start user code
+I (733) cpu_start: cpu freq: 240000000 Hz
+I (734) app_init: Application information:
+I (738) app_init: Project name:     tft_video_player
+I (743) app_init: App version:      vp-v0.5-4-g0fbfe36
+I (748) app_init: Compile time:     Sep 16 2026 11:38:42
+I (753) app_init: ELF file SHA256:  8e1f9520a...
+I (757) app_init: ESP-IDF:          v6.0.1
+I (761) efuse_init: Min chip rev:     v0.0
+I (765) efuse_init: Max chip rev:     v0.99
+I (769) efuse_init: Chip rev:         v0.2
+I (773) heap_init: Initializing. RAM available for dynamic allocation:
+I (779) heap_init: At 3FCC0C30 len 00028AE0 (162 KiB): RAM
+I (784) heap_init: At 3FCE9710 len 00005724 (21 KiB): RAM
+I (789) heap_init: At 3FCF0000 len 00008000 (32 KiB): DRAM
+I (794) heap_init: At 600FE000 len 00001FE8 (7 KiB): RTCRAM
+I (800) esp_psram: Adding pool of 8192K of PSRAM memory to heap allocator
+I (807) spi_flash: detected chip: generic
+I (810) spi_flash: flash io: dio
+I (813) sleep_gpio: Configure to isolate all GPIO pins in sleep state
+I (819) sleep_gpio: Enable automatic switching of GPIO sleep configuration
+I (826) main_task: Started on CPU0
+I (850) esp_psram: Reserving pool of 32K of internal memory for DMA/internal allocations
+I (850) main_task: Calling app_main()
+I (851) MAIN_APP: ==========================================================
+I (857) MAIN_APP:    S3G4 LAB — REPRODUCTOR DE VIDEO FASE 5a (TE SYNC + AUDIT)
+I (864) MAIN_APP:    Display: ILI9488 (8080 8-bit @ 16.0 MHz, TE pin en GPIO 7)
+I (871) MAIN_APP:    Touch:   FT6236 Capacitivo (Desacoplado, sondeo 10 ms)
+I (878) MAIN_APP:    Storage: MicroSD SPI @ 20 MHz (Prefetch asincrono Core 0)
+I (885) MAIN_APP:    Core 1:  player_task (Motor video + cola comandos + PTS)
+I (892) MAIN_APP:    Core 0:  gui_task (LVGL) + touch_task + avi_reader_task
+I (898) MAIN_APP: ==========================================================
+I (936) SETTINGS_NVS: NVS 's3g4vid' inicializado con exito
+I (936) LCD_BUS: lcd_bus inicializado con mutex recursivo.
+I (936) TEAR_DIAG: Inicializando diagnostico de tearing. Modo inicial: OFF (normal)
+TEAR_DIAG,mode=OFF (normal)
+I (946) ili9488_8080: Iniciando hardware reset...
+I (1100) ili9488_8080: Configurando bus LCD 8080 de 8 bits a 16 MHz...
+I (1100) ili9488_8080: Enviando registros de inicialización ILI9488 IPS...
+I (1242) ili9488_8080: Inicialización completada.
+I (1242) LCD_BUS: Configurando pin TE en GPIO 7 (sin pull, flanco subida)...
+I (1493) LCD_BUS: TE,present=1,hz=44.0 (pulsos=11 en 249 ms)
+TE,present=1,hz=44.0
+I (1493) ft6236_i2c: Configurando bus I2C maestro (SDA: 6, SCL: 5)...
+I (1496) ft6236_i2c: Escaneando bus I2C (0x08 a 0x77)...
+I (1507) ft6236_i2c:   -> Dispositivo I2C detectado en direccion: 0x38
+I (1517) ft6236_i2c:   -> Chip ID verificado: 0x36
+I (1517) ft6236_i2c:   -> Panel/Vendor ID: 0x11
+I (1517) ft6236_i2c: Panel táctil inicializado con éxito.
+I (1521) MAIN_APP: Probando robustez de montaje MicroSD (10 ciclos @ 20000 kHz)...
+I (1528) SDCARD_SPI: --- Iniciando prueba de 10 ciclos de montaje a 20000 kHz ---
+I (1585) SDCARD_SPI: Iniciando montaje MicroSD SPI (CS:21, MOSI:11, CLK:13, MISO:15) @ 20000 kHz...
+I (1585) SDCARD_SPI: Iniciando secuencia de recuperacion SPI para MicroSD...
+I (1591) SDCARD_SPI: CMD12 drenado: 16 bytes (tarjeta lista/released=1)
+I (1596) SDCARD_SPI: Secuencia de recuperacion completada.
+I (1675) SDCARD_SPI: MicroSD montada con éxito en /sdcard (20000 kHz)
+Name: SD32G
+Type: SDHC
+Speed: 20.00 MHz (limit: 20.00 MHz)
+Size: 29664MB
+CSD: ver=2, sector_size=512, capacity=60751872 read_bl_len=9
+SSR: bus_width=1
+I (1684) SDCARD_SPI: --- Contenido del directorio /sdcard ---
+I (1691) SDCARD_SPI:   [D] System Volume Information (0 bytes)
+I (1696) SDCARD_SPI:   [F] harry.avi (74712162 bytes)
+I (1700) SDCARD_SPI:   [F] ariana.avi (71532292 bytes)
+I (1705) SDCARD_SPI:   [F] lesserafim.avi (70694708 bytes)
+I (1710) SDCARD_SPI:   [F] meovv.avi (62183914 bytes)
+I (1714) SDCARD_SPI:   [F] lesserafim.jpg (1802 bytes)
+I (1719) SDCARD_SPI:   [F] lesserafim.json (82 bytes)
+I (1724) SDCARD_SPI:   [F] meovv.jpg (4063 bytes)
+I (1729) SDCARD_SPI:   [F] meovv.json (49 bytes)
+I (1733) SDCARD_SPI:   [F] harry.jpg (3481 bytes)
+I (1739) SDCARD_SPI:   [F] harry.json (61 bytes)
+I (1742) SDCARD_SPI:   [F] ariana.jpg (2993 bytes)
+I (1746) SDCARD_SPI:   [F] ariana.json (77 bytes)
+I (1751) SDCARD_SPI: ---------------------------------------------
+I (1760) SDCARD_SPI: Ciclo 1/10: OK
+I (1761) SDCARD_SPI: MicroSD desmontada.
+I (1813) SDCARD_SPI: Iniciando montaje MicroSD SPI (CS:21, MOSI:11, CLK:13, MISO:15) @ 20000 kHz...
+I (1813) SDCARD_SPI: Iniciando secuencia de recuperacion SPI para MicroSD...
+I (1819) SDCARD_SPI: CMD12 drenado: 16 bytes (tarjeta lista/released=1)
+I (1824) SDCARD_SPI: Secuencia de recuperacion completada.
+I (1903) SDCARD_SPI: MicroSD montada con éxito en /sdcard (20000 kHz)
+Name: SD32G
+Type: SDHC
+Speed: 20.00 MHz (limit: 20.00 MHz)
+Size: 29664MB
+CSD: ver=2, sector_size=512, capacity=60751872 read_bl_len=9
+SSR: bus_width=1
+I (1912) SDCARD_SPI: --- Contenido del directorio /sdcard ---
+I (1919) SDCARD_SPI:   [D] System Volume Information (0 bytes)
+I (1924) SDCARD_SPI:   [F] harry.avi (74712162 bytes)
+I (1928) SDCARD_SPI:   [F] ariana.avi (71532292 bytes)
+I (1932) SDCARD_SPI:   [F] lesserafim.avi (70694708 bytes)
+I (1938) SDCARD_SPI:   [F] meovv.avi (62183914 bytes)
+I (1942) SDCARD_SPI:   [F] lesserafim.jpg (1802 bytes)
+I (1947) SDCARD_SPI:   [F] lesserafim.json (82 bytes)
+I (1952) SDCARD_SPI:   [F] meovv.jpg (4063 bytes)
+I (1956) SDCARD_SPI:   [F] meovv.json (49 bytes)
+I (1961) SDCARD_SPI:   [F] harry.jpg (3481 bytes)
+I (1967) SDCARD_SPI:   [F] harry.json (61 bytes)
+I (1970) SDCARD_SPI:   [F] ariana.jpg (2993 bytes)
+I (1974) SDCARD_SPI:   [F] ariana.json (77 bytes)
+I (1978) SDCARD_SPI: ---------------------------------------------
+I (1988) SDCARD_SPI: Ciclo 2/10: OK
+I (1989) SDCARD_SPI: MicroSD desmontada.
+I (2041) SDCARD_SPI: Iniciando montaje MicroSD SPI (CS:21, MOSI:11, CLK:13, MISO:15) @ 20000 kHz...
+I (2041) SDCARD_SPI: Iniciando secuencia de recuperacion SPI para MicroSD...
+I (2047) SDCARD_SPI: CMD12 drenado: 16 bytes (tarjeta lista/released=1)
+I (2052) SDCARD_SPI: Secuencia de recuperacion completada.
+I (2131) SDCARD_SPI: MicroSD montada con éxito en /sdcard (20000 kHz)
+Name: SD32G
+Type: SDHC
+Speed: 20.00 MHz (limit: 20.00 MHz)
+Size: 29664MB
+CSD: ver=2, sector_size=512, capacity=60751872 read_bl_len=9
+SSR: bus_width=1
+I (2140) SDCARD_SPI: --- Contenido del directorio /sdcard ---
+I (2147) SDCARD_SPI:   [D] System Volume Information (0 bytes)
+I (2152) SDCARD_SPI:   [F] harry.avi (74712162 bytes)
+I (2156) SDCARD_SPI:   [F] ariana.avi (71532292 bytes)
+I (2160) SDCARD_SPI:   [F] lesserafim.avi (70694708 bytes)
+I (2166) SDCARD_SPI:   [F] meovv.avi (62183914 bytes)
+I (2170) SDCARD_SPI:   [F] lesserafim.jpg (1802 bytes)
+I (2175) SDCARD_SPI:   [F] lesserafim.json (82 bytes)
+I (2180) SDCARD_SPI:   [F] meovv.jpg (4063 bytes)
+I (2184) SDCARD_SPI:   [F] meovv.json (49 bytes)
+I (2189) SDCARD_SPI:   [F] harry.jpg (3481 bytes)
+I (2195) SDCARD_SPI:   [F] harry.json (61 bytes)
+I (2198) SDCARD_SPI:   [F] ariana.jpg (2993 bytes)
+I (2202) SDCARD_SPI:   [F] ariana.json (77 bytes)
+I (2206) SDCARD_SPI: ---------------------------------------------
+I (2216) SDCARD_SPI: Ciclo 3/10: OK
+I (2217) SDCARD_SPI: MicroSD desmontada.
+I (2269) SDCARD_SPI: Iniciando montaje MicroSD SPI (CS:21, MOSI:11, CLK:13, MISO:15) @ 20000 kHz...
+I (2269) SDCARD_SPI: Iniciando secuencia de recuperacion SPI para MicroSD...
+I (2275) SDCARD_SPI: CMD12 drenado: 16 bytes (tarjeta lista/released=1)
+I (2280) SDCARD_SPI: Secuencia de recuperacion completada.
+I (2359) SDCARD_SPI: MicroSD montada con éxito en /sdcard (20000 kHz)
+Name: SD32G
+Type: SDHC
+Speed: 20.00 MHz (limit: 20.00 MHz)
+Size: 29664MB
+CSD: ver=2, sector_size=512, capacity=60751872 read_bl_len=9
+SSR: bus_width=1
+I (2368) SDCARD_SPI: --- Contenido del directorio /sdcard ---
+I (2375) SDCARD_SPI:   [D] System Volume Information (0 bytes)
+I (2380) SDCARD_SPI:   [F] harry.avi (74712162 bytes)
+I (2384) SDCARD_SPI:   [F] ariana.avi (71532292 bytes)
+I (2388) SDCARD_SPI:   [F] lesserafim.avi (70694708 bytes)
+I (2394) SDCARD_SPI:   [F] meovv.avi (62183914 bytes)
+I (2398) SDCARD_SPI:   [F] lesserafim.jpg (1802 bytes)
+I (2403) SDCARD_SPI:   [F] lesserafim.json (82 bytes)
+I (2408) SDCARD_SPI:   [F] meovv.jpg (4063 bytes)
+I (2412) SDCARD_SPI:   [F] meovv.json (49 bytes)
+I (2417) SDCARD_SPI:   [F] harry.jpg (3481 bytes)
+I (2423) SDCARD_SPI:   [F] harry.json (61 bytes)
+I (2426) SDCARD_SPI:   [F] ariana.jpg (2993 bytes)
+I (2430) SDCARD_SPI:   [F] ariana.json (77 bytes)
+I (2434) SDCARD_SPI: ---------------------------------------------
+I (2444) SDCARD_SPI: Ciclo 4/10: OK
+I (2445) SDCARD_SPI: MicroSD desmontada.
+I (2497) SDCARD_SPI: Iniciando montaje MicroSD SPI (CS:21, MOSI:11, CLK:13, MISO:15) @ 20000 kHz...
+I (2497) SDCARD_SPI: Iniciando secuencia de recuperacion SPI para MicroSD...
+I (2503) SDCARD_SPI: CMD12 drenado: 16 bytes (tarjeta lista/released=1)
+I (2508) SDCARD_SPI: Secuencia de recuperacion completada.
+I (2587) SDCARD_SPI: MicroSD montada con éxito en /sdcard (20000 kHz)
+Name: SD32G
+Type: SDHC
+Speed: 20.00 MHz (limit: 20.00 MHz)
+Size: 29664MB
+CSD: ver=2, sector_size=512, capacity=60751872 read_bl_len=9
+SSR: bus_width=1
+I (2596) SDCARD_SPI: --- Contenido del directorio /sdcard ---
+I (2603) SDCARD_SPI:   [D] System Volume Information (0 bytes)
+I (2608) SDCARD_SPI:   [F] harry.avi (74712162 bytes)
+I (2612) SDCARD_SPI:   [F] ariana.avi (71532292 bytes)
+I (2616) SDCARD_SPI:   [F] lesserafim.avi (70694708 bytes)
+I (2622) SDCARD_SPI:   [F] meovv.avi (62183914 bytes)
+I (2626) SDCARD_SPI:   [F] lesserafim.jpg (1802 bytes)
+I (2631) SDCARD_SPI:   [F] lesserafim.json (82 bytes)
+I (2636) SDCARD_SPI:   [F] meovv.jpg (4063 bytes)
+I (2640) SDCARD_SPI:   [F] meovv.json (49 bytes)
+I (2645) SDCARD_SPI:   [F] harry.jpg (3481 bytes)
+I (2651) SDCARD_SPI:   [F] harry.json (61 bytes)
+I (2654) SDCARD_SPI:   [F] ariana.jpg (2993 bytes)
+I (2658) SDCARD_SPI:   [F] ariana.json (77 bytes)
+I (2662) SDCARD_SPI: ---------------------------------------------
+I (2672) SDCARD_SPI: Ciclo 5/10: OK
+I (2673) SDCARD_SPI: MicroSD desmontada.
+I (2725) SDCARD_SPI: Iniciando montaje MicroSD SPI (CS:21, MOSI:11, CLK:13, MISO:15) @ 20000 kHz...
+I (2725) SDCARD_SPI: Iniciando secuencia de recuperacion SPI para MicroSD...
+I (2731) SDCARD_SPI: CMD12 drenado: 16 bytes (tarjeta lista/released=1)
+I (2736) SDCARD_SPI: Secuencia de recuperacion completada.
+I (2815) SDCARD_SPI: MicroSD montada con éxito en /sdcard (20000 kHz)
+Name: SD32G
+Type: SDHC
+Speed: 20.00 MHz (limit: 20.00 MHz)
+Size: 29664MB
+CSD: ver=2, sector_size=512, capacity=60751872 read_bl_len=9
+SSR: bus_width=1
+I (2824) SDCARD_SPI: --- Contenido del directorio /sdcard ---
+I (2831) SDCARD_SPI:   [D] System Volume Information (0 bytes)
+I (2836) SDCARD_SPI:   [F] harry.avi (74712162 bytes)
+I (2840) SDCARD_SPI:   [F] ariana.avi (71532292 bytes)
+I (2844) SDCARD_SPI:   [F] lesserafim.avi (70694708 bytes)
+I (2850) SDCARD_SPI:   [F] meovv.avi (62183914 bytes)
+I (2854) SDCARD_SPI:   [F] lesserafim.jpg (1802 bytes)
+I (2859) SDCARD_SPI:   [F] lesserafim.json (82 bytes)
+I (2864) SDCARD_SPI:   [F] meovv.jpg (4063 bytes)
+I (2868) SDCARD_SPI:   [F] meovv.json (49 bytes)
+I (2873) SDCARD_SPI:   [F] harry.jpg (3481 bytes)
+I (2879) SDCARD_SPI:   [F] harry.json (61 bytes)
+I (2882) SDCARD_SPI:   [F] ariana.jpg (2993 bytes)
+I (2886) SDCARD_SPI:   [F] ariana.json (77 bytes)
+I (2890) SDCARD_SPI: ---------------------------------------------
+I (2900) SDCARD_SPI: Ciclo 6/10: OK
+I (2901) SDCARD_SPI: MicroSD desmontada.
+I (2953) SDCARD_SPI: Iniciando montaje MicroSD SPI (CS:21, MOSI:11, CLK:13, MISO:15) @ 20000 kHz...
+I (2953) SDCARD_SPI: Iniciando secuencia de recuperacion SPI para MicroSD...
+I (2959) SDCARD_SPI: CMD12 drenado: 16 bytes (tarjeta lista/released=1)
+I (2964) SDCARD_SPI: Secuencia de recuperacion completada.
+I (3043) SDCARD_SPI: MicroSD montada con éxito en /sdcard (20000 kHz)
+Name: SD32G
+Type: SDHC
+Speed: 20.00 MHz (limit: 20.00 MHz)
+Size: 29664MB
+CSD: ver=2, sector_size=512, capacity=60751872 read_bl_len=9
+SSR: bus_width=1
+I (3052) SDCARD_SPI: --- Contenido del directorio /sdcard ---
+I (3059) SDCARD_SPI:   [D] System Volume Information (0 bytes)
+I (3064) SDCARD_SPI:   [F] harry.avi (74712162 bytes)
+I (3068) SDCARD_SPI:   [F] ariana.avi (71532292 bytes)
+I (3072) SDCARD_SPI:   [F] lesserafim.avi (70694708 bytes)
+I (3078) SDCARD_SPI:   [F] meovv.avi (62183914 bytes)
+I (3082) SDCARD_SPI:   [F] lesserafim.jpg (1802 bytes)
+I (3087) SDCARD_SPI:   [F] lesserafim.json (82 bytes)
+I (3092) SDCARD_SPI:   [F] meovv.jpg (4063 bytes)
+I (3096) SDCARD_SPI:   [F] meovv.json (49 bytes)
+I (3101) SDCARD_SPI:   [F] harry.jpg (3481 bytes)
+I (3107) SDCARD_SPI:   [F] harry.json (61 bytes)
+I (3110) SDCARD_SPI:   [F] ariana.jpg (2993 bytes)
+I (3114) SDCARD_SPI:   [F] ariana.json (77 bytes)
+I (3118) SDCARD_SPI: ---------------------------------------------
+I (3128) SDCARD_SPI: Ciclo 7/10: OK
+I (3129) SDCARD_SPI: MicroSD desmontada.
+I (3181) SDCARD_SPI: Iniciando montaje MicroSD SPI (CS:21, MOSI:11, CLK:13, MISO:15) @ 20000 kHz...
+I (3181) SDCARD_SPI: Iniciando secuencia de recuperacion SPI para MicroSD...
+I (3187) SDCARD_SPI: CMD12 drenado: 16 bytes (tarjeta lista/released=1)
+I (3192) SDCARD_SPI: Secuencia de recuperacion completada.
+I (3271) SDCARD_SPI: MicroSD montada con éxito en /sdcard (20000 kHz)
+Name: SD32G
+Type: SDHC
+Speed: 20.00 MHz (limit: 20.00 MHz)
+Size: 29664MB
+CSD: ver=2, sector_size=512, capacity=60751872 read_bl_len=9
+SSR: bus_width=1
+I (3280) SDCARD_SPI: --- Contenido del directorio /sdcard ---
+I (3287) SDCARD_SPI:   [D] System Volume Information (0 bytes)
+I (3292) SDCARD_SPI:   [F] harry.avi (74712162 bytes)
+I (3296) SDCARD_SPI:   [F] ariana.avi (71532292 bytes)
+I (3300) SDCARD_SPI:   [F] lesserafim.avi (70694708 bytes)
+I (3306) SDCARD_SPI:   [F] meovv.avi (62183914 bytes)
+I (3310) SDCARD_SPI:   [F] lesserafim.jpg (1802 bytes)
+I (3315) SDCARD_SPI:   [F] lesserafim.json (82 bytes)
+I (3320) SDCARD_SPI:   [F] meovv.jpg (4063 bytes)
+I (3324) SDCARD_SPI:   [F] meovv.json (49 bytes)
+I (3329) SDCARD_SPI:   [F] harry.jpg (3481 bytes)
+I (3335) SDCARD_SPI:   [F] harry.json (61 bytes)
+I (3338) SDCARD_SPI:   [F] ariana.jpg (2993 bytes)
+I (3342) SDCARD_SPI:   [F] ariana.json (77 bytes)
+I (3346) SDCARD_SPI: ---------------------------------------------
+I (3356) SDCARD_SPI: Ciclo 8/10: OK
+I (3357) SDCARD_SPI: MicroSD desmontada.
+I (3409) SDCARD_SPI: Iniciando montaje MicroSD SPI (CS:21, MOSI:11, CLK:13, MISO:15) @ 20000 kHz...
+I (3409) SDCARD_SPI: Iniciando secuencia de recuperacion SPI para MicroSD...
+I (3415) SDCARD_SPI: CMD12 drenado: 16 bytes (tarjeta lista/released=1)
+I (3420) SDCARD_SPI: Secuencia de recuperacion completada.
+I (3499) SDCARD_SPI: MicroSD montada con éxito en /sdcard (20000 kHz)
+Name: SD32G
+Type: SDHC
+Speed: 20.00 MHz (limit: 20.00 MHz)
+Size: 29664MB
+CSD: ver=2, sector_size=512, capacity=60751872 read_bl_len=9
+SSR: bus_width=1
+I (3508) SDCARD_SPI: --- Contenido del directorio /sdcard ---
+I (3515) SDCARD_SPI:   [D] System Volume Information (0 bytes)
+I (3520) SDCARD_SPI:   [F] harry.avi (74712162 bytes)
+I (3524) SDCARD_SPI:   [F] ariana.avi (71532292 bytes)
+I (3529) SDCARD_SPI:   [F] lesserafim.avi (70694708 bytes)
+I (3534) SDCARD_SPI:   [F] meovv.avi (62183914 bytes)
+I (3539) SDCARD_SPI:   [F] lesserafim.jpg (1802 bytes)
+I (3543) SDCARD_SPI:   [F] lesserafim.json (82 bytes)
+I (3548) SDCARD_SPI:   [F] meovv.jpg (4063 bytes)
+I (3553) SDCARD_SPI:   [F] meovv.json (49 bytes)
+I (3557) SDCARD_SPI:   [F] harry.jpg (3481 bytes)
+I (3563) SDCARD_SPI:   [F] harry.json (61 bytes)
+I (3566) SDCARD_SPI:   [F] ariana.jpg (2993 bytes)
+I (3570) SDCARD_SPI:   [F] ariana.json (77 bytes)
+I (3575) SDCARD_SPI: ---------------------------------------------
+I (3584) SDCARD_SPI: Ciclo 9/10: OK
+I (3585) SDCARD_SPI: MicroSD desmontada.
+I (3637) SDCARD_SPI: Iniciando montaje MicroSD SPI (CS:21, MOSI:11, CLK:13, MISO:15) @ 20000 kHz...
+I (3637) SDCARD_SPI: Iniciando secuencia de recuperacion SPI para MicroSD...
+I (3643) SDCARD_SPI: CMD12 drenado: 16 bytes (tarjeta lista/released=1)
+I (3648) SDCARD_SPI: Secuencia de recuperacion completada.
+I (3727) SDCARD_SPI: MicroSD montada con éxito en /sdcard (20000 kHz)
+Name: SD32G
+Type: SDHC
+Speed: 20.00 MHz (limit: 20.00 MHz)
+Size: 29664MB
+CSD: ver=2, sector_size=512, capacity=60751872 read_bl_len=9
+SSR: bus_width=1
+I (3736) SDCARD_SPI: --- Contenido del directorio /sdcard ---
+I (3743) SDCARD_SPI:   [D] System Volume Information (0 bytes)
+I (3748) SDCARD_SPI:   [F] harry.avi (74712162 bytes)
+I (3752) SDCARD_SPI:   [F] ariana.avi (71532292 bytes)
+I (3756) SDCARD_SPI:   [F] lesserafim.avi (70694708 bytes)
+I (3762) SDCARD_SPI:   [F] meovv.avi (62183914 bytes)
+I (3766) SDCARD_SPI:   [F] lesserafim.jpg (1802 bytes)
+I (3771) SDCARD_SPI:   [F] lesserafim.json (82 bytes)
+I (3776) SDCARD_SPI:   [F] meovv.jpg (4063 bytes)
+I (3780) SDCARD_SPI:   [F] meovv.json (49 bytes)
+I (3785) SDCARD_SPI:   [F] harry.jpg (3481 bytes)
+I (3791) SDCARD_SPI:   [F] harry.json (61 bytes)
+I (3794) SDCARD_SPI:   [F] ariana.jpg (2993 bytes)
+I (3798) SDCARD_SPI:   [F] ariana.json (77 bytes)
+I (3802) SDCARD_SPI: ---------------------------------------------
+I (3812) SDCARD_SPI: Ciclo 10/10: OK
+I (3812) SDCARD_SPI: Prueba montaje: 10/10 ciclos exitosos a 20000 kHz
+SD_FREQ_TEST,freq_khz=20000,passed=10/10
+I (3821) SDCARD_SPI: Tarjeta ya montada en /sdcard
+I (3826) MEDIA_LIB: Iniciando escaneo dinamico de biblioteca multimedia...
+MEDIA,file=/sdcard/ariana.avi,size=71532292,w=320,h=480,us_per_frame=33333,fps_milli=30000,frames=9003,idx1=1,chunk_avg=7920,chunk_max=26667,subsampling=420,compat=1,reason=ok
+W (4075) MEDIA_LIB: Miniatura /sdcard/ariana.jpg tiene dimensiones 144x80 != 144x81, usando marcador
+MEDIA,file=/sdcard/harry.avi,size=74712162,w=320,h=480,us_per_frame=33333,fps_milli=30000,frames=6029,idx1=1,chunk_avg=12366,chunk_max=28289,subsampling=420,compat=1,reason=ok
+W (4268) MEDIA_LIB: Miniatura /sdcard/harry.jpg tiene dimensiones 144x80 != 144x81, usando marcador
+MEDIA,file=/sdcard/lesserafim.avi,size=70694708,w=320,h=480,us_per_frame=33333,fps_milli=30000,frames=5988,idx1=1,chunk_avg=11780,chunk_max=35142,subsampling=420,compat=1,reason=ok
+W (4451) MEDIA_LIB: Miniatura /sdcard/lesserafim.jpg tiene dimensiones 144x80 != 144x81, usando marcador
+MEDIA,file=/sdcard/meovv.avi,size=62183914,w=320,h=480,us_per_frame=33333,fps_milli=30000,frames=6136,idx1=1,chunk_avg=10108,chunk_max=20756,subsampling=420,compat=1,reason=ok
+W (4636) MEDIA_LIB: Miniatura /sdcard/meovv.jpg tiene dimensiones 144x80 != 144x81, usando marcador
+I (4643) SETTINGS_NVS: Poda NVS: 0 claves pos_* obsoletas borradas
+LIB,count=4,compatible=4,incompatible=0,with_json=4,with_thumb=4,scan_ms=817
+I (4647) MEDIA_LIB: Escaneo completado en 817 ms: 4 videos (4 compatibles, 0 incompatibles, 4 json, 4 thumb)
+I (4657) AVI_PLAYER_SIMD: Inicializando motor de video SIMD (esp_new_jpeg) con prefetch task...
+I (4665) AVI_PLAYER_SIMD: Tarea avi_reader_task iniciada en Core 0.
+I (4671) AVI_PLAYER_SIMD: Decoder Studio configurado: scale=240x160, rot=0 (salida 240x160)
+I (4679) AVI_PLAYER_SIMD: Decodificadores SIMD Fullscreen y Studio inicializados con éxito.
+I (4687) PLAYER: Iniciando subsistema player...
+I (4696) PLAYER: player_task iniciada con exito en CPU 1.
+I (4696) PLAYER: Tarea player_task ejecutandose en CPU 1.
+I (4697) MAIN_APP: Tarea touch_task iniciada en Core 0 (prioridad 6, intervalo 10 ms).
+I (4702) SETTINGS_NVS: Ajustes NVS leidos: bright=70, osd=3000, repeat=1, resume=1, last='/sdcard/ariana.avi'
+I (4697) MAIN_APP: Iniciando gui_task en Core 0...
+I (4719) PLAYER: Abriendo pista 0: /sdcard/ariana.avi
+I (4729) AVI_PLAYER_SIMD: Abriendo archivo AVI MJPEG: /sdcard/ariana.avi
+I (4796) AVI_PLAYER_SIMD: Decoder Studio configurado: scale=160x240, rot=3 (salida 240x160)
+I (4809) MAIN_APP: Bucle de eventos GUI LVGL iniciado en Core 0 (refresh: 250 ms).
+I (4839) AVI_PLAYER_SIMD: idx1 hallado en O(1) tras LIST movi en offset 71388236 (tam: 144048 B)
+I (4697) MAIN_APP: DIAG_HEAP [POST_INIT]: int=96655, psram=8077528 | STACK_FREE: touch=2464, gui=7068, player=6532, auto=0
+Heap summary for capabilities 0x00000800:
+  At 0x3fcc95d8 len 32767 free 32031 allocated 0 min_free 32031
+    largest_free_block 31744 alloc_blocks 0 free_blocks 1 total_blocks 1
+  At 0x600fe000 len 8168 free 7788 allocated 0 min_free 7788
+    largest_free_block 7680 alloc_blocks 0 free_blocks 1 total_blocks 1
+  At 0x3fce9710 len 22308 free 124 allocated 21056 min_free 124
+    largest_free_block 44 alloc_blocks 98 free_blocks 4 total_blocks 102
+  At 0x3fcf0000 len 32768 free 32032 allocated 0 min_free 32032
+    largest_free_block 31744 alloc_blocks 0 free_blocks 1 total_blocks 1
+  At 0x3fcc0c30 len 166624 free 24220 allocated 141256 min_free 7832
+    largest_free_block 16384 alloc_blocks 52 free_blocks 9 total_blocks 61
+  Totals:
+    free 96195 allocated 162312 min_free 79807 largest_free_block 31744
+I (5002) MAIN_APP: app_main inicializacion completada.
+I (5002) AVI_PLAYER_SIMD: Tabla idx1 cargada: 9003 cuadros indexados en PSRAM
+I (5003) main_task: Returned from app_main()
+I (5011) AVI_PLAYER_SIMD: AVI Abierto: 320x480 @ 30 FPS, 9003 cuadros (5:00), preroll listo (3 frames)
+I (5019) PLAYER: Reanudando '/sdcard/ariana.avi' en 134131 ms (NVS resume=1)
+I (5052) AVI_PLAYER_SIMD: Seek completado a cuadro 4023/9003
+PERF,t_ms=4252,dec_fps=0.0,pres_fps=0.0,drop=0,over=0,frame_mismatch=0,rd_avg=2.8,rd_max=6.9,rd_p50=1.5,rd_p95=6.9,rd_slow=0,reader_rd_avg=2.8,reader_rd_max=6.9,reader_rd_p50=1.5,reader_rd_p95=6.9,slots_ready_avg=1.8,q_wait_avg=0.0,q_wait_max=0.0,q_wait_p50=0.0,q_wait_p95=0.0,te_present=1,te_hz=47.8,te_jitter_ms=0.02,te_wait_ms_avg=0.00,te_wait_ms_max=0.00,te_timeout=0,dec_avg=0.0,dec_max=0.0,dec_frame_ms_avg=0.0,dec_frame_ms_max=0.0,blit_avg=6.0,blit_max=8.0,late_max=0.0,drift_ms=0,touch_read_ms_avg=0.8,touch_read_ms_max=1.1,touch_age_ms_max=8.0,heap_int=114219,heap_psram=7886536,track=0,scn=init,view=studio,hud=0,present_path=lvgl,rot=90,madctl=0x48,vrect=34-193,strips_per_frame=0,windows_per_frame=0,strip_ms_avg=0.00,frame_blit_ms_avg=0.0,lvgl_rows_clipped=0,dec_frames=0
+PERF,t_ms=6271,dec_fps=29.2,pres_fps=20.3,drop=0,over=0,frame_mismatch=0,rd_avg=7.2,rd_max=11.5,rd_p50=5.7,rd_p95=11.1,rd_slow=0,reader_rd_avg=7.2,reader_rd_max=11.5,reader_rd_p50=5.7,reader_rd_p95=11.1,slots_ready_avg=2.5,q_wait_avg=0.0,q_wait_max=0.1,q_wait_p50=0.0,q_wait_p95=0.0,te_present=1,te_hz=44.6,te_jitter_ms=0.00,te_wait_ms_avg=0.00,te_wait_ms_max=0.00,te_timeout=0,dec_avg=25.9,dec_max=34.4,dec_frame_ms_avg=25.9,dec_frame_ms_max=34.4,blit_avg=3.3,blit_max=8.3,late_max=1.4,drift_ms=11,touch_read_ms_avg=0.8,touch_read_ms_max=1.1,touch_age_ms_max=9.9,heap_int=98899,heap_psram=7886536,track=0,scn=init,view=studio,hud=0,present_path=lvgl,rot=90,madctl=0x48,vrect=34-193,strips_per_frame=0,windows_per_frame=0,strip_ms_avg=0.00,frame_blit_ms_avg=0.0,lvgl_rows_clipped=0,dec_frames=59
+PERF,t_ms=8282,dec_fps=29.8,pres_fps=20.9,drop=0,over=0,frame_mismatch=0,rd_avg=7.4,rd_max=11.7,rd_p50=6.2,rd_p95=11.0,rd_slow=0,reader_rd_avg=7.4,reader_rd_max=11.7,reader_rd_p50=6.2,reader_rd_p95=11.0,slots_ready_avg=2.5,q_wait_avg=0.0,q_wait_max=0.1,q_wait_p50=0.0,q_wait_p95=0.0,te_present=1,te_hz=44.2,te_jitter_ms=0.01,te_wait_ms_avg=0.00,te_wait_ms_max=0.00,te_timeout=0,dec_avg=26.0,dec_max=34.2,dec_frame_ms_avg=26.0,dec_frame_ms_max=34.2,blit_avg=3.1,blit_max=8.3,late_max=48.2,drift_ms=0,touch_read_ms_avg=0.8,touch_read_ms_max=1.0,touch_age_ms_max=9.9,heap_int=95283,heap_psram=7886536,track=0,scn=init,view=studio,hud=0,present_path=lvgl,rot=90,madctl=0x48,vrect=34-193,strips_per_frame=0,windows_per_frame=0,strip_ms_avg=0.00,frame_blit_ms_avg=0.0,lvgl_rows_clipped=0,dec_frames=60
+PERF,t_ms=10308,dec_fps=30.1,pres_fps=21.7,drop=0,over=0,frame_mismatch=0,rd_avg=7.0,rd_max=11.5,rd_p50=6.8,rd_p95=8.1,rd_slow=0,reader_rd_avg=7.0,reader_rd_max=11.5,reader_rd_p50=6.8,reader_rd_p95=8.1,slots_ready_avg=2.6,q_wait_avg=0.0,q_wait_max=0.1,q_wait_p50=0.0,q_wait_p95=0.0,te_present=1,te_hz=44.4,te_jitter_ms=0.01,te_wait_ms_avg=0.00,te_wait_ms_max=0.00,te_timeout=0,dec_avg=25.8,dec_max=31.8,dec_frame_ms_avg=25.8,dec_frame_ms_max=31.8,blit_avg=3.6,blit_max=8.6,late_max=59.7,drift_ms=7,touch_read_ms_avg=0.8,touch_read_ms_max=1.0,touch_age_ms_max=9.9,heap_int=97843,heap_psram=7886536,track=0,scn=init,view=studio,hud=0,present_path=lvgl,rot=90,madctl=0x48,vrect=34-193,strips_per_frame=0,windows_per_frame=0,strip_ms_avg=0.00,frame_blit_ms_avg=0.0,lvgl_rows_clipped=0,dec_frames=61
+PERF,t_ms=12341,dec_fps=30.0,pres_fps=21.1,drop=0,over=0,frame_mismatch=0,rd_avg=8.8,rd_max=12.8,rd_p50=9.1,rd_p95=12.0,rd_slow=0,reader_rd_avg=8.8,reader_rd_max=12.8,reader_rd_p50=9.1,reader_rd_p95=12.0,slots_ready_avg=2.2,q_wait_avg=0.0,q_wait_max=0.1,q_wait_p50=0.0,q_wait_p95=0.0,te_present=1,te_hz=44.8,te_jitter_ms=0.00,te_wait_ms_avg=0.00,te_wait_ms_max=0.00,te_timeout=0,dec_avg=27.2,dec_max=34.3,dec_frame_ms_avg=27.2,dec_frame_ms_max=34.3,blit_avg=3.3,blit_max=8.1,late_max=52.5,drift_ms=7,touch_read_ms_avg=0.8,touch_read_ms_max=1.0,touch_age_ms_max=9.8,heap_int=102935,heap_psram=7886536,track=0,scn=init,view=studio,hud=0,present_path=lvgl,rot=90,madctl=0x48,vrect=34-193,strips_per_frame=0,windows_per_frame=0,strip_ms_avg=0.00,frame_blit_ms_avg=0.0,lvgl_rows_clipped=0,dec_frames=61
+PERF,t_ms=14374,dec_fps=30.0,pres_fps=21.6,drop=0,over=0,frame_mismatch=0,rd_avg=8.2,rd_max=10.1,rd_p50=8.0,rd_p95=9.5,rd_slow=0,reader_rd_avg=8.2,reader_rd_max=10.1,reader_rd_p50=8.0,reader_rd_p95=9.5,slots_ready_avg=2.3,q_wait_avg=0.0,q_wait_max=0.0,q_wait_p50=0.0,q_wait_p95=0.0,te_present=1,te_hz=44.8,te_jitter_ms=0.01,te_wait_ms_avg=0.00,te_wait_ms_max=0.00,te_timeout=0,dec_avg=27.1,dec_max=33.5,dec_frame_ms_avg=27.1,dec_frame_ms_max=33.5,blit_avg=3.4,blit_max=8.9,late_max=53.1,drift_ms=8,touch_read_ms_avg=0.8,touch_read_ms_max=1.0,touch_age_ms_max=9.9,heap_int=100907,heap_psram=7886536,track=0,scn=init,view=studio,hud=0,present_path=lvgl,rot=90,madctl=0x48,vrect=34-193,strips_per_frame=0,windows_per_frame=0,strip_ms_avg=0.00,frame_blit_ms_avg=0.0,lvgl_rows_clipped=0,dec_frames=61
+PERF,t_ms=16380,dec_fps=29.9,pres_fps=21.4,drop=0,over=0,frame_mismatch=0,rd_avg=8.6,rd_max=9.5,rd_p50=8.6,rd_p95=9.5,rd_slow=0,reader_rd_avg=8.6,reader_rd_max=9.5,reader_rd_p50=8.6,reader_rd_p95=9.5,slots_ready_avg=2.1,q_wait_avg=0.0,q_wait_max=0.0,q_wait_p50=0.0,q_wait_p95=0.0,te_present=1,te_hz=44.4,te_jitter_ms=0.00,te_wait_ms_avg=0.00,te_wait_ms_max=0.00,te_timeout=0,dec_avg=27.5,dec_max=33.1,dec_frame_ms_avg=27.5,dec_frame_ms_max=33.1,blit_avg=3.2,blit_max=9.0,late_max=51.4,drift_ms=2,touch_read_ms_avg=0.8,touch_read_ms_max=1.0,touch_age_ms_max=9.8,heap_int=97839,heap_psram=7886536,track=0,scn=init,view=studio,hud=0,present_path=lvgl,rot=90,madctl=0x48,vrect=34-193,strips_per_frame=0,windows_per_frame=0,strip_ms_avg=0.00,frame_blit_ms_avg=0.0,lvgl_rows_clipped=0,dec_frames=60
+PERF,t_ms=18409,dec_fps=30.1,pres_fps=21.2,drop=0,over=0,frame_mismatch=0,rd_avg=8.3,rd_max=9.7,rd_p50=8.6,rd_p95=9.5,rd_slow=0,reader_rd_avg=8.3,reader_rd_max=9.7,reader_rd_p50=8.6,reader_rd_p95=9.5,slots_ready_avg=2.2,q_wait_avg=0.0,q_wait_max=0.1,q_wait_p50=0.0,q_wait_p95=0.0,te_present=1,te_hz=44.4,te_jitter_ms=0.00,te_wait_ms_avg=0.00,te_wait_ms_max=0.00,te_timeout=0,dec_avg=27.0,dec_max=33.4,dec_frame_ms_avg=27.0,dec_frame_ms_max=33.4,blit_avg=3.5,blit_max=8.2,late_max=57.7,drift_ms=6,touch_read_ms_avg=0.8,touch_read_ms_max=1.0,touch_age_ms_max=9.7,heap_int=98347,heap_psram=7886536,track=0,scn=init,view=studio,hud=0,present_path=lvgl,rot=90,madctl=0x48,vrect=34-193,strips_per_frame=0,windows_per_frame=0,strip_ms_avg=0.00,frame_blit_ms_avg=0.0,lvgl_rows_clipped=0,dec_frames=61
+PERF,t_ms=20438,dec_fps=30.1,pres_fps=21.2,drop=0,over=0,frame_mismatch=0,rd_avg=9.0,rd_max=10.2,rd_p50=9.2,rd_p95=9.9,rd_slow=0,reader_rd_avg=9.0,reader_rd_max=10.2,reader_rd_p50=9.2,reader_rd_p95=9.9,slots_ready_avg=2.1,q_wait_avg=0.0,q_wait_max=0.0,q_wait_p50=0.0,q_wait_p95=0.0,te_present=1,te_hz=44.9,te_jitter_ms=0.00,te_wait_ms_avg=0.00,te_wait_ms_max=0.00,te_timeout=0,dec_avg=27.4,dec_max=33.3,dec_frame_ms_avg=27.4,dec_frame_ms_max=33.3,blit_avg=3.3,blit_max=8.6,late_max=53.3,drift_ms=10,touch_read_ms_avg=0.8,touch_read_ms_max=1.1,touch_age_ms_max=9.7,heap_int=102467,heap_psram=7886536,track=0,scn=init,view=studio,hud=0,present_path=lvgl,rot=90,madctl=0x48,vrect=34-193,strips_per_frame=0,windows_per_frame=0,strip_ms_avg=0.00,frame_blit_ms_avg=0.0,lvgl_rows_clipped=0,dec_frames=61
+PERF,t_ms=22439,dec_fps=30.0,pres_fps=21.0,drop=0,over=0,frame_mismatch=0,rd_avg=7.4,rd_max=9.2,rd_p50=7.3,rd_p95=8.3,rd_slow=0,reader_rd_avg=7.4,reader_rd_max=9.2,reader_rd_p50=7.3,reader_rd_p95=8.3,slots_ready_avg=2.5,q_wait_avg=0.0,q_wait_max=0.0,q_wait_p50=0.0,q_wait_p95=0.0,te_present=1,te_hz=44.5,te_jitter_ms=0.00,te_wait_ms_avg=0.00,te_wait_ms_max=0.00,te_timeout=0,dec_avg=26.3,dec_max=32.4,dec_frame_ms_avg=26.3,dec_frame_ms_max=32.4,blit_avg=3.3,blit_max=9.3,late_max=48.9,drift_ms=9,touch_read_ms_avg=0.8,touch_read_ms_max=1.0,touch_age_ms_max=9.9,heap_int=99891,heap_psram=7886536,track=0,scn=init,view=studio,hud=0,present_path=lvgl,rot=90,madctl=0x48,vrect=34-193,strips_per_frame=0,windows_per_frame=0,strip_ms_avg=0.00,frame_blit_ms_avg=0.0,lvgl_rows_clipped=0,dec_frames=60
+PERF,t_ms=24446,dec_fps=29.9,pres_fps=20.9,drop=0,over=0,frame_mismatch=0,rd_avg=8.4,rd_max=9.8,rd_p50=8.3,rd_p95=9.4,rd_slow=0,reader_rd_avg=8.4,reader_rd_max=9.8,reader_rd_p50=8.3,reader_rd_p95=9.4,slots_ready_avg=2.2,q_wait_avg=0.0,q_wait_max=0.0,q_wait_p50=0.0,q_wait_p95=0.0,te_present=1,te_hz=44.4,te_jitter_ms=0.01,te_wait_ms_avg=0.00,te_wait_ms_max=0.00,te_timeout=0,dec_avg=27.2,dec_max=33.8,dec_frame_ms_avg=27.2,dec_frame_ms_max=33.8,blit_avg=3.3,blit_max=8.1,late_max=50.2,drift_ms=2,touch_read_ms_avg=0.8,touch_read_ms_max=1.1,touch_age_ms_max=9.8,heap_int=96295,heap_psram=7886536,track=0,scn=init,view=studio,hud=0,present_path=lvgl,rot=90,madctl=0x48,vrect=34-193,strips_per_frame=0,windows_per_frame=0,strip_ms_avg=0.00,frame_blit_ms_avg=0.0,lvgl_rows_clipped=0,dec_frames=60
+PERF,t_ms=26475,dec_fps=30.1,pres_fps=21.2,drop=0,over=0,frame_mismatch=0,rd_avg=7.0,rd_max=9.0,rd_p50=6.9,rd_p95=7.9,rd_slow=0,reader_rd_avg=7.0,reader_rd_max=9.0,reader_rd_p50=6.9,reader_rd_p95=7.9,slots_ready_avg=2.6,q_wait_avg=0.0,q_wait_max=0.1,q_wait_p50=0.0,q_wait_p95=0.0,te_present=1,te_hz=44.8,te_jitter_ms=0.00,te_wait_ms_avg=0.00,te_wait_ms_max=0.00,te_timeout=0,dec_avg=25.9,dec_max=31.8,dec_frame_ms_avg=25.9,dec_frame_ms_max=31.8,blit_avg=3.3,blit_max=7.9,late_max=56.8,drift_ms=7,touch_read_ms_avg=0.8,touch_read_ms_max=1.0,touch_age_ms_max=9.7,heap_int=101959,heap_psram=7886536,track=0,scn=init,view=studio,hud=0,present_path=lvgl,rot=90,madctl=0x48,vrect=34-193,strips_per_frame=0,windows_per_frame=0,strip_ms_avg=0.00,frame_blit_ms_avg=0.0,lvgl_rows_clipped=0,dec_frames=61
+PERF,t_ms=28506,dec_fps=30.0,pres_fps=21.7,drop=0,over=0,frame_mismatch=0,rd_avg=7.9,rd_max=9.4,rd_p50=8.1,rd_p95=9.2,rd_slow=0,reader_rd_avg=7.9,reader_rd_max=9.4,reader_rd_p50=8.1,reader_rd_p95=9.2,slots_ready_avg=2.3,q_wait_avg=0.0,q_wait_max=0.0,q_wait_p50=0.0,q_wait_p95=0.0,te_present=1,te_hz=44.3,te_jitter_ms=0.00,te_wait_ms_avg=0.00,te_wait_ms_max=0.00,te_timeout=0,dec_avg=26.7,dec_max=32.9,dec_frame_ms_avg=26.7,dec_frame_ms_max=32.9,blit_avg=3.3,blit_max=9.1,late_max=53.3,drift_ms=9,touch_read_ms_avg=0.8,touch_read_ms_max=1.0,touch_age_ms_max=9.8,heap_int=95787,heap_psram=7886536,track=0,scn=init,view=studio,hud=0,present_path=lvgl,rot=90,madctl=0x48,vrect=34-193,strips_per_frame=0,windows_per_frame=0,strip_ms_avg=0.00,frame_blit_ms_avg=0.0,lvgl_rows_clipped=0,dec_frames=61
+PERF,t_ms=30539,dec_fps=30.0,pres_fps=21.1,drop=0,over=0,frame_mismatch=0,rd_avg=8.6,rd_max=9.6,rd_p50=8.6,rd_p95=9.4,rd_slow=0,reader_rd_avg=8.6,reader_rd_max=9.6,reader_rd_p50=8.6,reader_rd_p95=9.4,slots_ready_avg=2.2,q_wait_avg=0.0,q_wait_max=0.0,q_wait_p50=0.0,q_wait_p95=0.0,te_present=1,te_hz=44.8,te_jitter_ms=0.01,te_wait_ms_avg=0.00,te_wait_ms_max=0.00,te_timeout=0,dec_avg=27.4,dec_max=33.0,dec_frame_ms_avg=27.4,dec_frame_ms_max=33.0,blit_avg=3.2,blit_max=8.7,late_max=50.3,drift_ms=9,touch_read_ms_avg=0.8,touch_read_ms_max=0.9,touch_age_ms_max=9.7,heap_int=95283,heap_psram=7886536,track=0,scn=init,view=studio,hud=0,present_path=lvgl,rot=90,madctl=0x48,vrect=34-193,strips_per_frame=0,windows_per_frame=0,strip_ms_avg=0.00,frame_blit_ms_avg=0.0,lvgl_rows_clipped=0,dec_frames=61
+PERF,t_ms=32542,dec_fps=30.0,pres_fps=19.5,drop=0,over=0,frame_mismatch=0,rd_avg=10.0,rd_max=11.2,rd_p50=10.2,rd_p95=10.8,rd_slow=0,reader_rd_avg=10.0,reader_rd_max=11.2,reader_rd_p50=10.2,reader_rd_p95=10.8,slots_ready_avg=2.0,q_wait_avg=0.0,q_wait_max=0.0,q_wait_p50=0.0,q_wait_p95=0.0,te_present=1,te_hz=44.4,te_jitter_ms=0.00,te_wait_ms_avg=0.00,te_wait_ms_max=0.00,te_timeout=0,dec_avg=28.3,dec_max=33.4,dec_frame_ms_avg=28.3,dec_frame_ms_max=33.4,blit_avg=3.2,blit_max=9.1,late_max=50.3,drift_ms=6,touch_read_ms_avg=0.8,touch_read_ms_max=1.0,touch_age_ms_max=9.8,heap_int=95259,heap_psram=7886536,track=0,scn=init,view=studio,hud=0,present_path=lvgl,rot=90,madctl=0x48,vrect=34-193,strips_per_frame=0,windows_per_frame=0,strip_ms_avg=0.00,frame_blit_ms_avg=0.0,lvgl_rows_clipped=0,dec_frames=60
+PERF,t_ms=34544,dec_fps=30.0,pres_fps=20.0,drop=0,over=0,frame_mismatch=0,rd_avg=8.9,rd_max=11.1,rd_p50=8.9,rd_p95=10.6,rd_slow=0,reader_rd_avg=8.9,reader_rd_max=11.1,reader_rd_p50=8.9,reader_rd_p95=10.6,slots_ready_avg=2.2,q_wait_avg=0.0,q_wait_max=0.0,q_wait_p50=0.0,q_wait_p95=0.0,te_present=1,te_hz=44.5,te_jitter_ms=0.00,te_wait_ms_avg=0.00,te_wait_ms_max=0.00,te_timeout=0,dec_avg=27.4,dec_max=32.9,dec_frame_ms_avg=27.4,dec_frame_ms_max=32.9,blit_avg=3.3,blit_max=8.7,late_max=53.5,drift_ms=4,touch_read_ms_avg=0.8,touch_read_ms_max=1.1,touch_age_ms_max=9.8,heap_int=95271,heap_psram=7886536,track=0,scn=init,view=studio,hud=0,present_path=lvgl,rot=90,madctl=0x48,vrect=34-193,strips_per_frame=0,windows_per_frame=0,strip_ms_avg=0.00,frame_blit_ms_avg=0.0,lvgl_rows_clipped=0,dec_frames=60
+PERF,t_ms=36547,dec_fps=30.0,pres_fps=20.5,drop=0,over=0,frame_mismatch=0,rd_avg=9.5,rd_max=10.9,rd_p50=9.6,rd_p95=10.5,rd_slow=0,reader_rd_avg=9.5,reader_rd_max=10.9,reader_rd_p50=9.6,reader_rd_p95=10.5,slots_ready_avg=2.0,q_wait_avg=0.0,q_wait_max=0.0,q_wait_p50=0.0,q_wait_p95=0.0,te_present=1,te_hz=44.4,te_jitter_ms=0.00,te_wait_ms_avg=0.00,te_wait_ms_max=0.00,te_timeout=0,dec_avg=27.9,dec_max=33.2,dec_frame_ms_avg=27.9,dec_frame_ms_max=33.2,blit_avg=3.3,blit_max=8.2,late_max=55.7,drift_ms=1,touch_read_ms_avg=0.8,touch_read_ms_max=1.1,touch_age_ms_max=9.8,heap_int=102951,heap_psram=7886536,track=0,scn=init,view=studio,hud=0,present_path=lvgl,rot=90,madctl=0x48,vrect=34-193,strips_per_frame=0,windows_per_frame=0,strip_ms_avg=0.00,frame_blit_ms_avg=0.0,lvgl_rows_clipped=0,dec_frames=60
+PERF,t_ms=38575,dec_fps=30.1,pres_fps=20.7,drop=0,over=0,frame_mismatch=0,rd_avg=7.7,rd_max=9.3,rd_p50=7.6,rd_p95=8.6,rd_slow=0,reader_rd_avg=7.7,reader_rd_max=9.3,reader_rd_p50=7.6,reader_rd_p95=8.6,slots_ready_avg=2.5,q_wait_avg=0.0,q_wait_max=0.0,q_wait_p50=0.0,q_wait_p95=0.0,te_present=1,te_hz=44.9,te_jitter_ms=0.00,te_wait_ms_avg=0.00,te_wait_ms_max=0.00,te_timeout=0,dec_avg=26.4,dec_max=32.8,dec_frame_ms_avg=26.4,dec_frame_ms_max=32.8,blit_avg=3.3,blit_max=8.2,late_max=58.8,drift_ms=6,touch_read_ms_avg=0.8,touch_read_ms_max=1.1,touch_age_ms_max=10.0,heap_int=96295,heap_psram=7886536,track=0,scn=init,view=studio,hud=0,present_path=lvgl,rot=90,madctl=0x48,vrect=34-193,strips_per_frame=0,windows_per_frame=0,strip_ms_avg=0.00,frame_blit_ms_avg=0.0,lvgl_rows_clipped=0,dec_frames=61
+PERF,t_ms=40607,dec_fps=30.0,pres_fps=21.2,drop=0,over=0,frame_mismatch=0,rd_avg=9.3,rd_max=10.8,rd_p50=9.5,rd_p95=10.7,rd_slow=0,reader_rd_avg=9.3,reader_rd_max=10.8,reader_rd_p50=9.5,reader_rd_p95=10.7,slots_ready_avg=2.1,q_wait_avg=0.0,q_wait_max=0.0,q_wait_p50=0.0,q_wait_p95=0.0,te_present=1,te_hz=44.3,te_jitter_ms=0.00,te_wait_ms_avg=0.00,te_wait_ms_max=0.00,te_timeout=0,dec_avg=27.4,dec_max=33.5,dec_frame_ms_avg=27.4,dec_frame_ms_max=33.5,blit_avg=3.3,blit_max=8.5,late_max=53.0,drift_ms=8,touch_read_ms_avg=0.8,touch_read_ms_max=1.0,touch_age_ms_max=9.7,heap_int=95247,heap_psram=7886536,track=0,scn=init,view=studio,hud=0,present_path=lvgl,rot=90,madctl=0x48,vrect=34-193,strips_per_frame=0,windows_per_frame=0,strip_ms_avg=0.00,frame_blit_ms_avg=0.0,lvgl_rows_clipped=0,dec_frames=61
+PERF,t_ms=42609,dec_fps=30.0,pres_fps=20.0,drop=0,over=0,frame_mismatch=0,rd_avg=11.2,rd_max=12.6,rd_p50=11.1,rd_p95=12.4,rd_slow=0,reader_rd_avg=11.2,reader_rd_max=12.6,reader_rd_p50=11.1,reader_rd_p95=12.4,slots_ready_avg=2.0,q_wait_avg=0.0,q_wait_max=0.0,q_wait_p50=0.0,q_wait_p95=0.0,te_present=1,te_hz=44.5,te_jitter_ms=0.00,te_wait_ms_avg=0.00,te_wait_ms_max=0.00,te_timeout=0,dec_avg=28.9,dec_max=34.2,dec_frame_ms_avg=28.9,dec_frame_ms_max=34.2,blit_avg=3.3,blit_max=8.0,late_max=52.3,drift_ms=6,touch_read_ms_avg=0.8,touch_read_ms_max=1.0,touch_age_ms_max=10.0,heap_int=95247,heap_psram=7886536,track=0,scn=init,view=studio,hud=0,present_path=lvgl,rot=90,madctl=0x48,vrect=34-193,strips_per_frame=0,windows_per_frame=0,strip_ms_avg=0.00,frame_blit_ms_avg=0.0,lvgl_rows_clipped=0,dec_frames=60
+PERF,t_ms=44610,dec_fps=30.0,pres_fps=20.0,drop=0,over=0,frame_mismatch=0,rd_avg=12.2,rd_max=13.7,rd_p50=12.1,rd_p95=13.2,rd_slow=0,reader_rd_avg=12.2,reader_rd_max=13.7,reader_rd_p50=12.1,reader_rd_p95=13.2,slots_ready_avg=2.0,q_wait_avg=0.0,q_wait_max=0.0,q_wait_p50=0.0,q_wait_p95=0.0,te_present=1,te_hz=44.5,te_jitter_ms=0.01,te_wait_ms_avg=0.00,te_wait_ms_max=0.00,te_timeout=0,dec_avg=30.0,dec_max=35.6,dec_frame_ms_avg=30.0,dec_frame_ms_max=35.6,blit_avg=3.5,blit_max=8.3,late_max=57.6,drift_ms=5,touch_read_ms_avg=0.8,touch_read_ms_max=1.0,touch_age_ms_max=9.8,heap_int=95119,heap_psram=7886536,track=0,scn=init,view=studio,hud=0,present_path=lvgl,rot=90,madctl=0x48,vrect=34-193,strips_per_frame=0,windows_per_frame=0,strip_ms_avg=0.00,frame_blit_ms_avg=0.0,lvgl_rows_clipped=0,dec_frames=60
+PERF,t_ms=46616,dec_fps=29.9,pres_fps=18.4,drop=0,over=0,frame_mismatch=0,rd_avg=13.5,rd_max=15.2,rd_p50=13.6,rd_p95=14.7,rd_slow=0,reader_rd_avg=13.5,reader_rd_max=15.2,reader_rd_p50=13.6,reader_rd_p95=14.7,slots_ready_avg=2.0,q_wait_avg=0.0,q_wait_max=0.0,q_wait_p50=0.0,q_wait_p95=0.0,te_present=1,te_hz=44.9,te_jitter_ms=0.00,te_wait_ms_avg=0.00,te_wait_ms_max=0.00,te_timeout=0,dec_avg=31.1,dec_max=36.6,dec_frame_ms_avg=31.1,dec_frame_ms_max=36.6,blit_avg=3.4,blit_max=9.0,late_max=60.9,drift_ms=-1,touch_read_ms_avg=0.8,touch_read_ms_max=1.1,touch_age_ms_max=9.8,heap_int=98179,heap_psram=7886536,track=0,scn=init,view=studio,hud=0,present_path=lvgl,rot=90,madctl=0x48,vrect=34-193,strips_per_frame=0,windows_per_frame=0,strip_ms_avg=0.00,frame_blit_ms_avg=0.0,lvgl_rows_clipped=0,dec_frames=60
+PERF,t_ms=48618,dec_fps=30.0,pres_fps=19.5,drop=0,over=0,frame_mismatch=0,rd_avg=13.3,rd_max=14.6,rd_p50=13.3,rd_p95=14.5,rd_slow=0,reader_rd_avg=13.3,reader_rd_max=14.6,reader_rd_p50=13.3,reader_rd_p95=14.5,slots_ready_avg=2.0,q_wait_avg=0.0,q_wait_max=0.0,q_wait_p50=0.0,q_wait_p95=0.0,te_present=1,te_hz=44.5,te_jitter_ms=0.01,te_wait_ms_avg=0.00,te_wait_ms_max=0.00,te_timeout=0,dec_avg=30.6,dec_max=36.0,dec_frame_ms_avg=30.6,dec_frame_ms_max=36.0,blit_avg=3.4,blit_max=8.5,late_max=61.3,drift_ms=-3,touch_read_ms_avg=0.8,touch_read_ms_max=1.0,touch_age_ms_max=9.8,heap_int=95111,heap_psram=7886536,track=0,scn=init,view=studio,hud=0,present_path=lvgl,rot=90,madctl=0x48,vrect=34-193,strips_per_frame=0,windows_per_frame=0,strip_ms_avg=0.00,frame_blit_ms_avg=0.0,lvgl_rows_clipped=0,dec_frames=60
+#2
+ESP-ROM:esp32s3-20210327
+Build:Mar 27 2021
+rst:0x1 (POWERON),boot:0x8 (SPI_FAST_FLASH_BOOT)
+SPIWP:0xee
+mode:DIO, clock div:1
+load:0x3fce2820,len:0x14f0
+load:0x403c8700,len:0xda0
+load:0x403cb700,len:0x2f58
+entry 0x403c8908
+I (24) boot: ESP-IDF v6.0.1 2nd stage bootloader
+I (25) boot: compile time Sep 15 2026 13:58:05
+I (25) boot: Multicore bootloader
+I (25) boot: chip revision: v0.2
+I (28) boot: efuse block revision: v1.4
+I (31) boot.esp32s3: Boot SPI Speed : 80MHz
+I (35) boot.esp32s3: SPI Mode       : DIO
+I (39) boot.esp32s3: SPI Flash Size : 16MB
+I (43) boot: Enabling RNG early entropy source...
+I (47) boot: Partition Table:
+I (50) boot: ## Label            Usage          Type ST Offset   Length
+I (56) boot:  0 nvs              WiFi data        01 02 00009000 00006000
+I (63) boot:  1 phy_init         RF data          01 01 0000f000 00001000
+I (69) boot:  2 factory          factory app      00 00 00010000 00100000
+I (76) boot: End of partition table
+I (79) esp_image: segment 0: paddr=00010020 vaddr=3c0a0020 size=1915ch (102748) map
+I (105) esp_image: segment 1: paddr=00029184 vaddr=3fc96600 size=06234h ( 25140) load
+I (110) esp_image: segment 2: paddr=0002f3c0 vaddr=40374000 size=00c58h (  3160) load
+I (111) esp_image: segment 3: paddr=00030020 vaddr=42000020 size=9111ch (594204) map
+I (223) esp_image: segment 4: paddr=000c1144 vaddr=40374c58 size=11918h ( 71960) load
+I (239) esp_image: segment 5: paddr=000d2a64 vaddr=50000000 size=00024h (    36) load
+I (247) boot: Loaded app from partition at offset 0x10000
+I (248) boot: Disabling RNG early entropy source...
+I (258) octal_psram: vendor id    : 0x0d (AP)
+I (258) octal_psram: dev id       : 0x02 (generation 3)
+I (259) octal_psram: density      : 0x03 (64 Mbit)
+I (261) octal_psram: good-die     : 0x01 (Pass)
+I (265) octal_psram: Latency      : 0x01 (Fixed)
+I (269) octal_psram: VCC          : 0x01 (3V)
+I (273) octal_psram: SRF          : 0x01 (Fast Refresh)
+I (278) octal_psram: BurstType    : 0x01 (Hybrid Wrap)
+I (283) octal_psram: BurstLen     : 0x01 (32 Byte)
+I (288) octal_psram: Readlatency  : 0x02 (10 cycles@Fixed)
+I (293) octal_psram: DriveStrength: 0x00 (1/1)
+I (297) MSPI Timing: Enter psram timing tuning
+I (302) esp_psram: Found 8MB PSRAM device
+I (305) esp_psram: Speed: 80MHz
+I (308) cpu_start: Multicore app
+I (724) esp_psram: SPI SRAM memory test OK
+I (732) cpu_start: GPIO 44 and 43 are used as console UART I/O pins
+I (733) cpu_start: Pro cpu start user code
+I (733) cpu_start: cpu freq: 240000000 Hz
+I (734) app_init: Application information:
+I (738) app_init: Project name:     tft_video_player
+I (743) app_init: App version:      vp-v0.5-4-g0fbfe36
+I (748) app_init: Compile time:     Sep 16 2026 11:38:42
+I (753) app_init: ELF file SHA256:  8e1f9520a...
+I (757) app_init: ESP-IDF:          v6.0.1
+I (761) efuse_init: Min chip rev:     v0.0
+I (765) efuse_init: Max chip rev:     v0.99
+I (769) efuse_init: Chip rev:         v0.2
+I (773) heap_init: Initializing. RAM available for dynamic allocation:
+I (779) heap_init: At 3FCC0C30 len 00028AE0 (162 KiB): RAM
+I (784) heap_init: At 3FCE9710 len 00005724 (21 KiB): RAM
+I (789) heap_init: At 3FCF0000 len 00008000 (32 KiB): DRAM
+I (794) heap_init: At 600FE000 len 00001FE8 (7 KiB): RTCRAM
+I (800) esp_psram: Adding pool of 8192K of PSRAM memory to heap allocator
+I (807) spi_flash: detected chip: generic
+I (810) spi_flash: flash io: dio
+I (813) sleep_gpio: Configure to isolate all GPIO pins in sleep state
+I (819) sleep_gpio: Enable automatic switching of GPIO sleep configuration
+I (826) main_task: Started on CPU0
+I (850) esp_psram: Reserving pool of 32K of internal memory for DMA/internal allocations
+I (850) main_task: Calling app_main()
+I (851) MAIN_APP: ==========================================================
+I (857) MAIN_APP:    S3G4 LAB — REPRODUCTOR DE VIDEO FASE 5a (TE SYNC + AUDIT)
+I (864) MAIN_APP:    Display: ILI9488 (8080 8-bit @ 16.0 MHz, TE pin en GPIO 7)
+I (871) MAIN_APP:    Touch:   FT6236 Capacitivo (Desacoplado, sondeo 10 ms)
+I (878) MAIN_APP:    Storage: MicroSD SPI @ 20 MHz (Prefetch asincrono Core 0)
+I (885) MAIN_APP:    Core 1:  player_task (Motor video + cola comandos + PTS)
+I (892) MAIN_APP:    Core 0:  gui_task (LVGL) + touch_task + avi_reader_task
+I (898) MAIN_APP: ==========================================================
+I (936) SETTINGS_NVS: NVS 's3g4vid' inicializado con exito
+I (936) LCD_BUS: lcd_bus inicializado con mutex recursivo.
+I (936) TEAR_DIAG: Inicializando diagnostico de tearing. Modo inicial: OFF (normal)
+TEAR_DIAG,mode=OFF (normal)
+I (946) ili9488_8080: Iniciando hardware reset...
+I (1100) ili9488_8080: Configurando bus LCD 8080 de 8 bits a 16 MHz...
+I (1100) ili9488_8080: Enviando registros de inicialización ILI9488 IPS...
+I (1242) ili9488_8080: Inicialización completada.
+I (1242) LCD_BUS: Configurando pin TE en GPIO 7 (sin pull, flanco subida)...
+I (1493) LCD_BUS: TE,present=1,hz=44.0 (pulsos=11 en 249 ms)
+TE,present=1,hz=44.0
+I (1493) ft6236_i2c: Configurando bus I2C maestro (SDA: 6, SCL: 5)...
+I (1496) ft6236_i2c: Escaneando bus I2C (0x08 a 0x77)...
+I (1507) ft6236_i2c:   -> Dispositivo I2C detectado en direccion: 0x38
+I (1517) ft6236_i2c:   -> Chip ID verificado: 0x36
+I (1517) ft6236_i2c:   -> Panel/Vendor ID: 0x11
+I (1517) ft6236_i2c: Panel táctil inicializado con éxito.
+I (1521) MAIN_APP: Probando robustez de montaje MicroSD (10 ciclos @ 20000 kHz)...
+I (1528) SDCARD_SPI: --- Iniciando prueba de 10 ciclos de montaje a 20000 kHz ---
+I (1585) SDCARD_SPI: Iniciando montaje MicroSD SPI (CS:21, MOSI:11, CLK:13, MISO:15) @ 20000 kHz...
+I (1585) SDCARD_SPI: Iniciando secuencia de recuperacion SPI para MicroSD...
+I (1601) SDCARD_SPI: CMD12 drenado: 512 bytes (tarjeta lista/released=0)
+I (1602) SDCARD_SPI: Secuencia de recuperacion completada.
+I (1676) SDCARD_SPI: MicroSD montada con éxito en /sdcard (20000 kHz)
+Name: SD32G
+Type: SDHC
+Speed: 20.00 MHz (limit: 20.00 MHz)
+Size: 29664MB
+CSD: ver=2, sector_size=512, capacity=60751872 read_bl_len=9
+SSR: bus_width=1
+I (1685) SDCARD_SPI: --- Contenido del directorio /sdcard ---
+I (1692) SDCARD_SPI:   [D] System Volume Information (0 bytes)
+I (1697) SDCARD_SPI:   [F] harry.avi (74712162 bytes)
+I (1701) SDCARD_SPI:   [F] ariana.avi (71532292 bytes)
+I (1706) SDCARD_SPI:   [F] lesserafim.avi (70694708 bytes)
+I (1711) SDCARD_SPI:   [F] meovv.avi (62183914 bytes)
+I (1715) SDCARD_SPI:   [F] lesserafim.jpg (1802 bytes)
+I (1720) SDCARD_SPI:   [F] lesserafim.json (82 bytes)
+I (1725) SDCARD_SPI:   [F] meovv.jpg (4063 bytes)
+I (1730) SDCARD_SPI:   [F] meovv.json (49 bytes)
+I (1734) SDCARD_SPI:   [F] harry.jpg (3481 bytes)
+I (1740) SDCARD_SPI:   [F] harry.json (61 bytes)
+I (1743) SDCARD_SPI:   [F] ariana.jpg (2993 bytes)
+I (1747) SDCARD_SPI:   [F] ariana.json (77 bytes)
+I (1752) SDCARD_SPI: ---------------------------------------------
+I (1761) SDCARD_SPI: Ciclo 1/10: OK
+I (1762) SDCARD_SPI: MicroSD desmontada.
+I (1814) SDCARD_SPI: Iniciando montaje MicroSD SPI (CS:21, MOSI:11, CLK:13, MISO:15) @ 20000 kHz...
+I (1814) SDCARD_SPI: Iniciando secuencia de recuperacion SPI para MicroSD...
+I (1820) SDCARD_SPI: CMD12 drenado: 16 bytes (tarjeta lista/released=1)
+I (1825) SDCARD_SPI: Secuencia de recuperacion completada.
+I (1904) SDCARD_SPI: MicroSD montada con éxito en /sdcard (20000 kHz)
+Name: SD32G
+Type: SDHC
+Speed: 20.00 MHz (limit: 20.00 MHz)
+Size: 29664MB
+CSD: ver=2, sector_size=512, capacity=60751872 read_bl_len=9
+SSR: bus_width=1
+I (1913) SDCARD_SPI: --- Contenido del directorio /sdcard ---
+I (1920) SDCARD_SPI:   [D] System Volume Information (0 bytes)
+I (1925) SDCARD_SPI:   [F] harry.avi (74712162 bytes)
+I (1929) SDCARD_SPI:   [F] ariana.avi (71532292 bytes)
+I (1933) SDCARD_SPI:   [F] lesserafim.avi (70694708 bytes)
+I (1939) SDCARD_SPI:   [F] meovv.avi (62183914 bytes)
+I (1943) SDCARD_SPI:   [F] lesserafim.jpg (1802 bytes)
+I (1948) SDCARD_SPI:   [F] lesserafim.json (82 bytes)
+I (1953) SDCARD_SPI:   [F] meovv.jpg (4063 bytes)
+I (1957) SDCARD_SPI:   [F] meovv.json (49 bytes)
+I (1962) SDCARD_SPI:   [F] harry.jpg (3481 bytes)
+I (1968) SDCARD_SPI:   [F] harry.json (61 bytes)
+I (1971) SDCARD_SPI:   [F] ariana.jpg (2993 bytes)
+I (1975) SDCARD_SPI:   [F] ariana.json (77 bytes)
+I (1979) SDCARD_SPI: ---------------------------------------------
+I (1989) SDCARD_SPI: Ciclo 2/10: OK
+I (1990) SDCARD_SPI: MicroSD desmontada.
+I (2042) SDCARD_SPI: Iniciando montaje MicroSD SPI (CS:21, MOSI:11, CLK:13, MISO:15) @ 20000 kHz...
+I (2042) SDCARD_SPI: Iniciando secuencia de recuperacion SPI para MicroSD...
+I (2048) SDCARD_SPI: CMD12 drenado: 16 bytes (tarjeta lista/released=1)
+I (2053) SDCARD_SPI: Secuencia de recuperacion completada.
+I (2132) SDCARD_SPI: MicroSD montada con éxito en /sdcard (20000 kHz)
+Name: SD32G
+Type: SDHC
+Speed: 20.00 MHz (limit: 20.00 MHz)
+Size: 29664MB
+CSD: ver=2, sector_size=512, capacity=60751872 read_bl_len=9
+SSR: bus_width=1
+I (2141) SDCARD_SPI: --- Contenido del directorio /sdcard ---
+I (2148) SDCARD_SPI:   [D] System Volume Information (0 bytes)
+I (2153) SDCARD_SPI:   [F] harry.avi (74712162 bytes)
+I (2157) SDCARD_SPI:   [F] ariana.avi (71532292 bytes)
+I (2161) SDCARD_SPI:   [F] lesserafim.avi (70694708 bytes)
+I (2167) SDCARD_SPI:   [F] meovv.avi (62183914 bytes)
+I (2171) SDCARD_SPI:   [F] lesserafim.jpg (1802 bytes)
+I (2176) SDCARD_SPI:   [F] lesserafim.json (82 bytes)
+I (2181) SDCARD_SPI:   [F] meovv.jpg (4063 bytes)
+I (2185) SDCARD_SPI:   [F] meovv.json (49 bytes)
+I (2190) SDCARD_SPI:   [F] harry.jpg (3481 bytes)
+I (2196) SDCARD_SPI:   [F] harry.json (61 bytes)
+I (2199) SDCARD_SPI:   [F] ariana.jpg (2993 bytes)
+I (2203) SDCARD_SPI:   [F] ariana.json (77 bytes)
+I (2207) SDCARD_SPI: ---------------------------------------------
+I (2217) SDCARD_SPI: Ciclo 3/10: OK
+I (2218) SDCARD_SPI: MicroSD desmontada.
+I (2270) SDCARD_SPI: Iniciando montaje MicroSD SPI (CS:21, MOSI:11, CLK:13, MISO:15) @ 20000 kHz...
+I (2270) SDCARD_SPI: Iniciando secuencia de recuperacion SPI para MicroSD...
+I (2276) SDCARD_SPI: CMD12 drenado: 16 bytes (tarjeta lista/released=1)
+I (2281) SDCARD_SPI: Secuencia de recuperacion completada.
+I (2360) SDCARD_SPI: MicroSD montada con éxito en /sdcard (20000 kHz)
+Name: SD32G
+Type: SDHC
+Speed: 20.00 MHz (limit: 20.00 MHz)
+Size: 29664MB
+CSD: ver=2, sector_size=512, capacity=60751872 read_bl_len=9
+SSR: bus_width=1
+I (2369) SDCARD_SPI: --- Contenido del directorio /sdcard ---
+I (2376) SDCARD_SPI:   [D] System Volume Information (0 bytes)
+I (2381) SDCARD_SPI:   [F] harry.avi (74712162 bytes)
+I (2385) SDCARD_SPI:   [F] ariana.avi (71532292 bytes)
+I (2389) SDCARD_SPI:   [F] lesserafim.avi (70694708 bytes)
+I (2395) SDCARD_SPI:   [F] meovv.avi (62183914 bytes)
+I (2399) SDCARD_SPI:   [F] lesserafim.jpg (1802 bytes)
+I (2404) SDCARD_SPI:   [F] lesserafim.json (82 bytes)
+I (2409) SDCARD_SPI:   [F] meovv.jpg (4063 bytes)
+I (2413) SDCARD_SPI:   [F] meovv.json (49 bytes)
+I (2418) SDCARD_SPI:   [F] harry.jpg (3481 bytes)
+I (2424) SDCARD_SPI:   [F] harry.json (61 bytes)
+I (2427) SDCARD_SPI:   [F] ariana.jpg (2993 bytes)
+I (2431) SDCARD_SPI:   [F] ariana.json (77 bytes)
+I (2435) SDCARD_SPI: ---------------------------------------------
+I (2445) SDCARD_SPI: Ciclo 4/10: OK
+I (2446) SDCARD_SPI: MicroSD desmontada.
+I (2498) SDCARD_SPI: Iniciando montaje MicroSD SPI (CS:21, MOSI:11, CLK:13, MISO:15) @ 20000 kHz...
+I (2498) SDCARD_SPI: Iniciando secuencia de recuperacion SPI para MicroSD...
+I (2504) SDCARD_SPI: CMD12 drenado: 16 bytes (tarjeta lista/released=1)
+I (2509) SDCARD_SPI: Secuencia de recuperacion completada.
+I (2588) SDCARD_SPI: MicroSD montada con éxito en /sdcard (20000 kHz)
+Name: SD32G
+Type: SDHC
+Speed: 20.00 MHz (limit: 20.00 MHz)
+Size: 29664MB
+CSD: ver=2, sector_size=512, capacity=60751872 read_bl_len=9
+SSR: bus_width=1
+I (2597) SDCARD_SPI: --- Contenido del directorio /sdcard ---
+I (2604) SDCARD_SPI:   [D] System Volume Information (0 bytes)
+I (2609) SDCARD_SPI:   [F] harry.avi (74712162 bytes)
+I (2613) SDCARD_SPI:   [F] ariana.avi (71532292 bytes)
+I (2617) SDCARD_SPI:   [F] lesserafim.avi (70694708 bytes)
+I (2623) SDCARD_SPI:   [F] meovv.avi (62183914 bytes)
+I (2627) SDCARD_SPI:   [F] lesserafim.jpg (1802 bytes)
+I (2632) SDCARD_SPI:   [F] lesserafim.json (82 bytes)
+I (2637) SDCARD_SPI:   [F] meovv.jpg (4063 bytes)
+I (2641) SDCARD_SPI:   [F] meovv.json (49 bytes)
+I (2646) SDCARD_SPI:   [F] harry.jpg (3481 bytes)
+I (2652) SDCARD_SPI:   [F] harry.json (61 bytes)
+I (2655) SDCARD_SPI:   [F] ariana.jpg (2993 bytes)
+I (2659) SDCARD_SPI:   [F] ariana.json (77 bytes)
+I (2663) SDCARD_SPI: ---------------------------------------------
+I (2673) SDCARD_SPI: Ciclo 5/10: OK
+I (2674) SDCARD_SPI: MicroSD desmontada.
+I (2726) SDCARD_SPI: Iniciando montaje MicroSD SPI (CS:21, MOSI:11, CLK:13, MISO:15) @ 20000 kHz...
+I (2726) SDCARD_SPI: Iniciando secuencia de recuperacion SPI para MicroSD...
+I (2732) SDCARD_SPI: CMD12 drenado: 16 bytes (tarjeta lista/released=1)
+I (2737) SDCARD_SPI: Secuencia de recuperacion completada.
+I (2816) SDCARD_SPI: MicroSD montada con éxito en /sdcard (20000 kHz)
+Name: SD32G
+Type: SDHC
+Speed: 20.00 MHz (limit: 20.00 MHz)
+Size: 29664MB
+CSD: ver=2, sector_size=512, capacity=60751872 read_bl_len=9
+SSR: bus_width=1
+I (2825) SDCARD_SPI: --- Contenido del directorio /sdcard ---
+I (2832) SDCARD_SPI:   [D] System Volume Information (0 bytes)
+I (2837) SDCARD_SPI:   [F] harry.avi (74712162 bytes)
+I (2841) SDCARD_SPI:   [F] ariana.avi (71532292 bytes)
+I (2845) SDCARD_SPI:   [F] lesserafim.avi (70694708 bytes)
+I (2851) SDCARD_SPI:   [F] meovv.avi (62183914 bytes)
+I (2855) SDCARD_SPI:   [F] lesserafim.jpg (1802 bytes)
+I (2860) SDCARD_SPI:   [F] lesserafim.json (82 bytes)
+I (2865) SDCARD_SPI:   [F] meovv.jpg (4063 bytes)
+I (2869) SDCARD_SPI:   [F] meovv.json (49 bytes)
+I (2874) SDCARD_SPI:   [F] harry.jpg (3481 bytes)
+I (2880) SDCARD_SPI:   [F] harry.json (61 bytes)
+I (2883) SDCARD_SPI:   [F] ariana.jpg (2993 bytes)
+I (2887) SDCARD_SPI:   [F] ariana.json (77 bytes)
+I (2891) SDCARD_SPI: ---------------------------------------------
+I (2901) SDCARD_SPI: Ciclo 6/10: OK
+I (2902) SDCARD_SPI: MicroSD desmontada.
+I (2954) SDCARD_SPI: Iniciando montaje MicroSD SPI (CS:21, MOSI:11, CLK:13, MISO:15) @ 20000 kHz...
+I (2954) SDCARD_SPI: Iniciando secuencia de recuperacion SPI para MicroSD...
+I (2960) SDCARD_SPI: CMD12 drenado: 16 bytes (tarjeta lista/released=1)
+I (2965) SDCARD_SPI: Secuencia de recuperacion completada.
+I (3044) SDCARD_SPI: MicroSD montada con éxito en /sdcard (20000 kHz)
+Name: SD32G
+Type: SDHC
+Speed: 20.00 MHz (limit: 20.00 MHz)
+Size: 29664MB
+CSD: ver=2, sector_size=512, capacity=60751872 read_bl_len=9
+SSR: bus_width=1
+I (3053) SDCARD_SPI: --- Contenido del directorio /sdcard ---
+I (3060) SDCARD_SPI:   [D] System Volume Information (0 bytes)
+I (3065) SDCARD_SPI:   [F] harry.avi (74712162 bytes)
+I (3069) SDCARD_SPI:   [F] ariana.avi (71532292 bytes)
+I (3073) SDCARD_SPI:   [F] lesserafim.avi (70694708 bytes)
+I (3079) SDCARD_SPI:   [F] meovv.avi (62183914 bytes)
+I (3083) SDCARD_SPI:   [F] lesserafim.jpg (1802 bytes)
+I (3088) SDCARD_SPI:   [F] lesserafim.json (82 bytes)
+I (3093) SDCARD_SPI:   [F] meovv.jpg (4063 bytes)
+I (3098) SDCARD_SPI:   [F] meovv.json (49 bytes)
+I (3102) SDCARD_SPI:   [F] harry.jpg (3481 bytes)
+I (3108) SDCARD_SPI:   [F] harry.json (61 bytes)
+I (3111) SDCARD_SPI:   [F] ariana.jpg (2993 bytes)
+I (3115) SDCARD_SPI:   [F] ariana.json (77 bytes)
+I (3119) SDCARD_SPI: ---------------------------------------------
+I (3129) SDCARD_SPI: Ciclo 7/10: OK
+I (3130) SDCARD_SPI: MicroSD desmontada.
+I (3182) SDCARD_SPI: Iniciando montaje MicroSD SPI (CS:21, MOSI:11, CLK:13, MISO:15) @ 20000 kHz...
+I (3182) SDCARD_SPI: Iniciando secuencia de recuperacion SPI para MicroSD...
+I (3188) SDCARD_SPI: CMD12 drenado: 16 bytes (tarjeta lista/released=1)
+I (3193) SDCARD_SPI: Secuencia de recuperacion completada.
+I (3272) SDCARD_SPI: MicroSD montada con éxito en /sdcard (20000 kHz)
+Name: SD32G
+Type: SDHC
+Speed: 20.00 MHz (limit: 20.00 MHz)
+Size: 29664MB
+CSD: ver=2, sector_size=512, capacity=60751872 read_bl_len=9
+SSR: bus_width=1
+I (3281) SDCARD_SPI: --- Contenido del directorio /sdcard ---
+I (3288) SDCARD_SPI:   [D] System Volume Information (0 bytes)
+I (3293) SDCARD_SPI:   [F] harry.avi (74712162 bytes)
+I (3297) SDCARD_SPI:   [F] ariana.avi (71532292 bytes)
+I (3301) SDCARD_SPI:   [F] lesserafim.avi (70694708 bytes)
+I (3307) SDCARD_SPI:   [F] meovv.avi (62183914 bytes)
+I (3311) SDCARD_SPI:   [F] lesserafim.jpg (1802 bytes)
+I (3316) SDCARD_SPI:   [F] lesserafim.json (82 bytes)
+I (3321) SDCARD_SPI:   [F] meovv.jpg (4063 bytes)
+I (3325) SDCARD_SPI:   [F] meovv.json (49 bytes)
+I (3330) SDCARD_SPI:   [F] harry.jpg (3481 bytes)
+I (3336) SDCARD_SPI:   [F] harry.json (61 bytes)
+I (3339) SDCARD_SPI:   [F] ariana.jpg (2993 bytes)
+I (3343) SDCARD_SPI:   [F] ariana.json (77 bytes)
+I (3347) SDCARD_SPI: ---------------------------------------------
+I (3357) SDCARD_SPI: Ciclo 8/10: OK
+I (3358) SDCARD_SPI: MicroSD desmontada.
+I (3410) SDCARD_SPI: Iniciando montaje MicroSD SPI (CS:21, MOSI:11, CLK:13, MISO:15) @ 20000 kHz...
+I (3410) SDCARD_SPI: Iniciando secuencia de recuperacion SPI para MicroSD...
+I (3416) SDCARD_SPI: CMD12 drenado: 16 bytes (tarjeta lista/released=1)
+I (3421) SDCARD_SPI: Secuencia de recuperacion completada.
+I (3500) SDCARD_SPI: MicroSD montada con éxito en /sdcard (20000 kHz)
+Name: SD32G
+Type: SDHC
+Speed: 20.00 MHz (limit: 20.00 MHz)
+Size: 29664MB
+CSD: ver=2, sector_size=512, capacity=60751872 read_bl_len=9
+SSR: bus_width=1
+I (3509) SDCARD_SPI: --- Contenido del directorio /sdcard ---
+I (3516) SDCARD_SPI:   [D] System Volume Information (0 bytes)
+I (3521) SDCARD_SPI:   [F] harry.avi (74712162 bytes)
+I (3525) SDCARD_SPI:   [F] ariana.avi (71532292 bytes)
+I (3529) SDCARD_SPI:   [F] lesserafim.avi (70694708 bytes)
+I (3535) SDCARD_SPI:   [F] meovv.avi (62183914 bytes)
+I (3539) SDCARD_SPI:   [F] lesserafim.jpg (1802 bytes)
+I (3544) SDCARD_SPI:   [F] lesserafim.json (82 bytes)
+I (3549) SDCARD_SPI:   [F] meovv.jpg (4063 bytes)
+I (3553) SDCARD_SPI:   [F] meovv.json (49 bytes)
+I (3558) SDCARD_SPI:   [F] harry.jpg (3481 bytes)
+I (3564) SDCARD_SPI:   [F] harry.json (61 bytes)
+I (3567) SDCARD_SPI:   [F] ariana.jpg (2993 bytes)
+I (3571) SDCARD_SPI:   [F] ariana.json (77 bytes)
+I (3575) SDCARD_SPI: ---------------------------------------------
+I (3585) SDCARD_SPI: Ciclo 9/10: OK
+I (3586) SDCARD_SPI: MicroSD desmontada.
+I (3638) SDCARD_SPI: Iniciando montaje MicroSD SPI (CS:21, MOSI:11, CLK:13, MISO:15) @ 20000 kHz...
+I (3638) SDCARD_SPI: Iniciando secuencia de recuperacion SPI para MicroSD...
+I (3644) SDCARD_SPI: CMD12 drenado: 16 bytes (tarjeta lista/released=1)
+I (3649) SDCARD_SPI: Secuencia de recuperacion completada.
+I (3728) SDCARD_SPI: MicroSD montada con éxito en /sdcard (20000 kHz)
+Name: SD32G
+Type: SDHC
+Speed: 20.00 MHz (limit: 20.00 MHz)
+Size: 29664MB
+CSD: ver=2, sector_size=512, capacity=60751872 read_bl_len=9
+SSR: bus_width=1
+I (3737) SDCARD_SPI: --- Contenido del directorio /sdcard ---
+I (3744) SDCARD_SPI:   [D] System Volume Information (0 bytes)
+I (3749) SDCARD_SPI:   [F] harry.avi (74712162 bytes)
+I (3753) SDCARD_SPI:   [F] ariana.avi (71532292 bytes)
+I (3757) SDCARD_SPI:   [F] lesserafim.avi (70694708 bytes)
+I (3763) SDCARD_SPI:   [F] meovv.avi (62183914 bytes)
+I (3767) SDCARD_SPI:   [F] lesserafim.jpg (1802 bytes)
+I (3772) SDCARD_SPI:   [F] lesserafim.json (82 bytes)
+I (3777) SDCARD_SPI:   [F] meovv.jpg (4063 bytes)
+I (3781) SDCARD_SPI:   [F] meovv.json (49 bytes)
+I (3786) SDCARD_SPI:   [F] harry.jpg (3481 bytes)
+I (3792) SDCARD_SPI:   [F] harry.json (61 bytes)
+I (3795) SDCARD_SPI:   [F] ariana.jpg (2993 bytes)
+I (3799) SDCARD_SPI:   [F] ariana.json (77 bytes)
+I (3803) SDCARD_SPI: ---------------------------------------------
+I (3813) SDCARD_SPI: Ciclo 10/10: OK
+I (3813) SDCARD_SPI: Prueba montaje: 10/10 ciclos exitosos a 20000 kHz
+SD_FREQ_TEST,freq_khz=20000,passed=10/10
+I (3822) SDCARD_SPI: Tarjeta ya montada en /sdcard
+I (3827) MEDIA_LIB: Iniciando escaneo dinamico de biblioteca multimedia...
+MEDIA,file=/sdcard/ariana.avi,size=71532292,w=320,h=480,us_per_frame=33333,fps_milli=30000,frames=9003,idx1=1,chunk_avg=7920,chunk_max=26667,subsampling=420,compat=1,reason=ok
+W (4076) MEDIA_LIB: Miniatura /sdcard/ariana.jpg tiene dimensiones 144x80 != 144x81, usando marcador
+MEDIA,file=/sdcard/harry.avi,size=74712162,w=320,h=480,us_per_frame=33333,fps_milli=30000,frames=6029,idx1=1,chunk_avg=12366,chunk_max=28289,subsampling=420,compat=1,reason=ok
+W (4269) MEDIA_LIB: Miniatura /sdcard/harry.jpg tiene dimensiones 144x80 != 144x81, usando marcador
+MEDIA,file=/sdcard/lesserafim.avi,size=70694708,w=320,h=480,us_per_frame=33333,fps_milli=30000,frames=5988,idx1=1,chunk_avg=11780,chunk_max=35142,subsampling=420,compat=1,reason=ok
+W (4452) MEDIA_LIB: Miniatura /sdcard/lesserafim.jpg tiene dimensiones 144x80 != 144x81, usando marcador
+MEDIA,file=/sdcard/meovv.avi,size=62183914,w=320,h=480,us_per_frame=33333,fps_milli=30000,frames=6136,idx1=1,chunk_avg=10108,chunk_max=20756,subsampling=420,compat=1,reason=ok
+W (4637) MEDIA_LIB: Miniatura /sdcard/meovv.jpg tiene dimensiones 144x80 != 144x81, usando marcador
+I (4643) SETTINGS_NVS: Poda NVS: 0 claves pos_* obsoletas borradas
+LIB,count=4,compatible=4,incompatible=0,with_json=4,with_thumb=4,scan_ms=816
+I (4648) MEDIA_LIB: Escaneo completado en 816 ms: 4 videos (4 compatibles, 0 incompatibles, 4 json, 4 thumb)
+I (4657) AVI_PLAYER_SIMD: Inicializando motor de video SIMD (esp_new_jpeg) con prefetch task...
+I (4666) AVI_PLAYER_SIMD: Tarea avi_reader_task iniciada en Core 0.
+I (4672) AVI_PLAYER_SIMD: Decoder Studio configurado: scale=240x160, rot=0 (salida 240x160)
+I (4680) AVI_PLAYER_SIMD: Decodificadores SIMD Fullscreen y Studio inicializados con éxito.
+I (4688) PLAYER: Iniciando subsistema player...
+I (4696) PLAYER: player_task iniciada con exito en CPU 1.
+I (4696) PLAYER: Tarea player_task ejecutandose en CPU 1.
+I (4697) MAIN_APP: Tarea touch_task iniciada en Core 0 (prioridad 6, intervalo 10 ms).
+I (4703) SETTINGS_NVS: Ajustes NVS leidos: bright=70, osd=3000, repeat=1, resume=1, last='/sdcard/ariana.avi'
+I (4697) MAIN_APP: Iniciando gui_task en Core 0...
+I (4720) PLAYER: Abriendo pista 0: /sdcard/ariana.avi
+I (4729) AVI_PLAYER_SIMD: Abriendo archivo AVI MJPEG: /sdcard/ariana.avi
+I (4797) AVI_PLAYER_SIMD: Decoder Studio configurado: scale=160x240, rot=3 (salida 240x160)
+I (4809) MAIN_APP: Bucle de eventos GUI LVGL iniciado en Core 0 (refresh: 250 ms).
+I (4839) AVI_PLAYER_SIMD: idx1 hallado en O(1) tras LIST movi en offset 71388236 (tam: 144048 B)
+I (4698) MAIN_APP: DIAG_HEAP [POST_INIT]: int=96655, psram=8077528 | STACK_FREE: touch=2464, gui=7068, player=6580, auto=0
+Heap summary for capabilities 0x00000800:
+  At 0x3fcc95d8 len 32767 free 32031 allocated 0 min_free 32031
+    largest_free_block 31744 alloc_blocks 0 free_blocks 1 total_blocks 1
+  At 0x600fe000 len 8168 free 7788 allocated 0 min_free 7788
+    largest_free_block 7680 alloc_blocks 0 free_blocks 1 total_blocks 1
+  At 0x3fce9710 len 22308 free 124 allocated 21056 min_free 124
+    largest_free_block 44 alloc_blocks 98 free_blocks 4 total_blocks 102
+  At 0x3fcf0000 len 32768 free 32032 allocated 0 min_free 32032
+    largest_free_block 31744 alloc_blocks 0 free_blocks 1 total_blocks 1
+  At 0x3fcc0c30 len 166624 free 24220 allocated 141256 min_free 7832
+    largest_free_block 16384 alloc_blocks 52 free_blocks 9 total_blocks 61
+  Totals:
+    free 96195 allocated 162312 min_free 79807 largest_free_block 31744
+I (5002) MAIN_APP: app_main inicializacion completada.
+I (5003) AVI_PLAYER_SIMD: Tabla idx1 cargada: 9003 cuadros indexados en PSRAM
+I (5003) main_task: Returned from app_main()
+I (5010) AVI_PLAYER_SIMD: AVI Abierto: 320x480 @ 30 FPS, 9003 cuadros (5:00), preroll listo (3 frames)
+I (5018) PLAYER: Reanudando '/sdcard/ariana.avi' en 174198 ms (NVS resume=1)
+I (5061) AVI_PLAYER_SIMD: Seek completado a cuadro 5225/9003
+PERF,t_ms=4262,dec_fps=0.0,pres_fps=0.0,drop=0,over=0,frame_mismatch=0,rd_avg=3.9,rd_max=11.5,rd_p50=1.5,rd_p95=11.5,rd_slow=0,reader_rd_avg=3.9,reader_rd_max=11.5,reader_rd_p50=1.5,reader_rd_p95=11.5,slots_ready_avg=1.8,q_wait_avg=0.0,q_wait_max=0.0,q_wait_p50=0.0,q_wait_p95=0.0,te_present=1,te_hz=47.6,te_jitter_ms=0.02,te_wait_ms_avg=0.00,te_wait_ms_max=0.00,te_timeout=0,dec_avg=0.0,dec_max=0.0,dec_frame_ms_avg=0.0,dec_frame_ms_max=0.0,blit_avg=6.4,blit_max=9.6,late_max=0.0,drift_ms=0,touch_read_ms_avg=0.8,touch_read_ms_max=1.0,touch_age_ms_max=8.3,heap_int=113707,heap_psram=7886536,track=0,scn=init,view=studio,hud=0,present_path=lvgl,rot=90,madctl=0x48,vrect=34-193,strips_per_frame=0,windows_per_frame=0,strip_ms_avg=0.00,frame_blit_ms_avg=0.0,lvgl_rows_clipped=0,dec_frames=0
+PERF,t_ms=6286,dec_fps=29.1,pres_fps=18.3,drop=0,over=0,frame_mismatch=0,rd_avg=13.4,rd_max=15.2,rd_p50=13.4,rd_p95=14.6,rd_slow=0,reader_rd_avg=13.4,reader_rd_max=15.2,reader_rd_p50=13.4,reader_rd_p95=14.6,slots_ready_avg=2.0,q_wait_avg=0.0,q_wait_max=0.0,q_wait_p50=0.0,q_wait_p95=0.0,te_present=1,te_hz=44.5,te_jitter_ms=0.00,te_wait_ms_avg=0.00,te_wait_ms_max=0.00,te_timeout=0,dec_avg=30.7,dec_max=36.3,dec_frame_ms_avg=30.7,dec_frame_ms_max=36.3,blit_avg=3.3,blit_max=9.6,late_max=4.7,drift_ms=5,touch_read_ms_avg=0.8,touch_read_ms_max=1.0,touch_age_ms_max=8.8,heap_int=98311,heap_psram=7886536,track=0,scn=init,view=studio,hud=0,present_path=lvgl,rot=90,madctl=0x48,vrect=34-193,strips_per_frame=0,windows_per_frame=0,strip_ms_avg=0.00,frame_blit_ms_avg=0.0,lvgl_rows_clipped=0,dec_frames=59
+PERF,t_ms=8294,dec_fps=29.9,pres_fps=18.9,drop=0,over=0,frame_mismatch=0,rd_avg=13.3,rd_max=14.6,rd_p50=13.3,rd_p95=14.4,rd_slow=0,reader_rd_avg=13.3,reader_rd_max=14.6,reader_rd_p50=13.3,reader_rd_p95=14.4,slots_ready_avg=2.0,q_wait_avg=0.0,q_wait_max=0.0,q_wait_p50=0.0,q_wait_p95=0.0,te_present=1,te_hz=44.8,te_jitter_ms=0.01,te_wait_ms_avg=0.00,te_wait_ms_max=0.00,te_timeout=0,dec_avg=30.6,dec_max=36.0,dec_frame_ms_avg=30.6,dec_frame_ms_max=36.0,blit_avg=3.4,blit_max=8.2,late_max=54.6,drift_ms=-3,touch_read_ms_avg=0.8,touch_read_ms_max=1.0,touch_age_ms_max=9.8,heap_int=95239,heap_psram=7886536,track=0,scn=init,view=studio,hud=0,present_path=lvgl,rot=90,madctl=0x48,vrect=34-193,strips_per_frame=0,windows_per_frame=0,strip_ms_avg=0.00,frame_blit_ms_avg=0.0,lvgl_rows_clipped=0,dec_frames=60
+PERF,t_ms=10321,dec_fps=30.1,pres_fps=19.2,drop=0,over=0,frame_mismatch=0,rd_avg=12.9,rd_max=14.6,rd_p50=13.3,rd_p95=14.1,rd_slow=0,reader_rd_avg=12.9,reader_rd_max=14.6,reader_rd_p50=13.3,reader_rd_p95=14.1,slots_ready_avg=2.0,q_wait_avg=0.0,q_wait_max=0.0,q_wait_p50=0.0,q_wait_p95=0.0,te_present=1,te_hz=44.4,te_jitter_ms=0.00,te_wait_ms_avg=0.00,te_wait_ms_max=0.00,te_timeout=0,dec_avg=30.3,dec_max=36.3,dec_frame_ms_avg=30.3,dec_frame_ms_max=36.3,blit_avg=3.4,blit_max=8.6,late_max=62.8,drift_ms=4,touch_read_ms_avg=0.8,touch_read_ms_max=1.0,touch_age_ms_max=9.8,heap_int=98335,heap_psram=7886536,track=0,scn=init,view=studio,hud=0,present_path=lvgl,rot=90,madctl=0x48,vrect=34-193,strips_per_frame=0,windows_per_frame=0,strip_ms_avg=0.00,frame_blit_ms_avg=0.0,lvgl_rows_clipped=0,dec_frames=61
+PERF,t_ms=12352,dec_fps=30.0,pres_fps=20.2,drop=0,over=0,frame_mismatch=0,rd_avg=11.6,rd_max=12.9,rd_p50=11.7,rd_p95=12.3,rd_slow=0,reader_rd_avg=11.6,reader_rd_max=12.9,reader_rd_p50=11.7,reader_rd_p95=12.3,slots_ready_avg=2.0,q_wait_avg=0.0,q_wait_max=0.0,q_wait_p50=0.0,q_wait_p95=0.0,te_present=1,te_hz=44.8,te_jitter_ms=0.00,te_wait_ms_avg=0.00,te_wait_ms_max=0.00,te_timeout=0,dec_avg=29.2,dec_max=34.7,dec_frame_ms_avg=29.2,dec_frame_ms_max=34.7,blit_avg=3.4,blit_max=8.0,late_max=56.3,drift_ms=7,touch_read_ms_avg=0.8,touch_read_ms_max=1.1,touch_age_ms_max=9.8,heap_int=102947,heap_psram=7886536,track=0,scn=init,view=studio,hud=0,present_path=lvgl,rot=90,madctl=0x48,vrect=34-193,strips_per_frame=0,windows_per_frame=0,strip_ms_avg=0.00,frame_blit_ms_avg=0.0,lvgl_rows_clipped=0,dec_frames=61
+PERF,t_ms=14382,dec_fps=30.0,pres_fps=21.2,drop=0,over=0,frame_mismatch=0,rd_avg=8.3,rd_max=12.3,rd_p50=7.8,rd_p95=11.8,rd_slow=0,reader_rd_avg=8.3,reader_rd_max=12.3,reader_rd_p50=7.8,reader_rd_p95=11.8,slots_ready_avg=2.3,q_wait_avg=0.0,q_wait_max=0.0,q_wait_p50=0.0,q_wait_p95=0.0,te_present=1,te_hz=44.3,te_jitter_ms=0.00,te_wait_ms_avg=0.00,te_wait_ms_max=0.00,te_timeout=0,dec_avg=27.2,dec_max=35.8,dec_frame_ms_avg=27.2,dec_frame_ms_max=35.8,blit_avg=3.4,blit_max=8.3,late_max=56.8,drift_ms=10,touch_read_ms_avg=0.8,touch_read_ms_max=1.0,touch_age_ms_max=9.8,heap_int=96295,heap_psram=7886536,track=0,scn=init,view=studio,hud=0,present_path=lvgl,rot=90,madctl=0x48,vrect=34-193,strips_per_frame=0,windows_per_frame=0,strip_ms_avg=0.00,frame_blit_ms_avg=0.0,lvgl_rows_clipped=0,dec_frames=61
+PERF,t_ms=16388,dec_fps=29.9,pres_fps=20.4,drop=0,over=0,frame_mismatch=0,rd_avg=8.3,rd_max=10.5,rd_p50=8.2,rd_p95=10.0,rd_slow=0,reader_rd_avg=8.3,reader_rd_max=10.5,reader_rd_p50=8.2,reader_rd_p95=10.0,slots_ready_avg=2.2,q_wait_avg=0.0,q_wait_max=0.1,q_wait_p50=0.0,q_wait_p95=0.0,te_present=1,te_hz=44.4,te_jitter_ms=0.00,te_wait_ms_avg=0.00,te_wait_ms_max=0.00,te_timeout=0,dec_avg=27.0,dec_max=32.6,dec_frame_ms_avg=27.0,dec_frame_ms_max=32.6,blit_avg=3.3,blit_max=8.4,late_max=50.2,drift_ms=3,touch_read_ms_avg=0.8,touch_read_ms_max=1.0,touch_age_ms_max=9.7,heap_int=97315,heap_psram=7886536,track=0,scn=init,view=studio,hud=0,present_path=lvgl,rot=90,madctl=0x48,vrect=34-193,strips_per_frame=0,windows_per_frame=0,strip_ms_avg=0.00,frame_blit_ms_avg=0.0,lvgl_rows_clipped=0,dec_frames=60
+PERF,t_ms=18423,dec_fps=30.0,pres_fps=19.7,drop=0,over=0,frame_mismatch=0,rd_avg=10.5,rd_max=11.9,rd_p50=10.5,rd_p95=11.5,rd_slow=0,reader_rd_avg=10.5,reader_rd_max=11.9,reader_rd_p50=10.5,reader_rd_p95=11.5,slots_ready_avg=2.0,q_wait_avg=0.0,q_wait_max=0.0,q_wait_p50=0.0,q_wait_p95=0.0,te_present=1,te_hz=44.7,te_jitter_ms=0.00,te_wait_ms_avg=0.00,te_wait_ms_max=0.00,te_timeout=0,dec_avg=28.8,dec_max=34.6,dec_frame_ms_avg=28.8,dec_frame_ms_max=34.6,blit_avg=3.2,blit_max=8.0,late_max=56.3,drift_ms=1,touch_read_ms_avg=0.8,touch_read_ms_max=1.1,touch_age_ms_max=10.0,heap_int=95271,heap_psram=7886536,track=0,scn=init,view=studio,hud=0,present_path=lvgl,rot=90,madctl=0x48,vrect=34-193,strips_per_frame=0,windows_per_frame=0,strip_ms_avg=0.00,frame_blit_ms_avg=0.0,lvgl_rows_clipped=0,dec_frames=61
