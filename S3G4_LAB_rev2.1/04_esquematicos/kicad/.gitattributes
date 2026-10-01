@@ -1,0 +1,4 @@
+# Modelos 3D: sin conversión de finales de línea ni diff
+*.step binary
+*.STEP binary
+*.stp binary
