@@ -4,10 +4,10 @@
 
 ## Cambio (rama `ai/footprint-tft035`, carpeta `S3G4_LAB_rev2.1/04_esquematicos/kicad/`)
 
-- `lib/s3g4.pretty/ER-TFT035IPS-6-4405_PinSocket_2x20_P2.54mm.kicad_mod`: origen en el pin 1; impares en x=0, pares en x=+2.54, numeración hacia -y (vista desde arriba de la placa base = vista frontal del display). Pads 1.7/1.0 como el `PinSocket_2x20` de KiCad. 4 agujeros metalizados Ø2.7 (M2.5) con pad Ø5, sin número (sin red), en (11.0, 7.07), (88.2, 7.07), (11.0, -55.33) y (88.2, -55.33). Contorno del display 96.7 x 66.4 en F.Fab, F.SilkS (cortado en los pads) y F.CrtYd.
+- `lib/s3g4.pretty/ER-TFT035IPS-6-4405_PinSocket_2x20_P2.54mm.kicad_mod`: origen en el pin 1; impares en x=0, pares en x=+2.54, numeración hacia -y (vista desde arriba de la placa base = vista frontal del display). Pads 1.7/1.0 como el `PinSocket_2x20` de KiCad. 4 agujeros metalizados Ø2.7 (M2.5) con pad Ø5, número `MP` (a GND digital, ver pendientes), en (11.0, 7.07), (88.2, 7.07), (11.0, -55.33) y (88.2, -55.33). Contorno del display 96.7 x 66.4 en F.Fab, F.SilkS (cortado en los pads) y F.CrtYd.
 - 3D: zócalo de KiCad (`rotate 0 0 180`), tira macho de KiCad invertida (`offset 0 0 11`, `rotate 180 0 0`) y STEP de BuyDisplay `${KIPRJMOD}/lib/3d/ER-TFTM035-6_3D.step` con `offset 95.2 -9.07 11.8`, `rotate 0 0 -90`.
 - `lib/s3g4.kicad_sym`: símbolo `ER-TFT035IPS-6-4405` (ref. DS) con los 40 pines de JP1; campos MPN, fabricante, LCSC vacío y datasheet local.
-- `fp-lib-table` y `sym-lib-table` del proyecto con la librería `s3g4`. `.gitignore`: se excluye el STEP de 49 MB (copia local en `lib/3d/`, original en Descargas).
+- `fp-lib-table` y `sym-lib-table` del proyecto con la librería `s3g4`. El STEP de 49 MB se versiona en `lib/3d/` (marcado binario en `.gitattributes`; original en Descargas).
 - Generadores reproducibles en `lib/gen/`.
 
 ## Evidencia
@@ -29,3 +29,8 @@
 - ~~Decidir si los separadores van a GND~~ → **Keneth: a GND (1 oct).** Los 4 pads se llaman `MP` y el símbolo tiene el pin pasivo `MP`/`MH`, que se cablea a GND **digital** en el esquemático (no a AGND/VREF+). Con separadores metálicos. NO VERIFICADO: que el anillo R2.0 de los agujeros del display sea VSS; medir continuidad con el pin 1.
 - Comprobar el acceso a la ranura microSD del módulo una vez montado.
 - No se ha tocado `.kicad_sch` ni `.kicad_pcb`.
+
+## Actualización (1 oct, a petición de Keneth)
+
+- El STEP `lib/3d/ER-TFTM035-6_3D.step` (49 MB) entra en git, en git normal y no en LFS porque no hay remoto. `.gitattributes` del proyecto KiCad: `*.step binary`.
+- `node` no estaba en el PATH: el único Node de la máquina es el runtime de Codex (`C:\Users\Keneth\.cache\codex-runtimes\codex-primary-runtime\dependencies\node\bin`, v24.19.0), el mismo que usa `.mcp.json` para **s3g4-context**. Esa carpeta se añadió al PATH de usuario, así que `node tools/ai-context/context.mjs sync` funciona en terminales nuevas. Riesgo: si Codex mueve su runtime, hay que actualizar el PATH y `.mcp.json`. El PATH de usuario conserva una entrada `C:\Users\Keneth\fnm` que ya no existe (no se tocó).
