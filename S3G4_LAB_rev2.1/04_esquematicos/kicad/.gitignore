@@ -15,3 +15,6 @@ output/
 # Caches de herramientas
 *.kicad_sch-bak
 *.kicad_pcb-bak
+
+# Modelo 3D de BuyDisplay (49 MB): copiar de buydisplay.com a lib/3d/, no se versiona
+lib/3d/ER-TFTM035-6_3D.step
