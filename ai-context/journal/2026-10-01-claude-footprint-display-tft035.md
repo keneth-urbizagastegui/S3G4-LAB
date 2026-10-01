@@ -26,11 +26,11 @@
 
 - Medir el módulo real con calibre (pin 1 ↔ agujeros): la cadena de cotas del datasheet acumula ±0.3 por cota.
 - El 3D no incluye los separadores.
-- ~~Decidir si los separadores van a GND~~ → **Keneth: a GND (1 oct).** Los 4 pads se llaman `MP` y el símbolo tiene el pin pasivo `MP`/`MH`, que se cablea a GND **digital** en el esquemático (no a AGND/VREF+). Con separadores metálicos. NO VERIFICADO: que el anillo R2.0 de los agujeros del display sea VSS; medir continuidad con el pin 1.
+- ~~Decidir si los separadores van a GND~~ → **Keneth: a GND (1 oct).** Los 4 pads se llaman `MP` y el símbolo tiene el pin pasivo `MP`/`MH`, que se cablea a GND **digital** en el esquemático (no a AGND/VREF+). Con separadores metálicos. **Medido por Keneth (1 oct): los anillos de los agujeros del display NO tienen continuidad con VSS (pines 1 y 40).** El display solo tiene masa por JP1; los separadores a GND quedan como camino de ESD y para no dejar metal flotante en la placa base, no como retorno del display.
 - Comprobar el acceso a la ranura microSD del módulo una vez montado.
 - No se ha tocado `.kicad_sch` ni `.kicad_pcb`.
 
 ## Actualización (1 oct, a petición de Keneth)
 
 - El STEP `lib/3d/ER-TFTM035-6_3D.step` (49 MB) entra en git, en git normal y no en LFS porque no hay remoto. `.gitattributes` del proyecto KiCad: `*.step binary`.
-- `node` no estaba en el PATH: el único Node de la máquina es el runtime de Codex (`C:\Users\Keneth\.cache\codex-runtimes\codex-primary-runtime\dependencies\node\bin`, v24.19.0), el mismo que usa `.mcp.json` para **s3g4-context**. Esa carpeta se añadió al PATH de usuario, así que `node tools/ai-context/context.mjs sync` funciona en terminales nuevas. Riesgo: si Codex mueve su runtime, hay que actualizar el PATH y `.mcp.json`. El PATH de usuario conserva una entrada `C:\Users\Keneth\fnm` que ya no existe (no se tocó).
+- `node` no estaba en el PATH: el único Node de la máquina es el runtime de Codex (`C:\Users\Keneth\.cache\codex-runtimes\codex-primary-runtime\dependencies\node\bin`, v24.19.0), el mismo que usa `.mcp.json` para **s3g4-context**. Esa carpeta se añadió al PATH de usuario, así que `node tools/ai-context/context.mjs sync` funciona en terminales nuevas. Riesgo: si Codex mueve su runtime, hay que actualizar el PATH y `.mcp.json`. La entrada rota `C:\Users\Keneth\fnm` se quitó del PATH de usuario a petición de Keneth.
