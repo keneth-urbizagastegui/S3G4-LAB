@@ -26,6 +26,6 @@
 
 - Medir el módulo real con calibre (pin 1 ↔ agujeros): la cadena de cotas del datasheet acumula ±0.3 por cota.
 - El 3D no incluye los separadores.
-- Decidir si los separadores van a GND (hoy no tienen red).
+- ~~Decidir si los separadores van a GND~~ → **Keneth: a GND (1 oct).** Los 4 pads se llaman `MP` y el símbolo tiene el pin pasivo `MP`/`MH`, que se cablea a GND **digital** en el esquemático (no a AGND/VREF+). Con separadores metálicos. NO VERIFICADO: que el anillo R2.0 de los agujeros del display sea VSS; medir continuidad con el pin 1.
 - Comprobar el acceso a la ranura microSD del módulo una vez montado.
 - No se ha tocado `.kicad_sch` ni `.kicad_pcb`.

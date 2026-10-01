@@ -17,7 +17,7 @@ right=[(3+i,"DB%d"%i,"bidirectional") for i in range(18)]+[None,
 rows=max(len(left)+3,len(right))           # +3: hueco y dos VSS abajo a la izquierda
 top=(rows-1)/2*P; top=round(top/P)*P
 bot=top-(rows-1)*P
-left=left+[None]*(rows-len(left)-2)+[(1,"VSS","power_in"),(40,"VSS","power_in")]
+left=left+[None]*(rows-len(left)-4)+[("MP","MH","passive"),None,(1,"VSS","power_in"),(40,"VSS","power_in")]
 W=17.78
 f=lambda v:("%.3f"%v).rstrip('0').rstrip('.')
 fx='(effects (font (size 1.27 1.27)))'
@@ -43,7 +43,7 @@ out=f'''(kicad_symbol_lib
 {prop("Value",NAME,0,bot-3.81)}
 {prop("Footprint",FP,0,bot-6.35,True)}
 {prop("Datasheet",DS,0,0,True)}
-{prop("Description","Display TFT IPS 3.5in 320x480, ILI9488, tactil capacitivo FT6236 (I2C), placa breakout con conector JP1 2x20 2.54mm. Montado sobre zocalo hembra 2x20 y 4 separadores M2.5 x 11mm (comprar aparte)",0,0,True)}
+{prop("Description","Display TFT IPS 3.5in 320x480, ILI9488, tactil capacitivo FT6236 (I2C), placa breakout con conector JP1 2x20 2.54mm. Montado sobre zocalo hembra 2x20 y 4 separadores M2.5 x 11mm (comprar aparte). Pin MP = 4 separadores metalicos: conectar a GND digital",0,0,True)}
 {prop("MPN",NAME,0,0,True)}
 {prop("Manufacturer","EastRising (BuyDisplay)",0,0,True)}
 {prop("LCSC","",0,0,True)}
@@ -59,6 +59,6 @@ out=f'''(kicad_symbol_lib
 )
 '''
 open(sys.argv[1],'w',encoding='utf-8',newline='\n').write(out)
-nums=sorted(p[0] for p in left+right if p)
+nums=sorted(p[0] for p in left+right if p and p[0]!="MP")
 assert nums==list(range(1,41)),nums
 print('ok rows',rows,'top',top,'bot',bot)

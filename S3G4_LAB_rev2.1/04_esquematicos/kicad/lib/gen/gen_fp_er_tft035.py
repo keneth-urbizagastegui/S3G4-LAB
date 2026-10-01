@@ -58,10 +58,10 @@ for n in range(1,41):
     row=(n-1)//2; x=0 if n%2 else P; y=-row*P
     shape="rect" if n==1 else "circle"
     o.append(f'\t(pad "{n}" thru_hole {shape} (at {f(x)} {f(y)}) (size 1.7 1.7) (drill 1) (layers "*.Cu" "*.Mask") (remove_unused_layers no))')
-# Separadores M2.5: agujero 2.7 metalizado, sin número (sin red)
+# Separadores M2.5: agujero 2.7 metalizado, pad "MP" (pin MP del símbolo, a GND digital)
 for x in HX:
     for y in HY:
-        o.append(f'\t(pad "" thru_hole circle (at {f(x)} {f(y)}) (size 5 5) (drill 2.7) (layers "*.Cu" "*.Mask") (remove_unused_layers no))')
+        o.append(f'\t(pad "MP" thru_hole circle (at {f(x)} {f(y)}) (size 5 5) (drill 2.7) (layers "*.Cu" "*.Mask") (remove_unused_layers no))')
         circ(x,y,2.75,"F.CrtYd",0.05)
 o.append('\t(embedded_fonts no)')
 o.append('\t(model "${KICAD10_3DMODEL_DIR}/Connector_PinSocket_2.54mm.3dshapes/PinSocket_2x20_P2.54mm_Vertical.step"\n\t\t(offset (xyz 0 0 0)) (scale (xyz 1 1 1)) (rotate (xyz 0 0 180)))')
