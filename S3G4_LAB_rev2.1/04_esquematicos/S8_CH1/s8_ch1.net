@@ -2,7 +2,7 @@
 	(version "E")
 	(design
 		(source "C:\\Users\\Keneth\\Desktop\\S3G4 LAB\\S3G4_LAB_rev2.1\\04_esquematicos\\kicad\\s3g4.kicad_sch")
-		(date "2026-10-04T16:04:01")
+		(date "2026-10-04T16:48:44")
 		(tool "Eeschema 10.0.6")
 		(sheet
 			(number "1")
@@ -181,7 +181,7 @@
 			(description "Unpolarized capacitor")
 			(fields
 				(field
-					(name "Nota") "DNP (hueco de seguro, DECISIONS 4 oct). Atributo DNP de KiCad pendiente: Konnect 0.12.1 no lo expone; marcarlo en la GUI")
+					(name "Nota") "DNP (hueco de seguro, DECISIONS 4 oct)")
 				(field
 					(name "Footprint") "Capacitor_SMD:C_0603_1608Metric")
 				(field
@@ -197,7 +197,7 @@
 			)
 			(property
 				(name "Nota")
-				(value "DNP (hueco de seguro, DECISIONS 4 oct). Atributo DNP de KiCad pendiente: Konnect 0.12.1 no lo expone; marcarlo en la GUI")
+				(value "DNP (hueco de seguro, DECISIONS 4 oct)")
 			)
 			(property
 				(name "Sheetname")
@@ -1905,6 +1905,7 @@
 		(comp
 			(ref "J101")
 			(value "BNC")
+			(footprint "s3g4:BNC_Kinghelm_KH-BNC50-3511_Horizontal")
 			(description "coaxial connector (BNC, SMA, SMB, SMC, Cinch/RCA, LEMO, ...)")
 			(fields
 				(field
@@ -1912,10 +1913,7 @@
 				(field
 					(name "MPN") "KH-BNC50-3511")
 				(field
-					(name "Nota") "Símbolo provisional: Connector:Conn_Coaxial (centro 1, cuerpo 2)")
-				(field
-					(name "Footprint")
-				)
+					(name "Footprint") "s3g4:BNC_Kinghelm_KH-BNC50-3511_Horizontal")
 				(field
 					(name "Datasheet")
 				)
@@ -1934,10 +1932,6 @@
 			(property
 				(name "MPN")
 				(value "KH-BNC50-3511")
-			)
-			(property
-				(name "Nota")
-				(value "Símbolo provisional: Connector:Conn_Coaxial (centro 1, cuerpo 2)")
 			)
 			(property
 				(name "Sheetname")
@@ -1959,7 +1953,7 @@
 				(names "/")
 				(tstamps "/")
 			)
-			(tstamps "7f840f4b-6101-4617-9fbe-7eda2bda934f")
+			(tstamps "9075c3b7-d661-4ede-9527-35b71241c8d0")
 			(units
 				(unit
 					(name "A")
@@ -1977,27 +1971,25 @@
 		(comp
 			(ref "K101")
 			(value "TQ2SA-5V-Z")
-			(datasheet "http://cdn-reichelt.de/documents/datenblatt/C300/G6H%23OMR.pdf")
-			(description "Omron Ultracompact, Ultrasensitive DPDT Relay, Single-side Stable")
+			(footprint "s3g4:Relay_Panasonic_TQ2SA_SMD")
+			(datasheet "${KIPRJMOD}/../../../datasheet - componentes/C46047.pdf")
+			(description "Rele de senal Panasonic TQ2SA-5V-Z, DPDT monoestable, bobina 5 V 178 ohm con polaridad (1 = +). Dibujado en reposo. Pines 5 y 6 sin funcion")
 			(fields
 				(field
 					(name "LCSC") "C22686")
 				(field
 					(name "MPN") "TQ2SA-5V-Z")
 				(field
-					(name "Nota") "Símbolo provisional: Relay:G6H-2 (mismo pinout que TQ2SA, hoja ASCTB14E p. 10). Huella sin asignar: comprobar p. 11")
+					(name "Footprint") "s3g4:Relay_Panasonic_TQ2SA_SMD")
 				(field
-					(name "Footprint")
-				)
+					(name "Datasheet") "${KIPRJMOD}/../../../datasheet - componentes/C46047.pdf")
 				(field
-					(name "Datasheet") "http://cdn-reichelt.de/documents/datenblatt/C300/G6H%23OMR.pdf")
-				(field
-					(name "Description") "Omron Ultracompact, Ultrasensitive DPDT Relay, Single-side Stable")
+					(name "Description") "Rele de senal Panasonic TQ2SA-5V-Z, DPDT monoestable, bobina 5 V 178 ohm con polaridad (1 = +). Dibujado en reposo. Pines 5 y 6 sin funcion")
 			)
 			(libsource
-				(lib "Relay")
-				(part "G6H-2")
-				(description "Omron Ultracompact, Ultrasensitive DPDT Relay, Single-side Stable")
+				(lib "s3g4")
+				(part "TQ2SA-5V-Z")
+				(description "Rele de senal Panasonic TQ2SA-5V-Z, DPDT monoestable, bobina 5 V 178 ohm con polaridad (1 = +). Dibujado en reposo. Pines 5 y 6 sin funcion")
 			)
 			(property
 				(name "LCSC")
@@ -2008,10 +2000,6 @@
 				(value "TQ2SA-5V-Z")
 			)
 			(property
-				(name "Nota")
-				(value "Símbolo provisional: Relay:G6H-2 (mismo pinout que TQ2SA, hoja ASCTB14E p. 10). Huella sin asignar: comprobar p. 11")
-			)
-			(property
 				(name "Sheetname")
 				(value "s3g4")
 			)
@@ -2019,19 +2007,11 @@
 				(name "Sheetfile")
 				(value "s3g4.kicad_sch")
 			)
-			(property
-				(name "ki_keywords")
-				(value "relay monostable")
-			)
-			(property
-				(name "ki_fp_filters")
-				(value "Relay*Omron*G6H?2*")
-			)
 			(sheetpath
 				(names "/")
 				(tstamps "/")
 			)
-			(tstamps "91311ce2-4f81-472c-802a-96cdfbd4c80f")
+			(tstamps "4fdd1e83-07f1-483f-9023-625b745d8bda")
 			(units
 				(unit
 					(name "A")
@@ -2043,6 +2023,12 @@
 							(num "10")
 						)
 						(pin
+							(num "6")
+						)
+						(pin
+							(num "5")
+						)
+						(pin
 							(num "2")
 						)
 						(pin
@@ -2050,12 +2036,6 @@
 						)
 						(pin
 							(num "4")
-						)
-						(pin
-							(num "6")
-						)
-						(pin
-							(num "5")
 						)
 						(pin
 							(num "9")
@@ -5106,27 +5086,25 @@
 		(comp
 			(ref "SW101")
 			(value "SS23H37L6")
-			(description "Switch, three position, dual pole triple throw, 3 position switch, SP3T")
+			(footprint "s3g4:SW_Slide_DP3T_XKB_SS23H37")
+			(datasheet "${KIPRJMOD}/../../../datasheet - componentes/C883267.pdf")
+			(description "Conmutador deslizante XKB SS23H37L6, 2 polos x 3 posiciones. T1/T2/T3 por orden de recorrido (CH1: AC, GND, DC). Numeracion propia: A 1=T1 2=COM 3=T2 4=T3; B 5..8")
 			(fields
 				(field
 					(name "LCSC") "C883267")
 				(field
 					(name "MPN") "SS23H37L6")
 				(field
-					(name "Nota") "Símbolo provisional: Switch:SW_DP3T; los números de pin siguen CH1_PIEZAS_Y_REDES §2.3 (común = 2/6), no el dibujo del símbolo")
+					(name "Footprint") "s3g4:SW_Slide_DP3T_XKB_SS23H37")
 				(field
-					(name "Footprint")
-				)
+					(name "Datasheet") "${KIPRJMOD}/../../../datasheet - componentes/C883267.pdf")
 				(field
-					(name "Datasheet")
-				)
-				(field
-					(name "Description") "Switch, three position, dual pole triple throw, 3 position switch, SP3T")
+					(name "Description") "Conmutador deslizante XKB SS23H37L6, 2 polos x 3 posiciones. T1/T2/T3 por orden de recorrido (CH1: AC, GND, DC). Numeracion propia: A 1=T1 2=COM 3=T2 4=T3; B 5..8")
 			)
 			(libsource
-				(lib "Switch")
-				(part "SW_DP3T")
-				(description "Switch, three position, dual pole triple throw, 3 position switch, SP3T")
+				(lib "s3g4")
+				(part "SS23H37L6")
+				(description "Conmutador deslizante XKB SS23H37L6, 2 polos x 3 posiciones. T1/T2/T3 por orden de recorrido (CH1: AC, GND, DC). Numeracion propia: A 1=T1 2=COM 3=T2 4=T3; B 5..8")
 			)
 			(property
 				(name "LCSC")
@@ -5137,10 +5115,6 @@
 				(value "SS23H37L6")
 			)
 			(property
-				(name "Nota")
-				(value "Símbolo provisional: Switch:SW_DP3T; los números de pin siguen CH1_PIEZAS_Y_REDES §2.3 (común = 2/6), no el dibujo del símbolo")
-			)
-			(property
 				(name "Sheetname")
 				(value "s3g4")
 			)
@@ -5148,48 +5122,35 @@
 				(name "Sheetfile")
 				(value "s3g4.kicad_sch")
 			)
-			(property
-				(name "ki_keywords")
-				(value "switch dp3t ON-ON-ON")
-			)
-			(property
-				(name "ki_fp_filters")
-				(value "SW* DP3T*")
-			)
 			(sheetpath
 				(names "/")
 				(tstamps "/")
 			)
-			(tstamps "f20dfd2d-6ad0-455b-a5a0-f0caf3a8419d" "512c4acf-d5db-484a-a887-476cc2a9c217")
+			(tstamps "14143459-425f-4df6-acc7-1ea19a0916ff")
 			(units
 				(unit
 					(name "A")
 					(pins
 						(pin
-							(num "3")
+							(num "2")
+						)
+						(pin
+							(num "6")
 						)
 						(pin
 							(num "1")
 						)
 						(pin
-							(num "2")
+							(num "3")
 						)
 						(pin
 							(num "4")
-						)
-					)
-				)
-				(unit
-					(name "B")
-					(pins
-						(pin
-							(num "7")
 						)
 						(pin
 							(num "5")
 						)
 						(pin
-							(num "6")
+							(num "7")
 						)
 						(pin
 							(num "8")
@@ -5324,7 +5285,7 @@
 				(names "/")
 				(tstamps "/")
 			)
-			(tstamps "24e5baa8-c3ef-40c1-bca1-f9d736567bae")
+			(tstamps "2e68c69f-8b46-4e52-9330-0474cba7fdc0")
 			(units
 				(unit
 					(name "A")
@@ -5438,8 +5399,8 @@
 				(names "/")
 				(tstamps "/")
 			)
-			(tstamps "d832c11d-12da-4010-b327-50ed4ff699c4" "d6fe069a-42fc-4324-94d5-7ce32fa9664a"
-				"90850686-fc56-45d7-addb-61e4b1b49a9f"
+			(tstamps "8fa83c0d-b3e2-4787-bc5d-cae27f6b6159" "75bf1d4d-4108-4f95-b390-199c3de8facd"
+				"6d509413-3ed5-478c-b567-18a2de7f5d94"
 			)
 			(units
 				(unit
@@ -5540,8 +5501,8 @@
 				(names "/")
 				(tstamps "/")
 			)
-			(tstamps "06fb4265-fb3b-4cb7-a418-0c06dcd1cad7" "128cd992-033d-4850-b07e-b1aaad8e7fd6"
-				"050f8caa-b221-4d92-9783-2d101f7aaa38"
+			(tstamps "e7f06bcb-b268-4730-bb8b-ac1d988a2410" "c7ab6ca5-b503-4fba-9114-4be40782e7bc"
+				"33d3343e-3fb4-464a-95ab-f6a9d581b75b"
 			)
 			(units
 				(unit
@@ -5672,15 +5633,16 @@
 		(comp
 			(ref "VC101")
 			(value "2-6pF")
+			(footprint "s3g4:C_Trimmer_SEHWA_STC3MA06_3.2x4.5mm")
 			(description "Trimmable capacitor")
 			(fields
 				(field
 					(name "LCSC") "C22468120")
 				(field
-					(name "Nota") "Símbolo provisional: Device:C_Trim")
-				(field
-					(name "Footprint")
+					(name "Nota")
 				)
+				(field
+					(name "Footprint") "s3g4:C_Trimmer_SEHWA_STC3MA06_3.2x4.5mm")
 				(field
 					(name "Datasheet")
 				)
@@ -5698,7 +5660,7 @@
 			)
 			(property
 				(name "Nota")
-				(value "Símbolo provisional: Device:C_Trim")
+				(value "")
 			)
 			(property
 				(name "Sheetname")
@@ -6236,145 +6198,6 @@
 			)
 		)
 		(libpart
-			(lib "Relay")
-			(part "G6H-2")
-			(description "Omron Ultracompact, Ultrasensitive DPDT Relay, Single-side Stable")
-			(docs "http://cdn-reichelt.de/documents/datenblatt/C300/G6H%23OMR.pdf")
-			(footprints
-				(fp "Relay*Omron*G6H?2*")
-			)
-			(fields
-				(field
-					(name "Reference") "K")
-				(field
-					(name "Value") "G6H-2")
-				(field
-					(name "Footprint")
-				)
-				(field
-					(name "Datasheet") "http://cdn-reichelt.de/documents/datenblatt/C300/G6H%23OMR.pdf")
-				(field
-					(name "Description") "Omron Ultracompact, Ultrasensitive DPDT Relay, Single-side Stable")
-			)
-			(pins
-				(pin
-					(num "1")
-					(name "")
-					(type "passive")
-				)
-				(pin
-					(num "2")
-					(name "")
-					(type "passive")
-				)
-				(pin
-					(num "3")
-					(name "")
-					(type "passive")
-				)
-				(pin
-					(num "4")
-					(name "")
-					(type "passive")
-				)
-				(pin
-					(num "5")
-					(name "NC")
-					(type "no_connect")
-				)
-				(pin
-					(num "6")
-					(name "NC")
-					(type "no_connect")
-				)
-				(pin
-					(num "7")
-					(name "")
-					(type "passive")
-				)
-				(pin
-					(num "8")
-					(name "")
-					(type "passive")
-				)
-				(pin
-					(num "9")
-					(name "")
-					(type "passive")
-				)
-				(pin
-					(num "10")
-					(name "")
-					(type "passive")
-				)
-			)
-		)
-		(libpart
-			(lib "Switch")
-			(part "SW_DP3T")
-			(description "Switch, three position, dual pole triple throw, 3 position switch, SP3T")
-			(footprints
-				(fp "SW*")
-				(fp "DP3T*")
-			)
-			(fields
-				(field
-					(name "Reference") "SW")
-				(field
-					(name "Value") "SW_DP3T")
-				(field
-					(name "Footprint")
-				)
-				(field
-					(name "Datasheet")
-				)
-				(field
-					(name "Description") "Switch, three position, dual pole triple throw, 3 position switch, SP3T")
-			)
-			(pins
-				(pin
-					(num "1")
-					(name "1")
-					(type "passive")
-				)
-				(pin
-					(num "2")
-					(name "2")
-					(type "passive")
-				)
-				(pin
-					(num "3")
-					(name "3")
-					(type "passive")
-				)
-				(pin
-					(num "4")
-					(name "4")
-					(type "passive")
-				)
-				(pin
-					(num "5")
-					(name "5")
-					(type "passive")
-				)
-				(pin
-					(num "6")
-					(name "6")
-					(type "passive")
-				)
-				(pin
-					(num "7")
-					(name "7")
-					(type "passive")
-				)
-				(pin
-					(num "8")
-					(name "8")
-					(type "passive")
-				)
-			)
-		)
-		(libpart
 			(lib "Transistor_FET")
 			(part "2N7002")
 			(description "0.115A Id, 60V Vds, N-Channel MOSFET, SOT-23")
@@ -6412,6 +6235,144 @@
 				)
 			)
 		)
+		(libpart
+			(lib "s3g4")
+			(part "SS23H37L6")
+			(description "Conmutador deslizante XKB SS23H37L6, 2 polos x 3 posiciones. T1/T2/T3 por orden de recorrido (CH1: AC, GND, DC). Numeracion propia: A 1=T1 2=COM 3=T2 4=T3; B 5..8")
+			(docs "${KIPRJMOD}/../../../datasheet - componentes/C883267.pdf")
+			(fields
+				(field
+					(name "Reference") "SW")
+				(field
+					(name "Value") "SS23H37L6")
+				(field
+					(name "Footprint") "s3g4:SW_Slide_DP3T_XKB_SS23H37")
+				(field
+					(name "Datasheet") "${KIPRJMOD}/../../../datasheet - componentes/C883267.pdf")
+				(field
+					(name "Description") "Conmutador deslizante XKB SS23H37L6, 2 polos x 3 posiciones. T1/T2/T3 por orden de recorrido (CH1: AC, GND, DC). Numeracion propia: A 1=T1 2=COM 3=T2 4=T3; B 5..8")
+				(field
+					(name "MPN") "SS23H37L6")
+				(field
+					(name "LCSC") "C883267")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "T1")
+					(type "passive")
+				)
+				(pin
+					(num "2")
+					(name "COM")
+					(type "passive")
+				)
+				(pin
+					(num "3")
+					(name "T2")
+					(type "passive")
+				)
+				(pin
+					(num "4")
+					(name "T3")
+					(type "passive")
+				)
+				(pin
+					(num "5")
+					(name "T1")
+					(type "passive")
+				)
+				(pin
+					(num "6")
+					(name "COM")
+					(type "passive")
+				)
+				(pin
+					(num "7")
+					(name "T2")
+					(type "passive")
+				)
+				(pin
+					(num "8")
+					(name "T3")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "s3g4")
+			(part "TQ2SA-5V-Z")
+			(description "Rele de senal Panasonic TQ2SA-5V-Z, DPDT monoestable, bobina 5 V 178 ohm con polaridad (1 = +). Dibujado en reposo. Pines 5 y 6 sin funcion")
+			(docs "${KIPRJMOD}/../../../datasheet - componentes/C46047.pdf")
+			(fields
+				(field
+					(name "Reference") "K")
+				(field
+					(name "Value") "TQ2SA-5V-Z")
+				(field
+					(name "Footprint") "s3g4:Relay_Panasonic_TQ2SA_SMD")
+				(field
+					(name "Datasheet") "${KIPRJMOD}/../../../datasheet - componentes/C46047.pdf")
+				(field
+					(name "Description") "Rele de senal Panasonic TQ2SA-5V-Z, DPDT monoestable, bobina 5 V 178 ohm con polaridad (1 = +). Dibujado en reposo. Pines 5 y 6 sin funcion")
+				(field
+					(name "MPN") "TQ2SA-5V-Z")
+				(field
+					(name "LCSC") "C22686")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "+")
+					(type "passive")
+				)
+				(pin
+					(num "2")
+					(name "NC")
+					(type "passive")
+				)
+				(pin
+					(num "3")
+					(name "COM")
+					(type "passive")
+				)
+				(pin
+					(num "4")
+					(name "NO")
+					(type "passive")
+				)
+				(pin
+					(num "5")
+					(name "NC")
+					(type "no_connect")
+				)
+				(pin
+					(num "6")
+					(name "NC")
+					(type "no_connect")
+				)
+				(pin
+					(num "7")
+					(name "NO")
+					(type "passive")
+				)
+				(pin
+					(num "8")
+					(name "COM")
+					(type "passive")
+				)
+				(pin
+					(num "9")
+					(name "NC")
+					(type "passive")
+				)
+				(pin
+					(num "10")
+					(name "-")
+					(type "passive")
+				)
+			)
+		)
 	)
 	(libraries
 		(library
@@ -6435,16 +6396,12 @@
 			(uri "${KICAD10_SYMBOL_DIR}/Diode.kicad_sym")
 		)
 		(library
-			(logical "Relay")
-			(uri "${KICAD10_SYMBOL_DIR}/Relay.kicad_sym")
-		)
-		(library
-			(logical "Switch")
-			(uri "${KICAD10_SYMBOL_DIR}/Switch.kicad_sym")
-		)
-		(library
 			(logical "Transistor_FET")
 			(uri "${KICAD10_SYMBOL_DIR}/Transistor_FET.kicad_sym")
+		)
+		(library
+			(logical "s3g4")
+			(uri "${KIPRJMOD}/lib/s3g4.kicad_sym")
 		)
 	)
 	(nets
@@ -6595,7 +6552,7 @@
 			(node
 				(ref "SW101")
 				(pin "1")
-				(pinfunction "1_1")
+				(pinfunction "T1_1")
 				(pintype "passive")
 			)
 		)
@@ -6695,7 +6652,7 @@
 			(node
 				(ref "SW101")
 				(pin "2")
-				(pinfunction "2_2")
+				(pinfunction "COM_2")
 				(pintype "passive")
 			)
 		)
@@ -6740,12 +6697,12 @@
 			(class "Default")
 			(node
 				(ref "C113")
-				(pin "1")
+				(pin "2")
 				(pintype "passive")
 			)
 			(node
 				(ref "R129")
-				(pin "1")
+				(pin "2")
 				(pintype "passive")
 			)
 			(node
@@ -6771,6 +6728,7 @@
 			(node
 				(ref "K101")
 				(pin "9")
+				(pinfunction "NC_9")
 				(pintype "passive")
 			)
 			(node
@@ -6815,7 +6773,7 @@
 			(class "Default")
 			(node
 				(ref "C110")
-				(pin "1")
+				(pin "2")
 				(pintype "passive")
 			)
 			(node
@@ -6887,7 +6845,7 @@
 			(class "Default")
 			(node
 				(ref "C112")
-				(pin "1")
+				(pin "2")
 				(pintype "passive")
 			)
 			(node
@@ -6975,17 +6933,17 @@
 			)
 			(node
 				(ref "R118")
-				(pin "2")
+				(pin "1")
 				(pintype "passive")
 			)
 			(node
 				(ref "R119")
-				(pin "1")
+				(pin "2")
 				(pintype "passive")
 			)
 			(node
 				(ref "R141")
-				(pin "1")
+				(pin "2")
 				(pintype "passive")
 			)
 			(node
@@ -7029,7 +6987,7 @@
 			(class "Default")
 			(node
 				(ref "R118")
-				(pin "1")
+				(pin "2")
 				(pintype "passive")
 			)
 			(node
@@ -7055,17 +7013,17 @@
 			)
 			(node
 				(ref "R122")
-				(pin "1")
+				(pin "2")
 				(pintype "passive")
 			)
 			(node
 				(ref "R142")
-				(pin "1")
+				(pin "2")
 				(pintype "passive")
 			)
 			(node
 				(ref "R145")
-				(pin "2")
+				(pin "1")
 				(pintype "passive")
 			)
 			(node
@@ -7109,7 +7067,7 @@
 			(class "Default")
 			(node
 				(ref "R121")
-				(pin "1")
+				(pin "2")
 				(pintype "passive")
 			)
 			(node
@@ -7136,6 +7094,7 @@
 			(node
 				(ref "K101")
 				(pin "10")
+				(pinfunction "-_10")
 				(pintype "passive")
 			)
 			(node
@@ -7162,7 +7121,7 @@
 			)
 			(node
 				(ref "R136")
-				(pin "1")
+				(pin "2")
 				(pintype "passive")
 			)
 		)
@@ -7323,12 +7282,12 @@
 			(class "Default")
 			(node
 				(ref "R121")
-				(pin "2")
+				(pin "1")
 				(pintype "passive")
 			)
 			(node
 				(ref "R145")
-				(pin "1")
+				(pin "2")
 				(pintype "passive")
 			)
 		)
@@ -7380,12 +7339,13 @@
 			(node
 				(ref "K101")
 				(pin "3")
+				(pinfunction "COM_3")
 				(pintype "passive")
 			)
 			(node
 				(ref "SW101")
 				(pin "4")
-				(pinfunction "4_4")
+				(pinfunction "T3_4")
 				(pintype "passive")
 			)
 		)
@@ -7395,7 +7355,7 @@
 			(class "Default")
 			(node
 				(ref "C113")
-				(pin "2")
+				(pin "1")
 				(pintype "passive")
 			)
 			(node
@@ -7405,7 +7365,7 @@
 			)
 			(node
 				(ref "R129")
-				(pin "2")
+				(pin "1")
 				(pintype "passive")
 			)
 			(node
@@ -7447,6 +7407,7 @@
 			(node
 				(ref "K101")
 				(pin "2")
+				(pinfunction "NC_2")
 				(pintype "passive")
 			)
 			(node
@@ -7492,7 +7453,7 @@
 			(class "Default")
 			(node
 				(ref "C114")
-				(pin "1")
+				(pin "2")
 				(pintype "passive")
 			)
 			(node
@@ -7539,11 +7500,13 @@
 			(node
 				(ref "K101")
 				(pin "4")
+				(pinfunction "NO_4")
 				(pintype "passive")
 			)
 			(node
 				(ref "K101")
 				(pin "8")
+				(pinfunction "COM_8")
 				(pintype "passive")
 			)
 			(node
@@ -7573,17 +7536,17 @@
 			)
 			(node
 				(ref "C110")
-				(pin "2")
+				(pin "1")
 				(pintype "passive")
 			)
 			(node
 				(ref "C112")
-				(pin "2")
+				(pin "1")
 				(pintype "passive")
 			)
 			(node
 				(ref "C114")
-				(pin "2")
+				(pin "1")
 				(pintype "passive")
 			)
 			(node
@@ -7679,22 +7642,22 @@
 			)
 			(node
 				(ref "R119")
-				(pin "2")
+				(pin "1")
 				(pintype "passive")
 			)
 			(node
 				(ref "R122")
-				(pin "2")
+				(pin "1")
 				(pintype "passive")
 			)
 			(node
 				(ref "R141")
-				(pin "2")
+				(pin "1")
 				(pintype "passive")
 			)
 			(node
 				(ref "R142")
-				(pin "2")
+				(pin "1")
 				(pintype "passive")
 			)
 			(node
@@ -7710,7 +7673,7 @@
 			(node
 				(ref "SW101")
 				(pin "3")
-				(pinfunction "3_3")
+				(pinfunction "T2_3")
 				(pintype "passive")
 			)
 			(node
@@ -7765,7 +7728,7 @@
 			(node
 				(ref "SW101")
 				(pin "5")
-				(pinfunction "5_5")
+				(pinfunction "T1_5")
 				(pintype "passive")
 			)
 		)
@@ -7781,7 +7744,7 @@
 			(node
 				(ref "SW101")
 				(pin "8")
-				(pinfunction "8_8")
+				(pinfunction "T3_8")
 				(pintype "passive")
 			)
 		)
@@ -7850,13 +7813,13 @@
 			)
 			(node
 				(ref "R136")
-				(pin "2")
+				(pin "1")
 				(pintype "passive")
 			)
 			(node
 				(ref "SW101")
 				(pin "6")
-				(pinfunction "6_6")
+				(pinfunction "COM_6")
 				(pintype "passive")
 			)
 		)
@@ -7873,6 +7836,7 @@
 			(node
 				(ref "K101")
 				(pin "1")
+				(pinfunction "+_1")
 				(pintype "passive")
 			)
 		)
@@ -7937,22 +7901,23 @@
 		)
 		(net
 			(code "59")
-			(name "unconnected-(K101-Pad7)")
+			(name "unconnected-(K101-NO-Pad7)")
 			(class "Default")
 			(node
 				(ref "K101")
 				(pin "7")
+				(pinfunction "NO_7")
 				(pintype "passive+no_connect")
 			)
 		)
 		(net
 			(code "60")
-			(name "unconnected-(SW101-Pad7)")
+			(name "unconnected-(SW101-T2-Pad7)")
 			(class "Default")
 			(node
 				(ref "SW101")
 				(pin "7")
-				(pinfunction "7_7")
+				(pinfunction "T2_7")
 				(pintype "passive+no_connect")
 			)
 		)
