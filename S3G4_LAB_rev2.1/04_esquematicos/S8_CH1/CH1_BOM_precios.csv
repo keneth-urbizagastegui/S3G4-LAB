@@ -1,0 +1,62 @@
+bloque,refs,cant,descripcion,lcsc,tipo,precio_unidad_usd,subtotal_usd,nota
+Entrada,J101,1,BNC Kinghelm KH-BNC50-3511,C2837587,ext,0.9315,0.9315,THT
+Entrada,R101 R102,2,549 kΩ 0.1 % 25 ppm 1206 (Yageo RT1206BRD07549KL),C870790,ext,0.0574,0.1148,
+Entrada,C101,1,20 pF ±2 % C0G 250 V 0603 (Murata),C3845779,ext,0.18,0.18,
+Entrada,C102,1,15 pF ±2 % C0G 250 V 0805 (Murata),C3836120,ext,0.4861,0.4861,355 en stock
+Entrada,VC101,1,Trimmer SEHWA 2–6 pF 100 V,C22468120,ext,0.4942,0.4942,
+Entrada,C103,1,Hueco DNP 0603,,dnp,0.0,0.0,no se monta
+Entrada,R103,1,11.0 kΩ 0.1 % 25 ppm 0805 (Yageo RT0805BRD0711KL),C865156,ext,0.0501,0.0501,
+Entrada,C104,1,1 nF ±1 % C0G 50 V 0603 (FH),C507408,ext,0.0298,0.0298,
+Entrada,C105,1,68 pF ±5 % C0G 50 V 0603 (Samsung),C28262,basic,0.0187,0.0187,preferred
+Entrada,R104 R105,2,49.9 kΩ 1 % 1206 200 V (Uni-Royal),C18017,ext,0.0084,0.0168,
+Entrada,C106,1,C_S 1.2 nF C0G 630 V 1206 (Walsin),C3851387,ext,0.0675,0.0675,
+Entrada,R106,1,R_EQ 10 MΩ 1 % 1206 200 V (Uni-Royal),C26119,ext,0.0056,0.0056,
+Entrada,C107,1,C_EQ ≈ 8.2 pF C0G 1 kV 1206 (CCTC),C54431614,ext,0.0064,0.0064,seleccionado en prueba
+Relé,K101,1,"Relé TQ2SA-5V-Z (Panasonic, SMD)",C22686,ext,1.5623,1.5623,
+Relé,Q101,1,2N7002 SOT-23,C8545,basic,0.0178,0.0178,
+Relé,D104,1,1N4148W SOD-123,C81598,basic,0.0123,0.0123,
+Relé,R135,1,100 Ω 1 % 0603,C22775,basic,0.0031,0.0031,0603 en vez de 0402
+Relé,R136,1,100 kΩ 1 % 0603,C25803,basic,0.0031,0.0031,0603 en vez de 0402
+Protección y acoplo,D101,1,BAV199 Nexperia SOT-23,C40919,ext,0.0425,0.0425,
+Protección y acoplo,SW101,1,SS23H37L6 DP3T deslizante,C883267,ext,0.3422,0.3422,THT; 442 en stock
+Protección y acoplo,C108,1,C_AC 1.8 nF ±5 % C0G 50 V 0603 (Murata),C97878,ext,0.0222,0.0222,
+Protección y acoplo,R107,1,R_BIAS 10 MΩ 1 % 0603 (Uni-Royal),C7250,basic,0.0037,0.0037,ve ≤ 6 V
+Protección y acoplo,R108,1,R_PROT 1 kΩ 1 % 0603,C21190,basic,0.0026,0.0026,
+Protección y acoplo,R133 R134,2,Pull-ups 10 kΩ 1 % 0603,C25804,basic,0.0018,0.0036,0603 en vez de 0402
+Buffer,U101,1,OPA810IDBVR SOT-23-5,C2833513,ext,3.079,3.079,
+Escalera,R109 R137,2,RL1 = 1 kΩ ∥ 1 kΩ (499 Ω) 1 % 0603,C21190,basic,0.0026,0.0052,§2.10
+Escalera,R110,1,RL2 = 270 Ω ∥ (249 Ω) 1 % 0603,C22966,basic,0.002,0.002,§2.10
+Escalera,R140,1,RL2 = ∥ 3.3 kΩ 1 % 0603,C22978,basic,0.002,0.002,§2.10
+Escalera,R111,1,RL3 150 Ω 1 % 0603,C22808,basic,0.0017,0.0017,
+Escalera,R112,1,RL4 49.9 Ω 1 % 0603,C23185,basic,0.0021,0.0021,
+Escalera,R113 R143 R114 R144,4,"RL5, RL6 = 49.9 Ω ∥ 49.9 Ω (24.9 Ω) 1 % 0603",C23185,basic,0.0021,0.0084,§2.10
+Escalera,R115,1,12.4 kΩ 0.1 % 50 ppm 0402 (Yageo RT0402BRE0712K4L),C853011,ext,0.0205,0.0205,VCHECK
+Escalera,R116,1,100 Ω 0.1 % 50 ppm 0402 (Ever Ohms),C332259,ext,0.0144,0.0144,VCHECK
+Escalera,U102,1,74HC4051D Nexperia SOIC-16,C9386,ext,0.2146,0.2146,
+Ganancia,U103,1,AD8039ARZ-REEL7 SOIC-8,C96525,ext,4.638,4.638,
+Ganancia,R117 R120,2,R_SER 470 Ω 1 % 0603,C23179,basic,0.0023,0.0046,
+Ganancia,D102 D103,2,BAV99 Nexperia SOT-23,C2500,basic,0.0124,0.0248,
+Ganancia,R118,1,RF1 1.00 kΩ 1 % 0603,C21190,basic,0.0026,0.0026,
+Ganancia,R119 R122,2,"RG1, RG2 = 270 Ω ∥ (249 Ω) 1 % 0603",C22966,basic,0.002,0.004,§2.10
+Ganancia,R141 R142,2,"RG1, RG2 = ∥ 3.3 kΩ 1 % 0603",C22978,basic,0.002,0.004,§2.10
+Ganancia,R121,1,RF2 = 2.2 kΩ + (2.26 kΩ) 1 % 0603,C4190,basic,0.002,0.002,§2.10
+Ganancia,R145,1,RF2 = + 68 Ω 1 % 0603,C27592,basic,0.0013,0.0013,§2.10
+Filtro,U105,1,AD8039ARZ-REEL7 SOIC-8,C96525,ext,4.638,4.638,misma referencia que U103
+Filtro,R123 R124,2,1.1 kΩ + (1.11 kΩ) 1 % 0603,C22764,basic,0.0018,0.0036,§2.10; preferred
+Filtro,R148 R149,2,+ 10 Ω 1 % 0603,C22859,basic,0.002,0.004,§2.10
+Filtro,R125 R138 R126 R139,4,1 kΩ ∥ 1 kΩ (499 Ω) 1 % 0603,C21190,basic,0.0026,0.0104,§2.10
+Filtro,C109 C112,2,56 pF ±5 % C0G 50 V 0603 (Samsung),C39148,basic,0.0112,0.0224,preferred
+Filtro,C110,1,47 pF ±5 % C0G 50 V 0603 (Samsung),C1671,basic,0.0064,0.0064,
+Filtro,C111,1,220 pF ±5 % C0G 100 V 0603 (Murata),C388907,ext,0.0179,0.0179,la basic C1603 es X7R: no sirve
+Etapa final,U106,1,OPA836IDBVR SOT-23-6,C111589,ext,2.2321,2.2321,
+Etapa final,R127 R129 R130,3,"R_IN, R_F, VMID 10.0 kΩ 1 % 0603",C25804,basic,0.0018,0.0054,
+Etapa final,R128,1,R_OFF = 7.5 kΩ + (8.06 kΩ) 1 % 0603,C23234,basic,0.002,0.002,§2.10
+Etapa final,R146,1,R_OFF = + 560 Ω 1 % 0603,C23204,basic,0.002,0.002,§2.10
+Etapa final,R131,1,VMID = 5.1 kΩ + (5.23 kΩ) 1 % 0603,C23186,basic,0.002,0.002,§2.10
+Etapa final,R147,1,VMID = + 120 Ω 1 % 0603,C22787,basic,0.002,0.002,§2.10
+Etapa final,C113,1,C_F 1 pF C0G 50 V 0603 (FOJAN),C5137611,ext,0.0041,0.0041,
+Etapa final,C114,1,1 µF X5R 50 V 0603 (Samsung),C15849,basic,0.0168,0.0168,
+Etapa final,R132,1,R_ADC 68 Ω 1 % 0603,C27592,basic,0.0013,0.0013,preferred
+Etapa final,C115,1,C_ADC 470 pF ±5 % C0G 50 V 0603 (FH),C36252,ext,0.0097,0.0097,
+Desacoplo,C116 C117 C118 C119 C120 C121 C122 C123 C124,9,100 nF X7R 16 V 0402 (Samsung),C1525,basic,0.0045,0.0405,
+Desacoplo,C125 C126,2,10 µF X5R 25 V 0805 (Samsung),C15850,basic,0.0651,0.1302,
