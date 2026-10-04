@@ -11,6 +11,7 @@
   - Pinouts NO VERIFICADOS de 2N7002, BAV99 y 1N4148W.
   - Contradicciones C107 (8.7 frente a 8.2 pF) y C125/126 (16 frente a 25 V) entre la tabla y la BOM.
   - Auditoría con kicad-happy.
+- **Sync del contexto:** `context.mjs sync` fallaba («Directorio de contexto demasiado profundo») por `kicad/.history/` (historial local de KiCad 10, con su propio `.git`). Se añadió `.history` a `excludeDirs` en `ai-context/index.json`; el sync sale ahora con código 0 e indexa `INFORME_S8.md`.
 - **Notas:**
   - No se tocaron STATE ni DECISIONS.
   - El MCP s3g4-context no conectó en esta sesión.

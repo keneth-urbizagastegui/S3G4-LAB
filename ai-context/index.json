@@ -25,7 +25,10 @@
     "S3G4_LAB_rev2.1/03_simulaciones/P4_P7_grueso/PLAN_SIMULACION.md",
     "S3G4_LAB_rev2.1/03_simulaciones/P4_P7_grueso/ENCARGO_CODEX.md",
     "S3G4_LAB_rev2.1/03_simulaciones/P4_P7_grueso/ACTA_RESULTADOS_P4_P7.md",
-    "S3G4_LAB_rev2.1/03_simulaciones/P4_P7_grueso/AUDITORIA_CLAUDE_P4_P7.md"
+    "S3G4_LAB_rev2.1/03_simulaciones/P4_P7_grueso/AUDITORIA_CLAUDE_P4_P7.md",
+    "S3G4_LAB_rev2.1/01_diseno/canal_rapido_ch1.html",
+    "S3G4_LAB_rev2.1/01_diseno/revision_entrada_ch1.html",
+    "S3G4_LAB_rev2.1/00_requisitos/especificaciones_osciloscopio.html"
   ],
   "directories": [
     {
@@ -54,7 +57,20 @@
       "extensions": [
         ".md"
       ],
-      "recursive": true
+      "recursive": true,
+      "excludeDirs": [
+        "generados",
+        "reorder_validation",
+        "smoke",
+        "controles",
+        "diagnostico",
+        ".history"
+      ],
+      "excludeFiles": [
+        "^ENCARGO_CODEX_.*\\.md$",
+        "^RESPUESTA_FINAL_.*\\.md$",
+        "_resumen\\.md$"
+      ]
     }
   ]
 }
