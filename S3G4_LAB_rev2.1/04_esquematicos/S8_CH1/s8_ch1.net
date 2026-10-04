@@ -2,7 +2,7 @@
 	(version "E")
 	(design
 		(source "C:\\Users\\Keneth\\Desktop\\S3G4 LAB\\S3G4_LAB_rev2.1\\04_esquematicos\\kicad\\s3g4.kicad_sch")
-		(date "2026-10-04T16:48:44")
+		(date "2026-10-04T17:02:48")
 		(tool "Eeschema 10.0.6")
 		(sheet
 			(number "1")
@@ -6506,7 +6506,7 @@
 			)
 			(node
 				(ref "C126")
-				(pin "1")
+				(pin "2")
 				(pintype "passive")
 			)
 			(node
@@ -6773,7 +6773,7 @@
 			(class "Default")
 			(node
 				(ref "C110")
-				(pin "2")
+				(pin "1")
 				(pintype "passive")
 			)
 			(node
@@ -6845,7 +6845,7 @@
 			(class "Default")
 			(node
 				(ref "C112")
-				(pin "2")
+				(pin "1")
 				(pintype "passive")
 			)
 			(node
@@ -7536,12 +7536,12 @@
 			)
 			(node
 				(ref "C110")
-				(pin "1")
+				(pin "2")
 				(pintype "passive")
 			)
 			(node
 				(ref "C112")
-				(pin "1")
+				(pin "2")
 				(pintype "passive")
 			)
 			(node
@@ -7606,7 +7606,7 @@
 			)
 			(node
 				(ref "C126")
-				(pin "2")
+				(pin "1")
 				(pintype "passive")
 			)
 			(node
