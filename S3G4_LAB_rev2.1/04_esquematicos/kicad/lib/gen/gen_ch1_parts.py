@@ -14,8 +14,7 @@
 #  J101 KH-BNC50-3511 (C2837587): C2837587.pdf "PCB": 2 x Ø2.00 a 10.1 mm; 2 x Ø0.90 a 2.5 mm, el central en el eje,
 #       fila de señal a 5.05 mm detrás de la de anclaje; cuerpo 14.7 de ancho, frente a 28.5 mm de la fila de anclaje,
 #       35.5 de largo. Coincide con la huella EasyEDA (uuid 066bf880...). Pin 1 centro, pin 2 (y anclajes) malla.
-#  VC101 SEHWA STC3MA06-T1 (C22468120): SIN plano en el proyecto. Huella EasyEDA de LCSC (uuid 0b1d4e9a...):
-#       2 pads 1.3 x 1.4 mm a 3.8 mm, cuerpo 4.5 x 3.2. Qué pad es el rotor: NO VERIFICADO.
+#  VC101 SEHWA STC3MA06-T1 (C22468120): C22468120.pdf p.3 (land pattern). La hoja no identifica el rotor.
 import os, re
 HERE = os.path.dirname(os.path.abspath(__file__))
 LIB = os.path.dirname(HERE)
@@ -98,13 +97,16 @@ fp.rect(-7.47, yM - 7.12, 7.47, yM + 6.0, "F.SilkS", 0.12)                      
 fp.rect(-7.6, yM - 7.25, 7.6, yM + 28.75, "F.CrtYd", 0.05)
 fp.save()
 
-# VC101: trimmer SEHWA STC3MA06, origen en el centro
-fp = FP("C_Trimmer_SEHWA_STC3MA06_4.5x3.2mm", "Trimmer ceramico SEHWA STC3MA06-T1 2-6 pF (C22468120), 4.5 x 3.2 mm. Huella EasyEDA de LCSC; sin plano en el proyecto: rotor NO VERIFICADO", "trimmer capacitor SEHWA STC3", "smd")
-fp.props(-2.6, 2.6, "https://www.lcsc.com/product-detail/C22468120.html")
-fp.rect(-2.25, -1.6, 2.25, 1.6, "F.Fab", 0.1)
-fp.smd(1, -1.9, 0, 1.3, 1.4); fp.smd(2, 1.9, 0, 1.3, 1.4)
-fp.line(-0.9, -1.72, 0.9, -1.72, "F.SilkS", 0.12); fp.line(-0.9, 1.72, 0.9, 1.72, "F.SilkS", 0.12)
-fp.rect(-2.85, -1.95, 2.85, 1.95, "F.CrtYd", 0.05)
+# VC101: trimmer SEHWA STC3MA06, origen en el centro, eje largo vertical.
+# Cotas: C22468120.pdf (SEHWA STC3M-SP-15 rev 4.1) p.3, "Land Pattern": pads 1.40 x 1.30, 2.60 entre bordes
+# interiores y 5.10 entre exteriores -> centros a +-1.95; cuerpo 3.20 x 4.50. La hoja no identifica el rotor.
+fp = FP("C_Trimmer_SEHWA_STC3MA06_3.2x4.5mm", "Trimmer ceramico SEHWA STC3MA06-T1 2-6 pF NP0 100 V (C22468120). Land pattern de C22468120.pdf p.3. La hoja no indica que terminal es el rotor", "trimmer capacitor SEHWA STC3", "smd")
+fp.props(-3.3, 3.3, DS + "C22468120.pdf")
+fp.rect(-1.6, -2.25, 1.6, 2.25, "F.Fab", 0.1)
+fp.circ(0, 0, 1.1, "F.Fab", 0.1)
+fp.smd(1, 0, -1.95, 1.4, 1.3); fp.smd(2, 0, 1.95, 1.4, 1.3)
+fp.line(-1.72, -0.9, -1.72, 0.9, "F.SilkS", 0.12); fp.line(1.72, -0.9, 1.72, 0.9, "F.SilkS", 0.12)
+fp.rect(-1.95, -2.85, 1.95, 2.85, "F.CrtYd", 0.05)
 fp.save()
 
 # ---------------------------------------------------------------- símbolos

@@ -19,7 +19,7 @@ Los generó `lib/gen/gen_ch1_parts.py` (cotas en su cabecera):
 | K101 | símbolo `s3g4:TQ2SA-5V-Z` (sustituye a `Relay:G6H-2`) | `s3g4:Relay_Panasonic_TQ2SA_SMD` (viene en el símbolo) |
 | SW101 | símbolo `s3g4:SS23H37L6` (sustituye a `Switch:SW_DP3T`) | `s3g4:SW_Slide_DP3T_XKB_SS23H37` (viene en el símbolo) |
 | J101 | se queda `Connector:Conn_Coaxial` | `s3g4:BNC_Kinghelm_KH-BNC50-3511_Horizontal` |
-| VC101 | se queda `Device:C_Trim` | `s3g4:C_Trimmer_SEHWA_STC3MA06_4.5x3.2mm` |
+| VC101 | se queda `Device:C_Trim` | `s3g4:C_Trimmer_SEHWA_STC3MA06_3.2x4.5mm` |
 
 - Conserva la referencia, el valor y los campos (`LCSC`, `MPN`, `Nota`) de cada pieza.
 - Quita la `Nota` de «símbolo provisional» de las cuatro.
