@@ -658,13 +658,18 @@
       {
         "filename": "s3g4.kicad_sch",
         "name": "s3g4",
-        "uuid": "00000000-0000-0000-0000-000000000000"
+        "uuid": "de82ce61-fda9-4439-b3fa-fd2016785b6d"
       }
     ],
     "used_designators": "",
     "variants": []
   },
-  "sheets": [],
+  "sheets": [
+    [
+      "de82ce61-fda9-4439-b3fa-fd2016785b6d",
+      "s3g4"
+    ]
+  ],
   "text_variables": {},
   "tuning_profiles": {
     "meta": {

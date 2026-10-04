@@ -15,3 +15,6 @@ output/
 # Caches de herramientas
 *.kicad_sch-bak
 *.kicad_pcb-bak
+
+# Historial local de KiCad 10 (File > Local History)
+.history/
