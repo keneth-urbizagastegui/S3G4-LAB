@@ -24,5 +24,6 @@
 
 ## Versionado y unión con main (6 oct, Claude)
 - Simulaciones en git: scripts, actas, `comun/` y `resultados/`. Fuera de git: las corridas y los 15 resultados de más de 1 MB (lista en `.gitignore`; siguen en disco).
-- `ai/s8-ch1-esquema` unida en `main` (ed3c514), sin push. El cajetín y el ERC 15 siguen pendientes; Keneth los hará en KiCad.
+- `ai/s8-ch1-esquema` unida en `main` (db94b62 tras reescribir; antes ed3c514), sin push. El cajetín y el ERC 15 siguen pendientes; Keneth los hará en KiCad.
 - Aviso: `main` lleva sin subir `kicad/lib/3d/ER-TFTM035-6_3D.step` (49 MB), que entró con la unión de ai/footprint-tft035, anterior a esta sesión. Hay que decidir antes del push.
+- Con el visto bueno de Keneth, el STEP salió de los 21 commits sin subir (origin/main..main) con `git filter-branch --index-filter`; ahora va en `.gitignore` y sigue en disco con el mismo SHA-256. Los hashes locales cambiaron desde 27fb350 (por ejemplo, la unión es ahora db94b62). La rama `respaldo-antes-sin-step` guarda el historial anterior: no subirla, y borrarla cuando se haya hecho el push.
