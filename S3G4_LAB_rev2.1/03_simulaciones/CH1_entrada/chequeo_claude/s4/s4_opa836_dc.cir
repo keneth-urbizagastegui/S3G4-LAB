@@ -1,0 +1,30 @@
+* Chequeo Claude S4: barrido de V_in y V_DAC; pin del ADC, diferencial y corriente de entrada; I_q
+.include "C:\Users\Keneth\Desktop\S3G4 LAB\Simulation_LTSpice\models\OPA836\opa836_a.lib"
+VDD vdd 0 3.3
+VREF vref 0 2.5
+RT vref vmid 10.0k
+RB vmid 0 5.23k
+CMID vmid 0 1u
+VIN in 0 0
+VDAC dac 0 {VD}
+RIN in sum 10.0k
+RF o2 sum 10.0k
+ROFF dac sum 8.06k
+VIM sum summ 0
+VIP vmid vmp 0
+X2 vmp summ o2 vdd 0 vdd OPA836
+RADC o2 pin 68
+CADC pin 0 470p
+.step param VD list 0.2 1.25 2.3
+.dc VIN -5 5 0.01
+.param VD=1.25
+.meas dc pinmax MAX V(pin)
+.meas dc pinmin MIN V(pin)
+.meas dc dif MAX abs(V(vmp)-V(summ))
+.meas dc iin MAX abs(I(VIM))
+.meas dc vmidmax MAX V(vmid)
+.meas dc vmidmin MIN V(vmid)
+.meas dc v0 FIND V(pin) AT=0
+.meas dc vp1 FIND V(pin) AT=1
+.meas dc vm1 FIND V(pin) AT=-1
+.end

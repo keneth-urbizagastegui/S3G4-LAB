@@ -1,0 +1,43 @@
+* Chequeo Claude S4: barrido de V_in y V_DAC; pin del ADC, diferencial y corriente de entrada; I_q
+.include "C:\Users\Keneth\Desktop\S3G4 LAB\Simulation_LTSpice\models\OPA836\opa836_a.lib"
+VDD vdd 0 3.3
+VREF vref 0 2.5
+RT vref vmid 10.0k
+RB vmid 0 5.23k
+CMID vmid 0 1u
+VIN in 0 0
+VDAC dac 0 {VD}
+RIN in sum 10.0k
+RF o2 sum 10.0k
+ROFF dac sum 8.06k
+VIM sum summ 0
+VIP vmid vmp 0
+X2 vmp summ o2 vdd 0 vdd OPA836
+RADC o2 pin 68
+CADC pin 0 470p
+.step param VD list 0.2 0.725 1.25 1.775 2.3
+.dc VIN -1.25 1.25 0.005
+.meas dc p0 FIND V(pin) AT=-1.25
+.meas dc p1 FIND V(pin) AT=-1.125
+.meas dc p2 FIND V(pin) AT=-1.0
+.meas dc p3 FIND V(pin) AT=-0.875
+.meas dc p4 FIND V(pin) AT=-0.75
+.meas dc p5 FIND V(pin) AT=-0.625
+.meas dc p6 FIND V(pin) AT=-0.5
+.meas dc p7 FIND V(pin) AT=-0.375
+.meas dc p8 FIND V(pin) AT=-0.25
+.meas dc p9 FIND V(pin) AT=-0.125
+.meas dc p10 FIND V(pin) AT=0.0
+.meas dc p11 FIND V(pin) AT=0.125
+.meas dc p12 FIND V(pin) AT=0.25
+.meas dc p13 FIND V(pin) AT=0.375
+.meas dc p14 FIND V(pin) AT=0.5
+.meas dc p15 FIND V(pin) AT=0.625
+.meas dc p16 FIND V(pin) AT=0.75
+.meas dc p17 FIND V(pin) AT=0.875
+.meas dc p18 FIND V(pin) AT=1.0
+.meas dc p19 FIND V(pin) AT=1.125
+.meas dc p20 FIND V(pin) AT=1.25
+
+.param VD=1.25
+.end

@@ -1,0 +1,26 @@
+[
+  {
+    "mc": 0,
+    "original_seconds": 7.415860100009013,
+    "regularized_seconds": 8.817240000003949,
+    "differences": {
+      "minus3_Hz": 0.1968912925804034,
+      "peak_db": 1.6905253828834038e-06,
+      "atten_1p73m_db": -1.7751684495692643e-06,
+      "atten_2p47m_db": -1.7486477830175318e-06,
+      "gain_dc_signed": 1.0450726627198037e-05
+    }
+  },
+  {
+    "mc": 200,
+    "original_seconds": 7.175103899993701,
+    "regularized_seconds": 9.287004199984949,
+    "differences": {
+      "minus3_Hz": 0.1907475219340995,
+      "peak_db": 1.455919420362739e-10,
+      "atten_1p73m_db": -1.7815404280696612e-06,
+      "atten_2p47m_db": -1.759706947268569e-06,
+      "gain_dc_signed": 1.0908602035897275e-05
+    }
+  }
+]

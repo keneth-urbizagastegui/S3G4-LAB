@@ -1,0 +1,15 @@
+criterion,buffer,value,status
+S2-C1,AD8065,Zin 0.999012–1.000280 MΩ; Cin 26.918921–28.402606 pF; Δ 1.483685 pF; gain 0.418790%; flat 0.265726%; peak 0.004267dB; fc 8.805817Hz,PASA
+S2-C1,OPA810,Zin 0.999093–1.000499 MΩ; Cin 26.919057–29.758938 pF; Δ 2.839881 pF; gain 0.536898%; flat 0.693691%; peak 0.008052dB; fc 8.790226Hz,FALLA
+S2-C2,AD8065,worst req_v=99.0119; 1.320158 × derated limit; CEQ rating unspecified,FALLA
+S2-C2,OPA810,worst req_v=99.0122; 1.320162 × derated limit; CEQ rating unspecified,FALLA
+S2-C3,AD8065,VIN beyond rail 2.12908 V (<0.5); |IIN| 0.00337735 A; |differential| 4.00243 V,FALLA
+S2-C3,OPA810,VIN beyond rail 1.68821 V (<0.5); |IIN| 0.00257305 A; |differential| 3.05475 V,FALLA
+S2-C4,AD8065,|rails| 4.975072–4.977858 V,PASA
+S2-C4,OPA810,|rails| 4.975668–4.980100 V,PASA
+S2-C5,OPA810,OFF_LOAD_ONLY: bleed0 0.449344 V; bleed1 0.17016 V; bleed2 0.00310446 V,PASA
+S2-C6,AD8065,BAV |I|=23.9688 A vs 4 A/1us; TVS |I|=5.81724e-12 A vs generic 38.8 A; input ∫|VI|=1.20347e-10 J; no rated transient energy,FALLA
+S2-C6,OPA810,BAV |I|=23.9745 A vs 4 A/1us; TVS |I|=0.000169414 A vs generic 38.8 A; input ∫|VI|=6.71763e-11 J; no rated transient energy,FALLA
+S2-C7,AD8065,|offset BNC|=0.403697 mV,PASA
+S2-C7,OPA810,|offset BNC|=0.076053 mV,PASA
+S2-C8,OPA810,THD=0.000004%; |BAV I|=0.002707 µA,PASA

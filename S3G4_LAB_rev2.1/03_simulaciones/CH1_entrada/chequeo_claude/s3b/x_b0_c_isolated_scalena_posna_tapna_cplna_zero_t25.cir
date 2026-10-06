@@ -1,0 +1,28 @@
+* S3 b0_c_isolated_scalena_posna_tapna_cplna_zero_t25
+.include "C:\Users\Keneth\Desktop\S3G4 LAB\S3G4_LAB_rev2.1\03_simulaciones\CH1_entrada\comun\ch1_comun_s3b.inc"
+.include "C:\Users\Keneth\Desktop\S3G4 LAB\Simulation_LTSpice\models\OPA810\opa810_a.lib"
+.include "C:\Users\Keneth\Desktop\S3G4 LAB\Simulation_LTSpice\models\AD8039\AD8038_ltspice.sub"
+.include "C:\Users\Keneth\Desktop\S3G4 LAB\Simulation_LTSpice\models\74HC4051\hc_tnomi.cir"
+.options numdgt=15 plotwinsize=0 threads=1
+.options method=gear solver=alt reltol=0.0001 gminsteps=0
+.temp 25
+.param BUFFER_KIND=810
+VP VP 0 5
+VN VN 0 -5
+CPB VP 0 10u
+CND VN 0 10u
+CPP VP 0 100n
+CNN VN 0 100n
+VI COMMON 0 AC 1
+XPROT COMMON IPA IMA PROTECT_BAV199 R_SER=470
+XAMP IPA IMA VP VN OUT AD8039_S3
+RF OUT IMA {RF1}
+RG IMA 0 {RG1}
+CM IMA 0 1p
+RL OUT 0 1k
+CL OUT 0 10p
+.ac dec 100 1k 1G
+.meas AC gdc FIND mag(V(OUT)) AT=1k
+.meas AC gpk MAX mag(V(OUT))
+.meas AC fpk WHEN mag(V(OUT))=gpk
+.end

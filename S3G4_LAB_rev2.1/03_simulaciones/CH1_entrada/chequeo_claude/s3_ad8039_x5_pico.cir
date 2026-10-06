@@ -1,0 +1,21 @@
+* Chequeo Claude S3: pico de x5.02 segun red de realimentacion, Cm y carga
+.include "C:\Users\Keneth\Desktop\S3G4 LAB\Simulation_LTSpice\models\AD8039\AD8038_ltspice.sub"
+VP vp 0 5
+VN vn 0 -5
+VI in 0 AC 1
+X2 in m2 vp vn o2 AD8038
+RF2 o2 m2 {RG*4.02}
+RG2 m2 0 {RG}
+CM2 m2 0 {CM}
+RL2 o2 0 1k
+CL2 o2 0 {CL}
+.param RG=1k CM=1p CL=10p
+.step param RG list 1k 499 249
+.step param CM list 0 1p
+.step param CL list 0 10p
+.ac dec 200 100k 1G
+.meas ac gdc find mag(V(o2)) at 100k
+.meas ac pk max mag(V(o2))
+.meas ac fpk when d(mag(V(o2)))=0 fall=1
+.meas ac f3 when mag(V(o2))=gdc/sqrt(2)
+.end

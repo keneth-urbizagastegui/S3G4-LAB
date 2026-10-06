@@ -2,6 +2,7 @@
 """Presupuesto de energia de la rev 2.1 (seccion G), con la arquitectura decidida el 23 sep:
 bateria 1S 5000 mAh; boost 5.3 V (BUS5) -> LM27762 +-5.0 V (AFE y DMM) y LDO 3.3 V (G473);
 buck 3.3 V (ESP32-S3); convertidor aparte +-6.5 V para el AWG; reles monoestables con economizador.
+Revisado el 6 oct con los amplificadores reales del AFE (AD8039 en los tres canales) y el rele TQ2SA.
 Corrientes en mA. Cada supuesto lleva su fuente en la tabla LOADS."""
 
 V_BAT, USABLE = 3.7, 0.90          # celda Li-ion nominal; energia util (apagado al 5 %, margen)
@@ -10,9 +11,17 @@ V_BUS, V_ANA, V_DIG, V_AWG = 5.3, 5.0, 3.3, 6.5
 ETA_BOOST, ETA_BUCK, ETA_AWG = 0.90, 0.90, 0.80
 K_NEG = 1.3                        # LM27762: entrada/salida del lado negativo (estimacion rev 2.0; verificar)
 R_NEG = 2.5                        # ohm, hoja LM27762, salida de la bomba (CPOUT)
-IQ_AMP = 3.9                       # mA por amplificador del AFE (OPA1656 de la rev 2.0; provisional)
-I_REL = 40.0                       # mA por bobina de 125 ohm a 5 V (rev 2.0, HFD27/005-S)
-ECON = 0.36                        # economizador: 60 % de tension -> 36 % de potencia
+# AFE por canal (6 oct: CH1 cerrado en S3-S7b y AD8039 elegido para CH2/CH3, DECISIONS 6 oct).
+# Corrientes de reposo segun las hojas, no los macromodelos (el OPA810 del modelo da 1.9 mA).
+I_OPA810 = 3.7                     # mA por riel, hoja OPA810
+I_AD8039 = 1.0                     # mA por amplificador y riel; U103 y U105 son dobles -> 4 por canal
+N_AD8039 = 4
+I_RAIL_CH = I_OPA810 + N_AD8039 * I_AD8039   # 7.7 mA por riel y canal
+I_OPA836 = 1.0                     # mA, etapa final a 3.3 V (P8), hoja OPA836
+I_VMID_DAC = 0.2                   # mA por canal: VMID desde VREF (0.16) + DAC (0.05), simulado en S9-A
+# Rele TQ2SA-5V-Z con economizador de dos tensiones (DECISIONS 4 oct): mantenimiento ~2.88 V,
+# ~46 mW en la bobina -> ~16 mA desde el 3.3 V. Ese 3.3 V es el LDO del G473 (VDDM, desde BUS5).
+I_REL_HOLD = 16.0
 
 def loads(ch=3, dmm=True, awg=True, awg_load=True, n_x1=3, display=True, mhz=170):
     L = [("ESP32-S3 con WiFi (media)", "3V3D", 120, "rev 2.0 §12; hoja: RX 88–91 mA, TX 283–340 mA de pico")]
@@ -22,12 +31,14 @@ def loads(ch=3, dmm=True, awg=True, awg_load=True, n_x1=3, display=True, mhz=170
     L += [("Varios: cargador, LED, zumbador", "VSYS", 5, "estimación"),
           ("STM32G473 a %d MHz" % mhz, "VDDM", {170: 45, 104: 32}[mhz], "DS T.21 + bloques analógicos + periféricos")]
     if ch:
-        n = 3 * ch + (1 if ch >= 1 else 0)
-        L += [("AFE: %d amplificadores a ±5 V" % n, "+5", n * IQ_AMP, "%d × %.1f mA" % (n, IQ_AMP)),
-              ("AFE: %d amplificadores a ±5 V" % n, "-5", n * IQ_AMP, "idem"),
-              ("AFE: %d etapas finales a 3.3 V (P8)" % ch, "VDDM", ch * IQ_AMP, "%d × %.1f mA" % (ch, IQ_AMP))]
+        src = "%d × (OPA810 %.1f + %d × AD8039 %.1f) mA, hojas" % (ch, I_OPA810, N_AD8039, I_AD8039)
+        L += [("AFE: %d canales, OPA810 + 2 AD8039 dobles, a ±4.9 V" % ch, "+5", ch * I_RAIL_CH, src),
+              ("AFE: %d canales, OPA810 + 2 AD8039 dobles, a ±4.9 V" % ch, "-5", ch * I_RAIL_CH, "idem"),
+              ("AFE: %d etapas finales OPA836 a 3.3 V (P8), VMID y DAC" % ch, "VDDM", ch * (I_OPA836 + I_VMID_DAC),
+               "%d × (%.1f + %.1f) mA; hoja OPA836 y S9-A" % (ch, I_OPA836, I_VMID_DAC))]
         if n_x1:
-            L += [("Relés en ×1 (%d, con economizador)" % n_x1, "BUS5", n_x1 * I_REL * ECON, "%d × %.0f mA × %.2f" % (n_x1, I_REL, ECON))]
+            L += [("Relés TQ2SA en ×1 (%d), mantenimiento desde 3.3 V" % n_x1, "VDDM", n_x1 * I_REL_HOLD,
+                   "%d × %.0f mA a ≈ 2.9 V; DECISIONS 4 oct" % (n_x1, I_REL_HOLD))]
     if dmm:
         L += [("DMM: referencia, amplificadores, fuente de corriente", "+5", 3, "rev 2.0 §12")]
     if awg:

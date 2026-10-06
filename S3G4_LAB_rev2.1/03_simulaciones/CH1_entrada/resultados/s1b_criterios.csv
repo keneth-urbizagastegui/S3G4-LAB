@@ -1,0 +1,12 @@
+criterion,RANGO,value,status
+S1b-C1,nominal,0.999128…1.000287 MΩ,PASA
+S1b-C2,nominal,Cin=26.292419…26.691674 pF; Δ=0.399255 pF,PASA
+S1b-C3,nominal,Error máximo 0.324191 %,PASA
+S1b-C4,nominal,Planitud 0.239715 %; pico 0.001353 dB; corte 8.802472 Hz,PASA
+S1b-C5,nominal,Sobre 0.017252 %; |e2| 0.338975 %; convergencia 0.000000 pp,PASA
+S1b-C6,1,Máx 0.376486 %; fuera 0/200; topes 0/200,PASA
+S1b-C6,2,Máx 0.375144 %; fuera 0/200; topes 0/200,PASA
+S1b-C6,3,Máx 0.382238 %; fuera 0/200; topes 0/200,PASA
+S1b-C7,A todos,|ΔCin| máx 1.414737 pF,PASA
+S1b-C8,1,Sobre máx 0.505098 %; |e2| máx 1.500587 %,PASA
+S1b-C9,A todos,Error Zin máx 0.256254 %; planitud ×1 máx 0.293357 %,PASA

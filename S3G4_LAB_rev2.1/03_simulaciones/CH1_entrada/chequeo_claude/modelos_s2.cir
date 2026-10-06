@@ -1,0 +1,26 @@
+* Chequeo de Claude (3 oct 2026): que los modelos de fabricante cargan y funcionan como seguidor a +/-5 V.
+* OPA810 (TI): .subckt OPA810 IN+ IN- OUT VCC VEE   (orden distinto del simbolo opamp2: hace falta envoltorio)
+* AD8065 (ADI): .Subckt AD8065 100 101 102 103 104 = IN+ IN- V+ V- OUT
+* BAV199 (Nexperia): .MODEL BAV199 D ... (el fichero trae un .ENDS suelto; se copia el .model aqui sin el)
+.lib "C:\Users\Keneth\Desktop\S3G4 LAB\Simulation_LTSpice\models\OPA810\opa810_a.lib"
+.include "C:\Users\Keneth\Desktop\S3G4 LAB\Simulation_LTSpice\models\ad8065.cir"
+.model BAV199N D(IS=805.84E-18 N=1.0246 RS=50.000E-3 IKF=362.16E-6 CJO=1.9002E-12 M=.35193 VJ=1.2722 ISR=298.95E-15 BV=113.30 IBV=10 TT=1.0230E-6)
+VP VP 0 5
+VN VN 0 -5
+Vs IN 0 AC 1 SIN(0 0.5 1Meg)
+* seguidor OPA810
+XU1 IN O1 O1 VP VN OPA810
+RL1 O1 0 1k
+* seguidor AD8065
+XU2 IN O2 VP VN O2 AD8065
+RL2 O2 0 1k
+* capacidad del BAV199 polarizado a 5 V: diodo a +5 V con fuente AC pequena en el nodo
+Vd D 0 AC 1
+Dt D VP BAV199N
+.ac dec 50 1k 300Meg
+.meas ac f3_opa810 WHEN mag(V(O1))=0.7071 FALL=1
+.meas ac f3_ad8065 WHEN mag(V(O2))=0.7071 FALL=1
+.meas ac g1m_opa810 FIND mag(V(O1)) AT=2Meg
+.meas ac g1m_ad8065 FIND mag(V(O2)) AT=2Meg
+.meas ac cj_bav199 FIND -im(I(Vd))/(2*pi*1Meg) AT=1Meg
+.end

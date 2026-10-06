@@ -64,7 +64,7 @@ code{font:0.9em var(--mono);color:var(--accent)}
       <div class="brand">S3G4 LAB · Instrumento portátil</div>
       <h1>Osciloscopio de 3 canales<br>Especificaciones</h1>
     </div>
-    <div class="docid">S3G4-SCOPE · hardware rev 2.1<br>Hoja preliminar · 30 sep 2026<br>UTEC · Ingeniería Electrónica</div>
+    <div class="docid">S3G4-SCOPE · hardware rev 2.1<br>Hoja preliminar · 30 sep 2026 · revisada el 4 oct<br>UTEC · Ingeniería Electrónica</div>
   </header>
 
   <p class="warn"><b>Preliminar: objetivos de diseño, no valores medidos.</b> No existe todavía ninguna unidad de la rev 2.1. Cada cifra lleva su origen: un requisito acordado, un cálculo del documento de diseño o una simulación. Los fabricantes publican valores garantizados y típicos medidos en producción; esta hoja se convertirá en eso cuando haya placas y ensayos de banco.</p>
@@ -95,27 +95,27 @@ code{font:0.9em var(--mono);color:var(--accent)}
         <div class="row hd"><dt>Acoplo de entrada</dt><span class="dots"></span><dd>AC, DC, GND<span class="t r">R</span></dd></div>
         <p class="cond">Conmutador deslizante por canal; el firmware lee su posición</p>
         <div class="row hd"><dt>Corte del acoplo AC (−3 dB)</dt><span class="dots"></span><dd>≤ 10 Hz<span class="t r">R</span></dd></div>
-        <div class="row hd"><dt>Impedancia de entrada</dt><span class="dots"></span><dd>1 MΩ ±2 % ∥ 10–30 pF<span class="t r">R</span><span class="t p">!</span><sup>1</sup></dd></div>
-        <div class="row sub"><dt>Diferencia de capacidad entre escalas</dt><span class="dots"></span><dd>≤ 2 pF<span class="t r">R</span><span class="t p">!</span></dd></div>
+        <div class="row hd"><dt>Impedancia de entrada</dt><span class="dots"></span><dd>1 MΩ ±2 % ∥ 10–30 pF<span class="t r">R</span><span class="t s">S</span><sup>1</sup></dd></div>
+        <div class="row sub"><dt>Diferencia de capacidad entre escalas</dt><span class="dots"></span><dd>≤ 2 pF<span class="t r">R</span><span class="t s">S</span></dd></div>
         <div class="row hd"><dt>Ancho de banda (−3 dB)</dt><span class="dots"></span><dd></dd></div>
         <div class="row sub"><dt>CH1</dt><span class="dots"></span><dd>2 MHz<span class="t r">R</span></dd></div>
         <div class="row sub"><dt>CH2, CH3</dt><span class="dots"></span><dd>1 MHz<span class="t r">R</span></dd></div>
         <p class="cond">Mismo ancho de banda en todas las escalas: la ganancia es fija y la escalera atenúa<sup>2</sup></p>
         <div class="row hd"><dt>Tiempo de subida (0.35 / BW)</dt><span class="dots"></span><dd></dd></div>
-        <div class="row sub"><dt>CH1</dt><span class="dots"></span><dd>175 ns<span class="t c">C</span></dd></div>
+        <div class="row sub"><dt>CH1</dt><span class="dots"></span><dd>182 ns<span class="t s">S</span></dd></div>
         <div class="row sub"><dt>CH2, CH3</dt><span class="dots"></span><dd>350 ns<span class="t c">C</span></dd></div>
         <div class="row hd"><dt>Resolución</dt><span class="dots"></span><dd>12 bits</dd></div>
         <p class="cond">8 divisiones = 2.0 V del ADC (VREF+ 2.5 V): ≈ 410 códigos por división<sup>3</sup></p>
-        <div class="row hd"><dt>Sensibilidad vertical</dt><span class="dots"></span><dd>5 mV/div a 10 V/div<span class="t r">R</span></dd></div>
-        <div class="row sub"><dt>Pasos</dt><span class="dots"></span><dd>11, secuencia 1-2-5</dd></div>
-        <div class="row sub"><dt>Por software</dt><span class="dots"></span><dd>20 V/div</dd></div>
+        <div class="row hd"><dt>Sensibilidad vertical</dt><span class="dots"></span><dd>5 mV/div a 20 V/div<span class="t r">R</span></dd></div>
+        <div class="row sub"><dt>Pasos</dt><span class="dots"></span><dd>12, secuencia 1-2-5</dd></div>
+        <div class="row sub"><dt>Cómo se obtienen</dt><span class="dots"></span><dd>relé ×1 / ÷100 y 6 tomas</dd></div>
         <div class="row hd"><dt>Fondo de escala</dt><span class="dots"></span><dd>±40 V (10 V/div)<span class="t r">R</span></dd></div>
-        <div class="row hd"><dt>Rango de offset vertical</dt><span class="dots"></span><dd>±5 div<span class="t r">R</span><span class="t p">!</span><sup>4</sup></dd></div>
+        <div class="row hd"><dt>Rango de offset vertical</dt><span class="dots"></span><dd>+5.2 / −4.85 div<span class="t r">R</span><span class="t s">S</span><sup>4</sup></dd></div>
         <div class="row hd"><dt>Precisión de ganancia en DC</dt><span class="dots"></span><dd>±1 %<span class="t r">R</span></dd></div>
         <p class="cond">Tras la autocalibración interna, sin instrumentos externos</p>
-        <div class="row hd"><dt>Ruido (rms)</dt><span class="dots"></span><dd>≈ 0.2–0.3 % de div<span class="t c">C</span></dd></div>
-        <div class="row sub"><dt>a 5 mV/div</dt><span class="dots"></span><dd>≈ 15 µV<span class="t c">C</span></dd></div>
-        <p class="cond">Estimado para CH2 y CH3; en CH1, ≈ ×1.15 por su mayor ancho de banda</p>
+        <div class="row hd"><dt>Ruido (rms), CH1</dt><span class="dots"></span><dd>0.25–0.32 % de div<span class="t s">S</span></dd></div>
+        <div class="row sub"><dt>con el ruido del ADC</dt><span class="dots"></span><dd>0.41–0.45 % de div<span class="t s">S</span></dd></div>
+        <p class="cond">CH1 simulado en las 12 escalas (S7b). CH2 y CH3, a 1 MHz, se simulan en S9; el cálculo de C.5 da 0.21–0.29 %</p>
         <div class="row hd"><dt>Diafonía, THD, ENOB</dt><span class="dots"></span><dd>por especificar<span class="t p">!</span></dd></div>
       </dl>
     </section>
@@ -166,9 +166,9 @@ code{font:0.9em var(--mono);color:var(--accent)}
       <h2>Protección de entrada</h2>
       <dl>
         <div class="row hd"><dt>Entrada máxima declarada</dt><span class="dots"></span><dd>50 Vpk, todas las escalas<span class="t r">R</span></dd></div>
-        <div class="row hd"><dt>Supervivencia a sobrecarga</dt><span class="dots"></span><dd>250 Vrms, ≤ 10 s<span class="t r">R</span><span class="t s">S</span></dd></div>
-        <p class="cond">Sólo en las escalas de 200 mV/div a 10 V/div (atenuador ÷20), que es también el estado con el equipo apagado o arrancando<sup>7</sup></p>
-        <div class="row hd"><dt>Escalas de 5 a 100 mV/div</dt><span class="dots"></span><dd>50 Vpk continuos; no la red</dd></div>
+        <div class="row hd"><dt>Sin daño</dt><span class="dots"></span><dd>±100 V, cualquier escala<span class="t r">R</span><span class="t s">S</span></dd></div>
+        <p class="cond">También con el equipo apagado. Ya no se diseña para la red (D-06 revisada el 2 oct)<sup>7</sup></p>
+        <div class="row hd"><dt>Descargas electrostáticas</dt><span class="dots"></span><dd>±8 kV aire, ±4 kV contacto<span class="t r">R</span><span class="t s">S</span></dd></div>
         <div class="row hd"><dt>Categoría de medida</dt><span class="dots"></span><dd>ninguna: no mide la red</dd></div>
         <div class="row hd"><dt>Aislamiento</dt><span class="dots"></span><dd>no aislado; masa común con USB</dd></div>
       </dl>
@@ -224,19 +224,20 @@ code{font:0.9em var(--mono);color:var(--accent)}
   <section class="grp">
     <h2>Escalas verticales</h2>
     <div class="tw"><table>
-      <thead><tr><th>V/div</th><th>Pantalla completa</th><th>Atenuador</th><th>Toma</th><th>Resolución por código</th><th>Protección a la red</th></tr></thead>
+      <thead><tr><th>V/div</th><th>Pantalla completa</th><th>Atenuador</th><th>Toma</th><th>Resolución por código</th><th>Sin daño hasta</th></tr></thead>
       <tbody>
-        <tr><td class="n">5 mV</td><td class="n">40 mVpp</td><td>×1</td><td class="n">1/1</td><td class="n">12.2 µV</td><td>no</td></tr>
-        <tr><td class="n">10 mV</td><td class="n">80 mVpp</td><td>×1</td><td class="n">1/2</td><td class="n">24.4 µV</td><td>no</td></tr>
-        <tr><td class="n">20 mV</td><td class="n">160 mVpp</td><td>×1</td><td class="n">1/4</td><td class="n">48.8 µV</td><td>no</td></tr>
-        <tr><td class="n">50 mV</td><td class="n">0.4 Vpp</td><td>×1</td><td class="n">1/10</td><td class="n">122 µV</td><td>no</td></tr>
-        <tr><td class="n">100 mV</td><td class="n">0.8 Vpp</td><td>×1</td><td class="n">1/20</td><td class="n">244 µV</td><td>no</td></tr>
-        <tr><td class="n">200 mV</td><td class="n">1.6 Vpp</td><td>÷20</td><td class="n">1/2</td><td class="n">488 µV</td><td>250 Vrms ≤ 10 s</td></tr>
-        <tr><td class="n">500 mV</td><td class="n">4 Vpp</td><td>÷20</td><td class="n">1/5</td><td class="n">1.22 mV</td><td>250 Vrms ≤ 10 s</td></tr>
-        <tr><td class="n">1 V</td><td class="n">8 Vpp</td><td>÷20</td><td class="n">1/10</td><td class="n">2.44 mV</td><td>250 Vrms ≤ 10 s</td></tr>
-        <tr><td class="n">2 V</td><td class="n">16 Vpp</td><td>÷20</td><td class="n">1/20</td><td class="n">4.88 mV</td><td>250 Vrms ≤ 10 s</td></tr>
-        <tr><td class="n">5 V</td><td class="n">40 Vpp</td><td>÷20</td><td class="n">1/50</td><td class="n">12.2 mV</td><td>250 Vrms ≤ 10 s</td></tr>
-        <tr><td class="n">10 V</td><td class="n">80 Vpp</td><td>÷20</td><td class="n">1/100</td><td class="n">24.4 mV</td><td>250 Vrms ≤ 10 s</td></tr>
+        <tr><td class="n">5 mV</td><td class="n">40 mVpp</td><td>×1</td><td class="n">1/1</td><td class="n">12.2 µV</td><td>±100 V</td></tr>
+        <tr><td class="n">10 mV</td><td class="n">80 mVpp</td><td>×1</td><td class="n">1/2</td><td class="n">24.4 µV</td><td>±100 V</td></tr>
+        <tr><td class="n">20 mV</td><td class="n">160 mVpp</td><td>×1</td><td class="n">1/4</td><td class="n">48.8 µV</td><td>±100 V</td></tr>
+        <tr><td class="n">50 mV</td><td class="n">0.4 Vpp</td><td>×1</td><td class="n">1/10</td><td class="n">122 µV</td><td>±100 V</td></tr>
+        <tr><td class="n">100 mV</td><td class="n">0.8 Vpp</td><td>×1</td><td class="n">1/20</td><td class="n">244 µV</td><td>±100 V</td></tr>
+        <tr><td class="n">200 mV</td><td class="n">1.6 Vpp</td><td>×1</td><td class="n">1/40</td><td class="n">488 µV</td><td>±100 V</td></tr>
+        <tr><td class="n">500 mV</td><td class="n">4 Vpp</td><td>÷100</td><td class="n">1/1</td><td class="n">1.22 mV</td><td>±100 V</td></tr>
+        <tr><td class="n">1 V</td><td class="n">8 Vpp</td><td>÷100</td><td class="n">1/2</td><td class="n">2.44 mV</td><td>±100 V</td></tr>
+        <tr><td class="n">2 V</td><td class="n">16 Vpp</td><td>÷100</td><td class="n">1/4</td><td class="n">4.88 mV</td><td>±100 V</td></tr>
+        <tr><td class="n">5 V</td><td class="n">40 Vpp</td><td>÷100</td><td class="n">1/10</td><td class="n">12.2 mV</td><td>±100 V</td></tr>
+        <tr><td class="n">10 V</td><td class="n">80 Vpp</td><td>÷100</td><td class="n">1/20</td><td class="n">24.4 mV</td><td>±100 V</td></tr>
+        <tr><td class="n">20 V</td><td class="n">160 Vpp</td><td>÷100</td><td class="n">1/40</td><td class="n">48.8 mV</td><td>±100 V</td></tr>
       </tbody>
     </table></div>
   </section>
@@ -244,15 +245,15 @@ code{font:0.9em var(--mono);color:var(--accent)}
   <div class="notes">
     <h3>Notas</h3>
     <ol>
-      <li><b>Todavía no se cumple.</b> El atenuador simulado (P4) da 0.909 MΩ en las escalas ×1 y 8 pF de diferencia entre escalas. La corrección está planificada y sin simular: <code>03_simulaciones/P4_P7_grueso/AUDITORIA_CLAUDE_P4_P7.md</code>.</li>
-      <li>Presupuesto de ancho de banda del amplificador: −0.2 dB a 1.5 MHz y −0.37 dB a 2 MHz. El corte final lo pone el filtro anti-alias de la sección D, que falta por diseñar.</li>
-      <li>Pendiente de confirmar en la sección F (driver del ADC y referencia REF3325).</li>
-      <li>El circuito de offset (sección E) no está diseñado. Candidatos: PWM filtrado o DAC del G473 en sample-and-hold.</li>
+      <li><b>Cumplido en simulación</b> con la entrada P4b (S1, S7b): 999.1 kΩ en las dos posiciones del relé y ≈ 27 pF, con 0.54 pF de diferencia. Un trimmer por canal ajusta la planitud de ÷100 (en rango en el 100 % de las placas, S7c).</li>
+      <li>CH1 (S7b): −3 dB en 2.0 MHz en las 12 escalas, 21.7 dB a 4.5 MHz con el filtro anti-alias de 6.º orden de la sección D, y el 100 % de 500 placas entre 1.82 y 2.17 MHz. CH2 y CH3 a 1 MHz: S9.</li>
+      <li>Confirmado para CH1 en S6–S7b: 409.6 códigos por división y pantalla de 0.25 a 2.25 V en el ADC (sección F).</li>
+      <li>Etapa final con OPA836 a 3.3 V y DAC del G473 con buffer (sección E, S4 y S7b). El límite inferior de −4.85 div lo aceptó Keneth. Tras compensar el offset de cada placa quedan ±4.5 div en el 97 % de ellas.</li>
       <li>Depende del cristal del STM32G473, que aún no se ha elegido. El NI ELVIS II publica 50 ppm.</li>
       <li>Watchdog de 12 bits (AWD1) de cada ADC con la cadena de disparo por hardware P12. Por eso CH2 y CH3 no necesitan comparador.</li>
-      <li>Un relé monoestable por canal: sin alimentación vuelve solo a ÷20. En las escalas ×1, 250 Vrms queman la resistencia serie de la rama ×1; es un riesgo aceptado en D-06.</li>
+      <li>Un relé monoestable por canal (TQ2SA-5V-Z): sin alimentación vuelve solo a ÷100. La protección es la misma en todas las escalas: BAV199 a los rieles, una TVS por riel y R_S de 2 × 49.9 kΩ en la rama ×1 (S2, S2b).</li>
     </ol>
     <h3>Fuentes</h3>
-    <p>Requisitos RF-01…RF-19 (<code>00_requisitos/requisitos_osciloscopio.html</code>), decisiones D-01…D-09 y secciones B, C y G del documento vivo (<code>01_diseno/rediseno_afe_rev21.html</code>), y <code>ai-context/DECISIONS.md</code>. Formato tomado de la hoja del NI ELVIS II (<code>research_and_tests/NI ELVIS II Series.pdf</code>).</p>
+    <p>Requisitos RF-01…RF-19 (<code>00_requisitos/requisitos_osciloscopio.html</code>), decisiones D-01…D-09 y secciones B, C y G del documento vivo (<code>01_diseno/rediseno_afe_rev21.html</code>), y <code>ai-context/DECISIONS.md</code>; revisada el 4 oct con P1 (÷100), D-06 revisada y las simulaciones S1–S7c de CH1 (<code>03_simulaciones/CH1_entrada/</code>). Formato tomado de la hoja del NI ELVIS II (<code>research_and_tests/NI ELVIS II Series.pdf</code>).</p>
   </div>
 </div>

@@ -1,0 +1,197 @@
+{
+  "exit_code": 0,
+  "simulations": 21,
+  "errors": 0,
+  "warnings": 0,
+  "elapsed_seconds": 35.788531899999725,
+  "workers": 10,
+  "smoke": true,
+  "protected_files": 19839,
+  "protected_changed": [],
+  "derived": {
+    "CJ_POL_pF": 1.0838258570379375,
+    "C_SEL_EST_pF": 11.167651714075873,
+    "CEQ_pF": 11.167651714075873,
+    "CS_pF": 1419.6043801679232,
+    "CB_pF": 1086.040148285924
+  },
+  "records": [
+    {
+      "id": "e0_ad8065_pos100_cplac_pwr1_bleed0_zero_t25_50ohm_real",
+      "file": "S2/smoke/e0_ad8065_pos100_cplac_pwr1_bleed0_zero_t25_50ohm_real.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 7
+    },
+    {
+      "id": "e0_ad8065_pos100_cpldc_pwr1_bleed0_zero_t25_50ohm_real",
+      "file": "S2/smoke/e0_ad8065_pos100_cpldc_pwr1_bleed0_zero_t25_50ohm_real.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 6
+    },
+    {
+      "id": "e0_ad8065_pos1_cplac_pwr1_bleed0_zero_t25_50ohm_real",
+      "file": "S2/smoke/e0_ad8065_pos1_cplac_pwr1_bleed0_zero_t25_50ohm_real.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 7
+    },
+    {
+      "id": "e0_ad8065_pos1_cpldc_pwr1_bleed0_zero_t25_50ohm_real",
+      "file": "S2/smoke/e0_ad8065_pos1_cpldc_pwr1_bleed0_zero_t25_50ohm_real.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 6
+    },
+    {
+      "id": "e0_opa810_pos100_cplac_pwr1_bleed0_zero_t25_50ohm_real",
+      "file": "S2/smoke/e0_opa810_pos100_cplac_pwr1_bleed0_zero_t25_50ohm_real.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 7
+    },
+    {
+      "id": "e0_opa810_pos100_cpldc_pwr1_bleed0_zero_t25_50ohm_real",
+      "file": "S2/smoke/e0_opa810_pos100_cpldc_pwr1_bleed0_zero_t25_50ohm_real.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 6
+    },
+    {
+      "id": "e0_opa810_pos1_cplac_pwr1_bleed0_zero_t25_50ohm_real",
+      "file": "S2/smoke/e0_opa810_pos1_cplac_pwr1_bleed0_zero_t25_50ohm_real.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 7
+    },
+    {
+      "id": "e0_opa810_pos1_cpldc_pwr1_bleed0_zero_t25_50ohm_real",
+      "file": "S2/smoke/e0_opa810_pos1_cpldc_pwr1_bleed0_zero_t25_50ohm_real.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 6
+    },
+    {
+      "id": "e10_opa810_pos100_cpldc_pwr1_bleed0_sine400_t25_50ohm_real",
+      "file": "S2/smoke/e10_opa810_pos100_cpldc_pwr1_bleed0_sine400_t25_50ohm_real.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 62,
+      "transient_points": 40027
+    },
+    {
+      "id": "e5_ad8065_pos1_cpldc_pwr1_bleed0_100_t25_50ohm_real",
+      "file": "S2/smoke/e5_ad8065_pos1_cpldc_pwr1_bleed0_100_t25_50ohm_real.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 62
+    },
+    {
+      "id": "e5_opa810_pos1_cpldc_pwr1_bleed0_100_t25_50ohm_real",
+      "file": "S2/smoke/e5_opa810_pos1_cpldc_pwr1_bleed0_100_t25_50ohm_real.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 62
+    },
+    {
+      "id": "e6_opa810_pos100_cpldc_pwr0_bleed0_100_t25_50ohm_off_load_only",
+      "file": "S2/smoke/e6_opa810_pos100_cpldc_pwr0_bleed0_100_t25_50ohm_off_load_only.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 62
+    },
+    {
+      "id": "e6_opa810_pos100_cpldc_pwr0_bleed0_100_t25_50ohm_real",
+      "file": "S2/smoke/e6_opa810_pos100_cpldc_pwr0_bleed0_100_t25_50ohm_real.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 62
+    },
+    {
+      "id": "e7_ad8065_pos1_cpldc_pwr1_bleed0_8kv_t25_50ohm_real",
+      "file": "S2/smoke/e7_ad8065_pos1_cpldc_pwr1_bleed0_8kv_t25_50ohm_real.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 63,
+      "transient_points": 20199,
+      "max_step_first200ns": 1.0000000000000751e-10
+    },
+    {
+      "id": "e7_opa810_pos1_cpldc_pwr1_bleed0_4kv_t25_50ohm_real",
+      "file": "S2/smoke/e7_opa810_pos1_cpldc_pwr1_bleed0_4kv_t25_50ohm_real.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 63,
+      "transient_points": 20061,
+      "max_step_first200ns": 1.0000000000000751e-10
+    },
+    {
+      "id": "e8_ad8065_pos1_cpldc_pwr1_bleed0_40_t25_50ohm_real",
+      "file": "S2/smoke/e8_ad8065_pos1_cpldc_pwr1_bleed0_40_t25_50ohm_real.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 62,
+      "transient_points": 200477
+    },
+    {
+      "id": "e8_ad8065_pos1_cpldc_pwr1_bleed0_neg40_t25_50ohm_real",
+      "file": "S2/smoke/e8_ad8065_pos1_cpldc_pwr1_bleed0_neg40_t25_50ohm_real.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 62,
+      "transient_points": 200587
+    },
+    {
+      "id": "e8_opa810_pos1_cpldc_pwr1_bleed0_40_t25_50ohm_real",
+      "file": "S2/smoke/e8_opa810_pos1_cpldc_pwr1_bleed0_40_t25_50ohm_real.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 62,
+      "transient_points": 200263
+    },
+    {
+      "id": "e8_opa810_pos1_cpldc_pwr1_bleed0_neg40_t25_50ohm_real",
+      "file": "S2/smoke/e8_opa810_pos1_cpldc_pwr1_bleed0_neg40_t25_50ohm_real.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 62,
+      "transient_points": 200270
+    },
+    {
+      "id": "e9_ad8065_pos1_cpldc_pwr1_bleed0_zero_t25_50ohm_real",
+      "file": "S2/smoke/e9_ad8065_pos1_cpldc_pwr1_bleed0_zero_t25_50ohm_real.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 3
+    },
+    {
+      "id": "e9_opa810_pos1_cpldc_pwr1_bleed0_zero_t25_50ohm_real",
+      "file": "S2/smoke/e9_opa810_pos1_cpldc_pwr1_bleed0_zero_t25_50ohm_real.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 3
+    }
+  ]
+}

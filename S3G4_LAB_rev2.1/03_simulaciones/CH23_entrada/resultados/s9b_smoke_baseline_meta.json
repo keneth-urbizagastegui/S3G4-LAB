@@ -1,0 +1,23 @@
+{
+  "returncode": 0,
+  "logical_cases": 25,
+  "successful": 25,
+  "simulations": 57,
+  "seconds": 304.54886239999905,
+  "workers": 10,
+  "seed": 2026100371,
+  "profile": "smoke",
+  "protected_count": 26403,
+  "protected_changed": [],
+  "filters": {
+    "A": [
+      2370.0,
+      1100.0
+    ],
+    "B": [
+      2370.0,
+      1100.0
+    ]
+  },
+  "model_sha256": "4fb5d82e3319553113ba8ff7c8ff5bc4b7fa65e9a13b59dea2173140fe90d31b"
+}

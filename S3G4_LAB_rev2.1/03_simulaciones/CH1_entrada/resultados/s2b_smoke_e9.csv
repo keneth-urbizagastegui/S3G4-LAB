@@ -1,0 +1,5 @@
+test,buffer,POS,CPL,power,bleed,stimulus,temperature_C,connection,variant,id,s2b_test,mode,stop,offset,input_i,bi,offset_bnc_v
+E9,OPA810,1,DC,1,0,zero,25,50ohm,real,e9_opa810_pos1_cpldc_pwr1_bleed0_zero_t25_50ohm_real_contact,E9,contact,0.002,7.53018408527e-05,2.00074364087e-12,-1.99951111161e-07,7.605335322440994e-05
+E9,OPA810,1,DC,1,0,zero,25,air,real,e9_opa810_pos1_cpldc_pwr1_bleed0_zero_t25_air_real_contact,E9,contact,0.002,7.33404840952e-05,2.00074167651e-12,-2.16131779221e-06,7.40724221264701e-05
+E9,OPA828,1,DC,1,0,zero,25,50ohm,real,e9_opa828_pos1_cpldc_pwr1_bleed0_zero_t25_50ohm_real_contact,E9,contact,0.002,2.06896463283e-05,1.00371728903e-12,-1.00384985202e-07,2.0896128998656434e-05
+E9,OPA828,1,DC,1,0,zero,25,air,real,e9_opa828_pos1_cpldc_pwr1_bleed0_zero_t25_air_real_contact,E9,contact,0.002,1.97049419568e-05,1.00371235863e-12,-1.08508770835e-06,1.9901597277528866e-05

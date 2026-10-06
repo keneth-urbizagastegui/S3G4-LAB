@@ -1,0 +1,2 @@
+adc_min_V,adc_max_V,mux_low_margin_V,mux_high_margin_V,mux_supply_max_V,bav99_max_mA,limitacion
+0.006986977532363149,3.287933442191322,0.11528279924600593,0.11372736586170529,9.949350957341865,4.531745998639667,LM6172: saturación/protecciones heredadas de National; no validadas contra silicio.

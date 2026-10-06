@@ -4,10 +4,10 @@ Cada artefacto es una copia publicada en claude.ai del archivo local indicado. L
 
 | Artefacto | Enlace | Archivo local (en `S3G4_LAB_rev2.1/`) | Versión publicada |
 |---|---|---|---|
-| Rediseño AFE rev 2.1 (documento vivo) | https://claude.ai/artifact/YLrJwmm5Cz6w864dUYsrBT | `01_diseno/rediseno_afe_rev21.html` | 14 |
-| Requisitos del osciloscopio S3G4 | https://claude.ai/artifact/X1DWGzQBZB2zT57mXPD4sG | `00_requisitos/requisitos_osciloscopio.html` | 4 |
+| Rediseño AFE rev 2.1 (documento vivo) | https://claude.ai/artifact/YLrJwmm5Cz6w864dUYsrBT | `01_diseno/rediseno_afe_rev21.html` | 18 |
+| Requisitos del osciloscopio S3G4 | https://claude.ai/artifact/X1DWGzQBZB2zT57mXPD4sG | `00_requisitos/requisitos_osciloscopio.html` | 5 |
 | Requisitos del DMM y del AWG | https://claude.ai/artifact/5TwLhVKhkoYHuPQXJq9y2n | `00_requisitos/requisitos_dmm_awg.html` | 6 |
-| Especificaciones del osciloscopio (hoja preliminar, 30 sep) | https://claude.ai/artifact/YMa7uusboCbYFR8hos2wGa | `00_requisitos/especificaciones_osciloscopio.html` | 1 |
+| Especificaciones del osciloscopio (hoja preliminar, 30 sep) | https://claude.ai/artifact/YMa7uusboCbYFR8hos2wGa | `00_requisitos/especificaciones_osciloscopio.html` | 2 |
 | Anatomía del DSO112 | https://claude.ai/artifact/1Q3Ajh4q39Pdic6AV6w1LR | `02_referencias/analisis_dso112.html` | 4 |
 | Anatomía del WAVE2 | https://claude.ai/artifact/LgEYV3M8LjE8RqbTvAQMcE | `02_referencias/analisis_wave2.html` | 2 |
 | Anatomía del OpenScope MZ | https://claude.ai/artifact/8KbSKL4sWnYoQzPJgKsRwf | `02_referencias/analisis_openscope.html` | 2 |
@@ -16,4 +16,4 @@ Cada artefacto es una copia publicada en claude.ai del archivo local indicado. L
 
 Fuera de esta carpeta, de la rev 2.0: **Esbozo de hardware S3G4**, https://claude.ai/artifact/N2QCUrWegFApQ51QXQWM1u → `docs/esbozo_hardware_s3g4.html`.
 
-Versiones a 24 sep 2026, tras volver a publicar las páginas con las rutas nuevas. La publicada y la local son idénticas, salvo el envoltorio que añade la publicación.
+Versiones a 24 sep 2026, tras volver a publicar las páginas con las rutas nuevas; el documento vivo (versión 18), los requisitos (5) y las especificaciones (2), a 4 oct. La publicada y la local son idénticas, salvo el envoltorio que añade la publicación. `canal_rapido_ch1.html` y `revision_entrada_ch1.html` no están publicadas.

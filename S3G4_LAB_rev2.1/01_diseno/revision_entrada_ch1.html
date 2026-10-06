@@ -1,0 +1,394 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Entrada de CH1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Source+Sans+3:wght@400;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: informe de auditoría; resumen arriba, hallazgos numerados, propuesta con esquema, plan por etapas con criterios */
+:root{
+  --paper:#fbfcfc; --ink:#16232a; --muted:#5a6b72; --rule:#d5dee1; --lead:#a9b7bc;
+  --accent:#0b5c78; --band:#e8f0f2;
+  --afe:#0b5c78; --mcu:#a3470f; --sig:#2f6f4f; --ctl:#6a4fa3; --bad:#b3261e; --warn:#9a6a00;
+  --display:"Barlow Condensed","Arial Narrow",sans-serif;
+  --body:"Source Sans 3","Segoe UI",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#10181b; --ink:#dfe8ea; --muted:#93a4aa; --rule:#29373c; --lead:#4a5b61;
+  --accent:#6cc0dc; --band:#16242a; --afe:#6cc0dc; --mcu:#f2a36b; --sig:#6fcf9b; --ctl:#b9a0ec; --bad:#f2827a; --warn:#e6c35c; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#10181b; --ink:#dfe8ea; --muted:#93a4aa; --rule:#29373c; --lead:#4a5b61;
+  --accent:#6cc0dc; --band:#16242a; --afe:#6cc0dc; --mcu:#f2a36b; --sig:#6fcf9b; --ctl:#b9a0ec; --bad:#f2827a; --warn:#e6c35c; color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.6 var(--body)}
+.wrap{max-width:980px;margin:0 auto;padding:28px 16px 64px}
+h1,h2,h3{font-family:var(--display);margin:0;text-wrap:balance;line-height:1.1}
+.top{border-bottom:3px solid var(--accent);padding-bottom:12px;display:flex;justify-content:space-between;align-items:flex-end;gap:10px 24px;flex-wrap:wrap}
+.brand{font:600 13px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+h1{font-size:clamp(30px,5vw,44px);font-weight:700}
+.docid{font:12.5px/1.6 var(--mono);color:var(--muted);text-align:right}
+h2{font-size:26px;font-weight:600;margin:44px 0 8px;padding-left:10px;border-left:4px solid var(--accent)}
+h2 .n{font-family:var(--mono);font-size:15px;color:var(--accent);margin-right:8px;vertical-align:3px}
+h3{font-size:19px;font-weight:600;margin:24px 0 4px;text-transform:uppercase;letter-spacing:.04em}
+p,li{max-width:80ch}
+.lead{font-size:17.5px}
+.fig{margin:16px 0 6px;overflow-x:auto}
+.fig svg{display:block;width:100%;height:auto;min-width:760px}
+.cap{font-size:13.5px;color:var(--muted);margin:2px 0 14px}
+.math{font:14.5px/1.9 var(--mono);background:var(--band);padding:10px 14px;margin:10px 0;overflow-x:auto;white-space:pre}
+.box{border:1px solid var(--rule);border-left:4px solid var(--accent);padding:10px 14px;margin:16px 0;background:color-mix(in srgb,var(--accent) 5%,transparent)}
+.box.warn{border-left-color:var(--bad);background:color-mix(in srgb,var(--bad) 6%,transparent)}
+.box.ok{border-left-color:var(--sig);background:color-mix(in srgb,var(--sig) 6%,transparent)}
+.box b:first-child{font-family:var(--display);font-size:17px;letter-spacing:.03em}
+.tw{overflow-x:auto;margin:10px 0}
+table{border-collapse:collapse;width:100%;font-size:14.5px;min-width:680px}
+th,td{padding:6px 10px;border-bottom:1px solid var(--rule);text-align:left;vertical-align:top}
+th{font:600 12.5px var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.05em;border-bottom:2px solid var(--accent)}
+td.n{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+.sev{font:600 11px var(--mono);white-space:nowrap;padding:2px 6px;border-radius:3px;border:1px solid currentColor}
+.sev.a{color:var(--bad)} .sev.m{color:var(--warn)} .sev.b{color:var(--muted)} .sev.ok{color:var(--sig)}
+.st{font:600 12px var(--mono);white-space:nowrap}
+.st.ok{color:var(--sig)} .st.no{color:var(--bad)} .st.pend{color:var(--warn)}
+code{font:.9em var(--mono);color:var(--accent)}
+.stage{border:1px solid var(--rule);border-radius:6px;padding:4px 16px 12px;margin:14px 0}
+.stage h3{margin-top:12px}
+.stage .who{font:12.5px var(--mono);color:var(--muted)}
+.foot{margin-top:40px;border-top:1px solid var(--rule);padding-top:12px;font-size:13.5px;color:var(--muted)}
+svg text{font-family:var(--body);fill:var(--ink)}
+svg .mut{fill:var(--muted)} svg .sig{fill:var(--sig)} svg .ctl{fill:var(--ctl)} svg .bad{fill:var(--bad)} svg .afe{fill:var(--afe)}
+svg .w{stroke:var(--ink);stroke-width:1.6;fill:none}
+svg .bx{fill:var(--paper);stroke:var(--afe);stroke-width:1.6}
+svg .bxn{fill:color-mix(in srgb,var(--sig) 10%,var(--paper));stroke:var(--sig);stroke-width:1.8}
+svg .dot{fill:var(--ink)}
+svg .gnd{stroke:var(--ink);stroke-width:1.6}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="top">
+  <div>
+    <div class="brand">S3G4 LAB · AFE rev 2.1 · CH1</div>
+    <h1>Entrada de CH1<br>revisión y plan de simulación</h1>
+  </div>
+  <div class="docid">2 oct 2026 · Claude Code (auditor)<br>Revisa: canal_rapido_ch1.html, documento vivo §B–§C,<br>simulación P4/P7 y su auditoría</div>
+</header>
+
+<p class="lead">Revisión de cómo calculamos el recorrido de la señal en CH1, contrastada con datos reales (hojas de datos, LCSC y la simulación P4 ya auditada) y con las cuatro referencias. Termina con una entrada corregida, que llamo <b>P4b</b>, comprobada con una simulación rápida, y con el plan paso a paso en LTspice antes de dibujar el esquema.</p>
+
+<div class="box warn"><b>Documento histórico (2 oct).</b> Es la revisión que dio origen a P4b y al plan S0–S8; no se reescribe. Desde entonces cambió: C_S = 1.2 nF (no 1.5 nF) y C_EQ ≈ 8.7 pF (revisión R1); rieles del AFE a ±4.9 V; C1A = 20 pF y C1B = 15 pF ±2 % + trimmer, Cb = 1 nF ±1 % + 68 pF (S7c); <b>el relé es el TQ2SA-5V-Z (C22686)</b>, no el HFD27, con economizador de dos tensiones (DECISIONS 4 oct). CH1 quedó cerrado en simulación (S1–S7c) y su esquema está preparado en <code>04_esquematicos/S8_CH1/</code>. Lo vigente está en el documento vivo y en <code>CH1_PIEZAS_Y_REDES.md</code>.</div>
+
+<div class="box ok"><b>Estado al 3 oct.</b> La entrada P4b quedó comprobada en simulación con modelos de fabricante (OPA810, BAV199 de Nexperia): <b>S1 y S1b</b> (1 MΩ y 0.39 pF de diferencia entre escalas, planitud ±0.3 %, sonda ×10 compensada una vez, trimmer SEHWA 2–6 pF) y <b>S2 y S2b</b> (±100 V sin daño encendido y apagado, ESD IEC de ±4 kV en contacto y ±8 kV en aire con I²t de los BAV199 al 21 % y 44 % de su rating, fugas de 0.08 mV, sonda a ±400 V sin distorsión). Cambios de piezas desde la propuesta: C_TRIM, R_EQ en 1206 y C_EQ y C_S de 200 V. Auditorías en <code>03_simulaciones/CH1_entrada/AUDITORIA_CLAUDE_S1*.md</code> y <code>…S2*.md</code>. Siguiente: S3 (ganancia).</div>
+
+<div class="box"><b>Veredicto.</b> La <b>arquitectura es la correcta</b> para nuestros requisitos: grueso con relé + buffer de alta impedancia + escalera + ganancia fija, como el DSO112. Es la única de las referencias que da escalas finas y sonda ×10 a fondo de escala (RF-04, RF-07). Pero <b>la entrada tal como está escrita no cumple RF-05 ni RF-08</b>, los documentos se contradicen en dos valores clave, y la corrección que teníamos prevista para RF-08 rompía el modo AC. La propuesta P4b lo resuelve. La simulación rápida da 999.1 kΩ y 27.7 pF en las dos posiciones del relé.</div>
+
+<!-- ============================================================ -->
+<h2><span class="n">1</span>Lo que cambia con la nueva decisión de seguridad</h2>
+<p>Hoy decidiste que el equipo <b>ya no se diseña para la red conectada directamente</b>, sino como las referencias (50 Vpk declarados) y con más margen. Quedó registrado en <code>ai-context/DECISIONS.md</code> (2 oct). Revisa D-06 y RF-06. Esto simplifica la entrada:</p>
+<ul>
+  <li>El relé ya no necesita ≥ 500 Vrms entre contactos abiertos (C.6).</li>
+  <li>La rama superior del divisor no necesita partirse en tres para repartir 353 V (B.8). Bastan dos resistencias 1206 de 200 V.</li>
+  <li>T06 deja de probar «sobrevive a la red» y pasa a probar el nuevo nivel (§5).</li>
+  <li>Lo que <b>no</b> cambia: 50 Vpk declarados, relé monoestable con reposo en el grueso y sonda ×10 lineal hasta ±400 V en la punta (RF-07). Esos ±400 V llegan a la BNC como ±40 V.</li>
+</ul>
+<p>Queda por fijar qué significa «seguridad mejor» en cifras. Mi propuesta está en §5.</p>
+
+<!-- ============================================================ -->
+<h2><span class="n">2</span>Revisión de la matemática, hallazgo por hallazgo</h2>
+<p>Gravedad: <span class="sev a">ALTA</span> incumple un requisito o rompe una función; <span class="sev m">MEDIA</span> cifra o documento equivocado que cambiaría una pieza; <span class="sev b">BAJA</span> imprecisión sin consecuencia en el diseño.</p>
+
+<div class="tw"><table>
+<tr><th>#</th><th>Dónde</th><th>Qué decíamos</th><th>Qué sale con datos reales</th><th>Gravedad</th><th>Corrección</th></tr>
+<tr><td class="n">R1</td><td>Documento vivo §C, guía, hoja de especificaciones</td><td>Grueso ÷20 con escalera de 8 tomas (1…1/100)</td><td>La simulación P4 que Codex hizo y yo audité usa <b>÷100 con 6 tomas</b> (1…1/40, P1). Lo validado no es lo documentado. P1 sigue abierto en el PLAN</td><td><span class="sev a">ALTA</span></td><td>Decidir P1 (§6). Recomiendo ÷100</td></tr>
+<tr><td class="n">R2</td><td>§C.2 y §C.6 frente a RF-06 y la simulación</td><td>R_S = 10 kΩ ∥ 10 nF</td><td>P2 («adoptar»), RF-06 y la simulación usan <b>100 kΩ ∥ 1 nF</b> (2 × 49.9 kΩ 1206). Con 100 V: 10 kΩ disiparía 0.89 W y metería 9.4 mA en los rieles; 100 kΩ, 89 mW y 0.95 mA</td><td><span class="sev m">MEDIA</span></td><td>R_S = 2 × 49.9 kΩ; corregir §C</td></tr>
+<tr><td class="n">R3</td><td>P4, T01</td><td>1 MΩ en todas las escalas (RF-08)</td><td>En ×1: (Rt+Rb) ∥ (R_S + R_BIAS) = 1 MΩ ∥ 10.1 MΩ = <b>0.909 MΩ</b>. El DSO112 tiene lo mismo: 0.911 MΩ en señal</td><td><span class="sev a">ALTA</span></td><td>P4b (§4)</td></tr>
+<tr><td class="n">R4</td><td>P4, T01</td><td>≤ 2 pF de diferencia entre escalas</td><td>21.8 pF en ×1 y 13.9 pF en ÷: <b>8 pF</b>. La rama ×1 añade la capacidad del nodo SEL solo cuando está elegida</td><td><span class="sev a">ALTA</span></td><td>P4b (§4)</td></tr>
+<tr><td class="n">R5</td><td>Corrección prevista (PLAN, paso 2)</td><td>«Poner R_BIAS delante del relé»</td><td>R_BIAS también es el camino de continua del buffer en <b>modo AC</b>. Si se mueve, el buffer queda flotando en AC. Si se añade otra de 10 MΩ tras el condensador, aparece un <b>escalón del −1 %</b> entre ~10 Hz y ~1 kHz en modo DC</td><td><span class="sev a">ALTA</span></td><td>Dejar R_BIAS donde está y replicar su carga con el segundo polo del relé (P4b)</td></tr>
+<tr><td class="n">R6</td><td>§B.8</td><td>C_AC = 1.5 nF da 10 Hz</td><td>1/(2π · 10.1 MΩ · 1.5 nF) = <b>10.5–10.6 Hz</b>. RF-05 pide ≤ 10 Hz</td><td><span class="sev m">MEDIA</span></td><td>1.8 nF: 8.75–8.83 Hz en las dos posiciones</td></tr>
+<tr><td class="n">R7</td><td>P4, T06 (auditoría)</td><td>La sujeción protege al buffer</td><td>La entrada del buffer llega a <b>5.86–6.09 V</b>. El máximo absoluto típico de un amplificador a ±5 V es ±5.5 V</td><td><span class="sev a">ALTA</span></td><td>R_PROT = 1 kΩ entre el nodo sujetado y el buffer</td></tr>
+<tr><td class="n">R8</td><td>§B.8 y §C.6</td><td>TVS en el nodo protegido; solo se pedía capacidad &lt; 3 pF</td><td>La fuga de las TVS de 5–6 V es de 50 nA a 1 µA máx. El nodo en ×1 ve 99 kΩ con una fuente conectada y 1.08 MΩ con la entrada al aire: 50 nA dan <b>5 mV con fuente y 54 mV al aire</b>. A 5 mV/div eso es una división o diez</td><td><span class="sev a">ALTA</span></td><td>Sin TVS en el nodo. BAV199 (≤ 5 nA a 75 V) hacia los rieles y la TVS en cada riel, donde la fuga no importa</td></tr>
+<tr><td class="n">R9</td><td>Mi guía, §3 ⑨ y §5</td><td>El RC de 68 Ω / 470 pF «casi no resta»; total −0.37 dB</td><td>Su polo está en 5.0 MHz: a 2 MHz resta <b>−0.65 dB</b>. Total sin filtro: <b>−0.97 dB (10.6 %)</b></td><td><span class="sev m">MEDIA</span></td><td>Corregido en la guía. El filtro (sección D) cuenta el RC como un polo suyo</td></tr>
+<tr><td class="n">R10</td><td>Mi guía, §3 ⑨ frente a §6</td><td>Muestreo de 48 ns (2.5 ciclos)</td><td>En modo entrelazado, SMPPLUS lo lleva a <b>3.5 ciclos = 67 ns</b> (RM0440 §21.4.12). La R de 100 Ω de la tabla T.62 es para 60 MHz y 2.5 ciclos: es conservadora</td><td><span class="sev b">BAJA</span></td><td>Corregido en la guía</td></tr>
+<tr><td class="n">R11</td><td>§C.6</td><td>74HCT4051</td><td>LCSC solo tiene <b>una</b> fuente (Nexperia C87239, 2796 ud). RF-19 pide alta disponibilidad. Como lo gobierna un 74HCT595 a 5 V, vale el <b>74HC4051</b> (Nexperia C9386, 33 k ud, 80 Ω). Ojo: VCC − VEE = 10 V es su máximo, y hay clones de 9 V o 350 Ω que no sirven</td><td><span class="sev m">MEDIA</span></td><td>74HC4051 con equivalentes filtrados por Ron ≤ 100 Ω y 10 V</td></tr>
+<tr><td class="n">R12</td><td>RF-18 (apagado por canal)</td><td>Sin estudiar</td><td>Con los rieles del canal apagados, los BAV199 meten la corriente de la entrada (hasta 0.95 mA con 100 V) en un riel apagado y lo pueden alimentar a través de la señal</td><td><span class="sev m">MEDIA</span></td><td>Interruptor de carga con descarga activa o resistencia de purga; probarlo (E6)</td></tr>
+<tr><td class="n">R13</td><td>§C.4</td><td>Polo de toma + 4051: 250 Ω · 60 pF = 10.6 MHz</td><td>Con Ron = 130 Ω y ~30 pF reales: (250 + 130) · 30 pF → 14 MHz. C.4 era conservador</td><td><span class="sev ok">OK</span></td><td>—</td></tr>
+</table></div>
+
+<h3>Lo que está bien</h3>
+<p>Revisado y correcto: la ecuación de escala G = 0.25 V/(V/div) y la tabla de 11 escalas; ganancias ×5.02 y ×10.09 (×50.65); 410 códigos por división y los códigos del ejemplo (1229–2867); Nyquist de 3.25 MHz y el doblado de 4.5 MHz a 2 MHz; atenuaciones de Butterworth y Bessel (scipy); base de tiempos y el cruce en 126 µs/div; incertidumbre de disparo de 23 dB con reloj asíncrono; slew rate de 12.6 V/µs; memoria de 48 KiB.</p>
+
+<!-- ============================================================ -->
+<h2><span class="n">3</span>Cómo lo hacen las referencias</h2>
+<div class="tw"><table>
+<tr><th></th><th>DSO112A</th><th>WAVE2</th><th>OpenScope MZ</th><th>black_scope</th><th>S3G4 P4 (escrito)</th><th>S3G4 P4b (propuesta)</th></tr>
+<tr><td>Zin en las dos posiciones</td><td>0.91 MΩ en ×1 (1.0 solo en DC); 1.0 MΩ en ÷100</td><td>1 MΩ ∥ 25 pF siempre: dos divisores siempre conectados</td><td>1 MΩ a tierra virtual, constante</td><td>9.9 kΩ: no vale para sonda ×10</td><td>0.909 / 1.0 MΩ; 8 pF de diferencia</td><td><b>1.000 / 1.000 MΩ</b>; diferencia &lt; 0.1 pF nominal</td></tr>
+<tr><td>Acoplo</td><td>AC delante del divisor (0.1 µF / 100 V) con PhotoMOS; GND por software</td><td>—</td><td>Solo DC</td><td>—</td><td>Conmutador tras la sujeción (D-07)</td><td>Igual (D-07): el conmutador de 50 V nunca ve más de ~6 V</td></tr>
+<tr><td>Protección</td><td>R 100 kΩ + unión del JFET + 1N4148</td><td>Ninguna: las ramas solo dejan pasar µA</td><td>1 MΩ a tierra virtual</td><td>Divisor</td><td>Divisor/R_S + TVS + 2 × BAV199</td><td>Divisor/R_S + BAV199 a los rieles + TVS en los rieles + R_PROT</td></tr>
+<tr><td>Entrada máxima</td><td>50 Vpk</td><td>50 Vpk</td><td>±20 V</td><td>±10 V</td><td>50 Vpk + red en ÷20</td><td>50 Vpk; ±100 V sin daño (propuesta)</td></tr>
+<tr><td>Grueso</td><td>Relé ×1 / ÷100</td><td>Sin relé: 4053 tras dos buffers</td><td>Ganancia en tierra virtual</td><td>—</td><td>Relé ×1 / ÷20</td><td>Relé DPDT ×1 / ÷100 con réplica de carga</td></tr>
+<tr><td>Fino</td><td>6 tomas + ×40; GND y VCHECK en el 4051</td><td>6 tomas + ×8</td><td>4 rangos</td><td>PGA interno</td><td>8 tomas + ×50</td><td>6 tomas + GND + VCHECK + ×50 (P1, P3)</td></tr>
+<tr><td>Anti-alias</td><td>Ninguno (2 MHz con Nyquist de 1.25 MHz)</td><td>200 kHz de banda</td><td>1.er orden en la ganancia</td><td>—</td><td>Filtro diseñado (sección D)</td><td>Igual, contando el RC del ADC</td></tr>
+</table></div>
+<p><b>Conclusión.</b> Ninguna referencia hace todo lo que pedimos. El DSO112 da las escalas finas, pero su impedancia cambia un 9 % entre escalas y no filtra el alias. El WAVE2 y el OpenScope mantienen 1 MΩ constante, pero no llegan a 2 MHz con escalas finas ni a ±400 V lineales con sonda ×10 (P7 dio 4.4 % de THD). P4b toma del DSO112 la cadena de ganancia, iguala la impedancia como el WAVE2 (con la carga duplicada en vez de con un segundo divisor) y toma del OpenScope la etapa final alimentada como el ADC (P8).</p>
+
+<h3>Requisitos frente a cada versión</h3>
+<div class="tw"><table>
+<tr><th>Requisito</th><th>P4 (escrito)</th><th>P4b (propuesta)</th><th>Cómo se confirma</th></tr>
+<tr><td>RF-03 · 2 MHz</td><td class="st pend">depende de D</td><td class="st pend">depende de D</td><td>S5, S7</td></tr>
+<tr><td>RF-04 · escalas</td><td class="st ok">11</td><td class="st ok">12 (5 mV a 20 V/div analógicas)</td><td>S3</td></tr>
+<tr><td>RF-05 · AC ≤ 10 Hz</td><td class="st no">10.6 Hz</td><td class="st ok">8.8 Hz (cálculo)</td><td>E2</td></tr>
+<tr><td>RF-06 · entrada máxima (nueva)</td><td class="st ok">50 Vpk</td><td class="st ok">±100 V: 0.95 mA, 45 mW por resistencia (cálculo)</td><td>E5–E7</td></tr>
+<tr><td>RF-07 · sonda ×10 a ±400 V</td><td class="st ok">simulado</td><td class="st pend">mismo divisor; repetir</td><td>E10</td></tr>
+<tr><td>RF-08 · 1 MΩ ±2 %, ΔC ≤ 2 pF</td><td class="st no">0.909 MΩ; 8 pF</td><td class="st ok">999.1 kΩ; 0.08 pF (simulación rápida)</td><td>E1, E4</td></tr>
+<tr><td>RF-15 · ±1 % con autocalibración</td><td class="st pend">sin entrada de referencia</td><td class="st ok">GND y VCHECK en el 4051</td><td>S3 y firmware</td></tr>
+<tr><td>RF-18 · apagado por canal</td><td class="st no">sin estudiar</td><td class="st pend">descarga activa del riel</td><td>E6</td></tr>
+</table></div>
+
+<!-- ============================================================ -->
+<h2><span class="n">4</span>La propuesta P4b</h2>
+
+<div class="fig">
+<svg viewBox="0 0 980 405" role="img" aria-label="Esquema de la entrada P4b: divisor siempre conectado, rama x1, relé DPDT con réplica de carga, sujeción a los rieles, conmutador de acoplo, R_BIAS y R_PROT antes del buffer">
+  <!-- BNC -->
+  <circle cx="30" cy="200" r="11" fill="none" stroke="var(--ink)" stroke-width="1.6"/><circle cx="30" cy="200" r="3.5" class="dot"/>
+  <text x="30" y="178" text-anchor="middle" font-size="13" font-weight="600">BNC</text>
+  <path class="w" d="M41 200H80M80 80V320"/><circle cx="80" cy="200" r="3.5" class="dot"/>
+  <!-- divider top -->
+  <path class="w" d="M80 80H110"/>
+  <rect class="bx" x="110" y="58" width="170" height="44" rx="4"/>
+  <text x="195" y="77" text-anchor="middle" font-size="13" font-weight="600">Rt 2 × 549 kΩ</text>
+  <text x="195" y="94" text-anchor="middle" font-size="12" class="mut">∥ Ct 2 × 20 pF + C_TRIM 2–6 pF</text>
+  <path class="w" d="M280 80H330"/><circle cx="330" cy="80" r="3.5" class="dot"/>
+  <text x="330" y="70" text-anchor="middle" font-size="12" font-weight="600">TAP</text>
+  <path class="w" d="M330 80V112"/>
+  <rect class="bx" x="285" y="112" width="90" height="44" rx="4"/>
+  <text x="330" y="131" text-anchor="middle" font-size="13" font-weight="600">Rb 11.0 kΩ</text>
+  <text x="330" y="148" text-anchor="middle" font-size="12" class="mut">∥ Cb ≈ 1.08 nF</text>
+  <path class="w" d="M330 156V168"/><path class="gnd" d="M318 168h24M322 173h16M326 178h8"/>
+  <!-- x1 branch -->
+  <path class="w" d="M80 320H110"/>
+  <rect class="bx" x="110" y="298" width="170" height="44" rx="4"/>
+  <text x="195" y="317" text-anchor="middle" font-size="13" font-weight="600">R_S 2 × 49.9 kΩ</text>
+  <text x="195" y="334" text-anchor="middle" font-size="12" class="mut">∥ C_S 1.5 nF C0G 200 V</text>
+  <path class="w" d="M280 320H330"/><circle cx="330" cy="320" r="3.5" class="dot"/>
+  <text x="330" y="312" text-anchor="middle" font-size="12" font-weight="600">X1</text>
+  <!-- K1a -->
+  <path class="w" d="M330 80H420V182"/>
+  <path class="w" d="M330 320H420V218"/>
+  <circle cx="420" cy="186" r="3" fill="none" stroke="var(--ink)" stroke-width="1.5"/>
+  <circle cx="420" cy="214" r="3" fill="none" stroke="var(--ink)" stroke-width="1.5"/>
+  <path class="w" d="M462 200L423 188"/><circle cx="462" cy="200" r="3.5" class="dot"/>
+  <text x="404" y="182" text-anchor="end" font-size="11" class="mut">reposo</text>
+  <text x="404" y="226" text-anchor="end" font-size="11" class="mut">×1</text>
+  <text x="441" y="168" text-anchor="middle" font-size="12.5" font-weight="600">K1a</text>
+  <path class="w" d="M462 200H540"/>
+  <!-- K1b replica -->
+  <path class="w" d="M330 320V352H390"/>
+  <circle cx="394" cy="352" r="3" fill="none" stroke="var(--ink)" stroke-width="1.5"/>
+  <path class="w" d="M397 352H430"/>
+  <text x="394" y="380" text-anchor="middle" font-size="12.5" font-weight="600">K1b</text>
+  <text x="394" y="395" text-anchor="middle" font-size="11" class="mut">cerrado en reposo</text>
+  <rect class="bxn" x="430" y="330" width="190" height="44" rx="4"/>
+  <text x="525" y="349" text-anchor="middle" font-size="13" font-weight="600">R_EQ 10 MΩ 1206 ∥ C_EQ 200 V</text>
+  <text x="525" y="366" text-anchor="middle" font-size="12" class="sig">réplica de SEL · C_EQ en prueba</text>
+  <path class="w" d="M620 352H640V362"/><path class="gnd" d="M628 362h24M632 367h16M636 372h8"/>
+  <!-- SEL -->
+  <circle cx="540" cy="200" r="3.5" class="dot"/>
+  <text x="540" y="190" text-anchor="middle" font-size="12" font-weight="600">SEL</text>
+  <path class="w" d="M540 200V240"/>
+  <rect class="bx" x="480" y="240" width="120" height="44" rx="4"/>
+  <text x="540" y="259" text-anchor="middle" font-size="13" font-weight="600">BAV199 → ±5 V</text>
+  <text x="540" y="276" text-anchor="middle" font-size="12" class="mut">TVS en cada riel</text>
+  <!-- coupling switch -->
+  <path class="w" d="M540 200H600"/>
+  <rect class="bx" x="600" y="168" width="140" height="64" rx="4"/>
+  <text x="670" y="188" text-anchor="middle" font-size="13" font-weight="600">SW1 polo A</text>
+  <text x="670" y="205" text-anchor="middle" font-size="12">DC · AC (C_AC 1.8 nF)</text>
+  <text x="670" y="222" text-anchor="middle" font-size="12">· GND</text>
+  <path class="w" d="M740 200H780"/><circle cx="780" cy="200" r="3.5" class="dot"/>
+  <path class="w" d="M780 200V240"/>
+  <rect class="bx" x="740" y="240" width="80" height="44" rx="4"/>
+  <text x="780" y="259" text-anchor="middle" font-size="12.5" font-weight="600">R_BIAS</text>
+  <text x="780" y="276" text-anchor="middle" font-size="12" class="mut">10 MΩ</text>
+  <path class="w" d="M780 284V296"/><path class="gnd" d="M768 296h24M772 301h16M776 306h8"/>
+  <path class="w" d="M780 200H800"/>
+  <rect class="bx" x="800" y="186" width="70" height="28" rx="4"/>
+  <text x="835" y="205" text-anchor="middle" font-size="12.5" font-weight="600">R_PROT 1k</text>
+  <path class="w" d="M870 200H895"/>
+  <path d="M895 172V228L950 200Z" fill="var(--paper)" stroke="var(--afe)" stroke-width="1.8"/>
+  <text x="914" y="205" text-anchor="middle" font-size="12" font-weight="600">×1</text>
+  <text x="922" y="246" text-anchor="middle" font-size="12" class="mut">OPA810</text>
+  <path class="w" d="M950 200H972"/>
+  <!-- notes -->
+  <text x="80" y="30" font-size="12.5" class="mut">El divisor está siempre conectado. K1a elige qué nodo llega a SEL. En reposo (÷100), K1b cuelga de X1 una copia de lo que X1 vería en ×1.</text>
+</svg>
+</div>
+<p class="cap">P4b con grueso ÷100. En verde, la pieza nueva: la réplica de carga en el segundo polo del relé HFD27 (DPDT, ya elegido).</p>
+
+<h3>Por qué funciona</h3>
+<p>En ×1, X1 ve R_BIAS y la capacidad de todo el nodo SEL. En ÷100, X1 queda colgando de la BNC a través de R_S ∥ C_S, y le faltaría esa carga. <b>K1b se la pone</b> con R_EQ = R_BIAS y C_EQ ≈ C_SEL. Así la BNC ve exactamente lo mismo en las dos posiciones:</p>
+<div class="math">Zin = (Rt + Rb) ∥ (R_S + R_BIAS)     en ×1 y en ÷100
+Para 1 MΩ:   Rt + Rb = 1 / (1/1 MΩ − 1/10.1 MΩ) = 1.110 MΩ
+             2 × 549 k + 11.0 k = 1.109 MΩ   →   Zin = 999.3 kΩ
+Relación ÷:  Rb ∥ R_BIAS / (Rt + Rb ∥ R_BIAS) = 1/100.9      (la calibración absorbe el 0.9 %)
+Relación ×1: R_BIAS / (R_S + R_BIAS) = 0.990
+             plana si R_S · C_S = R_BIAS · C_X1   →   C_S = 100 · C_X1 ≈ 1.5 nF</div>
+<p>R_BIAS se queda donde estaba, en la entrada del buffer, así que en modo AC sigue siendo su camino de continua y no aparece ningún escalón. El corte AC es 1/(2π · (R_BIAS + R_nodo) · C_AC) = 8.75 Hz en ×1 y 8.83 Hz en ÷100.</p>
+
+<h3>Valores de partida</h3>
+<div class="tw"><table>
+<tr><th>Pieza</th><th>÷100 (recomendado, P1)</th><th>÷20 (alternativa)</th><th>Por qué</th></tr>
+<tr><td>Rt</td><td class="n">2 × 549 kΩ 0.1 % 1206</td><td class="n">2 × 523 kΩ 0.1 % 1206</td><td>50 V por resistencia con 100 V de entrada</td></tr>
+<tr><td>Ct</td><td class="n">2 × 20 pF C0G (10 pF)</td><td class="n">2 × 20 pF C0G</td><td>Bajarlo a ~6 pF si Cin queda cerca de 30 pF (E1)</td></tr>
+<tr><td>Rb</td><td class="n">11.0 kΩ 0.1 %</td><td class="n">54.9 kΩ 0.1 %</td><td>Zin = 999.3 kΩ / 992.7 kΩ</td></tr>
+<tr><td>Cb (total)</td><td class="n">≈ 1.08 nF</td><td class="n">≈ 210 pF</td><td>Con ÷20, las parásitas de SEL son el ~13 % de Cb: compensación frágil</td></tr>
+<tr><td>R_S ∥ C_S</td><td class="n" colspan="2">2 × 49.9 kΩ 1 % 1206 ∥ 1.5 nF C0G 100 V</td><td>P2; 0.95 mA y 45 mW por resistencia con 100 V</td></tr>
+<tr><td>K1</td><td class="n" colspan="2">HFD27/005-S (C23911), DPDT, reposo = grueso</td><td>Ya elegido; el segundo polo pasa a usarse</td></tr>
+<tr><td>R_EQ ∥ C_EQ</td><td class="n" colspan="2">10 MΩ 1 % ∥ ≈ 12 pF C0G</td><td>C_EQ = capacidad real de SEL ± 2 pF (E4 decide si hace falta ajustable)</td></tr>
+<tr><td>Sujeción</td><td class="n" colspan="2">BAV199 Nexperia (C40919) + TVS en ±5 V</td><td>Fuga ≤ 5 nA (R8); la TVS del riel también limita la subida de G.5</td></tr>
+<tr><td>C_AC · R_BIAS · R_PROT</td><td class="n" colspan="2">1.8 nF C0G 50 V · 10 MΩ 1 % · 1 kΩ</td><td>R6, R7</td></tr>
+<tr><td>Buffer</td><td colspan="2">Amplificador FET: Cin ≤ 5 pF, Ib ≤ 20 pA, GBW ≥ 50 MHz, ±5 V (se elige en S0)</td><td>Su Cin entra en C_SEL y en C_S</td></tr>
+<tr><td>Escalera + 4051</td><td>6 tomas (1…1/40) + GND + VCHECK</td><td>8 tomas (1…1/100)</td><td>74HC4051 (R11)</td></tr>
+</table></div>
+
+<h3>Comprobación rápida (hecha hoy)</h3>
+<p>Circuito ideal en LTspice, sin diodos (su capacidad va en C_SEL): <code>03_simulaciones/CH1_entrada/chequeo_claude/p4b_zin.cir</code>.</p>
+<div class="tw"><table>
+<tr><th>Medida</th><th>×1</th><th>÷100</th><th>Criterio</th><th>Veredicto</th></tr>
+<tr><td>Zin a 100 Hz</td><td class="n">999.1 kΩ</td><td class="n">999.1 kΩ</td><td>1 MΩ ±2 %</td><td class="st ok">cumple</td></tr>
+<tr><td>Cin a 1 MHz</td><td class="n">27.65 pF</td><td class="n">27.73 pF</td><td>10–30 pF, Δ ≤ 2 pF</td><td class="st ok">cumple (Δ 0.08 pF), pero cerca de 30 pF</td></tr>
+<tr><td>Planitud BNC → buffer, 100 Hz a 2 MHz</td><td class="n">−0.26 %</td><td class="n">−0.29 %</td><td>±1 %</td><td class="st ok">cumple</td></tr>
+<tr><td>Si C_SEL real se aparta ±3 pF de la estimada</td><td class="n">24.7 / 30.6 pF</td><td class="n">27.7 pF</td><td>Δ ≤ 2 pF</td><td class="st no">no cumple: hay que conocer C_SEL a ±2 pF o ajustar C_EQ</td></tr>
+</table></div>
+<p class="cap">El ±3 pF prueba solo una incertidumbre. Las tolerancias completas (Coff del relé, C0G, resistencias) son la prueba E4.</p>
+
+<!-- ============================================================ -->
+<h2><span class="n">5</span>«Seguridad mejor que las referencias»: propuesta en cifras</h2>
+<div class="tw"><table>
+<tr><th>Concepto</th><th>DSO112A / WAVE2</th><th>Propuesta S3G4</th><th>Qué cuesta</th></tr>
+<tr><td>Entrada declarada</td><td>50 Vpk</td><td>50 Vpk en todas las escalas</td><td>Nada</td></tr>
+<tr><td>Sin daño, continua</td><td>No declarada</td><td><b>±100 V</b> (2 × lo declarado) en cualquier escala, <b>también con el equipo apagado</b></td><td>R_S en 2 × 1206 y TVS en los rieles: unos céntimos</td></tr>
+<tr><td>ESD en el vivo de la BNC</td><td>No declarada</td><td>±8 kV en aire y ±4 kV en contacto (IEC 61000-4-2)</td><td>TVS de riel; verificar BAV199 en E7</td></tr>
+<tr><td>Estado sin alimentación</td><td>DSO112: relé en ÷100</td><td>Relé en el grueso + rieles con descarga</td><td>Interruptor de carga con descarga activa</td></tr>
+<tr><td>Sonda ×10</td><td>—</td><td>±400 V lineales en la punta (RF-07)</td><td>Ya cubierto</td></tr>
+</table></div>
+<p>Con ±100 V en ×1: 0.95 mA por canal hacia los rieles (2.8 mA con los tres) y 45 mW por resistencia de R_S. En ÷100: 0.09 mA y 9 mW en Rt.</p>
+
+<!-- ============================================================ -->
+<h2><span class="n">6</span>Plan de simulación paso a paso</h2>
+<p>Se simula <b>por bloques, de la entrada hacia el ADC</b>. Cada etapa se cierra con un acta y mi auditoría antes de pasar a la siguiente. Siguiendo nuestro reparto, el montaje y la ejecución los hace Antigravity (o Codex) y yo escribo el encargo y audito contra la fuente. Que una prueba falle es un resultado válido si el fallo es real. Patrón a seguir: <code>03_simulaciones/P4_P7_grueso/</code> (include común, <code>ejecutar_todo.py</code>, <code>resultados.csv</code>, acta).</p>
+
+<div class="stage">
+<h3>S0 · Preparación</h3>
+<div class="who">Keneth + Claude · antes de simular nada</div>
+<ol>
+  <li><b>Decisiones:</b> P1 (÷100 o ÷20), cifras de seguridad (§5) y P8 (etapa final única a 3.3 V).</li>
+  <li><b>Hojas de datos</b> en <code>datasheet - componentes/</code>: HFD27, BAV199 (Nexperia), 74HC4051, TVS de riel, y los candidatos a buffer y a amplificadores de ganancia.</li>
+  <li><b>Modelos SPICE de fabricante</b>: BAV199 de Nexperia (el modelo actual de <code>rev21_comun.inc</code> es genérico) y los macromodelos de los amplificadores (TI/ADI; los descargas tú, como con el OPA365).</li>
+  <li><b>Include común nuevo</b> <code>03_simulaciones/CH1_entrada/comun/ch1_comun.inc</code> con las reglas que salieron de la auditoría P4/P7: la Coff del relé cuenta como capacidad de arriba; la capacidad de los diodos va solo en su CJO, nunca dos veces; la Cin del buffer va explícita.</li>
+</ol>
+</div>
+
+<div class="stage">
+<h3>S1 · Entrada pasiva P4b</h3>
+<div class="who">buffer ideal con su Cin · AC y transitorio</div>
+<div class="tw"><table>
+<tr><th>Prueba</th><th>Qué se hace</th><th>Criterio de aceptación</th></tr>
+<tr><td>E1 Zin y Cin</td><td>AC 10 Hz–10 MHz, ×1 y ÷100, con el acoplo en DC, AC y GND</td><td>1 MΩ ±2 % a 100 Hz; Cin 10–30 pF a 1 MHz (objetivo ≈ 20 pF); |ΔCin| ≤ 2 pF</td></tr>
+<tr><td>E2 Respuesta BNC → buffer</td><td>AC 1 Hz–20 MHz</td><td>Plana ±1 % de DC (modo DC) a 2 MHz respecto a 1 kHz; corte AC ≤ 10 Hz</td></tr>
+<tr><td>E3 Sonda ×10</td><td>Modelo 9 MΩ ∥ C ajustable + cable de 60–100 pF; compensada una vez en ÷100; cuadrada de 1 kHz en las dos posiciones</td><td>Sobreimpulso y hundimiento ≤ 2 % en las dos</td></tr>
+<tr><td>E4 Tolerancias</td><td>Monte Carlo de 200 casos: R 0.1/1 %, C0G 2–5 %, Coff 0.5–1.5 pF, C_SEL ±3 pF, Cin del buffer</td><td>Informar la dispersión de E1–E3. Decide si C_EQ y/o Cb llevan ajustable</td></tr>
+</table></div>
+</div>
+
+<div class="stage">
+<h3>S2 · Protección y abusos</h3>
+<div class="who">modelos reales de BAV199, TVS y buffer · rieles con su impedancia</div>
+<div class="tw"><table>
+<tr><th>Prueba</th><th>Qué se hace</th><th>Criterio de aceptación</th></tr>
+<tr><td>E5 Sobretensión</td><td>±50 V y ±100 V en continua y a 1 kHz, en ×1 y en ÷100, con el equipo encendido</td><td>Cada resistencia ≤ 50 % de su potencia y de su tensión; pin del buffer dentro de su máximo absoluto; corriente al riel informada para G.5</td></tr>
+<tr><td>E6 Canal apagado</td><td>Lo mismo con los rieles del canal a 0 V, con y sin descarga activa</td><td>El riel apagado no sube de 0.5 V; nada fuera de sus máximos</td></tr>
+<tr><td>E7 ESD</td><td>Modelo IEC 61000-4-2 (150 pF / 330 Ω) a 4 kV y 8 kV, en las dos posiciones</td><td>Pico de corriente en BAV199 y TVS dentro de su hoja; tensión en el pin del buffer dentro del máximo</td></tr>
+<tr><td>E8 Recuperación</td><td>Ráfaga de 10 × fondo de escala durante 1 ms</td><td>Informar el tiempo hasta volver a ±1 %; objetivo ≤ 10 µs</td></tr>
+<tr><td>E9 Fugas y deriva</td><td>Fuga de BAV199 e Ib del buffer a 25 °C y 85 °C; a 5 mV/div con fuente de 50 Ω y al aire</td><td>≤ 0.1 div (0.5 mV) con fuente a 25 °C; informar el resto</td></tr>
+<tr><td>E10 Sonda ×10 a ±400 V</td><td>RF-07 en ÷100 (antiguo T05)</td><td>THD ≤ 0.1 %; sin conducción de las sujeciones</td></tr>
+</table></div>
+</div>
+
+<div class="stage">
+<h3>S3 · Buffer, escalera y ganancia fija</h3>
+<div class="who">macromodelos reales · todas las escalas</div>
+<div class="tw"><table>
+<tr><th>Prueba</th><th>Qué se hace</th><th>Criterio de aceptación</th></tr>
+<tr><td>E11 Respuesta por escala</td><td>AC en las 12 (u 11) escalas</td><td>Pérdida de esta parte ≤ 0.5 dB a 2 MHz; error de ganancia informado (va a la calibración); sin picos</td></tr>
+<tr><td>E12 Ruido</td><td>.noise integrado de 1 Hz a 10 MHz, referido a la entrada</td><td>≤ 0.35 % de división (C.5 × 1.15)</td></tr>
+<tr><td>E13 Gran señal</td><td>2 Vpp a 2 MHz en la salida</td><td>Sin limitación de slew; THD ≤ 1 %</td></tr>
+<tr><td>E14 Saturación</td><td>Entrada de 10 × fondo de escala</td><td>Recuperación ≤ 1 µs</td></tr>
+<tr><td>E15 Conmutación del 4051</td><td>Cambio de toma con señal</td><td>Glitch informado; asentamiento ≤ 10 µs</td></tr>
+</table></div>
+</div>
+
+<div class="stage">
+<h3>S4 · Etapa final a 3.3 V con offset (P8)</h3>
+<div class="tw"><table>
+<tr><th>Prueba</th><th>Qué se hace</th><th>Criterio de aceptación</th></tr>
+<tr><td>E16 Offset y límites</td><td>Offset de ±5 div en todas las escalas; entrada saturada a ±5 V</td><td>Rango ±1.25 V en el ADC; la salida nunca sale de 0–3.3 V (P14); rizado del DAC en sample-and-hold ≤ 0.1 LSB</td></tr>
+</table></div>
+</div>
+
+<div class="stage">
+<h3>S5 · Filtro anti-alias (sección D)</h3>
+<div class="tw"><table>
+<tr><th>Prueba</th><th>Qué se hace</th><th>Criterio de aceptación</th></tr>
+<tr><td>E17 Tres candidatos</td><td>Bessel de 4.º orden, Butterworth de 5.º y uno intermedio, contando todos los polos reales (−0.97 dB de S3 + RC)</td><td>Cadena completa a −3 dB en 2.0 MHz ±10 %; tabla de atenuación a 4.5 MHz, sobreimpulso con cuadrada de 100 kHz y retardo de grupo. <b>Eliges tú.</b></td></tr>
+</table></div>
+</div>
+
+<div class="stage">
+<h3>S6 · Ataque al ADC</h3>
+<div class="tw"><table>
+<tr><th>Prueba</th><th>Qué se hace</th><th>Criterio de aceptación</th></tr>
+<tr><td>E18 Muestreo del G473</td><td>Modelo de 5 pF conmutado a 6.5 MSa/s con ventana de 67 ns, alternando ADC1 y ADC2</td><td>Error en el instante de muestreo ≤ 0.5 LSB (0.3 mV) con seno de 2 MHz a fondo de escala; margen de fase del driver ≥ 45° con 68 Ω / 470 pF</td></tr>
+</table></div>
+</div>
+
+<div class="stage">
+<h3>S7 · Canal completo, de la BNC a PA0</h3>
+<div class="tw"><table>
+<tr><th>Prueba</th><th>Qué se hace</th><th>Criterio de aceptación</th></tr>
+<tr><td>E19 Integración</td><td>Todas las escalas: AC, escalón, ruido, sobrecarga y consumo por etapa</td><td>2 MHz ±10 %; subida 175 ns ±20 %; ruido de S3; consumo informado para G.3 y RF-17. Acta final</td></tr>
+</table></div>
+</div>
+
+<div class="stage">
+<h3>S8 · Del acta al esquema</h3>
+<div class="who">después de auditar S1–S7</div>
+<ol>
+  <li>Reglas de la placa que escribes tú en <code>s3g4.kicad_dru</code>: 4 capas, contorno y clases de red (PLAN, paso 9).</li>
+  <li>Hoja jerárquica de CH1 en KiCad: entrada (A/B/C.2), ganancia (C), final + filtro + ADC (D/E/F). Los nombres de red y los valores salen del acta, no de memoria.</li>
+  <li>Piezas de LCSC con su equivalente por cada una (RF-19).</li>
+  <li>ERC y comparación automática de la netlist de KiCad con la netlist simulada.</li>
+  <li>Notas de layout: anillo de guarda en SEL y X1 (corrientes de pA), malla de la BNC y retorno de masa.</li>
+  <li>CH2 y CH3: copia con el filtro a 1 MHz y amplificadores de 50 MHz.</li>
+</ol>
+</div>
+
+<!-- ============================================================ -->
+<h2><span class="n">7</span>Decisiones</h2>
+<div class="box ok"><b>Acordado el 2 oct.</b> P1 = ÷100 con 6 tomas; supervivencia a ±100 V y ESD ±8 kV aire / ±4 kV contacto; las simulaciones las ejecuta Codex con encargo de Claude, que audita. Registrado en <code>ai-context/DECISIONS.md</code>. Lo que sigue es la pregunta tal como se planteó.</div>
+<ol>
+  <li><b>P1: ÷100 con 6 tomas (recomendado) o ÷20 con 8.</b> Con ÷100: es lo que ya se simuló y auditó, la compensación es 5 veces menos sensible a las parásitas, quedan dos entradas del 4051 para autocero y VCHECK (RF-15), y salen 12 escalas analógicas. Contrapartida: la rama ×1 se usa hasta 200 mV/div, como en el DSO112.</li>
+  <li><b>Cifras de seguridad</b> de §5: ±100 V sin daño en todas las escalas y con el equipo apagado, y ESD de ±8 kV aire / ±4 kV contacto.</li>
+  <li><b>Quién ejecuta las simulaciones:</b> Antigravity con mi encargo (nuestro reparto) o yo directamente en esta sesión.</li>
+</ol>
+
+<div class="foot">
+Fuentes: <code>01_diseno/rediseno_afe_rev21.html</code> §B–§C; <code>01_diseno/canal_rapido_ch1.html</code>; <code>03_simulaciones/P4_P7_grueso/AUDITORIA_CLAUDE_P4_P7.md</code> y <code>comun/rev21_comun.inc</code>; las cuatro anatomías de <code>02_referencias/</code>; LCSC vía pcbparts (74HCT4051 C87239, 74HC4051 C9386, HFD27 C23911, BAV199 C40919); hoja del SS23H37 (C883267), que no declara rigidez dieléctrica, por eso el conmutador sigue detrás de la sujeción. Cifras calculadas con Python y la comprobación P4b con LTspice 26.0.2.
+</div>
+
+</div>
+</body>
+</html>

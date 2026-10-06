@@ -1,0 +1,218 @@
+{
+    "$schema": "https://schemas.kicad.org/erc.v1.json",
+    "coordinate_units": "mm",
+    "date": "2026-10-04T12:31:49",
+    "ignored_checks": [
+        {
+            "description": "Global label only appears once in the schematic",
+            "key": "single_global_label"
+        },
+        {
+            "description": "Four connection points are joined together",
+            "key": "four_way_junction"
+        },
+        {
+            "description": "SPICE model issue",
+            "key": "simulation_model_issue"
+        },
+        {
+            "description": "Assigned footprint doesn't match footprint filters",
+            "key": "footprint_filter"
+        }
+    ],
+    "included_severities": [
+        "error",
+        "warning",
+        "exclusion"
+    ],
+    "kicad_version": "10.0.6",
+    "sheets": [
+        {
+            "path": "/",
+            "uuid_path": "/de82ce61-fda9-4439-b3fa-fd2016785b6d",
+            "violations": [
+                {
+                    "description": "Input Power pin not driven by any Output Power pins",
+                    "items": [
+                        {
+                            "description": "Symbol U106 Pin 6 [V+, Power input, Line]",
+                            "pos": {
+                                "x": 3.683,
+                                "y": 2.4638
+                            },
+                            "uuid": "9750e6f6-def1-4ba5-9a5d-84c3c388f12a"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "power_pin_not_driven"
+                },
+                {
+                    "description": "Input Power pin not driven by any Output Power pins",
+                    "items": [
+                        {
+                            "description": "Symbol U101 Pin 5 [V+, Power input, Line]",
+                            "pos": {
+                                "x": 3.81,
+                                "y": 0.4826
+                            },
+                            "uuid": "b5fede85-a2b4-4598-9d4c-78033e5f5195"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "power_pin_not_driven"
+                },
+                {
+                    "description": "Input Power pin not driven by any Output Power pins",
+                    "items": [
+                        {
+                            "description": "Symbol U101 Pin 2 [V-, Power input, Line]",
+                            "pos": {
+                                "x": 3.81,
+                                "y": 0.635
+                            },
+                            "uuid": "ee129de2-888c-419a-929a-5da052d95b26"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "power_pin_not_driven"
+                },
+                {
+                    "description": "Input pin not driven by any Output pins",
+                    "items": [
+                        {
+                            "description": "Symbol U102 Pin 11 [S0, Input, Line]",
+                            "pos": {
+                                "x": 5.1054,
+                                "y": 0.635
+                            },
+                            "uuid": "53892d4f-cae8-4d9e-b828-827831a86e85"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "pin_not_driven"
+                },
+                {
+                    "description": "Input pin not driven by any Output pins",
+                    "items": [
+                        {
+                            "description": "Symbol U102 Pin 10 [S1, Input, Line]",
+                            "pos": {
+                                "x": 5.1054,
+                                "y": 0.6604
+                            },
+                            "uuid": "bb00e658-7a27-41c9-be94-6d66f88391ab"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "pin_not_driven"
+                },
+                {
+                    "description": "Input pin not driven by any Output pins",
+                    "items": [
+                        {
+                            "description": "Symbol U102 Pin 9 [S2, Input, Line]",
+                            "pos": {
+                                "x": 5.1054,
+                                "y": 0.6858
+                            },
+                            "uuid": "f0cfc233-fcfa-436f-8e93-8500d1f6332b"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "pin_not_driven"
+                },
+                {
+                    "description": "Input Power pin not driven by any Output Power pins",
+                    "items": [
+                        {
+                            "description": "Symbol U102 Pin 8 [GND, Power input, Line]",
+                            "pos": {
+                                "x": 5.1816,
+                                "y": 0.8128
+                            },
+                            "uuid": "2d5f8679-de30-4986-81a6-a877a24f39c9"
+                        }
+                    ],
+                    "severity": "error",
+                    "type": "power_pin_not_driven"
+                },
+                {
+                    "description": "Label connected to only one pin",
+                    "items": [
+                        {
+                            "description": "Etiqueta global 'CH1_K_CTRL'",
+                            "pos": {
+                                "x": 1.5621,
+                                "y": 1.3716
+                            },
+                            "uuid": "4118751e-9e2a-45c5-bb02-29c404c16c5a"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "isolated_pin_label"
+                },
+                {
+                    "description": "Label connected to only one pin",
+                    "items": [
+                        {
+                            "description": "Etiqueta global 'CH1_OFFSET_DAC'",
+                            "pos": {
+                                "x": 2.9845,
+                                "y": 2.4384
+                            },
+                            "uuid": "637e1215-44a7-433c-acde-b51bf73558c3"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "isolated_pin_label"
+                },
+                {
+                    "description": "Label connected to only one pin",
+                    "items": [
+                        {
+                            "description": "Etiqueta global 'CH1_SENSEL_A'",
+                            "pos": {
+                                "x": 5.08,
+                                "y": 0.635
+                            },
+                            "uuid": "e809a61b-7d68-4d94-bdd8-3069033cb346"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "isolated_pin_label"
+                },
+                {
+                    "description": "Label connected to only one pin",
+                    "items": [
+                        {
+                            "description": "Etiqueta global 'CH1_SENSEL_B'",
+                            "pos": {
+                                "x": 5.08,
+                                "y": 0.6604
+                            },
+                            "uuid": "c06ebec6-8878-4fd3-b79f-d4026ff32ff6"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "isolated_pin_label"
+                },
+                {
+                    "description": "Label connected to only one pin",
+                    "items": [
+                        {
+                            "description": "Etiqueta global 'CH1_SENSEL_C'",
+                            "pos": {
+                                "x": 5.08,
+                                "y": 0.6858
+                            },
+                            "uuid": "1d6869fa-8d1a-4534-b26a-3ff812664182"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "isolated_pin_label"
+                }
+            ]
+        }
+    ],
+    "source": "s3g4.kicad_sch"
+}

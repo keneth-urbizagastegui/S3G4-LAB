@@ -1,0 +1,3 @@
+test,buffer,POS,CPL,power,bleed,stimulus,temperature_C,connection,variant,id,offset,input_i,bi,offset_bnc_v
+E9,AD8065,1,DC,1,0,zero,25,50ohm,real,e9_ad8065_pos1_cpldc_pwr1_bleed0_zero_t25_50ohm_real,-0.000399707525078,-2.96528199785e-12,2.95971339236e-07,-0.0004036966061782784
+E9,OPA810,1,DC,1,0,zero,25,50ohm,real,e9_opa810_pos1_cpldc_pwr1_bleed0_zero_t25_50ohm_real,7.53018408527e-05,2.00074364088e-12,-1.99951111159e-07,7.605335322440994e-05

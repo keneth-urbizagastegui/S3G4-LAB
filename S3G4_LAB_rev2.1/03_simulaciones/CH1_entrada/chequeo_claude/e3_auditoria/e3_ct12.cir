@@ -1,0 +1,71 @@
+* E3 nominal; CCOMP fixed in POS100
+.include "C:\Users\Keneth\Desktop\S3G4 LAB\S3G4_LAB_rev2.1\03_simulaciones\CH1_entrada\comun\ch1_comun.inc"
+.options numdgt=15 plotwinsize=0
+XR VP VN RAILS
+.param FP=1k TR=5n VPK=1 RGEN=50 RPROBE=9Meg CPROBE=11.476333333333335p CCABLE=80p
+Vtip_pos1_cpldc_ct1_20p TIP_pos1_cpldc_ct1_20p 0 PULSE({-VPK} {VPK} {0.5/FP} {TR} {TR} {0.5/FP-TR} {1/FP})
+Rgen_pos1_cpldc_ct1_20p TIP_pos1_cpldc_ct1_20p P_pos1_cpldc_ct1_20p {RGEN}
+Rprobe_pos1_cpldc_ct1_20p P_pos1_cpldc_ct1_20p BNC_pos1_cpldc_ct1_20p {RPROBE}
+Cprobe_pos1_cpldc_ct1_20p P_pos1_cpldc_ct1_20p BNC_pos1_cpldc_ct1_20p {CPROBE}
+Ccable_pos1_cpldc_ct1_20p BNC_pos1_cpldc_ct1_20p 0 {CCABLE}
+Xpos1_cpldc_ct1_20p BNC_pos1_cpldc_ct1_20p OUT_pos1_cpldc_ct1_20p VP VN FRONT_P4B POS=1 CPL=0 CT1=20p 
+Vdc_pos1_cpldc_ct1_20p DCTIP_pos1_cpldc_ct1_20p 0 {VPK}
+Rdcgen_pos1_cpldc_ct1_20p DCTIP_pos1_cpldc_ct1_20p DP_pos1_cpldc_ct1_20p {RGEN}
+Rdcprobe_pos1_cpldc_ct1_20p DP_pos1_cpldc_ct1_20p DBNC_pos1_cpldc_ct1_20p {RPROBE}
+Xref_pos1_cpldc_ct1_20p DBNC_pos1_cpldc_ct1_20p REF_pos1_cpldc_ct1_20p VP VN FRONT_P4B POS=1 CPL=0 CT1=20p 
+.meas TRAN pos1_cpldc_ct1_20p_ref FIND V(REF_pos1_cpldc_ct1_20p) AT=0.0015
+.meas TRAN pos1_cpldc_ct1_20p_max MAX V(OUT_pos1_cpldc_ct1_20p) FROM=0.0015 TO=0.0019
+.meas TRAN pos1_cpldc_ct1_20p_objective MAX abs(V(OUT_pos1_cpldc_ct1_20p)-V(REF_pos1_cpldc_ct1_20p)) FROM=0.0015001 TO=0.0017
+.meas TRAN pos1_cpldc_ct1_20p_v2 FIND V(OUT_pos1_cpldc_ct1_20p) AT=0.001502005
+.meas TRAN pos1_cpldc_ct1_20p_v20 FIND V(OUT_pos1_cpldc_ct1_20p) AT=0.001520005
+.meas TRAN pos1_cpldc_ct1_20p_v200 FIND V(OUT_pos1_cpldc_ct1_20p) AT=0.001700005
+Vtip_pos100_cpldc_ct1_20p TIP_pos100_cpldc_ct1_20p 0 PULSE({-VPK} {VPK} {0.5/FP} {TR} {TR} {0.5/FP-TR} {1/FP})
+Rgen_pos100_cpldc_ct1_20p TIP_pos100_cpldc_ct1_20p P_pos100_cpldc_ct1_20p {RGEN}
+Rprobe_pos100_cpldc_ct1_20p P_pos100_cpldc_ct1_20p BNC_pos100_cpldc_ct1_20p {RPROBE}
+Cprobe_pos100_cpldc_ct1_20p P_pos100_cpldc_ct1_20p BNC_pos100_cpldc_ct1_20p {CPROBE}
+Ccable_pos100_cpldc_ct1_20p BNC_pos100_cpldc_ct1_20p 0 {CCABLE}
+Xpos100_cpldc_ct1_20p BNC_pos100_cpldc_ct1_20p OUT_pos100_cpldc_ct1_20p VP VN FRONT_P4B POS=100 CPL=0 CT1=20p 
+Vdc_pos100_cpldc_ct1_20p DCTIP_pos100_cpldc_ct1_20p 0 {VPK}
+Rdcgen_pos100_cpldc_ct1_20p DCTIP_pos100_cpldc_ct1_20p DP_pos100_cpldc_ct1_20p {RGEN}
+Rdcprobe_pos100_cpldc_ct1_20p DP_pos100_cpldc_ct1_20p DBNC_pos100_cpldc_ct1_20p {RPROBE}
+Xref_pos100_cpldc_ct1_20p DBNC_pos100_cpldc_ct1_20p REF_pos100_cpldc_ct1_20p VP VN FRONT_P4B POS=100 CPL=0 CT1=20p 
+.meas TRAN pos100_cpldc_ct1_20p_ref FIND V(REF_pos100_cpldc_ct1_20p) AT=0.0015
+.meas TRAN pos100_cpldc_ct1_20p_max MAX V(OUT_pos100_cpldc_ct1_20p) FROM=0.0015 TO=0.0019
+.meas TRAN pos100_cpldc_ct1_20p_objective MAX abs(V(OUT_pos100_cpldc_ct1_20p)-V(REF_pos100_cpldc_ct1_20p)) FROM=0.0015001 TO=0.0017
+.meas TRAN pos100_cpldc_ct1_20p_v2 FIND V(OUT_pos100_cpldc_ct1_20p) AT=0.001502005
+.meas TRAN pos100_cpldc_ct1_20p_v20 FIND V(OUT_pos100_cpldc_ct1_20p) AT=0.001520005
+.meas TRAN pos100_cpldc_ct1_20p_v200 FIND V(OUT_pos100_cpldc_ct1_20p) AT=0.001700005
+Vtip_pos1_cpldc_ct1_12p TIP_pos1_cpldc_ct1_12p 0 PULSE({-VPK} {VPK} {0.5/FP} {TR} {TR} {0.5/FP-TR} {1/FP})
+Rgen_pos1_cpldc_ct1_12p TIP_pos1_cpldc_ct1_12p P_pos1_cpldc_ct1_12p {RGEN}
+Rprobe_pos1_cpldc_ct1_12p P_pos1_cpldc_ct1_12p BNC_pos1_cpldc_ct1_12p {RPROBE}
+Cprobe_pos1_cpldc_ct1_12p P_pos1_cpldc_ct1_12p BNC_pos1_cpldc_ct1_12p {CPROBE}
+Ccable_pos1_cpldc_ct1_12p BNC_pos1_cpldc_ct1_12p 0 {CCABLE}
+Xpos1_cpldc_ct1_12p BNC_pos1_cpldc_ct1_12p OUT_pos1_cpldc_ct1_12p VP VN FRONT_P4B POS=1 CPL=0 CT1=12p 
+Vdc_pos1_cpldc_ct1_12p DCTIP_pos1_cpldc_ct1_12p 0 {VPK}
+Rdcgen_pos1_cpldc_ct1_12p DCTIP_pos1_cpldc_ct1_12p DP_pos1_cpldc_ct1_12p {RGEN}
+Rdcprobe_pos1_cpldc_ct1_12p DP_pos1_cpldc_ct1_12p DBNC_pos1_cpldc_ct1_12p {RPROBE}
+Xref_pos1_cpldc_ct1_12p DBNC_pos1_cpldc_ct1_12p REF_pos1_cpldc_ct1_12p VP VN FRONT_P4B POS=1 CPL=0 CT1=12p 
+.meas TRAN pos1_cpldc_ct1_12p_ref FIND V(REF_pos1_cpldc_ct1_12p) AT=0.0015
+.meas TRAN pos1_cpldc_ct1_12p_max MAX V(OUT_pos1_cpldc_ct1_12p) FROM=0.0015 TO=0.0019
+.meas TRAN pos1_cpldc_ct1_12p_objective MAX abs(V(OUT_pos1_cpldc_ct1_12p)-V(REF_pos1_cpldc_ct1_12p)) FROM=0.0015001 TO=0.0017
+.meas TRAN pos1_cpldc_ct1_12p_v2 FIND V(OUT_pos1_cpldc_ct1_12p) AT=0.001502005
+.meas TRAN pos1_cpldc_ct1_12p_v20 FIND V(OUT_pos1_cpldc_ct1_12p) AT=0.001520005
+.meas TRAN pos1_cpldc_ct1_12p_v200 FIND V(OUT_pos1_cpldc_ct1_12p) AT=0.001700005
+Vtip_pos100_cpldc_ct1_12p TIP_pos100_cpldc_ct1_12p 0 PULSE({-VPK} {VPK} {0.5/FP} {TR} {TR} {0.5/FP-TR} {1/FP})
+Rgen_pos100_cpldc_ct1_12p TIP_pos100_cpldc_ct1_12p P_pos100_cpldc_ct1_12p {RGEN}
+Rprobe_pos100_cpldc_ct1_12p P_pos100_cpldc_ct1_12p BNC_pos100_cpldc_ct1_12p {RPROBE}
+Cprobe_pos100_cpldc_ct1_12p P_pos100_cpldc_ct1_12p BNC_pos100_cpldc_ct1_12p {CPROBE}
+Ccable_pos100_cpldc_ct1_12p BNC_pos100_cpldc_ct1_12p 0 {CCABLE}
+Xpos100_cpldc_ct1_12p BNC_pos100_cpldc_ct1_12p OUT_pos100_cpldc_ct1_12p VP VN FRONT_P4B POS=100 CPL=0 CT1=12p 
+Vdc_pos100_cpldc_ct1_12p DCTIP_pos100_cpldc_ct1_12p 0 {VPK}
+Rdcgen_pos100_cpldc_ct1_12p DCTIP_pos100_cpldc_ct1_12p DP_pos100_cpldc_ct1_12p {RGEN}
+Rdcprobe_pos100_cpldc_ct1_12p DP_pos100_cpldc_ct1_12p DBNC_pos100_cpldc_ct1_12p {RPROBE}
+Xref_pos100_cpldc_ct1_12p DBNC_pos100_cpldc_ct1_12p REF_pos100_cpldc_ct1_12p VP VN FRONT_P4B POS=100 CPL=0 CT1=12p 
+.meas TRAN pos100_cpldc_ct1_12p_ref FIND V(REF_pos100_cpldc_ct1_12p) AT=0.0015
+.meas TRAN pos100_cpldc_ct1_12p_max MAX V(OUT_pos100_cpldc_ct1_12p) FROM=0.0015 TO=0.0019
+.meas TRAN pos100_cpldc_ct1_12p_objective MAX abs(V(OUT_pos100_cpldc_ct1_12p)-V(REF_pos100_cpldc_ct1_12p)) FROM=0.0015001 TO=0.0017
+.meas TRAN pos100_cpldc_ct1_12p_v2 FIND V(OUT_pos100_cpldc_ct1_12p) AT=0.001502005
+.meas TRAN pos100_cpldc_ct1_12p_v20 FIND V(OUT_pos100_cpldc_ct1_12p) AT=0.001520005
+.meas TRAN pos100_cpldc_ct1_12p_v200 FIND V(OUT_pos100_cpldc_ct1_12p) AT=0.001700005
+.tran 0 0.001901 0 200n
+.end

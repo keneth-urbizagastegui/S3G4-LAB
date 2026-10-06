@@ -1,0 +1,1494 @@
+{
+  "exit_code": 0,
+  "simulations": 245,
+  "errors": 0,
+  "warnings": 0,
+  "elapsed_seconds": 1036.0136943999896,
+  "workers": 10,
+  "smoke": false,
+  "protected_files": 20562,
+  "protected_changed": [],
+  "records": [
+    {
+      "id": "e11_s00_pos1_tap0_cplac_ronnomi_zero",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e11_s00_pos1_tap0_cpldc_ronnomi_zero",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e11_s00_pos1_tap0_cpldc_ronslow_zero",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e11_s01_pos1_tap1_cpldc_ronnomi_zero",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e11_s02_pos1_tap2_cpldc_ronnomi_zero",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e11_s03_pos1_tap3_cpldc_ronnomi_zero",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e11_s04_pos1_tap4_cpldc_ronnomi_zero",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e11_s05_pos1_tap5_cpldc_ronnomi_zero",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e11_s05_pos1_tap5_cpldc_ronslow_zero",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e11_s06_pos100_tap0_cplac_ronnomi_zero",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e11_s06_pos100_tap0_cpldc_ronnomi_zero",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e11_s07_pos100_tap1_cpldc_ronnomi_zero",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e11_s08_pos100_tap2_cpldc_ronnomi_zero",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e11_s09_pos100_tap3_cpldc_ronnomi_zero",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e11_s10_pos100_tap4_cpldc_ronnomi_zero",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e11_s11_pos100_tap5_cpldc_ronnomi_zero",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e11b_s00_pos1_tap0_cpldc_ronnomi_positive",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e11b_s01_pos1_tap1_cpldc_ronnomi_positive",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e11b_s02_pos1_tap2_cpldc_ronnomi_positive",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e11b_s03_pos1_tap3_cpldc_ronnomi_positive",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e11b_s04_pos1_tap4_cpldc_ronnomi_positive",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e11b_s05_pos1_tap5_cpldc_ronnomi_positive",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e11b_s06_pos100_tap0_cpldc_ronnomi_positive",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e11b_s07_pos100_tap1_cpldc_ronnomi_positive",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e11b_s08_pos100_tap2_cpldc_ronnomi_positive",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e11b_s09_pos100_tap3_cpldc_ronnomi_positive",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e11b_s10_pos100_tap4_cpldc_ronnomi_positive",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e11b_s11_pos100_tap5_cpldc_ronnomi_positive",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e12_s00_pos1_tap0_cpldc_ronnomi_zero",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e12_s01_pos1_tap1_cpldc_ronnomi_zero",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e12_s02_pos1_tap2_cpldc_ronnomi_zero",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e12_s03_pos1_tap3_cpldc_ronnomi_zero",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e12_s04_pos1_tap4_cpldc_ronnomi_zero",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e12_s05_pos1_tap5_cpldc_ronnomi_zero",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e12_s06_pos100_tap0_cpldc_ronnomi_zero",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e12_s07_pos100_tap1_cpldc_ronnomi_zero",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e12_s08_pos100_tap2_cpldc_ronnomi_zero",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e12_s09_pos100_tap3_cpldc_ronnomi_zero",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e12_s10_pos100_tap4_cpldc_ronnomi_zero",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e12_s11_pos100_tap5_cpldc_ronnomi_zero",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e13_s00_pos1_tap0_cpldc_ronnomi_bipolar_vpp2",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e13_s00_pos1_tap0_cpldc_ronnomi_bipolar_vpp4",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e13_s06_pos100_tap0_cpldc_ronnomi_bipolar_vpp2",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e13_s06_pos100_tap0_cpldc_ronnomi_bipolar_vpp4",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e14_s00_pos1_tap0_cpldc_ronnomi_negative",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e14_s00_pos1_tap0_cpldc_ronnomi_positive",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e14_s01_pos1_tap1_cpldc_ronnomi_negative",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e14_s01_pos1_tap1_cpldc_ronnomi_positive",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e14_s02_pos1_tap2_cpldc_ronnomi_negative",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e14_s02_pos1_tap2_cpldc_ronnomi_positive",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e14_s03_pos1_tap3_cpldc_ronnomi_negative",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e14_s03_pos1_tap3_cpldc_ronnomi_positive",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e14_s04_pos1_tap4_cpldc_ronnomi_negative",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e14_s04_pos1_tap4_cpldc_ronnomi_positive",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e14_s05_pos1_tap5_cpldc_ronnomi_negative",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e14_s05_pos1_tap5_cpldc_ronnomi_positive",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e14_s06_pos100_tap0_cpldc_ronnomi_negative",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e14_s06_pos100_tap0_cpldc_ronnomi_positive",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e14_s07_pos100_tap1_cpldc_ronnomi_negative",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e14_s07_pos100_tap1_cpldc_ronnomi_positive",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e14_s08_pos100_tap2_cpldc_ronnomi_negative",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e14_s08_pos100_tap2_cpldc_ronnomi_positive",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e14_s09_pos100_tap3_cpldc_ronnomi_negative",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e14_s09_pos100_tap3_cpldc_ronnomi_positive",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e14_s10_pos100_tap4_cpldc_ronnomi_negative",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e14_s10_pos100_tap4_cpldc_ronnomi_positive",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e14_s11_pos100_tap5_cpldc_ronnomi_negative",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e14_s11_pos100_tap5_cpldc_ronnomi_positive",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s00_pos1_tap0_cpldc_ronfallback100_originnomi_positive_transitionautozero_skew0ns_order012",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s00_pos1_tap0_cpldc_ronfallback100_originnomi_positive_transitionautozero_skew10ns_order012",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s00_pos1_tap0_cpldc_ronfallback100_originnomi_positive_transitionautozero_skew10ns_order021",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s00_pos1_tap0_cpldc_ronfallback100_originnomi_positive_transitionautozero_skew10ns_order102",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s00_pos1_tap0_cpldc_ronfallback100_originnomi_positive_transitionautozero_skew10ns_order120",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s00_pos1_tap0_cpldc_ronfallback100_originnomi_positive_transitionautozero_skew10ns_order201",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s00_pos1_tap0_cpldc_ronfallback100_originnomi_positive_transitionautozero_skew10ns_order210",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s00_pos1_tap0_cpldc_ronfallback100_originslow_positive_transitionautozero_skew0ns_order012",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s00_pos1_tap0_cpldc_ronfallback100_originslow_positive_transitionautozero_skew10ns_order012",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s00_pos1_tap0_cpldc_ronfallback100_originslow_positive_transitionautozero_skew10ns_order021",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s00_pos1_tap0_cpldc_ronfallback100_originslow_positive_transitionautozero_skew10ns_order102",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s00_pos1_tap0_cpldc_ronfallback100_originslow_positive_transitionautozero_skew10ns_order120",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s00_pos1_tap0_cpldc_ronfallback100_originslow_positive_transitionautozero_skew10ns_order201",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s00_pos1_tap0_cpldc_ronfallback100_originslow_positive_transitionautozero_skew10ns_order210",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s00_pos1_tap5_cpldc_ronfallback100_originnomi_positive_transition5to0_skew0ns_order012",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s00_pos1_tap5_cpldc_ronfallback100_originnomi_positive_transition5to0_skew10ns_order012",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s00_pos1_tap5_cpldc_ronfallback100_originnomi_positive_transition5to0_skew10ns_order021",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s00_pos1_tap5_cpldc_ronfallback100_originnomi_positive_transition5to0_skew10ns_order102",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s00_pos1_tap5_cpldc_ronfallback100_originnomi_positive_transition5to0_skew10ns_order120",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s00_pos1_tap5_cpldc_ronfallback100_originnomi_positive_transition5to0_skew10ns_order201",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s00_pos1_tap5_cpldc_ronfallback100_originnomi_positive_transition5to0_skew10ns_order210",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s00_pos1_tap5_cpldc_ronfallback100_originslow_positive_transition5to0_skew0ns_order012",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s00_pos1_tap5_cpldc_ronfallback100_originslow_positive_transition5to0_skew10ns_order012",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s00_pos1_tap5_cpldc_ronfallback100_originslow_positive_transition5to0_skew10ns_order021",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s00_pos1_tap5_cpldc_ronfallback100_originslow_positive_transition5to0_skew10ns_order102",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s00_pos1_tap5_cpldc_ronfallback100_originslow_positive_transition5to0_skew10ns_order120",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s00_pos1_tap5_cpldc_ronfallback100_originslow_positive_transition5to0_skew10ns_order201",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s00_pos1_tap5_cpldc_ronfallback100_originslow_positive_transition5to0_skew10ns_order210",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s01_pos1_tap0_cpldc_ronfallback100_originnomi_positive_transition0to1_skew0ns_order012",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s01_pos1_tap0_cpldc_ronfallback100_originnomi_positive_transition0to1_skew10ns_order012",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s01_pos1_tap0_cpldc_ronfallback100_originnomi_positive_transition0to1_skew10ns_order021",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s01_pos1_tap0_cpldc_ronfallback100_originnomi_positive_transition0to1_skew10ns_order102",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s01_pos1_tap0_cpldc_ronfallback100_originnomi_positive_transition0to1_skew10ns_order120",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s01_pos1_tap0_cpldc_ronfallback100_originnomi_positive_transition0to1_skew10ns_order201",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s01_pos1_tap0_cpldc_ronfallback100_originnomi_positive_transition0to1_skew10ns_order210",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s01_pos1_tap0_cpldc_ronfallback100_originslow_positive_transition0to1_skew0ns_order012",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s01_pos1_tap0_cpldc_ronfallback100_originslow_positive_transition0to1_skew10ns_order012",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s01_pos1_tap0_cpldc_ronfallback100_originslow_positive_transition0to1_skew10ns_order021",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s01_pos1_tap0_cpldc_ronfallback100_originslow_positive_transition0to1_skew10ns_order102",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s01_pos1_tap0_cpldc_ronfallback100_originslow_positive_transition0to1_skew10ns_order120",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s01_pos1_tap0_cpldc_ronfallback100_originslow_positive_transition0to1_skew10ns_order201",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s01_pos1_tap0_cpldc_ronfallback100_originslow_positive_transition0to1_skew10ns_order210",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s02_pos1_tap1_cpldc_ronfallback100_originnomi_positive_transition1to2_skew0ns_order012",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s02_pos1_tap1_cpldc_ronfallback100_originnomi_positive_transition1to2_skew10ns_order012",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s02_pos1_tap1_cpldc_ronfallback100_originnomi_positive_transition1to2_skew10ns_order021",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s02_pos1_tap1_cpldc_ronfallback100_originnomi_positive_transition1to2_skew10ns_order102",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s02_pos1_tap1_cpldc_ronfallback100_originnomi_positive_transition1to2_skew10ns_order120",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s02_pos1_tap1_cpldc_ronfallback100_originnomi_positive_transition1to2_skew10ns_order201",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s02_pos1_tap1_cpldc_ronfallback100_originnomi_positive_transition1to2_skew10ns_order210",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s02_pos1_tap1_cpldc_ronfallback100_originslow_positive_transition1to2_skew0ns_order012",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s02_pos1_tap1_cpldc_ronfallback100_originslow_positive_transition1to2_skew10ns_order012",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s02_pos1_tap1_cpldc_ronfallback100_originslow_positive_transition1to2_skew10ns_order021",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s02_pos1_tap1_cpldc_ronfallback100_originslow_positive_transition1to2_skew10ns_order102",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s02_pos1_tap1_cpldc_ronfallback100_originslow_positive_transition1to2_skew10ns_order120",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s02_pos1_tap1_cpldc_ronfallback100_originslow_positive_transition1to2_skew10ns_order201",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s02_pos1_tap1_cpldc_ronfallback100_originslow_positive_transition1to2_skew10ns_order210",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s05_pos1_tap0_cpldc_ronfallback100_originnomi_positive_transition0to5_skew0ns_order012",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s05_pos1_tap0_cpldc_ronfallback100_originnomi_positive_transition0to5_skew10ns_order012",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s05_pos1_tap0_cpldc_ronfallback100_originnomi_positive_transition0to5_skew10ns_order021",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s05_pos1_tap0_cpldc_ronfallback100_originnomi_positive_transition0to5_skew10ns_order102",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s05_pos1_tap0_cpldc_ronfallback100_originnomi_positive_transition0to5_skew10ns_order120",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s05_pos1_tap0_cpldc_ronfallback100_originnomi_positive_transition0to5_skew10ns_order201",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s05_pos1_tap0_cpldc_ronfallback100_originnomi_positive_transition0to5_skew10ns_order210",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s05_pos1_tap0_cpldc_ronfallback100_originslow_positive_transition0to5_skew0ns_order012",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s05_pos1_tap0_cpldc_ronfallback100_originslow_positive_transition0to5_skew10ns_order012",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s05_pos1_tap0_cpldc_ronfallback100_originslow_positive_transition0to5_skew10ns_order021",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s05_pos1_tap0_cpldc_ronfallback100_originslow_positive_transition0to5_skew10ns_order102",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s05_pos1_tap0_cpldc_ronfallback100_originslow_positive_transition0to5_skew10ns_order120",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s05_pos1_tap0_cpldc_ronfallback100_originslow_positive_transition0to5_skew10ns_order201",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s05_pos1_tap0_cpldc_ronfallback100_originslow_positive_transition0to5_skew10ns_order210",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s05_pos1_tap4_cpldc_ronfallback100_originnomi_positive_transition4to5_skew0ns_order012",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s05_pos1_tap4_cpldc_ronfallback100_originnomi_positive_transition4to5_skew10ns_order012",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s05_pos1_tap4_cpldc_ronfallback100_originnomi_positive_transition4to5_skew10ns_order021",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s05_pos1_tap4_cpldc_ronfallback100_originnomi_positive_transition4to5_skew10ns_order102",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s05_pos1_tap4_cpldc_ronfallback100_originnomi_positive_transition4to5_skew10ns_order120",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s05_pos1_tap4_cpldc_ronfallback100_originnomi_positive_transition4to5_skew10ns_order201",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s05_pos1_tap4_cpldc_ronfallback100_originnomi_positive_transition4to5_skew10ns_order210",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s05_pos1_tap4_cpldc_ronfallback100_originslow_positive_transition4to5_skew0ns_order012",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s05_pos1_tap4_cpldc_ronfallback100_originslow_positive_transition4to5_skew10ns_order012",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s05_pos1_tap4_cpldc_ronfallback100_originslow_positive_transition4to5_skew10ns_order021",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s05_pos1_tap4_cpldc_ronfallback100_originslow_positive_transition4to5_skew10ns_order102",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s05_pos1_tap4_cpldc_ronfallback100_originslow_positive_transition4to5_skew10ns_order120",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s05_pos1_tap4_cpldc_ronfallback100_originslow_positive_transition4to5_skew10ns_order201",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s05_pos1_tap4_cpldc_ronfallback100_originslow_positive_transition4to5_skew10ns_order210",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s06_pos100_tap0_cpldc_ronfallback100_originnomi_positive_transitionautozero_skew0ns_order012",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s06_pos100_tap0_cpldc_ronfallback100_originnomi_positive_transitionautozero_skew10ns_order012",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s06_pos100_tap0_cpldc_ronfallback100_originnomi_positive_transitionautozero_skew10ns_order021",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s06_pos100_tap0_cpldc_ronfallback100_originnomi_positive_transitionautozero_skew10ns_order102",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s06_pos100_tap0_cpldc_ronfallback100_originnomi_positive_transitionautozero_skew10ns_order120",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s06_pos100_tap0_cpldc_ronfallback100_originnomi_positive_transitionautozero_skew10ns_order201",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s06_pos100_tap0_cpldc_ronfallback100_originnomi_positive_transitionautozero_skew10ns_order210",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s06_pos100_tap0_cpldc_ronfallback100_originslow_positive_transitionautozero_skew0ns_order012",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s06_pos100_tap0_cpldc_ronfallback100_originslow_positive_transitionautozero_skew10ns_order012",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s06_pos100_tap0_cpldc_ronfallback100_originslow_positive_transitionautozero_skew10ns_order021",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s06_pos100_tap0_cpldc_ronfallback100_originslow_positive_transitionautozero_skew10ns_order102",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s06_pos100_tap0_cpldc_ronfallback100_originslow_positive_transitionautozero_skew10ns_order120",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s06_pos100_tap0_cpldc_ronfallback100_originslow_positive_transitionautozero_skew10ns_order201",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s06_pos100_tap0_cpldc_ronfallback100_originslow_positive_transitionautozero_skew10ns_order210",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s06_pos100_tap5_cpldc_ronfallback100_originnomi_positive_transition5to0_skew0ns_order012",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s06_pos100_tap5_cpldc_ronfallback100_originnomi_positive_transition5to0_skew10ns_order012",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s06_pos100_tap5_cpldc_ronfallback100_originnomi_positive_transition5to0_skew10ns_order021",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s06_pos100_tap5_cpldc_ronfallback100_originnomi_positive_transition5to0_skew10ns_order102",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s06_pos100_tap5_cpldc_ronfallback100_originnomi_positive_transition5to0_skew10ns_order120",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s06_pos100_tap5_cpldc_ronfallback100_originnomi_positive_transition5to0_skew10ns_order201",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s06_pos100_tap5_cpldc_ronfallback100_originnomi_positive_transition5to0_skew10ns_order210",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s06_pos100_tap5_cpldc_ronfallback100_originslow_positive_transition5to0_skew0ns_order012",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s06_pos100_tap5_cpldc_ronfallback100_originslow_positive_transition5to0_skew10ns_order012",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s06_pos100_tap5_cpldc_ronfallback100_originslow_positive_transition5to0_skew10ns_order021",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s06_pos100_tap5_cpldc_ronfallback100_originslow_positive_transition5to0_skew10ns_order102",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s06_pos100_tap5_cpldc_ronfallback100_originslow_positive_transition5to0_skew10ns_order120",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s06_pos100_tap5_cpldc_ronfallback100_originslow_positive_transition5to0_skew10ns_order201",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s06_pos100_tap5_cpldc_ronfallback100_originslow_positive_transition5to0_skew10ns_order210",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s07_pos100_tap0_cpldc_ronfallback100_originnomi_positive_transition0to1_skew0ns_order012",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s07_pos100_tap0_cpldc_ronfallback100_originnomi_positive_transition0to1_skew10ns_order012",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s07_pos100_tap0_cpldc_ronfallback100_originnomi_positive_transition0to1_skew10ns_order021",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s07_pos100_tap0_cpldc_ronfallback100_originnomi_positive_transition0to1_skew10ns_order102",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s07_pos100_tap0_cpldc_ronfallback100_originnomi_positive_transition0to1_skew10ns_order120",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s07_pos100_tap0_cpldc_ronfallback100_originnomi_positive_transition0to1_skew10ns_order201",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s07_pos100_tap0_cpldc_ronfallback100_originnomi_positive_transition0to1_skew10ns_order210",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s07_pos100_tap0_cpldc_ronfallback100_originslow_positive_transition0to1_skew0ns_order012",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s07_pos100_tap0_cpldc_ronfallback100_originslow_positive_transition0to1_skew10ns_order012",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s07_pos100_tap0_cpldc_ronfallback100_originslow_positive_transition0to1_skew10ns_order021",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s07_pos100_tap0_cpldc_ronfallback100_originslow_positive_transition0to1_skew10ns_order102",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s07_pos100_tap0_cpldc_ronfallback100_originslow_positive_transition0to1_skew10ns_order120",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s07_pos100_tap0_cpldc_ronfallback100_originslow_positive_transition0to1_skew10ns_order201",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s07_pos100_tap0_cpldc_ronfallback100_originslow_positive_transition0to1_skew10ns_order210",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s08_pos100_tap1_cpldc_ronfallback100_originnomi_positive_transition1to2_skew0ns_order012",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s08_pos100_tap1_cpldc_ronfallback100_originnomi_positive_transition1to2_skew10ns_order012",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s08_pos100_tap1_cpldc_ronfallback100_originnomi_positive_transition1to2_skew10ns_order021",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s08_pos100_tap1_cpldc_ronfallback100_originnomi_positive_transition1to2_skew10ns_order102",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s08_pos100_tap1_cpldc_ronfallback100_originnomi_positive_transition1to2_skew10ns_order120",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s08_pos100_tap1_cpldc_ronfallback100_originnomi_positive_transition1to2_skew10ns_order201",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s08_pos100_tap1_cpldc_ronfallback100_originnomi_positive_transition1to2_skew10ns_order210",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s08_pos100_tap1_cpldc_ronfallback100_originslow_positive_transition1to2_skew0ns_order012",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s08_pos100_tap1_cpldc_ronfallback100_originslow_positive_transition1to2_skew10ns_order012",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s08_pos100_tap1_cpldc_ronfallback100_originslow_positive_transition1to2_skew10ns_order021",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s08_pos100_tap1_cpldc_ronfallback100_originslow_positive_transition1to2_skew10ns_order102",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s08_pos100_tap1_cpldc_ronfallback100_originslow_positive_transition1to2_skew10ns_order120",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s08_pos100_tap1_cpldc_ronfallback100_originslow_positive_transition1to2_skew10ns_order201",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s08_pos100_tap1_cpldc_ronfallback100_originslow_positive_transition1to2_skew10ns_order210",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s11_pos100_tap0_cpldc_ronfallback100_originnomi_positive_transition0to5_skew0ns_order012",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s11_pos100_tap0_cpldc_ronfallback100_originnomi_positive_transition0to5_skew10ns_order012",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s11_pos100_tap0_cpldc_ronfallback100_originnomi_positive_transition0to5_skew10ns_order021",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s11_pos100_tap0_cpldc_ronfallback100_originnomi_positive_transition0to5_skew10ns_order102",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s11_pos100_tap0_cpldc_ronfallback100_originnomi_positive_transition0to5_skew10ns_order120",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s11_pos100_tap0_cpldc_ronfallback100_originnomi_positive_transition0to5_skew10ns_order201",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s11_pos100_tap0_cpldc_ronfallback100_originnomi_positive_transition0to5_skew10ns_order210",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s11_pos100_tap0_cpldc_ronfallback100_originslow_positive_transition0to5_skew0ns_order012",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s11_pos100_tap0_cpldc_ronfallback100_originslow_positive_transition0to5_skew10ns_order012",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s11_pos100_tap0_cpldc_ronfallback100_originslow_positive_transition0to5_skew10ns_order021",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s11_pos100_tap0_cpldc_ronfallback100_originslow_positive_transition0to5_skew10ns_order102",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s11_pos100_tap0_cpldc_ronfallback100_originslow_positive_transition0to5_skew10ns_order120",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s11_pos100_tap0_cpldc_ronfallback100_originslow_positive_transition0to5_skew10ns_order201",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s11_pos100_tap0_cpldc_ronfallback100_originslow_positive_transition0to5_skew10ns_order210",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s11_pos100_tap4_cpldc_ronfallback100_originnomi_positive_transition4to5_skew0ns_order012",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s11_pos100_tap4_cpldc_ronfallback100_originnomi_positive_transition4to5_skew10ns_order012",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s11_pos100_tap4_cpldc_ronfallback100_originnomi_positive_transition4to5_skew10ns_order021",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s11_pos100_tap4_cpldc_ronfallback100_originnomi_positive_transition4to5_skew10ns_order102",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s11_pos100_tap4_cpldc_ronfallback100_originnomi_positive_transition4to5_skew10ns_order120",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s11_pos100_tap4_cpldc_ronfallback100_originnomi_positive_transition4to5_skew10ns_order201",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s11_pos100_tap4_cpldc_ronfallback100_originnomi_positive_transition4to5_skew10ns_order210",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s11_pos100_tap4_cpldc_ronfallback100_originslow_positive_transition4to5_skew0ns_order012",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s11_pos100_tap4_cpldc_ronfallback100_originslow_positive_transition4to5_skew10ns_order012",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s11_pos100_tap4_cpldc_ronfallback100_originslow_positive_transition4to5_skew10ns_order021",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s11_pos100_tap4_cpldc_ronfallback100_originslow_positive_transition4to5_skew10ns_order102",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s11_pos100_tap4_cpldc_ronfallback100_originslow_positive_transition4to5_skew10ns_order120",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s11_pos100_tap4_cpldc_ronfallback100_originslow_positive_transition4to5_skew10ns_order201",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "e15_s11_pos100_tap4_cpldc_ronfallback100_originslow_positive_transition4to5_skew10ns_order210",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "isoamp_s00_pos1_tap0_cpldc_ronnomi_zero_stagea",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "isoamp_s00_pos1_tap0_cpldc_ronnomi_zero_stageb",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "isoctrl_s00_pos1_tap0_cpldc_ronnomi_zero",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "simulator_returncode": 1,
+      "native_failure": "Simulation Failed: Iteration limit reached",
+      "last_time_s": 1.0154236727411222e-06,
+      "diagnostic": "Native SWI1 failed compatibility test; E15 fallback authorized by S3 §1"
+    },
+    {
+      "id": "isoctrl_s00_pos1_tap0_cpldc_ronslow_zero",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "simulator_returncode": 0,
+      "native_failure": "Timeout after collapsed time step",
+      "last_time_s": 1.0158188745342088e-06,
+      "diagnostic": "Native SWI1 failed compatibility test; E15 fallback authorized by S3 §1"
+    },
+    {
+      "id": "isolad_s00_pos1_tap0_cpldc_ronnomi_zero",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "isosw_s00_pos1_tap0_cpldc_ronnomi_zero_level0_control0",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "isosw_s00_pos1_tap0_cpldc_ronnomi_zero_level1_control5",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "isosw_s00_pos1_tap0_cpldc_ronnomi_zero_level2_control0",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "isosw_s00_pos1_tap0_cpldc_ronnomi_zero_levelneg2_control0",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    }
+  ],
+  "e15_revision_seconds": 270.37674239999615,
+  "e15_revised_simulations": 168,
+  "total_simulation_attempts": 413
+}

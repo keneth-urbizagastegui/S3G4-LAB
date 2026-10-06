@@ -1,0 +1,98 @@
+{
+  "exit_code": 0,
+  "simulations": 14,
+  "errors": 0,
+  "warnings": 0,
+  "elapsed_seconds": 51.26934830000391,
+  "workers": 10,
+  "smoke": false,
+  "controls_only": true,
+  "protected_files": 22075,
+  "protected_changed": [],
+  "records": [
+    {
+      "id": "isoac_m1_c0_follower_sna_vi1p25_d1p25_pos_vdd3p3_e1",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "isoac_m1_c0_iso_sna_vi0_d1p25_zero_vdd3p3_e1",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "isoac_m1_c1_iso_sna_vi0_d1p25_zero_vdd3p3_e1",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "isodc_m1_c1_iso_sna_visw_d0p2_both_vdd3p3_e0",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "isodc_m1_c1_iso_sna_visw_d0p2_both_vdd3p3_e1",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "isodc_m1_c1_iso_sna_visw_d1p25_both_vdd3p3_e0",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "isodc_m1_c1_iso_sna_visw_d1p25_both_vdd3p3_e1",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "isodc_m1_c1_iso_sna_visw_d2p3_both_vdd3p3_e0",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "isodc_m1_c1_iso_sna_visw_d2p3_both_vdd3p3_e1",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "isoeq_m1_c1_iso_sna_visw_d0p2_both_vdd3p3_e1",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "isoeq_m1_c1_iso_sna_visw_d0p725_both_vdd3p3_e1",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "isoeq_m1_c1_iso_sna_visw_d1p25_both_vdd3p3_e1",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "isoeq_m1_c1_iso_sna_visw_d1p775_both_vdd3p3_e1",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "isoeq_m1_c1_iso_sna_visw_d2p3_both_vdd3p3_e1",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    }
+  ]
+}

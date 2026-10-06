@@ -1,0 +1,19 @@
+dato,hoja,original,copia
+GBW inferido de ×10 (MHz),70 ±15%,152.62792301097232,71.96743251966001
+−3 dB ×10 (MHz),7 ±15%,15.262792301097234,7.1967432519660015
+−3 dB seguidor (MHz),130; margen100…160,181.98383646753382,101.0672590155652
+Pico seguidor (dB),≤3 (encargo),1.5731709343454643,0.008607203049990518
+Consumo +/− (mA por amplificador),2.2 ±15%,1.698235/1.696468,2.211235/2.209468
+Ruido100k/1MHz (nV/√Hz),11 ±10%,6.587271/51.496493,11.036838/11.036840
+Ruido corriente +/− (pA/√Hz),1,No caracterizado por fabricante,0.998656/0.990918
+Offset (mV),±3 a25°C,2.9860061236323148,2.9860061236323148
+Ib +/− (µA),≤2.5 a25°C,1.218954/1.200027,1.218954/1.200027
+Excursión1kΩ a±5V (V),≥+3.1/≤−3.1,3.460945/-3.362725,3.460945/-3.362725
+Excursión 1 kΩ a ±4.9 V (V),mismo margen del encargo,No repetido,3.363081/-3.264885
+"Alimentación recomendada, V totales",5.5–36; p.4 §5.3,Validado a 9.8 y 30 V en K0 histórico,Validado a 9.8/10 V; sin barrido completo
+"Alimentación absoluta, V totales",36; p.4 §5.1,Sin modelo de daño,9.8 nominal / 10.0 extremo; límite de margen 80%×36
+"Diferencial absoluto, V",±10; p.4 §5.1,Sin certificación de daño,K6 medido; margen ≤80%×10; saturación National
+"Corriente de entrada absoluta, mA",±10; p.4 §5.1,Sin certificación de daño,K6 medido; margen ≤50%×10; entrada National
+Offset / Ib en temperatura,±4 mV / ≤3.5 µA a −40…85 °C; p.7 §5.6,No validado en temperatura,No validado en temperatura; límites K0 a 25 °C
+Estabilidad ganancia 1 / carga capacitiva,Unidad estable; evaluar aislamiento 50 Ω; pp.23–24,"Seguidor con 1 kΩ, sin barrido capacitivo",Seguidor con 1 kΩ; carga capacitiva no certificada; sin añadir remedio
+Compensación de evaluación,2 pF feedback y retorno 1 kΩ; pp.24–25,No añadido a canal,No añadido a canal; compensación interna C1 ajustada

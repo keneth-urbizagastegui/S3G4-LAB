@@ -1,0 +1,9 @@
+test,scale_V_div,ix,POS,tap,CPL,corner,polarity,mux_model,id,vmid,cf,scope,vdac_V,vin_V,esd,supply,onoise_100k,noise_adc_uV,noise_pct_div,noise_trace
+F6,0.005,0,1,0,DC,nomi,both,SWI1,f6_m1_c0_chain_s0_viac1dc0_d1p25_both_vdd3p3_e1,M1,C0,chain,1.25,0.0,1,3p3,5.72213250196e-07,965.0567640591568,0.3860227056236627,v(onoise)
+F6,0.5,6,100,0,DC,nomi,both,SWI1,f6_m1_c0_chain_s6_viac1dc0_d1p25_both_vdd3p3_e1,M1,C0,chain,1.25,0.0,1,3p3,5.76463300578e-07,962.3457550289043,0.3849383020115617,v(onoise)
+F6,0.005,0,1,0,DC,nomi,both,SWI1,f6_m1_c1_chain_s0_viac1dc0_d1p25_both_vdd3p3_e1,M1,C1,chain,1.25,0.0,1,3p3,5.72184788215e-07,950.8730825674735,0.38034923302698936,v(onoise)
+F6,0.5,6,100,0,DC,nomi,both,SWI1,f6_m1_c1_chain_s6_viac1dc0_d1p25_both_vdd3p3_e1,M1,C1,chain,1.25,0.0,1,3p3,5.76434627113e-07,948.2105992314936,0.3792842396925974,v(onoise)
+F6,0.005,0,1,0,DC,nomi,both,SWI1,f6_m2_c0_chain_s0_viac1dc0_d1p25_both_vdd3p3_e1,M2,C0,chain,1.25,0.0,1,3p3,5.72213877261e-07,965.0590002768116,0.3860236001107247,v(onoise)
+F6,0.5,6,100,0,DC,nomi,both,SWI1,f6_m2_c0_chain_s6_viac1dc0_d1p25_both_vdd3p3_e1,M2,C0,chain,1.25,0.0,1,3p3,5.76463923062e-07,962.347997307251,0.3849391989229004,v(onoise)
+F6,0.005,0,1,0,DC,nomi,both,SWI1,f6_m2_c1_chain_s0_viac1dc0_d1p25_both_vdd3p3_e1,M2,C1,chain,1.25,0.0,1,3p3,5.72185415259e-07,950.8753525281273,0.3803501410112509,v(onoise)
+F6,0.5,6,100,0,DC,nomi,both,SWI1,f6_m2_c1_chain_s6_viac1dc0_d1p25_both_vdd3p3_e1,M2,C1,chain,1.25,0.0,1,3p3,5.76435249577e-07,948.2128753205316,0.3792851501282126,v(onoise)

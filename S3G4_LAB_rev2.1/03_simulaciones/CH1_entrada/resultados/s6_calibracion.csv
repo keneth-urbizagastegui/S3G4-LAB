@@ -1,0 +1,6 @@
+id,test,RSW_Ohm,state,target_Hz,freq_Hz,M,level_V,source_dc_V,source_amp_V,section,probe,dc_gain,center_V,gain
+h0ac_rswna_na_f1999511p71875_levelna_na_na,H0AC,NA,NA,2000000.0,1999511.71875,315,NA,0.0,0.0,NA,NA,,,0.9179697938588909
+h0ac_rswna_na_f1999511p71875_levelna_tr_na,H0AC,NA,NA,2000000.0,1999511.71875,315,NA,0.0,0.0,TR,NA,,,0.7096218933351033
+h0ac_rswna_na_f501464p84375_levelna_na_na,H0AC,NA,NA,500000.0,501464.84375,79,NA,0.0,0.0,NA,NA,,,0.9942973679231574
+h0ac_rswna_na_f996582p03125_levelna_na_na,H0AC,NA,NA,1000000.0,996582.03125,157,NA,0.0,0.0,NA,NA,,,0.9779480099990427
+h0dc_rswna_na_f0_levelna_na_na,H0DC,NA,NA,0,0.0,0,NA,0.0,0.0,NA,NA,-0.9999973770771925,1.234710354195651,

@@ -5,10 +5,10 @@ Carpeta de trabajo del rediseño **rev 2.1**: AFE a batería con 3 canales, DMM 
 | Carpeta | Qué hay | Estado |
 |---|---|---|
 | `00_requisitos/` | `requisitos_osciloscopio.html` (RF-01…RF-19), `requisitos_dmm_awg.html` (RD y RG) y `especificaciones_osciloscopio.html` (hoja preliminar) | Acordados el 23 sep; revisados el 30 sep |
-| `01_diseno/` | `rediseno_afe_rev21.html`, el documento vivo: decisiones D-01…D-09 y secciones A, B, C y G | En curso |
+| `01_diseno/` | `rediseno_afe_rev21.html`, el documento vivo: decisiones D-01…D-09, secciones A–G y la lista de materiales (Σ). `canal_rapido_ch1.html`: guía de estudio del canal rápido (recorrido de la señal, AFE frente a G473, alias y base de tiempos). `revision_entrada_ch1.html`: revisión de la entrada de CH1, propuesta P4b y plan de simulación S0–S8 (histórica, 2 oct) | En curso; CH1 cerrado en simulación |
 | `02_referencias/` | Anatomías del DSO112, el WAVE2, el OpenScope MZ y black_scope, y revisión analógica del STM32G473 | Cerradas |
-| `03_simulaciones/` | `P4_P7_grueso/`: plan, encargo, acta de Codex, auditoría de Claude, ejecutor y resultados | Auditada; P4 queda por RF-07 |
-| `04_esquematicos/` | Esquemas de la rev 2.1: proyecto KiCad 10 `s3g4` en `kicad/` | Creado el 30 sep, sin dibujar |
+| `03_simulaciones/` | `P4_P7_grueso/` (grueso con o sin relé), `CH1_entrada/` (S1–S7c, canal rápido completo) y `CH23_entrada/` (S9, CH2/CH3 a 1 MHz). Cada etapa con plan, encargo, acta de Codex y auditoría de Claude | P4/P7 y CH1 auditados; S9 en curso |
+| `04_esquematicos/` | Proyecto KiCad 10 `s3g4` en `kicad/` y paquete del esquema de CH1 en `S8_CH1/` (piezas y redes, encargo para Konnect, lista de materiales con precios) | Paquete de S8 listo; KiCad aún sin dibujar |
 | `05_informes/` | Índice de actas y material para el informe | — |
 | `06_plan/` | `PLAN.md`: lo que falta y las decisiones abiertas | Vivo |
 | `herramientas/` | Scripts de dibujos, cálculos y páginas | — |

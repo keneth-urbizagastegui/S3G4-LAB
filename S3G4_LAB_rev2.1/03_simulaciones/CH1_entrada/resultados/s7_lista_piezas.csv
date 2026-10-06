@@ -1,0 +1,48 @@
+designador,cantidad,valor_SI,nota
+Rt1/Rt2,2,549000.0,"1206, divisor; ±0.1 %"
+Rb,1,11000.0,divisor
+Ct1,1,2e-11,C0G
+Ct2fixed,1,1.6e-11,derivado CT1-CTRIM_MED
+Ct2trim,1,4e-12,"SEHWA 2–6 pF, nominal central"
+Cb,1,1.088540148285924e-09,seleccionar en prueba
+Rs1/Rs2,2,49900.0,1206
+Cs,1,1.1691033781639155e-09,>=200 V
+Req,1,10000000.0,1206 >=200 V
+Ceq,1,8.667651714075875e-12,">=200 V, seleccionar en prueba"
+CAc,1,1.8000000000000002e-09,acoplo
+Rbias,1,10000000.0,bias
+Rprot,1,1000.0,protección buffer
+RL1,1,499.0,escalera
+RL2,1,249.0,escalera
+RL3,1,150.0,escalera
+RL4,1,49.9,escalera
+RL5,1,24.9,escalera
+RL6,1,24.9,escalera
+R_SER U103A/B,2,470.0,protección IN+
+RFA,1,1000.0,U103A
+RGA,1,249.0,U103A
+RFB,1,2260.0,U103B
+RGB,1,249.0,U103B
+R1/R2 U105A,2,1110.0,"TR, sección 1"
+C1 U105A,1,5.6e-11,TR feedback
+C2 U105A,1,4.7e-11,TR a masa
+R1/R2 U105B,2,499.0,"TR, sección 2"
+C1 U105B,1,2.2e-10,TR feedback
+C2 U105B,1,5.6e-11,TR a masa
+RIN,1,10000.0,OPA836
+RF,1,10000.0,OPA836
+ROFF,1,8060.000000000001,OPA836
+CF,1,1e-12,C0G
+RT_MID,1,10000.0,VMID desde VREF+
+RB_MID,1,5230.0,VMID
+CMID,1,1e-06,VMID
+RADC,1,68.0,pin PA0
+CADC,1,4.7e-10,pin PA0
+U101,1,OPA810,fuente única
+U103,1,AD8039 doble,A y B
+U105,1,AD8039 doble,A y B
+U102,1,74HC4051,8 SWI1 Nexperia
+Ufinal,1,OPA836,VDDA 3.3 V
+K1,1,HFD27 DPDT,monoestable
+sujeción entrada,1,BAV199 par,Nexperia
+sujeción U103A/B,2,BAV99 par,"C2500, modelo Rohm BAV99HY"

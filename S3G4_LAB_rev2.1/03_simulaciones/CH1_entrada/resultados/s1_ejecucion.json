@@ -1,0 +1,3964 @@
+{
+  "simulations": [
+    {
+      "file": "S1\\E1_zin.cir",
+      "returncode": 0,
+      "seconds": 0.7660000000032596,
+      "errors": [],
+      "warnings": [],
+      "measures": 24
+    },
+    {
+      "file": "S1\\E2_respuesta.cir",
+      "returncode": 0,
+      "seconds": 0.8120000000053551,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\sonda_grueso_000.cir",
+      "returncode": 0,
+      "seconds": 1.2030000000086147,
+      "errors": [],
+      "warnings": [],
+      "measures": 24
+    },
+    {
+      "file": "S1\\generados\\sonda_grueso_001.cir",
+      "returncode": 0,
+      "seconds": 1.1400000000139698,
+      "errors": [],
+      "warnings": [],
+      "measures": 24
+    },
+    {
+      "file": "S1\\generados\\sonda_grueso_002.cir",
+      "returncode": 0,
+      "seconds": 1.2349999999860302,
+      "errors": [],
+      "warnings": [],
+      "measures": 24
+    },
+    {
+      "file": "S1\\generados\\sonda_grueso_003.cir",
+      "returncode": 0,
+      "seconds": 1.172000000020489,
+      "errors": [],
+      "warnings": [],
+      "measures": 24
+    },
+    {
+      "file": "S1\\generados\\sonda_grueso_004.cir",
+      "returncode": 0,
+      "seconds": 1.0780000000086147,
+      "errors": [],
+      "warnings": [],
+      "measures": 24
+    },
+    {
+      "file": "S1\\generados\\sonda_grueso_005.cir",
+      "returncode": 0,
+      "seconds": 0.9530000000086147,
+      "errors": [],
+      "warnings": [],
+      "measures": 24
+    },
+    {
+      "file": "S1\\generados\\sonda_grueso_006.cir",
+      "returncode": 0,
+      "seconds": 1.1090000000258442,
+      "errors": [],
+      "warnings": [],
+      "measures": 24
+    },
+    {
+      "file": "S1\\generados\\sonda_grueso_007.cir",
+      "returncode": 0,
+      "seconds": 1.172000000020489,
+      "errors": [],
+      "warnings": [],
+      "measures": 24
+    },
+    {
+      "file": "S1\\generados\\sonda_grueso_008.cir",
+      "returncode": 0,
+      "seconds": 1.0,
+      "errors": [],
+      "warnings": [],
+      "measures": 24
+    },
+    {
+      "file": "S1\\generados\\sonda_grueso_009.cir",
+      "returncode": 0,
+      "seconds": 0.9679999999934807,
+      "errors": [],
+      "warnings": [],
+      "measures": 24
+    },
+    {
+      "file": "S1\\generados\\sonda_grueso_010.cir",
+      "returncode": 0,
+      "seconds": 1.062999999994645,
+      "errors": [],
+      "warnings": [],
+      "measures": 24
+    },
+    {
+      "file": "S1\\generados\\sonda_grueso_011.cir",
+      "returncode": 0,
+      "seconds": 0.9059999999881256,
+      "errors": [],
+      "warnings": [],
+      "measures": 24
+    },
+    {
+      "file": "S1\\generados\\sonda_grueso_012.cir",
+      "returncode": 0,
+      "seconds": 0.9379999999946449,
+      "errors": [],
+      "warnings": [],
+      "measures": 24
+    },
+    {
+      "file": "S1\\generados\\sonda_grueso_013.cir",
+      "returncode": 0,
+      "seconds": 1.0309999999881256,
+      "errors": [],
+      "warnings": [],
+      "measures": 24
+    },
+    {
+      "file": "S1\\generados\\sonda_grueso_014.cir",
+      "returncode": 0,
+      "seconds": 1.2190000000118744,
+      "errors": [],
+      "warnings": [],
+      "measures": 24
+    },
+    {
+      "file": "S1\\generados\\sonda_grueso_015.cir",
+      "returncode": 0,
+      "seconds": 1.187999999994645,
+      "errors": [],
+      "warnings": [],
+      "measures": 24
+    },
+    {
+      "file": "S1\\generados\\sonda_grueso_016.cir",
+      "returncode": 0,
+      "seconds": 1.172000000020489,
+      "errors": [],
+      "warnings": [],
+      "measures": 24
+    },
+    {
+      "file": "S1\\generados\\sonda_grueso_017.cir",
+      "returncode": 0,
+      "seconds": 0.9690000000118744,
+      "errors": [],
+      "warnings": [],
+      "measures": 24
+    },
+    {
+      "file": "S1\\generados\\sonda_grueso_018.cir",
+      "returncode": 0,
+      "seconds": 0.9849999999860302,
+      "errors": [],
+      "warnings": [],
+      "measures": 24
+    },
+    {
+      "file": "S1\\generados\\sonda_grueso_019.cir",
+      "returncode": 0,
+      "seconds": 1.062999999994645,
+      "errors": [],
+      "warnings": [],
+      "measures": 24
+    },
+    {
+      "file": "S1\\generados\\sonda_grueso_020.cir",
+      "returncode": 0,
+      "seconds": 1.1559999999881256,
+      "errors": [],
+      "warnings": [],
+      "measures": 24
+    },
+    {
+      "file": "S1\\generados\\sonda_grueso_021.cir",
+      "returncode": 0,
+      "seconds": 1.0929999999934807,
+      "errors": [],
+      "warnings": [],
+      "measures": 24
+    },
+    {
+      "file": "S1\\generados\\sonda_grueso_022.cir",
+      "returncode": 0,
+      "seconds": 1.0310000000172295,
+      "errors": [],
+      "warnings": [],
+      "measures": 24
+    },
+    {
+      "file": "S1\\generados\\sonda_grueso_023.cir",
+      "returncode": 0,
+      "seconds": 1.0469999999913853,
+      "errors": [],
+      "warnings": [],
+      "measures": 24
+    },
+    {
+      "file": "S1\\generados\\sonda_grueso_024.cir",
+      "returncode": 0,
+      "seconds": 0.9219999999913853,
+      "errors": [],
+      "warnings": [],
+      "measures": 24
+    },
+    {
+      "file": "S1\\generados\\sonda_grueso_025.cir",
+      "returncode": 0,
+      "seconds": 0.9379999999946449,
+      "errors": [],
+      "warnings": [],
+      "measures": 24
+    },
+    {
+      "file": "S1\\generados\\sonda_grueso_026.cir",
+      "returncode": 0,
+      "seconds": 0.9839999999967404,
+      "errors": [],
+      "warnings": [],
+      "measures": 24
+    },
+    {
+      "file": "S1\\generados\\sonda_grueso_027.cir",
+      "returncode": 0,
+      "seconds": 0.9689999999827705,
+      "errors": [],
+      "warnings": [],
+      "measures": 24
+    },
+    {
+      "file": "S1\\generados\\sonda_grueso_028.cir",
+      "returncode": 0,
+      "seconds": 1.047000000020489,
+      "errors": [],
+      "warnings": [],
+      "measures": 24
+    },
+    {
+      "file": "S1\\generados\\sonda_grueso_029.cir",
+      "returncode": 0,
+      "seconds": 1.0,
+      "errors": [],
+      "warnings": [],
+      "measures": 24
+    },
+    {
+      "file": "S1\\generados\\sonda_grueso_030.cir",
+      "returncode": 0,
+      "seconds": 0.9679999999934807,
+      "errors": [],
+      "warnings": [],
+      "measures": 24
+    },
+    {
+      "file": "S1\\generados\\sonda_fino_000.cir",
+      "returncode": 0,
+      "seconds": 0.9539999999979045,
+      "errors": [],
+      "warnings": [],
+      "measures": 24
+    },
+    {
+      "file": "S1\\generados\\sonda_fino_001.cir",
+      "returncode": 0,
+      "seconds": 0.9849999999860302,
+      "errors": [],
+      "warnings": [],
+      "measures": 24
+    },
+    {
+      "file": "S1\\generados\\sonda_fino_002.cir",
+      "returncode": 0,
+      "seconds": 1.0780000000086147,
+      "errors": [],
+      "warnings": [],
+      "measures": 24
+    },
+    {
+      "file": "S1\\generados\\sonda_fino_003.cir",
+      "returncode": 0,
+      "seconds": 1.125,
+      "errors": [],
+      "warnings": [],
+      "measures": 24
+    },
+    {
+      "file": "S1\\generados\\sonda_fino_004.cir",
+      "returncode": 0,
+      "seconds": 1.2809999999881256,
+      "errors": [],
+      "warnings": [],
+      "measures": 24
+    },
+    {
+      "file": "S1\\generados\\sonda_fino_005.cir",
+      "returncode": 0,
+      "seconds": 1.2809999999881256,
+      "errors": [],
+      "warnings": [],
+      "measures": 24
+    },
+    {
+      "file": "S1\\generados\\sonda_fino_006.cir",
+      "returncode": 0,
+      "seconds": 1.2190000000118744,
+      "errors": [],
+      "warnings": [],
+      "measures": 24
+    },
+    {
+      "file": "S1\\generados\\sonda_fino_007.cir",
+      "returncode": 0,
+      "seconds": 1.0309999999881256,
+      "errors": [],
+      "warnings": [],
+      "measures": 24
+    },
+    {
+      "file": "S1\\generados\\sonda_fino_008.cir",
+      "returncode": 0,
+      "seconds": 1.0780000000086147,
+      "errors": [],
+      "warnings": [],
+      "measures": 24
+    },
+    {
+      "file": "S1\\generados\\sonda_fino_009.cir",
+      "returncode": 0,
+      "seconds": 0.9840000000258442,
+      "errors": [],
+      "warnings": [],
+      "measures": 24
+    },
+    {
+      "file": "S1\\generados\\sonda_fino_010.cir",
+      "returncode": 0,
+      "seconds": 1.0939999999827705,
+      "errors": [],
+      "warnings": [],
+      "measures": 24
+    },
+    {
+      "file": "S1\\generados\\sonda_fino_011.cir",
+      "returncode": 0,
+      "seconds": 1.0780000000086147,
+      "errors": [],
+      "warnings": [],
+      "measures": 24
+    },
+    {
+      "file": "S1\\generados\\sonda_fino_012.cir",
+      "returncode": 0,
+      "seconds": 0.9839999999967404,
+      "errors": [],
+      "warnings": [],
+      "measures": 24
+    },
+    {
+      "file": "S1\\generados\\sonda_fino_013.cir",
+      "returncode": 0,
+      "seconds": 1.1089999999967404,
+      "errors": [],
+      "warnings": [],
+      "measures": 24
+    },
+    {
+      "file": "S1\\generados\\sonda_fino_014.cir",
+      "returncode": 0,
+      "seconds": 1.0160000000032596,
+      "errors": [],
+      "warnings": [],
+      "measures": 24
+    },
+    {
+      "file": "S1\\generados\\sonda_fino_015.cir",
+      "returncode": 0,
+      "seconds": 0.9839999999967404,
+      "errors": [],
+      "warnings": [],
+      "measures": 24
+    },
+    {
+      "file": "S1\\generados\\sonda_fino_016.cir",
+      "returncode": 0,
+      "seconds": 0.9219999999913853,
+      "errors": [],
+      "warnings": [],
+      "measures": 24
+    },
+    {
+      "file": "S1\\generados\\sonda_fino_017.cir",
+      "returncode": 0,
+      "seconds": 1.1400000000139698,
+      "errors": [],
+      "warnings": [],
+      "measures": 24
+    },
+    {
+      "file": "S1\\generados\\sonda_fino_018.cir",
+      "returncode": 0,
+      "seconds": 1.2810000000172295,
+      "errors": [],
+      "warnings": [],
+      "measures": 24
+    },
+    {
+      "file": "S1\\generados\\sonda_fino_019.cir",
+      "returncode": 0,
+      "seconds": 1.202999999979511,
+      "errors": [],
+      "warnings": [],
+      "measures": 24
+    },
+    {
+      "file": "S1\\generados\\sonda_fino_020.cir",
+      "returncode": 0,
+      "seconds": 1.2030000000086147,
+      "errors": [],
+      "warnings": [],
+      "measures": 24
+    },
+    {
+      "file": "S1\\E3_sonda.cir",
+      "returncode": 0,
+      "seconds": 1.1410000000032596,
+      "errors": [],
+      "warnings": [],
+      "measures": 24
+    },
+    {
+      "file": "S1\\E4_mc.cir",
+      "returncode": 0,
+      "seconds": 0.7960000000020955,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_000_tran.cir",
+      "returncode": 0,
+      "seconds": 0.7969999999913853,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_001_ac.cir",
+      "returncode": 0,
+      "seconds": 0.6879999999946449,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_001_tran.cir",
+      "returncode": 0,
+      "seconds": 0.7810000000172295,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_002_ac.cir",
+      "returncode": 0,
+      "seconds": 0.7029999999795109,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_002_tran.cir",
+      "returncode": 0,
+      "seconds": 0.8129999999946449,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_003_ac.cir",
+      "returncode": 0,
+      "seconds": 0.7190000000118744,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_003_tran.cir",
+      "returncode": 0,
+      "seconds": 0.75,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_004_ac.cir",
+      "returncode": 0,
+      "seconds": 0.75,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_004_tran.cir",
+      "returncode": 0,
+      "seconds": 0.9070000000065193,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_005_ac.cir",
+      "returncode": 0,
+      "seconds": 0.7349999999860302,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_005_tran.cir",
+      "returncode": 0,
+      "seconds": 0.75,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_006_ac.cir",
+      "returncode": 0,
+      "seconds": 0.7029999999795109,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_006_tran.cir",
+      "returncode": 0,
+      "seconds": 0.75,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_007_ac.cir",
+      "returncode": 0,
+      "seconds": 0.7190000000118744,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_007_tran.cir",
+      "returncode": 0,
+      "seconds": 0.8589999999967404,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_008_ac.cir",
+      "returncode": 0,
+      "seconds": 0.7969999999913853,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_008_tran.cir",
+      "returncode": 0,
+      "seconds": 0.7660000000032596,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_009_ac.cir",
+      "returncode": 0,
+      "seconds": 0.8120000000053551,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_009_tran.cir",
+      "returncode": 0,
+      "seconds": 0.9059999999881256,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_010_ac.cir",
+      "returncode": 0,
+      "seconds": 0.7660000000032596,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_010_tran.cir",
+      "returncode": 0,
+      "seconds": 0.9370000000053551,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_011_ac.cir",
+      "returncode": 0,
+      "seconds": 0.8129999999946449,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_011_tran.cir",
+      "returncode": 0,
+      "seconds": 0.8120000000053551,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_012_ac.cir",
+      "returncode": 0,
+      "seconds": 0.7660000000032596,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_012_tran.cir",
+      "returncode": 0,
+      "seconds": 0.7969999999913853,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_013_ac.cir",
+      "returncode": 0,
+      "seconds": 0.7339999999967404,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_013_tran.cir",
+      "returncode": 0,
+      "seconds": 0.7660000000032596,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_014_ac.cir",
+      "returncode": 0,
+      "seconds": 0.7969999999913853,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_014_tran.cir",
+      "returncode": 0,
+      "seconds": 0.7660000000032596,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_015_ac.cir",
+      "returncode": 0,
+      "seconds": 0.6870000000053551,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_015_tran.cir",
+      "returncode": 0,
+      "seconds": 0.7969999999913853,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_016_ac.cir",
+      "returncode": 0,
+      "seconds": 0.7969999999913853,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_016_tran.cir",
+      "returncode": 0,
+      "seconds": 0.875,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_017_ac.cir",
+      "returncode": 0,
+      "seconds": 0.8900000000139698,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_017_tran.cir",
+      "returncode": 0,
+      "seconds": 1.0159999999741558,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_018_ac.cir",
+      "returncode": 0,
+      "seconds": 0.7340000000258442,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_018_tran.cir",
+      "returncode": 0,
+      "seconds": 0.8280000000086147,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_019_ac.cir",
+      "returncode": 0,
+      "seconds": 0.75,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_019_tran.cir",
+      "returncode": 0,
+      "seconds": 0.8280000000086147,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_020_ac.cir",
+      "returncode": 0,
+      "seconds": 0.6559999999881256,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_020_tran.cir",
+      "returncode": 0,
+      "seconds": 0.860000000015134,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_021_ac.cir",
+      "returncode": 0,
+      "seconds": 0.7339999999967404,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_021_tran.cir",
+      "returncode": 0,
+      "seconds": 0.7969999999913853,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_022_ac.cir",
+      "returncode": 0,
+      "seconds": 0.7339999999967404,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_022_tran.cir",
+      "returncode": 0,
+      "seconds": 0.875,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_023_ac.cir",
+      "returncode": 0,
+      "seconds": 0.8440000000118744,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_023_tran.cir",
+      "returncode": 0,
+      "seconds": 0.9530000000086147,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_024_ac.cir",
+      "returncode": 0,
+      "seconds": 0.7820000000065193,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_024_tran.cir",
+      "returncode": 0,
+      "seconds": 0.8589999999967404,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_025_ac.cir",
+      "returncode": 0,
+      "seconds": 0.7339999999967404,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_025_tran.cir",
+      "returncode": 0,
+      "seconds": 0.7190000000118744,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_026_ac.cir",
+      "returncode": 0,
+      "seconds": 0.7030000000086147,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_026_tran.cir",
+      "returncode": 0,
+      "seconds": 0.875,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_027_ac.cir",
+      "returncode": 0,
+      "seconds": 0.7030000000086147,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_027_tran.cir",
+      "returncode": 0,
+      "seconds": 0.7809999999881256,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_028_ac.cir",
+      "returncode": 0,
+      "seconds": 0.7190000000118744,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_028_tran.cir",
+      "returncode": 0,
+      "seconds": 0.7660000000032596,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_029_ac.cir",
+      "returncode": 0,
+      "seconds": 0.7190000000118744,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_029_tran.cir",
+      "returncode": 0,
+      "seconds": 0.7029999999795109,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_030_ac.cir",
+      "returncode": 0,
+      "seconds": 0.625,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_030_tran.cir",
+      "returncode": 0,
+      "seconds": 0.6870000000053551,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_031_ac.cir",
+      "returncode": 0,
+      "seconds": 0.625,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_031_tran.cir",
+      "returncode": 0,
+      "seconds": 0.6870000000053551,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_032_ac.cir",
+      "returncode": 0,
+      "seconds": 0.625,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_032_tran.cir",
+      "returncode": 0,
+      "seconds": 0.6719999999913853,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_033_ac.cir",
+      "returncode": 0,
+      "seconds": 0.6410000000032596,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_033_tran.cir",
+      "returncode": 0,
+      "seconds": 0.6560000000172295,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_034_ac.cir",
+      "returncode": 0,
+      "seconds": 0.6099999999860302,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_034_tran.cir",
+      "returncode": 0,
+      "seconds": 0.7029999999795109,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_035_ac.cir",
+      "returncode": 0,
+      "seconds": 0.610000000015134,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_035_tran.cir",
+      "returncode": 0,
+      "seconds": 0.6719999999913853,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_036_ac.cir",
+      "returncode": 0,
+      "seconds": 0.6089999999967404,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_036_tran.cir",
+      "returncode": 0,
+      "seconds": 0.7030000000086147,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_037_ac.cir",
+      "returncode": 0,
+      "seconds": 0.6089999999967404,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_037_tran.cir",
+      "returncode": 0,
+      "seconds": 0.75,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_038_ac.cir",
+      "returncode": 0,
+      "seconds": 0.6099999999860302,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_038_tran.cir",
+      "returncode": 0,
+      "seconds": 0.6720000000204891,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_039_ac.cir",
+      "returncode": 0,
+      "seconds": 0.5940000000118744,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_039_tran.cir",
+      "returncode": 0,
+      "seconds": 0.7030000000086147,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_040_ac.cir",
+      "returncode": 0,
+      "seconds": 0.625,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_040_tran.cir",
+      "returncode": 0,
+      "seconds": 0.6879999999946449,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_041_ac.cir",
+      "returncode": 0,
+      "seconds": 0.6559999999881256,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_041_tran.cir",
+      "returncode": 0,
+      "seconds": 0.7030000000086147,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_042_ac.cir",
+      "returncode": 0,
+      "seconds": 0.639999999984866,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_042_tran.cir",
+      "returncode": 0,
+      "seconds": 0.6720000000204891,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_043_ac.cir",
+      "returncode": 0,
+      "seconds": 0.6099999999860302,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_043_tran.cir",
+      "returncode": 0,
+      "seconds": 0.6879999999946449,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_044_ac.cir",
+      "returncode": 0,
+      "seconds": 0.6559999999881256,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_044_tran.cir",
+      "returncode": 0,
+      "seconds": 0.7030000000086147,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_045_ac.cir",
+      "returncode": 0,
+      "seconds": 0.5939999999827705,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_045_tran.cir",
+      "returncode": 0,
+      "seconds": 0.7190000000118744,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_046_ac.cir",
+      "returncode": 0,
+      "seconds": 0.6400000000139698,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_046_tran.cir",
+      "returncode": 0,
+      "seconds": 0.7190000000118744,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_047_ac.cir",
+      "returncode": 0,
+      "seconds": 0.6400000000139698,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_047_tran.cir",
+      "returncode": 0,
+      "seconds": 0.6879999999946449,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_048_ac.cir",
+      "returncode": 0,
+      "seconds": 0.610000000015134,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_048_tran.cir",
+      "returncode": 0,
+      "seconds": 0.6870000000053551,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_049_ac.cir",
+      "returncode": 0,
+      "seconds": 0.6409999999741558,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_049_tran.cir",
+      "returncode": 0,
+      "seconds": 0.6719999999913853,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_050_ac.cir",
+      "returncode": 0,
+      "seconds": 0.6410000000032596,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_050_tran.cir",
+      "returncode": 0,
+      "seconds": 0.7030000000086147,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_051_ac.cir",
+      "returncode": 0,
+      "seconds": 0.6089999999967404,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_051_tran.cir",
+      "returncode": 0,
+      "seconds": 0.7189999999827705,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_052_ac.cir",
+      "returncode": 0,
+      "seconds": 0.6560000000172295,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_052_tran.cir",
+      "returncode": 0,
+      "seconds": 0.7030000000086147,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_053_ac.cir",
+      "returncode": 0,
+      "seconds": 0.5939999999827705,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_053_tran.cir",
+      "returncode": 0,
+      "seconds": 0.7030000000086147,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_054_ac.cir",
+      "returncode": 0,
+      "seconds": 0.625,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_054_tran.cir",
+      "returncode": 0,
+      "seconds": 0.7189999999827705,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_055_ac.cir",
+      "returncode": 0,
+      "seconds": 0.625,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_055_tran.cir",
+      "returncode": 0,
+      "seconds": 0.7190000000118744,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_056_ac.cir",
+      "returncode": 0,
+      "seconds": 0.625,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_056_tran.cir",
+      "returncode": 0,
+      "seconds": 0.6870000000053551,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_057_ac.cir",
+      "returncode": 0,
+      "seconds": 0.6089999999967404,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_057_tran.cir",
+      "returncode": 0,
+      "seconds": 0.6559999999881256,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_058_ac.cir",
+      "returncode": 0,
+      "seconds": 0.625,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_058_tran.cir",
+      "returncode": 0,
+      "seconds": 0.6560000000172295,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_059_ac.cir",
+      "returncode": 0,
+      "seconds": 0.6409999999741558,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_059_tran.cir",
+      "returncode": 0,
+      "seconds": 0.7030000000086147,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_060_ac.cir",
+      "returncode": 0,
+      "seconds": 0.6089999999967404,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_060_tran.cir",
+      "returncode": 0,
+      "seconds": 0.6720000000204891,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_061_ac.cir",
+      "returncode": 0,
+      "seconds": 0.5940000000118744,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_061_tran.cir",
+      "returncode": 0,
+      "seconds": 0.7179999999934807,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_062_ac.cir",
+      "returncode": 0,
+      "seconds": 0.610000000015134,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_062_tran.cir",
+      "returncode": 0,
+      "seconds": 0.7179999999934807,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_063_ac.cir",
+      "returncode": 0,
+      "seconds": 0.625,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_063_tran.cir",
+      "returncode": 0,
+      "seconds": 0.7039999999979045,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_064_ac.cir",
+      "returncode": 0,
+      "seconds": 0.625,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_064_tran.cir",
+      "returncode": 0,
+      "seconds": 0.6719999999913853,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_065_ac.cir",
+      "returncode": 0,
+      "seconds": 0.625,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_065_tran.cir",
+      "returncode": 0,
+      "seconds": 0.6879999999946449,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_066_ac.cir",
+      "returncode": 0,
+      "seconds": 0.6400000000139698,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_066_tran.cir",
+      "returncode": 0,
+      "seconds": 0.6719999999913853,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_067_ac.cir",
+      "returncode": 0,
+      "seconds": 0.6410000000032596,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_067_tran.cir",
+      "returncode": 0,
+      "seconds": 0.6870000000053551,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_068_ac.cir",
+      "returncode": 0,
+      "seconds": 0.6400000000139698,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_068_tran.cir",
+      "returncode": 0,
+      "seconds": 0.7039999999979045,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_069_ac.cir",
+      "returncode": 0,
+      "seconds": 0.5929999999934807,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_069_tran.cir",
+      "returncode": 0,
+      "seconds": 0.7190000000118744,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_070_ac.cir",
+      "returncode": 0,
+      "seconds": 0.5939999999827705,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_070_tran.cir",
+      "returncode": 0,
+      "seconds": 0.6879999999946449,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_071_ac.cir",
+      "returncode": 0,
+      "seconds": 0.6089999999967404,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_071_tran.cir",
+      "returncode": 0,
+      "seconds": 0.7030000000086147,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_072_ac.cir",
+      "returncode": 0,
+      "seconds": 0.625,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_072_tran.cir",
+      "returncode": 0,
+      "seconds": 0.7179999999934807,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_073_ac.cir",
+      "returncode": 0,
+      "seconds": 0.6410000000032596,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_073_tran.cir",
+      "returncode": 0,
+      "seconds": 0.6879999999946449,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_074_ac.cir",
+      "returncode": 0,
+      "seconds": 0.625,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_074_tran.cir",
+      "returncode": 0,
+      "seconds": 0.6870000000053551,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_075_ac.cir",
+      "returncode": 0,
+      "seconds": 0.6559999999881256,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_075_tran.cir",
+      "returncode": 0,
+      "seconds": 0.6879999999946449,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_076_ac.cir",
+      "returncode": 0,
+      "seconds": 0.6099999999860302,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_076_tran.cir",
+      "returncode": 0,
+      "seconds": 0.6870000000053551,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_077_ac.cir",
+      "returncode": 0,
+      "seconds": 0.625,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_077_tran.cir",
+      "returncode": 0,
+      "seconds": 0.6570000000065193,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_078_ac.cir",
+      "returncode": 0,
+      "seconds": 0.6400000000139698,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_078_tran.cir",
+      "returncode": 0,
+      "seconds": 0.7029999999795109,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_079_ac.cir",
+      "returncode": 0,
+      "seconds": 0.625,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_079_tran.cir",
+      "returncode": 0,
+      "seconds": 0.735000000015134,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_080_ac.cir",
+      "returncode": 0,
+      "seconds": 0.6410000000032596,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_080_tran.cir",
+      "returncode": 0,
+      "seconds": 0.7190000000118744,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_081_ac.cir",
+      "returncode": 0,
+      "seconds": 0.7029999999795109,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_081_tran.cir",
+      "returncode": 0,
+      "seconds": 0.7340000000258442,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_082_ac.cir",
+      "returncode": 0,
+      "seconds": 0.6719999999913853,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_082_tran.cir",
+      "returncode": 0,
+      "seconds": 0.6879999999946449,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_083_ac.cir",
+      "returncode": 0,
+      "seconds": 0.6559999999881256,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_083_tran.cir",
+      "returncode": 0,
+      "seconds": 0.6870000000053551,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_084_ac.cir",
+      "returncode": 0,
+      "seconds": 0.625,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_084_tran.cir",
+      "returncode": 0,
+      "seconds": 0.6879999999946449,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_085_ac.cir",
+      "returncode": 0,
+      "seconds": 0.6099999999860302,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_085_tran.cir",
+      "returncode": 0,
+      "seconds": 0.6879999999946449,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_086_ac.cir",
+      "returncode": 0,
+      "seconds": 0.5940000000118744,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_086_tran.cir",
+      "returncode": 0,
+      "seconds": 0.7029999999795109,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_087_ac.cir",
+      "returncode": 0,
+      "seconds": 0.625,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_087_tran.cir",
+      "returncode": 0,
+      "seconds": 0.6870000000053551,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_088_ac.cir",
+      "returncode": 0,
+      "seconds": 0.625,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_088_tran.cir",
+      "returncode": 0,
+      "seconds": 0.7030000000086147,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_089_ac.cir",
+      "returncode": 0,
+      "seconds": 0.6559999999881256,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_089_tran.cir",
+      "returncode": 0,
+      "seconds": 0.6870000000053551,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_090_ac.cir",
+      "returncode": 0,
+      "seconds": 0.625,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_090_tran.cir",
+      "returncode": 0,
+      "seconds": 0.7039999999979045,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_091_ac.cir",
+      "returncode": 0,
+      "seconds": 0.625,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_091_tran.cir",
+      "returncode": 0,
+      "seconds": 0.6879999999946449,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_092_ac.cir",
+      "returncode": 0,
+      "seconds": 0.6089999999967404,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_092_tran.cir",
+      "returncode": 0,
+      "seconds": 0.7030000000086147,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_093_ac.cir",
+      "returncode": 0,
+      "seconds": 0.625,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_093_tran.cir",
+      "returncode": 0,
+      "seconds": 0.7189999999827705,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_094_ac.cir",
+      "returncode": 0,
+      "seconds": 0.6089999999967404,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_094_tran.cir",
+      "returncode": 0,
+      "seconds": 0.75,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_095_ac.cir",
+      "returncode": 0,
+      "seconds": 0.6089999999967404,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_095_tran.cir",
+      "returncode": 0,
+      "seconds": 0.6879999999946449,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_096_ac.cir",
+      "returncode": 0,
+      "seconds": 0.625,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_096_tran.cir",
+      "returncode": 0,
+      "seconds": 0.6570000000065193,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_097_ac.cir",
+      "returncode": 0,
+      "seconds": 0.639999999984866,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_097_tran.cir",
+      "returncode": 0,
+      "seconds": 0.7030000000086147,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_098_ac.cir",
+      "returncode": 0,
+      "seconds": 0.625,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_098_tran.cir",
+      "returncode": 0,
+      "seconds": 0.6719999999913853,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_099_ac.cir",
+      "returncode": 0,
+      "seconds": 0.6720000000204891,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_099_tran.cir",
+      "returncode": 0,
+      "seconds": 0.7969999999913853,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_100_ac.cir",
+      "returncode": 0,
+      "seconds": 0.7030000000086147,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_100_tran.cir",
+      "returncode": 0,
+      "seconds": 0.8439999999827705,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_101_ac.cir",
+      "returncode": 0,
+      "seconds": 0.6410000000032596,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_101_tran.cir",
+      "returncode": 0,
+      "seconds": 0.7179999999934807,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_102_ac.cir",
+      "returncode": 0,
+      "seconds": 0.7030000000086147,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_102_tran.cir",
+      "returncode": 0,
+      "seconds": 0.7339999999967404,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_103_ac.cir",
+      "returncode": 0,
+      "seconds": 0.6719999999913853,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_103_tran.cir",
+      "returncode": 0,
+      "seconds": 0.735000000015134,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_104_ac.cir",
+      "returncode": 0,
+      "seconds": 0.7179999999934807,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_104_tran.cir",
+      "returncode": 0,
+      "seconds": 0.7339999999967404,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_105_ac.cir",
+      "returncode": 0,
+      "seconds": 0.6719999999913853,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_105_tran.cir",
+      "returncode": 0,
+      "seconds": 0.8440000000118744,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_106_ac.cir",
+      "returncode": 0,
+      "seconds": 0.7809999999881256,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_106_tran.cir",
+      "returncode": 0,
+      "seconds": 0.7190000000118744,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_107_ac.cir",
+      "returncode": 0,
+      "seconds": 0.9839999999967404,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_107_tran.cir",
+      "returncode": 0,
+      "seconds": 0.7339999999967404,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_108_ac.cir",
+      "returncode": 0,
+      "seconds": 0.7190000000118744,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_108_tran.cir",
+      "returncode": 0,
+      "seconds": 0.875,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_109_ac.cir",
+      "returncode": 0,
+      "seconds": 0.6720000000204891,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_109_tran.cir",
+      "returncode": 0,
+      "seconds": 0.9379999999946449,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_110_ac.cir",
+      "returncode": 0,
+      "seconds": 0.7810000000172295,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_110_tran.cir",
+      "returncode": 0,
+      "seconds": 0.9839999999967404,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_111_ac.cir",
+      "returncode": 0,
+      "seconds": 0.8129999999946449,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_111_tran.cir",
+      "returncode": 0,
+      "seconds": 0.9060000000172295,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_112_ac.cir",
+      "returncode": 0,
+      "seconds": 0.8440000000118744,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_112_tran.cir",
+      "returncode": 0,
+      "seconds": 0.8599999999860302,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_113_ac.cir",
+      "returncode": 0,
+      "seconds": 0.9370000000053551,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_113_tran.cir",
+      "returncode": 0,
+      "seconds": 0.75,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_114_ac.cir",
+      "returncode": 0,
+      "seconds": 0.6879999999946449,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_114_tran.cir",
+      "returncode": 0,
+      "seconds": 0.9530000000086147,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_115_ac.cir",
+      "returncode": 0,
+      "seconds": 0.75,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_115_tran.cir",
+      "returncode": 0,
+      "seconds": 0.9060000000172295,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_116_ac.cir",
+      "returncode": 0,
+      "seconds": 0.6879999999946449,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_116_tran.cir",
+      "returncode": 0,
+      "seconds": 0.7970000000204891,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_117_ac.cir",
+      "returncode": 0,
+      "seconds": 0.6560000000172295,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_117_tran.cir",
+      "returncode": 0,
+      "seconds": 0.8589999999967404,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_118_ac.cir",
+      "returncode": 0,
+      "seconds": 0.7039999999979045,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_118_tran.cir",
+      "returncode": 0,
+      "seconds": 0.7349999999860302,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_119_ac.cir",
+      "returncode": 0,
+      "seconds": 0.6400000000139698,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_119_tran.cir",
+      "returncode": 0,
+      "seconds": 0.7340000000258442,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_120_ac.cir",
+      "returncode": 0,
+      "seconds": 0.7189999999827705,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_120_tran.cir",
+      "returncode": 0,
+      "seconds": 0.7190000000118744,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_121_ac.cir",
+      "returncode": 0,
+      "seconds": 0.625,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_121_tran.cir",
+      "returncode": 0,
+      "seconds": 0.75,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_122_ac.cir",
+      "returncode": 0,
+      "seconds": 0.7029999999795109,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_122_tran.cir",
+      "returncode": 0,
+      "seconds": 0.7810000000172295,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_123_ac.cir",
+      "returncode": 0,
+      "seconds": 0.7189999999827705,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_123_tran.cir",
+      "returncode": 0,
+      "seconds": 0.7190000000118744,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_124_ac.cir",
+      "returncode": 0,
+      "seconds": 0.6710000000020955,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_124_tran.cir",
+      "returncode": 0,
+      "seconds": 0.7190000000118744,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_125_ac.cir",
+      "returncode": 0,
+      "seconds": 0.7190000000118744,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_125_tran.cir",
+      "returncode": 0,
+      "seconds": 0.6559999999881256,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_126_ac.cir",
+      "returncode": 0,
+      "seconds": 0.6559999999881256,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_126_tran.cir",
+      "returncode": 0,
+      "seconds": 0.735000000015134,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_127_ac.cir",
+      "returncode": 0,
+      "seconds": 0.6559999999881256,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_127_tran.cir",
+      "returncode": 0,
+      "seconds": 0.7809999999881256,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_128_ac.cir",
+      "returncode": 0,
+      "seconds": 0.6879999999946449,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_128_tran.cir",
+      "returncode": 0,
+      "seconds": 0.8280000000086147,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_129_ac.cir",
+      "returncode": 0,
+      "seconds": 0.8589999999967404,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_129_tran.cir",
+      "returncode": 0,
+      "seconds": 0.9059999999881256,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_130_ac.cir",
+      "returncode": 0,
+      "seconds": 0.8280000000086147,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_130_tran.cir",
+      "returncode": 0,
+      "seconds": 0.9370000000053551,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_131_ac.cir",
+      "returncode": 0,
+      "seconds": 0.8440000000118744,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_131_tran.cir",
+      "returncode": 0,
+      "seconds": 1.7960000000020955,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_132_ac.cir",
+      "returncode": 0,
+      "seconds": 0.75,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_132_tran.cir",
+      "returncode": 0,
+      "seconds": 0.9370000000053551,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_133_ac.cir",
+      "returncode": 0,
+      "seconds": 0.75,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_133_tran.cir",
+      "returncode": 0,
+      "seconds": 1.2810000000172295,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_134_ac.cir",
+      "returncode": 0,
+      "seconds": 0.75,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_134_tran.cir",
+      "returncode": 0,
+      "seconds": 0.9059999999881256,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_135_ac.cir",
+      "returncode": 0,
+      "seconds": 0.7960000000020955,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_135_tran.cir",
+      "returncode": 0,
+      "seconds": 0.8289999999979045,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_136_ac.cir",
+      "returncode": 0,
+      "seconds": 0.6400000000139698,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_136_tran.cir",
+      "returncode": 0,
+      "seconds": 0.75,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_137_ac.cir",
+      "returncode": 0,
+      "seconds": 0.7969999999913853,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_137_tran.cir",
+      "returncode": 0,
+      "seconds": 0.8439999999827705,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_138_ac.cir",
+      "returncode": 0,
+      "seconds": 0.7810000000172295,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_138_tran.cir",
+      "returncode": 0,
+      "seconds": 0.8120000000053551,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_139_ac.cir",
+      "returncode": 0,
+      "seconds": 0.7349999999860302,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_139_tran.cir",
+      "returncode": 0,
+      "seconds": 0.7809999999881256,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_140_ac.cir",
+      "returncode": 0,
+      "seconds": 0.7030000000086147,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_140_tran.cir",
+      "returncode": 0,
+      "seconds": 0.7659999999741558,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_141_ac.cir",
+      "returncode": 0,
+      "seconds": 0.6719999999913853,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_141_tran.cir",
+      "returncode": 0,
+      "seconds": 0.7660000000032596,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_142_ac.cir",
+      "returncode": 0,
+      "seconds": 0.7179999999934807,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_142_tran.cir",
+      "returncode": 0,
+      "seconds": 0.75,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_143_ac.cir",
+      "returncode": 0,
+      "seconds": 0.6720000000204891,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_143_tran.cir",
+      "returncode": 0,
+      "seconds": 0.9379999999946449,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_144_ac.cir",
+      "returncode": 0,
+      "seconds": 0.735000000015134,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_144_tran.cir",
+      "returncode": 0,
+      "seconds": 0.7179999999934807,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_145_ac.cir",
+      "returncode": 0,
+      "seconds": 0.7660000000032596,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_145_tran.cir",
+      "returncode": 0,
+      "seconds": 0.7030000000086147,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_146_ac.cir",
+      "returncode": 0,
+      "seconds": 0.6090000000258442,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_146_tran.cir",
+      "returncode": 0,
+      "seconds": 0.6870000000053551,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_147_ac.cir",
+      "returncode": 0,
+      "seconds": 0.6720000000204891,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_147_tran.cir",
+      "returncode": 0,
+      "seconds": 0.7190000000118744,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_148_ac.cir",
+      "returncode": 0,
+      "seconds": 0.6089999999967404,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_148_tran.cir",
+      "returncode": 0,
+      "seconds": 0.6870000000053551,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_149_ac.cir",
+      "returncode": 0,
+      "seconds": 0.5939999999827705,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_149_tran.cir",
+      "returncode": 0,
+      "seconds": 0.6879999999946449,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_150_ac.cir",
+      "returncode": 0,
+      "seconds": 0.6719999999913853,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_150_tran.cir",
+      "returncode": 0,
+      "seconds": 0.7349999999860302,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_151_ac.cir",
+      "returncode": 0,
+      "seconds": 0.625,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_151_tran.cir",
+      "returncode": 0,
+      "seconds": 0.8440000000118744,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_152_ac.cir",
+      "returncode": 0,
+      "seconds": 0.6710000000020955,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_152_tran.cir",
+      "returncode": 0,
+      "seconds": 0.7189999999827705,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_153_ac.cir",
+      "returncode": 0,
+      "seconds": 0.6400000000139698,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_153_tran.cir",
+      "returncode": 0,
+      "seconds": 0.6879999999946449,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_154_ac.cir",
+      "returncode": 0,
+      "seconds": 0.625,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_154_tran.cir",
+      "returncode": 0,
+      "seconds": 0.6870000000053551,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_155_ac.cir",
+      "returncode": 0,
+      "seconds": 0.6410000000032596,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_155_tran.cir",
+      "returncode": 0,
+      "seconds": 0.7660000000032596,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_156_ac.cir",
+      "returncode": 0,
+      "seconds": 0.610000000015134,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_156_tran.cir",
+      "returncode": 0,
+      "seconds": 0.7179999999934807,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_157_ac.cir",
+      "returncode": 0,
+      "seconds": 0.6099999999860302,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_157_tran.cir",
+      "returncode": 0,
+      "seconds": 0.7039999999979045,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_158_ac.cir",
+      "returncode": 0,
+      "seconds": 0.6400000000139698,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_158_tran.cir",
+      "returncode": 0,
+      "seconds": 0.6879999999946449,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_159_ac.cir",
+      "returncode": 0,
+      "seconds": 0.625,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_159_tran.cir",
+      "returncode": 0,
+      "seconds": 0.7029999999795109,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_160_ac.cir",
+      "returncode": 0,
+      "seconds": 0.6099999999860302,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_160_tran.cir",
+      "returncode": 0,
+      "seconds": 0.6719999999913853,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_161_ac.cir",
+      "returncode": 0,
+      "seconds": 0.6410000000032596,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_161_tran.cir",
+      "returncode": 0,
+      "seconds": 0.7030000000086147,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_162_ac.cir",
+      "returncode": 0,
+      "seconds": 0.610000000015134,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_162_tran.cir",
+      "returncode": 0,
+      "seconds": 0.6879999999946449,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_163_ac.cir",
+      "returncode": 0,
+      "seconds": 0.625,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_163_tran.cir",
+      "returncode": 0,
+      "seconds": 0.6870000000053551,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_164_ac.cir",
+      "returncode": 0,
+      "seconds": 0.6089999999967404,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_164_tran.cir",
+      "returncode": 0,
+      "seconds": 0.7030000000086147,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_165_ac.cir",
+      "returncode": 0,
+      "seconds": 0.6099999999860302,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_165_tran.cir",
+      "returncode": 0,
+      "seconds": 0.6879999999946449,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_166_ac.cir",
+      "returncode": 0,
+      "seconds": 0.6560000000172295,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_166_tran.cir",
+      "returncode": 0,
+      "seconds": 0.6879999999946449,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_167_ac.cir",
+      "returncode": 0,
+      "seconds": 0.625,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_167_tran.cir",
+      "returncode": 0,
+      "seconds": 0.6720000000204891,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_168_ac.cir",
+      "returncode": 0,
+      "seconds": 0.6409999999741558,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_168_tran.cir",
+      "returncode": 0,
+      "seconds": 0.7030000000086147,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_169_ac.cir",
+      "returncode": 0,
+      "seconds": 0.6410000000032596,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_169_tran.cir",
+      "returncode": 0,
+      "seconds": 0.6870000000053551,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_170_ac.cir",
+      "returncode": 0,
+      "seconds": 0.625,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_170_tran.cir",
+      "returncode": 0,
+      "seconds": 0.7030000000086147,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_171_ac.cir",
+      "returncode": 0,
+      "seconds": 0.625,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_171_tran.cir",
+      "returncode": 0,
+      "seconds": 0.7029999999795109,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_172_ac.cir",
+      "returncode": 0,
+      "seconds": 0.5940000000118744,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_172_tran.cir",
+      "returncode": 0,
+      "seconds": 0.6870000000053551,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_173_ac.cir",
+      "returncode": 0,
+      "seconds": 0.625,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_173_tran.cir",
+      "returncode": 0,
+      "seconds": 0.6870000000053551,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_174_ac.cir",
+      "returncode": 0,
+      "seconds": 0.6560000000172295,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_174_tran.cir",
+      "returncode": 0,
+      "seconds": 0.7189999999827705,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_175_ac.cir",
+      "returncode": 0,
+      "seconds": 0.5929999999934807,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_175_tran.cir",
+      "returncode": 0,
+      "seconds": 0.6870000000053551,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_176_ac.cir",
+      "returncode": 0,
+      "seconds": 0.6089999999967404,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_176_tran.cir",
+      "returncode": 0,
+      "seconds": 0.6879999999946449,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_177_ac.cir",
+      "returncode": 0,
+      "seconds": 0.625,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_177_tran.cir",
+      "returncode": 0,
+      "seconds": 0.7190000000118744,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_178_ac.cir",
+      "returncode": 0,
+      "seconds": 0.625,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_178_tran.cir",
+      "returncode": 0,
+      "seconds": 0.6870000000053551,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_179_ac.cir",
+      "returncode": 0,
+      "seconds": 0.6099999999860302,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_179_tran.cir",
+      "returncode": 0,
+      "seconds": 0.7030000000086147,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_180_ac.cir",
+      "returncode": 0,
+      "seconds": 0.5929999999934807,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_180_tran.cir",
+      "returncode": 0,
+      "seconds": 0.6719999999913853,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_181_ac.cir",
+      "returncode": 0,
+      "seconds": 0.5940000000118744,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_181_tran.cir",
+      "returncode": 0,
+      "seconds": 0.7030000000086147,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_182_ac.cir",
+      "returncode": 0,
+      "seconds": 0.6410000000032596,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_182_tran.cir",
+      "returncode": 0,
+      "seconds": 0.7030000000086147,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_183_ac.cir",
+      "returncode": 0,
+      "seconds": 0.6409999999741558,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_183_tran.cir",
+      "returncode": 0,
+      "seconds": 0.6560000000172295,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_184_ac.cir",
+      "returncode": 0,
+      "seconds": 0.6410000000032596,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_184_tran.cir",
+      "returncode": 0,
+      "seconds": 0.6879999999946449,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_185_ac.cir",
+      "returncode": 0,
+      "seconds": 0.6090000000258442,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_185_tran.cir",
+      "returncode": 0,
+      "seconds": 0.7189999999827705,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_186_ac.cir",
+      "returncode": 0,
+      "seconds": 0.625,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_186_tran.cir",
+      "returncode": 0,
+      "seconds": 0.6870000000053551,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_187_ac.cir",
+      "returncode": 0,
+      "seconds": 0.625,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_187_tran.cir",
+      "returncode": 0,
+      "seconds": 0.7190000000118744,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_188_ac.cir",
+      "returncode": 0,
+      "seconds": 0.625,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_188_tran.cir",
+      "returncode": 0,
+      "seconds": 0.7029999999795109,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_189_ac.cir",
+      "returncode": 0,
+      "seconds": 0.610000000015134,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_189_tran.cir",
+      "returncode": 0,
+      "seconds": 0.764999999984866,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_190_ac.cir",
+      "returncode": 0,
+      "seconds": 0.735000000015134,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_190_tran.cir",
+      "returncode": 0,
+      "seconds": 0.7029999999795109,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_191_ac.cir",
+      "returncode": 0,
+      "seconds": 0.6400000000139698,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_191_tran.cir",
+      "returncode": 0,
+      "seconds": 0.625,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_192_ac.cir",
+      "returncode": 0,
+      "seconds": 0.625,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_192_tran.cir",
+      "returncode": 0,
+      "seconds": 0.6559999999881256,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_193_ac.cir",
+      "returncode": 0,
+      "seconds": 0.610000000015134,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_193_tran.cir",
+      "returncode": 0,
+      "seconds": 0.6559999999881256,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_194_ac.cir",
+      "returncode": 0,
+      "seconds": 0.6089999999967404,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_194_tran.cir",
+      "returncode": 0,
+      "seconds": 0.6719999999913853,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_195_ac.cir",
+      "returncode": 0,
+      "seconds": 0.6090000000258442,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_195_tran.cir",
+      "returncode": 0,
+      "seconds": 0.7659999999741558,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_196_ac.cir",
+      "returncode": 0,
+      "seconds": 0.6090000000258442,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_196_tran.cir",
+      "returncode": 0,
+      "seconds": 0.6870000000053551,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_197_ac.cir",
+      "returncode": 0,
+      "seconds": 0.610000000015134,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_197_tran.cir",
+      "returncode": 0,
+      "seconds": 0.6570000000065193,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_198_ac.cir",
+      "returncode": 0,
+      "seconds": 0.625,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_198_tran.cir",
+      "returncode": 0,
+      "seconds": 0.6870000000053551,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\mc_199_ac.cir",
+      "returncode": 0,
+      "seconds": 0.5929999999934807,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\mc_199_tran.cir",
+      "returncode": 0,
+      "seconds": 0.6410000000032596,
+      "errors": [],
+      "warnings": [],
+      "measures": 12
+    },
+    {
+      "file": "S1\\generados\\sens_FRT1_min.cir",
+      "returncode": 0,
+      "seconds": 0.6089999999967404,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\sens_FRT1_max.cir",
+      "returncode": 0,
+      "seconds": 0.6089999999967404,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\sens_FRT2_min.cir",
+      "returncode": 0,
+      "seconds": 0.625,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\sens_FRT2_max.cir",
+      "returncode": 0,
+      "seconds": 0.6089999999967404,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\sens_FRB_min.cir",
+      "returncode": 0,
+      "seconds": 0.6410000000032596,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\sens_FRB_max.cir",
+      "returncode": 0,
+      "seconds": 0.639999999984866,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\sens_FRS1_min.cir",
+      "returncode": 0,
+      "seconds": 0.625,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\sens_FRS1_max.cir",
+      "returncode": 0,
+      "seconds": 0.610000000015134,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\sens_FRS2_min.cir",
+      "returncode": 0,
+      "seconds": 0.639999999984866,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\sens_FRS2_max.cir",
+      "returncode": 0,
+      "seconds": 0.5940000000118744,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\sens_FRBIAS_min.cir",
+      "returncode": 0,
+      "seconds": 0.6410000000032596,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\sens_FRBIAS_max.cir",
+      "returncode": 0,
+      "seconds": 0.625,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\sens_FREQ_min.cir",
+      "returncode": 0,
+      "seconds": 0.610000000015134,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\sens_FREQ_max.cir",
+      "returncode": 0,
+      "seconds": 0.639999999984866,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\sens_FCT1_min.cir",
+      "returncode": 0,
+      "seconds": 0.625,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\sens_FCT1_max.cir",
+      "returncode": 0,
+      "seconds": 0.6089999999967404,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\sens_FCT2_min.cir",
+      "returncode": 0,
+      "seconds": 0.610000000015134,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\sens_FCT2_max.cir",
+      "returncode": 0,
+      "seconds": 0.625,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\sens_FCB_min.cir",
+      "returncode": 0,
+      "seconds": 0.6089999999967404,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\sens_FCB_max.cir",
+      "returncode": 0,
+      "seconds": 0.6089999999967404,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\sens_FCS_min.cir",
+      "returncode": 0,
+      "seconds": 0.6089999999967404,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\sens_FCS_max.cir",
+      "returncode": 0,
+      "seconds": 0.625,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\sens_FCEQ_min.cir",
+      "returncode": 0,
+      "seconds": 0.6099999999860302,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\sens_FCEQ_max.cir",
+      "returncode": 0,
+      "seconds": 0.7340000000258442,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\sens_FCAC_min.cir",
+      "returncode": 0,
+      "seconds": 0.5939999999827705,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\sens_FCAC_max.cir",
+      "returncode": 0,
+      "seconds": 0.625,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\sens_FCOFF_min.cir",
+      "returncode": 0,
+      "seconds": 0.6089999999967404,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\sens_FCOFF_max.cir",
+      "returncode": 0,
+      "seconds": 0.625,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\sens_FCSEL_min.cir",
+      "returncode": 0,
+      "seconds": 0.5940000000118744,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\sens_FCSEL_max.cir",
+      "returncode": 0,
+      "seconds": 0.6410000000032596,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\sens_FCIN_min.cir",
+      "returncode": 0,
+      "seconds": 0.6089999999967404,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\sens_FCIN_max.cir",
+      "returncode": 0,
+      "seconds": 0.6570000000065193,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\sens_FCJO_min.cir",
+      "returncode": 0,
+      "seconds": 0.625,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\sens_FCJO_max.cir",
+      "returncode": 0,
+      "seconds": 0.6559999999881256,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\sens_FCX1_min.cir",
+      "returncode": 0,
+      "seconds": 0.6090000000258442,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\sens_FCX1_max.cir",
+      "returncode": 0,
+      "seconds": 0.6409999999741558,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\sens_FCBNC_min.cir",
+      "returncode": 0,
+      "seconds": 0.5940000000118744,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\sens_FCBNC_max.cir",
+      "returncode": 0,
+      "seconds": 0.625,
+      "errors": [],
+      "warnings": [],
+      "measures": 84
+    },
+    {
+      "file": "S1\\generados\\verificacion_paso.cir",
+      "returncode": 0,
+      "seconds": 1.8599999999860302,
+      "errors": [],
+      "warnings": [],
+      "measures": 24
+    }
+  ],
+  "CCOMP_pF": {
+    "20": 0.0,
+    "12": 0.0
+  },
+  "errors": 0,
+  "warnings": 0,
+  "exit_code": 0,
+  "seed": 20261002
+}
