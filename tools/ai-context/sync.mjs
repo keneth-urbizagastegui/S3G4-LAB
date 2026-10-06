@@ -25,18 +25,20 @@ export function sources() {
   }
   function walk(folder, rule, depth = 0) {
     if (depth > 5) throw new Error('Directorio de contexto demasiado profundo: ' + folder);
+    const skipFile = (rule.excludeFiles || []).map((pattern) => new RegExp(pattern));
     for (const entry of readdirSync(folder, { withFileTypes: true })) {
       if (entry.isSymbolicLink()) continue;
       const file = join(folder, entry.name);
+      if (entry.isDirectory() && (rule.excludeDirs || []).includes(entry.name)) continue;
       if (entry.isDirectory() && rule.recursive) walk(file, rule, depth + 1);
-      else if (entry.isFile() && rule.extensions.includes(extname(file))) files.add(file);
+      else if (entry.isFile() && rule.extensions.includes(extname(file)) && !skipFile.some((re) => re.test(entry.name))) files.add(file);
     }
   }
   for (const rule of spec.directories) {
     const folder = checkedPath(rule.path);
     if (existsSync(folder)) walk(folder, rule); else missing.push(rule.path);
   }
-  if (files.size > 250) throw new Error('Más de 250 fuentes. Acotar ai-context/index.json.');
+  if (files.size > 400) throw new Error('Más de 400 fuentes. Acotar ai-context/index.json.');
   return { files: [...files].sort(), missing };
 }
 

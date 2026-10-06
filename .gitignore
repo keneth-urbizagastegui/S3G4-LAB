@@ -47,3 +47,7 @@ S3G4_LAB_rev2.1/**/*.raw
 S3G4_LAB_rev2.1/**/*.db
 S3G4_LAB_rev2.1/**/__pycache__/
 S3G4_LAB_rev2.1/herramientas/view_*
+
+# Estado local del MCP de LTspice (se crea en la carpeta de arranque)
+.ltspice-mcp/
+ltspice-mcp.toml

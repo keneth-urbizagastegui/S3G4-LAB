@@ -1,0 +1,495 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Canal rápido CH1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Source+Sans+3:wght@400;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: guía de estudio; una columna, cada sección = idea + esquema + cuenta con un ejemplo que se arrastra de principio a fin */
+:root{
+  --paper:#fbfcfc; --ink:#16232a; --muted:#5a6b72; --rule:#d5dee1; --lead:#a9b7bc;
+  --accent:#0b5c78; --band:#e8f0f2;
+  --afe:#0b5c78; --mcu:#a3470f; --sig:#2f6f4f; --ctl:#6a4fa3; --bad:#b3261e;
+  --display:"Barlow Condensed","Arial Narrow",sans-serif;
+  --body:"Source Sans 3","Segoe UI",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#10181b; --ink:#dfe8ea; --muted:#93a4aa; --rule:#29373c; --lead:#4a5b61;
+  --accent:#6cc0dc; --band:#16242a; --afe:#6cc0dc; --mcu:#f2a36b; --sig:#6fcf9b; --ctl:#b9a0ec; --bad:#f2827a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#10181b; --ink:#dfe8ea; --muted:#93a4aa; --rule:#29373c; --lead:#4a5b61;
+  --accent:#6cc0dc; --band:#16242a; --afe:#6cc0dc; --mcu:#f2a36b; --sig:#6fcf9b; --ctl:#b9a0ec; --bad:#f2827a; color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.6 var(--body)}
+.wrap{max-width:960px;margin:0 auto;padding:28px 16px 64px}
+h1,h2,h3{font-family:var(--display);margin:0;text-wrap:balance;line-height:1.1}
+.top{border-bottom:3px solid var(--accent);padding-bottom:12px;display:flex;justify-content:space-between;align-items:flex-end;gap:10px 24px;flex-wrap:wrap}
+.brand{font:600 13px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+h1{font-size:clamp(30px,5vw,44px);font-weight:700}
+.docid{font:12.5px/1.6 var(--mono);color:var(--muted);text-align:right}
+h2{font-size:26px;font-weight:600;margin:44px 0 8px;padding-left:10px;border-left:4px solid var(--accent)}
+h2 .n{font-family:var(--mono);font-size:15px;color:var(--accent);margin-right:8px;vertical-align:3px}
+h3{font-size:19px;font-weight:600;margin:24px 0 4px;text-transform:uppercase;letter-spacing:.04em}
+p,li{max-width:78ch}
+.lead{font-size:17.5px}
+.keys{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1px;background:var(--rule);border:1px solid var(--rule);margin:20px 0}
+.keys div{background:var(--paper);padding:10px 12px}
+.keys .v{font:600 26px/1.1 var(--display);color:var(--accent)}
+.keys .l{font-size:13px;color:var(--muted)}
+.fig{margin:16px 0 6px;overflow-x:auto}
+.fig svg{display:block;width:100%;height:auto}
+.fig.wide svg{min-width:760px}
+.cap{font-size:13.5px;color:var(--muted);margin:2px 0 14px}
+.math{font:14.5px/1.9 var(--mono);background:var(--band);padding:10px 14px;margin:10px 0;overflow-x:auto;white-space:pre}
+.box{border:1px solid var(--rule);border-left:4px solid var(--accent);padding:10px 14px;margin:16px 0;background:color-mix(in srgb,var(--accent) 5%,transparent)}
+.box.warn{border-left-color:var(--bad);background:color-mix(in srgb,var(--bad) 6%,transparent)}
+.box b:first-child{font-family:var(--display);font-size:17px;letter-spacing:.03em}
+.tw{overflow-x:auto;margin:10px 0}
+table{border-collapse:collapse;width:100%;font-size:14.5px;min-width:620px}
+th,td{padding:6px 10px;border-bottom:1px solid var(--rule);text-align:left;vertical-align:top}
+th{font:600 12.5px var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.05em;border-bottom:2px solid var(--accent)}
+td.n{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+.tag{display:inline-block;font:600 11px/1 var(--mono);padding:3px 5px;border-radius:3px;border:1px solid currentColor;white-space:nowrap}
+.tag.afe{color:var(--afe)} .tag.mcu{color:var(--mcu)} .tag.both{color:var(--ctl)}
+.st{font:600 11px var(--mono);white-space:nowrap}
+.st.ok{color:var(--sig)} .st.prop{color:var(--ctl)} .st.open{color:var(--bad)}
+code{font:.9em var(--mono);color:var(--accent)}
+ol.steps>li{margin-bottom:10px}
+.foot{margin-top:40px;border-top:1px solid var(--rule);padding-top:12px;font-size:13.5px;color:var(--muted)}
+/* SVG */
+svg text{font-family:var(--body);fill:var(--ink)}
+svg .mono{font-family:var(--mono)}
+svg .mut{fill:var(--muted)}
+svg .afe{fill:var(--afe)} svg .mcu{fill:var(--mcu)} svg .sig{fill:var(--sig)} svg .ctl{fill:var(--ctl)} svg .bad{fill:var(--bad)}
+svg .blk{fill:var(--paper);stroke:var(--afe);stroke-width:1.6}
+svg .blk.m{stroke:var(--mcu)}
+svg .wire{stroke:var(--ink);stroke-width:1.6;fill:none}
+svg .bus{stroke:var(--ctl);stroke-width:1.4;fill:none;stroke-dasharray:5 4}
+svg .grid{stroke:var(--rule);stroke-width:1}
+svg .gridc{stroke:var(--lead);stroke-width:1.2}
+svg .trace{stroke:var(--sig);stroke-width:2.4;fill:none}
+svg .band{fill:var(--band)}
+svg .lineA{stroke:var(--afe);stroke-width:2;fill:none}
+svg .lineM{stroke:var(--mcu);stroke-width:2;fill:none}
+svg .lineB{stroke:var(--bad);stroke-width:2;fill:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="top">
+  <div>
+    <div class="brand">S3G4 LAB · AFE rev 2.1 · guía de estudio</div>
+    <h1>Canal rápido CH1<br>cómo viaja la señal hasta el ADC</h1>
+  </div>
+  <div class="docid">1 oct 2026 · revisada el 4 oct: CH1 cerrado en simulación (S1–S7c)<br>Fuentes: RF-01…RF-19, documento vivo §B–§C,<br>g473_analogico.html (DS12712, RM0440)</div>
+</header>
+
+<p class="lead">Esta página explica, antes de calcular piezas, <b>qué hace cada bloque del canal rápido y por qué</b>. Usa un solo ejemplo de principio a fin: una senoide de <b>±1 V</b> vista en la escala de <b>500 mV/div</b>. Al final dice en qué orden lo vamos a diseñar y qué decisiones quedan abiertas.</p>
+
+<div class="keys">
+  <div><div class="v">2 MHz</div><div class="l">ancho de banda (−3 dB), RF-03</div></div>
+  <div><div class="v">6.5 MSa/s</div><div class="l">ADC1 + ADC2 entrelazados en PA0, RF-02</div></div>
+  <div><div class="v">5 mV – 20 V</div><div class="l">por división, 12 escalas, RF-04</div></div>
+  <div><div class="v">1 MΩ</div><div class="l">∥ 10–30 pF en todas las escalas, RF-08</div></div>
+  <div><div class="v">8 k</div><div class="l">muestras por captura, RF-10</div></div>
+  <div><div class="v">1 µs – 50 s</div><div class="l">por división, RF-11</div></div>
+</div>
+
+<!-- ============================================================ -->
+<h2><span class="n">1</span>Las dos mitades de un osciloscopio</h2>
+
+<p>La pantalla es una cuadrícula de <b>8 divisiones de alto por 10 de ancho</b>. Cada eje tiene su perilla, y cada perilla la resuelve una parte distinta del aparato:</p>
+
+<div class="fig">
+<svg viewBox="0 0 900 330" role="img" aria-label="Cuadrícula de 10 por 8 divisiones: el eje vertical lo controla el AFE y el horizontal el STM32">
+  <g transform="translate(300,25)">
+    <!-- grid 10x8, 40 px per div -->
+    <rect x="0" y="0" width="400" height="280" class="band"/>
+    <g class="grid">
+      <path d="M40 0V280M80 0V280M120 0V280M160 0V280M240 0V280M280 0V280M320 0V280M360 0V280"/>
+      <path d="M0 35H400M0 70H400M0 105H400M0 175H400M0 210H400M0 245H400"/>
+    </g>
+    <path class="gridc" d="M200 0V280M0 140H400"/>
+    <rect x="0" y="0" width="400" height="280" fill="none" stroke="var(--ink)" stroke-width="1.5"/>
+    <!-- sine ±1V at 500 mV/div → ±2 div = ±70 px; period 160 px -->
+    <polyline class="trace" points="0,140 10,113 20,90 30,75 40,70 50,75 60,90 70,113 80,140 90,167 100,190 110,205 120,210 130,205 140,190 150,167 160,140 170,113 180,90 190,75 200,70 210,75 220,90 230,113 240,140 250,167 260,190 270,205 280,210 290,205 300,190 310,167 320,140 330,113 340,90 350,75 360,70 370,75 380,90 390,113 400,140"/>
+    <text x="200" y="300" text-anchor="middle" class="mono mut" font-size="12">10 divisiones × (s/div) = ventana de tiempo</text>
+  </g>
+  <!-- vertical callout -->
+  <g>
+    <path d="M285 25V305" stroke="var(--afe)" stroke-width="2"/>
+    <path d="M279 33l6-10 6 10M279 297l6 10 6-10" fill="none" stroke="var(--afe)" stroke-width="2"/>
+    <text x="270" y="110" text-anchor="end" font-size="19" font-weight="600" class="afe">VERTICAL · V/div</text>
+    <text x="270" y="134" text-anchor="end" font-size="14">«cuánto voltaje»</text>
+    <text x="270" y="160" text-anchor="end" font-size="14">lo resuelve el <tspan font-weight="600" class="afe">AFE</tspan>:</text>
+    <text x="270" y="180" text-anchor="end" font-size="13.5" class="mut">atenuador, ganancia, offset,</text>
+    <text x="270" y="198" text-anchor="end" font-size="13.5" class="mut">acoplo, protección, filtro</text>
+    <text x="270" y="224" text-anchor="end" font-size="13.5" class="mut">el STM32 sólo elige la escala</text>
+    <text x="270" y="242" text-anchor="end" font-size="13.5" class="mut">(relé + 74HC4051 + DAC)</text>
+  </g>
+  <!-- horizontal callout -->
+  <g>
+    <text x="718" y="110" font-size="19" font-weight="600" class="mcu">HORIZONTAL · s/div</text>
+    <text x="718" y="134" font-size="14">«cuándo y cada cuánto»</text>
+    <text x="718" y="160" font-size="14">lo resuelve el <tspan font-weight="600" class="mcu">STM32G473</tspan>:</text>
+    <text x="718" y="180" font-size="13.5" class="mut">frecuencia de muestreo,</text>
+    <text x="718" y="198" font-size="13.5" class="mut">memoria, decimación, disparo</text>
+    <text x="718" y="224" font-size="13.5" class="mut">el AFE sólo pone el techo:</text>
+    <text x="718" y="242" font-size="13.5" class="mut">ancho de banda y anti-alias</text>
+  </g>
+</svg>
+</div>
+<p class="cap">La traza es el ejemplo de toda la página: ±1 V a 500 mV/div ocupa ±2 divisiones.</p>
+
+<p>Dicho en una frase: <b>el AFE adapta la señal en amplitud</b> para que cualquier escala llene siempre la misma ventana del ADC, y <b>el microcontrolador decide cuándo tomar las muestras</b>. Ninguna de las dos partes puede hacer el trabajo de la otra:</p>
+<ul>
+  <li>El ADC solo acepta de <b>0 a 2.5 V</b> (VREF+). No sabe nada de ±40 V ni de 5 mV. Alguien tiene que convertir «5 mV/div» y «10 V/div» en la misma ventana de 2 V. Ese es el AFE.</li>
+  <li>El AFE es analógico y no tiene noción del tiempo. Que una división horizontal valga 1 µs o 1 s depende solo de cada cuánto el ADC toma una muestra y de cuántas se guardan. Eso lo hace el STM32.</li>
+</ul>
+
+<!-- ============================================================ -->
+<h2><span class="n">2</span>Quién fija cada especificación</h2>
+
+<p>Esta tabla responde a tu pregunta de qué especificaciones son del AFE y cuáles vienen del STM32G473. <span class="tag afe">AFE</span> significa que la cifra sale de piezas que vamos a elegir. <span class="tag mcu">G473</span> significa que la impone el microcontrolador y el AFE solo puede respetarla. <span class="tag both">AMBOS</span> significa que depende de los dos.</p>
+
+<div class="tw"><table>
+<tr><th>Especificación</th><th>Quién</th><th>CH1</th><th>De dónde sale</th></tr>
+<tr><td>Impedancia de entrada</td><td><span class="tag afe">AFE</span></td><td class="n">1 MΩ ∥ 10–30 pF</td><td>Divisor de entrada y buffer. Estándar de osciloscopio que esperan las sondas ×10 (RF-08)</td></tr>
+<tr><td>Escalas V/div</td><td><span class="tag afe">AFE</span></td><td class="n">5 mV … 20 V</td><td>Grueso ×1/÷100 · escalera 1…1/40 · ganancia ×50 (§4)</td></tr>
+<tr><td>Fondo de escala, entrada máxima</td><td><span class="tag afe">AFE</span></td><td class="n">±40 V · 50 Vpk</td><td>Divisor ÷100, protección y relé (RF-04, RF-06). Sin daño con ±100 V en cualquier escala (D-06)</td></tr>
+<tr><td>Acoplo AC/DC/GND</td><td><span class="tag afe">AFE</span></td><td class="n">AC ≤ 10 Hz</td><td>Conmutador deslizante y condensador (RF-05)</td></tr>
+<tr><td>Offset vertical</td><td><span class="tag both">AMBOS</span></td><td class="n">±5 div</td><td>Lo suma la etapa final. La tensión la da el DAC1 del G473 (PA4) con buffer (RF-14, sección E)</td></tr>
+<tr><td>Ancho de banda</td><td><span class="tag afe">AFE</span></td><td class="n">2 MHz</td><td>Lo fija el filtro anti-alias. Los amplificadores no deben quitar más (§5)</td></tr>
+<tr><td>Ruido</td><td><span class="tag both">AMBOS</span></td><td class="n">0.41–0.45 % div</td><td>AFE: 0.25–0.32 % de división (S7b). Con el ADC (0.4–0.6 mV rms, ≈ 0.2 %), 0.41–0.45 %; criterio ≤ 0.45 %</td></tr>
+<tr><td>Precisión en DC</td><td><span class="tag both">AMBOS</span></td><td class="n">±1 %</td><td>Resistencias del AFE + autocalibración con corrección de ganancia y offset del ADC (RF-15)</td></tr>
+<tr><td>Resolución</td><td><span class="tag mcu">G473</span></td><td class="n">12 bits</td><td>ADC SAR: 4096 códigos en 2.5 V, unos 410 códigos por división</td></tr>
+<tr><td>Frecuencia de muestreo</td><td><span class="tag mcu">G473</span></td><td class="n">6.5 MSa/s</td><td>Reloj del ADC de 52 MHz con ADC1 y ADC2 alternándose (§6)</td></tr>
+<tr><td>Memoria</td><td><span class="tag mcu">G473</span></td><td class="n">8 k muestras</td><td>RAM: 3 × 8192 × 2 B = 48 KiB de 128 KiB (RF-10)</td></tr>
+<tr><td>Base de tiempos</td><td><span class="tag mcu">G473</span></td><td class="n">1 µs … 50 s/div</td><td>Temporizador que dispara el ADC, más decimación (§6)</td></tr>
+<tr><td>Disparo</td><td><span class="tag mcu">G473</span></td><td class="n">flanco, nivel</td><td>Watchdog analógico del ADC (AWD1) sobre la muestra digital (RF-09)</td></tr>
+<tr><td>Rango de entrada del pin</td><td><span class="tag mcu">G473</span></td><td class="n">0 … 2.5 V</td><td>VREF+ = 2.5 V. Más de VDDA en el pin lo daña o corrompe otros canales (P14)</td></tr>
+<tr><td>Impedancia que puede ver el pin</td><td><span class="tag mcu">G473</span></td><td class="n">≤ 100 Ω</td><td>El condensador interno de 5 pF tiene que cargarse en la ventana de muestreo: 67 ns en CH1 (3.5 ciclos entrelazados). La cifra de 100 Ω es la de 2.5 ciclos a 60 MHz (T.62), conservadora</td></tr>
+<tr><td>Incertidumbre del instante de muestreo</td><td><span class="tag mcu">G473</span></td><td class="n">síncrono</td><td>Con el reloj asíncrono, una señal de 2 MHz se queda en SNR ≈ 23 dB. Por eso P13: HCLK/2</td></tr>
+</table></div>
+
+<p>Las cuatro últimas filas son <b>restricciones del G473 que el AFE tiene que respetar</b>: la última etapa del AFE se diseña «hacia atrás» desde el pin PA0.</p>
+
+<!-- ============================================================ -->
+<h2><span class="n">3</span>El viaje de la señal, bloque a bloque</h2>
+
+<div class="fig wide">
+<svg viewBox="0 0 960 360" role="img" aria-label="Cadena de CH1: BNC, divisor, protección, acoplo, buffer, escalera, ganancia, offset, filtro, RC y ADC, con el STM32 controlando relé, multiplexor y offset">
+  <!-- zones -->
+  <rect x="4" y="8" width="826" height="22" class="band"/>
+  <text x="417" y="24" text-anchor="middle" font-size="13" font-weight="600" class="afe">AFE · lo que diseñamos (vertical)</text>
+  <rect x="838" y="8" width="118" height="22" fill="color-mix(in srgb,var(--mcu) 16%,transparent)"/>
+  <text x="897" y="24" text-anchor="middle" font-size="13" font-weight="600" class="mcu">STM32G473</text>
+  <!-- etapas del plan S0–S8 (3 oct) -->
+  <g font-size="11" text-anchor="middle" font-weight="600">
+    <path d="M40 40H298" stroke="var(--sig)" stroke-width="2"/><text x="169" y="52" class="sig">S1 · S1b · S2 · S2b ✓ (entrada y protección)</text>
+    <path d="M316 40H574" stroke="var(--sig)" stroke-width="2"/><text x="445" y="52" class="sig">S3 · S3b ✓ (ganancia)</text>
+    <path d="M592 40H666" stroke="var(--sig)" stroke-width="2"/><text x="629" y="52" class="sig">S4 ✓</text>
+    <path d="M684 40H758" stroke="var(--sig)" stroke-width="2"/><text x="721" y="52" class="sig">S5 ✓</text>
+    <path d="M776 40H950" stroke="var(--sig)" stroke-width="2"/><text x="863" y="52" class="sig">S6 ✓ (ADC) · S7–S7c ✓</text>
+  </g>
+  <!-- BNC -->
+  <circle cx="18" cy="110" r="10" fill="none" stroke="var(--ink)" stroke-width="1.6"/><circle cx="18" cy="110" r="3" fill="var(--ink)"/>
+  <text x="18" y="88" text-anchor="middle" font-size="12" font-weight="600">BNC</text>
+  <path class="wire" d="M28 110H38"/>
+  <!-- blocks: x = 38 + i*92, w = 78 -->
+  <g font-size="12.5" text-anchor="middle">
+    <rect class="blk" x="38"  y="74" width="78" height="72" rx="4"/>
+    <text x="77" y="96" font-weight="600">① Divisor</text><text x="77" y="113">÷100 / ×1</text><text x="77" y="130" class="mut" font-size="11">relé K101</text>
+    <rect class="blk" x="130" y="74" width="78" height="72" rx="4"/>
+    <text x="169" y="96" font-weight="600">② Protección</text><text x="169" y="113">BAV199</text><text x="169" y="130" class="mut" font-size="11">a los rieles</text>
+    <rect class="blk" x="222" y="74" width="78" height="72" rx="4"/>
+    <text x="261" y="96" font-weight="600">③ Acoplo</text><text x="261" y="113">AC·DC·GND</text><text x="261" y="130" class="mut" font-size="11">conmutador</text>
+    <rect class="blk" x="314" y="74" width="78" height="72" rx="4"/>
+    <text x="353" y="96" font-weight="600">④ Buffer</text><text x="353" y="113">FET, ×1</text><text x="353" y="130" class="mut" font-size="11">no carga</text>
+    <rect class="blk" x="406" y="74" width="78" height="72" rx="4"/>
+    <text x="445" y="96" font-weight="600">⑤ Escalera</text><text x="445" y="113">1 … 1/40</text><text x="445" y="130" class="mut" font-size="11">74HC4051</text>
+    <rect class="blk" x="498" y="74" width="78" height="72" rx="4"/>
+    <text x="537" y="96" font-weight="600">⑥ Ganancia</text><text x="537" y="113">fija ×50</text><text x="537" y="130" class="mut" font-size="11">×5 · ×10</text>
+    <rect class="blk" x="590" y="74" width="78" height="72" rx="4"/>
+    <text x="629" y="96" font-weight="600">⑦ Offset</text><text x="629" y="113">+ 1.25 V</text><text x="629" y="130" class="mut" font-size="11">etapa a 3.3 V</text>
+    <rect class="blk" x="682" y="74" width="78" height="72" rx="4"/>
+    <text x="721" y="96" font-weight="600">⑧ Filtro</text><text x="721" y="113">anti-alias</text><text x="721" y="130" class="mut" font-size="11">2 MHz</text>
+    <rect class="blk" x="774" y="74" width="56" height="72" rx="4"/>
+    <text x="802" y="96" font-weight="600">⑨ RC</text><text x="802" y="113">68 Ω</text><text x="802" y="130" class="mut" font-size="11">470 pF</text>
+    <rect class="blk m" x="846" y="74" width="106" height="72" rx="4"/>
+    <text x="899" y="96" font-weight="600">⑩ ADC1+ADC2</text><text x="899" y="113">PA0, 12 bits</text><text x="899" y="130" class="mut" font-size="11">6.5 MSa/s → DMA</text>
+  </g>
+  <path class="wire" d="M116 110H130M208 110H222M300 110H314M392 110H406M484 110H498M576 110H590M668 110H682M760 110H774M830 110H846"/>
+  <!-- example values -->
+  <g font-size="12" text-anchor="middle" class="mono">
+    <text x="18" y="68" class="sig">±1 V</text>
+    <text x="77" y="68" class="sig">±10 mV</text>
+    <text x="169" y="68" class="sig">±10 mV</text>
+    <text x="261" y="68" class="sig">±10 mV</text>
+    <text x="353" y="68" class="sig">±10 mV</text>
+    <text x="445" y="68" class="sig">±10 mV (1/1)</text>
+    <text x="537" y="68" class="sig">±0.5 V</text>
+    <text x="629" y="68" class="sig">0.75–1.75 V</text>
+    <text x="721" y="68" class="sig">0.75–1.75</text>
+    <text x="802" y="68" class="sig">igual</text>
+    <text x="899" y="68" class="sig">1229–2867</text>
+  </g>
+  <!-- control bus -->
+  <path class="bus" d="M899 146V300H77V146"/>
+  <path class="bus" d="M445 300V146M629 300V146"/>
+  <path class="bus" d="M261 146V262H360"/>
+  <g font-size="12" text-anchor="middle" class="ctl">
+    <text x="77" y="320">GPIO → 74HCT595 → relé</text>
+    <text x="445" y="320">→ 74HC4051 (3 líneas)</text>
+    <text x="629" y="320">DAC → offset</text>
+    <text x="899" y="320">el firmware decide</text>
+    <text x="300" y="256" text-anchor="start">polo B → 74HC165 → lee la posición</text>
+  </g>
+  <text x="480" y="348" text-anchor="middle" font-size="12" class="mut">Línea discontinua: control digital. El STM32 no toca la señal, solo mueve los interruptores que la escalan.</text>
+</svg>
+</div>
+<p class="cap"><b>Actualizado el 4 oct:</b> todas las etapas, de S1 a S7c, hechas y auditadas (verde); el canal completo es S7–S7c. Encima de cada grupo de bloques, la etapa del plan de simulación que lo cubre. En verde, el ejemplo: ±1 V a 500 mV/div → ÷100 → toma 1/1 → ×50 → centrado en 1.25 V → códigos del ADC. Cadena de CH1. ①–③ son la sección B y C.2 del documento vivo, ④–⑥ la sección C, ⑦ la sección E, ⑧ la sección D y ⑨–⑩ la sección F.</p>
+
+<h3>① Divisor ÷100 / rama ×1, con relé</h3>
+<p>Es lo primero que toca la señal, y hace dos trabajos a la vez. <b>Atenúa</b>: en las escalas de 500 mV/div a 20 V/div divide entre 100 (P1, 3 oct). <b>Limita la corriente</b>: su resistencia de casi 1 MΩ convierte 100 V en 0,09 mA, que no rompe nada (desde el 2 oct ya no se diseña para la red, ver <code>revision_entrada_ch1.html</code>). En las escalas finas (5–200 mV/div), el relé K101 elige la rama ×1 para no tirar señal. El divisor y la rama ×1 están siempre conectados y el segundo polo del relé replica la carga, así que la BNC ve 1 MΩ en las dos posiciones (entrada P4b, simulada en S1–S2b).</p>
+<div class="math">Divisor:  V_sal = V_ent · R_b / (R_t + R_b) = 11.0 k / (1.098 M + 11.0 k) · V_ent ≈ V_ent / 100
+Ejemplo:  ±1 V / 100 = ±10 mV</div>
+<p>A 2 MHz, los condensadores parásitos se «comen» a las resistencias. Por eso el divisor lleva un condensador en paralelo con cada resistencia, con <b>la misma relación</b> (C_t·R_t = C_b·R_b). Así divide igual a 1 Hz que a 2 MHz. A eso se le llama <b>divisor compensado</b>, y es lo mismo que hace dentro una sonda ×10.</p>
+
+<h3>② Protección</h3>
+<p>Dos diodos BAV199 conectan el nodo a los rieles de ±4,9 V (revisión del 3 oct). Mientras la señal está entre unos −5,5 V y +5,5 V no conducen y son invisibles. Si alguien mete 50 V en la escala ×1, conducen y sujetan el nodo en unos ±5,5 V. La corriente ya viene limitada por el bloque ①. Los picos rapidísimos, como una descarga electrostática, los llevan los mismos diodos a los rieles, y allí los absorbe una TVS por riel. Corregido el 2 oct: una TVS en el propio nodo fugaría lo bastante para mover la traza varias divisiones.</p>
+
+<h3>③ Acoplo AC / DC / GND</h3>
+<p><b>DC</b> deja pasar todo. <b>AC</b> mete un condensador en serie, que bloquea la continua y deja ver un rizado pequeño sobre 12 V. <b>GND</b> pone a masa la entrada del buffer para ver dónde está el «cero». Va detrás de la protección (D-07), así que el conmutador de 50 V nunca ve más de unos ±6 V. El corte del modo AC es un filtro RC:</p>
+<div class="math">f_c = 1 / (2π · R · C)    con R ≈ 10 MΩ (R_BIAS) y C = 1.8 nF  →  f_c ≈ 8.8 Hz  (RF-05 pide ≤ 10 Hz)</div>
+
+<h3>④ Buffer</h3>
+<p>Es un amplificador de ganancia 1 con entrada FET, que apenas consume corriente de entrada (pA): el <b>OPA810</b> (TI, C2833513; 70 MHz, 2 pA, 6.3 nV/√Hz), con R_PROT de 1 kΩ delante. Hace falta porque lo que viene después, la escalera de 1 kΩ, «cargaría» a un divisor de casi 1 MΩ y cambiaría su relación. El buffer copia la tensión sin pedir corriente: alta impedancia por delante y baja por detrás.</p>
+
+<h3>⑤ Escalera 1 … 1/40 con el 74HC4051</h3>
+<p>Es una cadena de resistencias de 1 kΩ en total, con 6 tomas (1, 1/2, 1/4, 1/10, 1/20, 1/40); las otras dos entradas del multiplexor son masa (autocero) y VCHECK. El 74HC4051 es un multiplexor analógico: un interruptor de 8 posiciones que el STM32 maneja con 3 líneas digitales (2³ = 8) y que elige una toma. Esta es la «perilla fina» de la escala.</p>
+<div class="math">Ejemplo, toma 1/1:  ±10 mV × 1 = ±10 mV</div>
+
+<h3>⑥ Ganancia fija ×50</h3>
+<p>Dos amplificadores no inversores en cascada, de ×5 y ×10. La ganancia de un no inversor es <code>1 + R_f/R_g</code>: con 1.00 k/249 Ω sale ×5.016 y con 2.26 k/249 Ω sale ×10.08 (×50.55 en total; la calibración absorbe la diferencia con 50). Son las dos mitades de un <b>AD8039</b> (C96525), y cada entrada lleva 470 Ω en serie y un BAV99 entre sus patas para que la diferencial no pase de ±0.7 V en saturación (S3b). En placa, 249 Ω = 270 Ω ∥ 3.3 kΩ y 2.26 kΩ = 2.2 kΩ + 68 Ω, con piezas basic de JLCPCB (4 oct).</p>
+<div class="math">Ejemplo:  ±10 mV × 50 = ±0.5 V</div>
+<div class="box"><b>¿Por qué atenuar y luego amplificar siempre ×50, en vez de cambiar la ganancia?</b><br>
+Un amplificador da un producto <b>ganancia × ancho de banda</b> constante (GBW). Con GBW = 100 MHz, a ×10 llega a unos 10 MHz y a ×100 solo a 1 MHz. Si la ganancia cambiara con la escala, cada escala tendría un ancho de banda distinto y la de 5 mV/div sería la más lenta. Con ganancia fija, las 12 escalas tienen el mismo ancho de banda. Es el truco del DSO112.</div>
+
+<h3>⑦ Offset y desplazamiento a 1.25 V</h3>
+<p>Hasta aquí la señal es bipolar (±0.5 V), pero el ADC solo mide de 0 a 2.5 V. Esta etapa le <b>suma 1.25 V</b>, la mitad del rango, para que el «cero» quede en el centro de la pantalla. También suma el <b>offset del usuario</b> (la perilla de posición vertical): un DAC del STM32 la mueve ±5 divisiones, o sea ±1.25 V en el ADC. Va alimentada a 3.3 V, igual que el ADC (P8, adoptada el 3 oct). Así no puede sacar más de lo que aguanta el pin (P14). Es una <b>sumadora inversora</b> con un OPA836 (sección E): la señal sale invertida y el firmware le vuelve a dar la vuelta.</p>
+<div class="math">V_ADC = 3.241 · VMID − V_ganancia − 1.241 · V_DAC     (VMID = 0.8585 V desde VREF+; V_ganancia = salida del filtro, ×50)
+Centro con V_DAC = 1.25 V: 1.235 V · posición vertical: +5.2 / −4.85 div
+Ejemplo:  1.235 V ∓ 0.5 V  →  de 0.74 V a 1.74 V</div>
+
+<h3>⑧ Filtro anti-alias</h3>
+<p>Es el bloque que <b>fija el ancho de banda de 2 MHz</b> y el que más cuidado pide en CH1. Se explica en el §6, porque nace de una restricción del muestreo. Elegido el 3 oct (S5): dos Sallen-Key de ganancia 1 con otro AD8039 (U105), que con el RC ⑨ y la etapa ⑦ forman un filtro de 6.º orden: −3 dB en 2.0 MHz y 21.7 dB a 4.5 MHz (S7b).</p>
+
+<h3>⑨ RC delante del pin y ⑩ ADC</h3>
+<p>Cada vez que el ADC muestrea, conecta al pin un condensador interno de 5 pF durante solo 67 ns (3.5 ciclos de 52 MHz en modo entrelazado). Ese condensador «roba» carga de golpe. Un condensador externo de 470 pF, 94 veces mayor, actúa de depósito y la cede sin que la tensión caiga más de un ~1 %. La resistencia de 68 Ω aísla al amplificador de ese golpe. El fabricante exige que el pin vea <b>≤ 100 Ω</b>, y 68 Ω cumple.</p>
+<div class="math">Polo del RC:  1 / (2π · 68 Ω · 470 pF) ≈ 5.0 MHz   (a 2 MHz resta −0.65 dB: forma parte del filtro ⑧, corregido el 2 oct)
+Conversión:   código = V_ADC / 2.5 V × 4096    →  0.75 V = 1229,  1.75 V = 2867
+Por división: 0.25 V / 2.5 V × 4096 ≈ 410 códigos</div>
+<p>El firmware hace la cuenta al revés: <code>V_entrada = (código − código_del_cero) / 410 × (V/div)</code>. El ESP32 o la S3G4-UI lo dibujan.</p>
+
+<!-- ============================================================ -->
+<h2><span class="n">4</span>La ecuación de una escala</h2>
+
+<p>Toda la parte vertical se resume en una idea: <b>las 8 divisiones siempre ocupan 2.0 V en el ADC</b>, es decir 0.25 V por división, dejando 0.25 V de margen arriba y abajo. Entonces la ganancia que necesita cada escala es:</p>
+<div class="math">G_total = 0.25 V / (V/div)    y se reparte en tres factores:    G_total = grueso × toma × 50
+Ejemplo 500 mV/div:  G = 0.25 / 0.5 = 0.5  =  (1/100) × (1/1) × 50  ✓</div>
+
+<div class="tw"><table>
+<tr><th>V/div</th><th>Pantalla completa</th><th>Relé ①</th><th>Toma ⑤</th><th>Fija ⑥</th><th>G total</th><th>1 código equivale a</th></tr>
+<tr><td class="n">5 mV</td><td class="n">40 mVpp</td><td>×1</td><td class="n">1/1</td><td class="n">×50</td><td class="n">50</td><td class="n">12.2 µV</td></tr>
+<tr><td class="n">10 mV</td><td class="n">80 mVpp</td><td>×1</td><td class="n">1/2</td><td class="n">×50</td><td class="n">25</td><td class="n">24.4 µV</td></tr>
+<tr><td class="n">20 mV</td><td class="n">160 mVpp</td><td>×1</td><td class="n">1/4</td><td class="n">×50</td><td class="n">12.5</td><td class="n">48.8 µV</td></tr>
+<tr><td class="n">50 mV</td><td class="n">0.4 Vpp</td><td>×1</td><td class="n">1/10</td><td class="n">×50</td><td class="n">5</td><td class="n">122 µV</td></tr>
+<tr><td class="n">100 mV</td><td class="n">0.8 Vpp</td><td>×1</td><td class="n">1/20</td><td class="n">×50</td><td class="n">2.5</td><td class="n">244 µV</td></tr>
+<tr><td class="n">200 mV</td><td class="n">1.6 Vpp</td><td>×1</td><td class="n">1/40</td><td class="n">×50</td><td class="n">1.25</td><td class="n">488 µV</td></tr>
+<tr><td class="n"><b>500 mV</b></td><td class="n">4 Vpp</td><td>÷100</td><td class="n">1/1</td><td class="n">×50</td><td class="n">0.5</td><td class="n">1.22 mV</td></tr>
+<tr><td class="n">1 V</td><td class="n">8 Vpp</td><td>÷100</td><td class="n">1/2</td><td class="n">×50</td><td class="n">0.25</td><td class="n">2.44 mV</td></tr>
+<tr><td class="n">2 V</td><td class="n">16 Vpp</td><td>÷100</td><td class="n">1/4</td><td class="n">×50</td><td class="n">0.125</td><td class="n">4.88 mV</td></tr>
+<tr><td class="n">5 V</td><td class="n">40 Vpp</td><td>÷100</td><td class="n">1/10</td><td class="n">×50</td><td class="n">0.05</td><td class="n">12.2 mV</td></tr>
+<tr><td class="n">10 V</td><td class="n">80 Vpp</td><td>÷100</td><td class="n">1/20</td><td class="n">×50</td><td class="n">0.025</td><td class="n">24.4 mV</td></tr>
+<tr><td class="n">20 V</td><td class="n">160 Vpp</td><td>÷100</td><td class="n">1/40</td><td class="n">×50</td><td class="n">0.0125</td><td class="n">48.8 mV</td></tr>
+</table></div>
+<p class="cap">Tabla de la sección C.1 del documento vivo (actualizada el 3 oct con P1): 12 escalas con sólo 6 tomas (1, 1/2, 1/4, 1/10, 1/20, 1/40), usadas una vez con el relé en ×1 y otra en ÷100. Las dos entradas libres del 74HC4051 son masa y VCHECK.</p>
+
+<h3>Qué pasa cuando el usuario gira la perilla de V/div</h3>
+<ol class="steps">
+  <li>La pantalla (ESP32-S3) manda al STM32 «CH1 a 500 mV/div».</li>
+  <li>El firmware busca la fila en la tabla: relé en ÷100, toma 1/1.</li>
+  <li>Escribe 8 bits en el 74HCT595 (registro de desplazamiento): la línea del relé y las 3 de selección del 4051 cambian a la vez.</li>
+  <li>Carga en el DAC el offset de esa escala (posición vertical + corrección de calibración).</li>
+  <li>Si el relé cambia, espera a que asiente (el TQ2SA cierra en ≤ 4 ms; su bobina recibe 5 V durante ~20 ms y luego se mantiene a ≈ 2.9 V, sección C.2) y descarta esas muestras.</li>
+  <li>Desde ahí convierte cada código con la ganancia y el offset calibrados de <b>esa</b> escala (A · código + C, P10). Así el ±1 % no depende de que cada resistencia sea exacta.</li>
+</ol>
+
+<!-- ============================================================ -->
+<h2><span class="n">5</span>Ancho de banda: cuánto «aguanta» cada bloque</h2>
+
+<p>«Ancho de banda de 2 MHz» significa que una senoide de 2 MHz se ve con el 70.7 % de su amplitud (−3 dB), y que las de menor frecuencia se ven casi completas. Cada bloque se comporta como un filtro paso-bajo con su propia frecuencia de corte, o «polo». Las pérdidas se multiplican:</p>
+<div class="math">Pérdida de un polo a la frecuencia f:   1 / √(1 + (f / f_polo)²)
+Tiempo de subida del canal:            t_r ≈ 0.35 / BW = 0.35 / 2 MHz = 175 ns
+Slew rate mínimo (2 Vpp a 2 MHz):      2π · f · V_pico = 2π · 2 MHz · 1 V = 12.6 V/µs  →  pedimos ≥ 30 V/µs</div>
+
+<div class="tw"><table>
+<tr><th>Bloque</th><th>Polo</th><th>Pérdida a 2 MHz</th><th>Qué pide</th></tr>
+<tr><td>① Divisor ÷100 y rama ×1</td><td class="n">compensado</td><td class="n">plano</td><td>Ajustar bien C_t y C_b</td></tr>
+<tr><td>④ Buffer ×1, GBW ≥ 50 MHz</td><td class="n">≥ 50 MHz</td><td class="n">−0.007 dB</td><td>FET, ≤ 50 pA</td></tr>
+<tr><td>⑤ Toma + 4051 ((250 + 130) Ω · 30 pF)</td><td class="n">14 MHz</td><td class="n">−0.09 dB</td><td>Escalera de 1 kΩ como máximo</td></tr>
+<tr><td>⑥ ×5 con GBW 100 MHz</td><td class="n">20 MHz</td><td class="n">−0.04 dB</td><td rowspan="2"><b>En CH1, GBW ≥ 100 MHz</b>. Con 50 MHz el total cae a −1 dB</td></tr>
+<tr><td>⑥ ×10 con GBW 100 MHz</td><td class="n">10 MHz</td><td class="n">−0.17 dB</td></tr>
+<tr><td>⑨ RC 68 Ω · 470 pF</td><td class="n">5.0 MHz</td><td class="n">−0.65 dB</td><td>Corregido el 2 oct: antes decía «casi no resta»</td></tr>
+<tr><td><b>Total sin filtro</b></td><td></td><td class="n"><b>≈ −0.97 dB (10.6 %)</b></td><td>El filtro ⑧ tiene que contar esta caída</td></tr>
+</table></div>
+<p class="cap">Estimación a mano, como en C.4 del documento vivo. Simulado (S3, S3b): de U101 a la salida de U103B el canal pierde sólo 0.013–0.022 dB a 2 MHz; el RC ⑨ sí resta lo calculado.</p>
+<p>La idea de diseño: <b>todos los amplificadores con polos muy por encima de 2 MHz, y que sea el filtro ⑧, diseñado a propósito, el que decida dónde cae la respuesta.</b> Un ancho de banda «accidental», fijado por el amplificador más lento, varía con la temperatura y de pieza a pieza.</p>
+
+<!-- ============================================================ -->
+<h2><span class="n">6</span>La parte horizontal: muestreo, alias y base de tiempos</h2>
+
+<h3>Cómo llega a 6.5 MSa/s</h3>
+<p>Un solo ADC del G473, con reloj de 52 MHz, tarda 16 ciclos por muestra (3.5 de muestreo y 12.5 de conversión): 3.25 MSa/s. CH1 pone <b>dos ADC sobre el mismo pin PA0, desfasados medio ciclo</b>. Mientras uno convierte, el otro muestrea. Juntos dan el doble:</p>
+
+<div class="fig">
+<svg viewBox="0 0 900 170" role="img" aria-label="ADC1 y ADC2 alternándose cada 8 ciclos de 52 MHz">
+  <g font-size="13">
+    <text x="10" y="52" font-weight="600">ADC1</text>
+    <text x="10" y="102" font-weight="600">ADC2</text>
+    <!-- 1 cycle = 2.8 px ; 16 cycles = 45 px... use 3.2 px/cycle -> 16cyc=51.2. Use scale 5 px/cycle: 16 = 80 px -->
+    <g transform="translate(70,0)">
+      <g>
+        <rect x="0" y="36" width="17.5" height="24" fill="var(--sig)"/><rect x="17.5" y="36" width="62.5" height="24" fill="none" stroke="var(--afe)"/>
+        <rect x="80" y="36" width="17.5" height="24" fill="var(--sig)"/><rect x="97.5" y="36" width="62.5" height="24" fill="none" stroke="var(--afe)"/>
+        <rect x="160" y="36" width="17.5" height="24" fill="var(--sig)"/><rect x="177.5" y="36" width="62.5" height="24" fill="none" stroke="var(--afe)"/>
+        <rect x="240" y="36" width="17.5" height="24" fill="var(--sig)"/><rect x="257.5" y="36" width="62.5" height="24" fill="none" stroke="var(--afe)"/>
+        <rect x="320" y="36" width="17.5" height="24" fill="var(--sig)"/><rect x="337.5" y="36" width="62.5" height="24" fill="none" stroke="var(--afe)"/>
+        <rect x="400" y="36" width="17.5" height="24" fill="var(--sig)"/><rect x="417.5" y="36" width="62.5" height="24" fill="none" stroke="var(--afe)"/>
+      </g>
+      <g transform="translate(40,50)">
+        <rect x="0" y="36" width="17.5" height="24" fill="var(--sig)"/><rect x="17.5" y="36" width="62.5" height="24" fill="none" stroke="var(--afe)"/>
+        <rect x="80" y="36" width="17.5" height="24" fill="var(--sig)"/><rect x="97.5" y="36" width="62.5" height="24" fill="none" stroke="var(--afe)"/>
+        <rect x="160" y="36" width="17.5" height="24" fill="var(--sig)"/><rect x="177.5" y="36" width="62.5" height="24" fill="none" stroke="var(--afe)"/>
+        <rect x="240" y="36" width="17.5" height="24" fill="var(--sig)"/><rect x="257.5" y="36" width="62.5" height="24" fill="none" stroke="var(--afe)"/>
+        <rect x="320" y="36" width="17.5" height="24" fill="var(--sig)"/><rect x="337.5" y="36" width="62.5" height="24" fill="none" stroke="var(--afe)"/>
+      </g>
+      <path d="M0 128H480" stroke="var(--ink)"/>
+      <g stroke="var(--sig)" stroke-width="2">
+        <path d="M0 122v12M40 122v12M80 122v12M120 122v12M160 122v12M200 122v12M240 122v12M280 122v12M320 122v12M360 122v12M400 122v12M440 122v12"/>
+      </g>
+      <text x="0" y="152" font-size="12" class="mut">muestras resultantes en PA0: una cada 8 ciclos = 153.8 ns → 6.5 MSa/s</text>
+    </g>
+    <g transform="translate(600,40)" font-size="13">
+      <rect x="0" y="0" width="16" height="14" fill="var(--sig)"/><text x="24" y="12">muestreo, 3.5 ciclos (67 ns)</text>
+      <rect x="0" y="26" width="16" height="14" fill="none" stroke="var(--afe)"/><text x="24" y="38">conversión, 12.5 ciclos</text>
+      <text x="0" y="68" class="mut" font-size="12.5">Cada ADC: 16 ciclos de 52 MHz = 307.7 ns</text>
+      <text x="0" y="86" class="mut" font-size="12.5">→ 3.25 MSa/s por ADC, 6.5 MSa/s juntos</text>
+    </g>
+  </g>
+</svg>
+</div>
+<p class="cap">Modo dual entrelazado (RM0440 §21.4.30). Las velocidades exigen VDDA ≥ 2.7 V y canal rápido; PA0 lo es (ADC12_IN1).</p>
+
+<h3>El problema del alias, y por qué CH1 es difícil</h3>
+<p>Muestrear a <b>f_s</b> solo puede representar frecuencias por debajo de <b>f_s/2</b>, el límite de Nyquist, que para CH1 es 3.25 MHz. Una señal por encima <b>no desaparece</b>: se «dobla» y aparece como una frecuencia falsa dentro de la pantalla, sin que haya forma de distinguirla. Una componente de 4.5 MHz se ve exactamente como una de 2 MHz:</p>
+
+<div class="fig">
+<svg viewBox="0 0 900 210" role="img" aria-label="Eje de frecuencia con banda útil de 0 a 2 MHz, Nyquist en 3.25 MHz y fs en 6.5 MHz; un tono de 4.5 MHz se dobla a 2 MHz">
+  <g transform="translate(40,20)">
+    <!-- 1 MHz = 110 px -->
+    <rect x="0" y="20" width="220" height="110" fill="color-mix(in srgb,var(--sig) 14%,transparent)"/>
+    <text x="110" y="42" text-anchor="middle" font-size="13" font-weight="600" class="sig">banda útil 0–2 MHz</text>
+    <path d="M0 130H790" stroke="var(--ink)" stroke-width="1.5"/>
+    <g font-size="12" class="mono" text-anchor="middle">
+      <text x="0" y="150">0</text><text x="110" y="150">1</text><text x="220" y="150">2</text><text x="330" y="150">3</text>
+      <text x="440" y="150">4</text><text x="550" y="150">5</text><text x="660" y="150">6</text><text x="770" y="150">7 MHz</text>
+    </g>
+    <path d="M357.5 10V130" stroke="var(--mcu)" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="357.5" y="6" text-anchor="middle" font-size="12.5" class="mcu">Nyquist 3.25</text>
+    <path d="M715 10V130" stroke="var(--mcu)" stroke-width="2"/>
+    <text x="715" y="6" text-anchor="middle" font-size="12.5" class="mcu">f_s = 6.5</text>
+    <!-- tone at 4.5 -->
+    <path d="M495 130V60" stroke="var(--bad)" stroke-width="3"/>
+    <text x="495" y="52" text-anchor="middle" font-size="12.5" class="bad">ruido real 4.5 MHz</text>
+    <path d="M220 130V60" stroke="var(--bad)" stroke-width="3" stroke-dasharray="4 3"/>
+    <path d="M490 88 C 420 70, 300 70, 228 84" fill="none" stroke="var(--bad)" stroke-width="1.6"/>
+    <path d="M236 78l-9 6 10 3" fill="none" stroke="var(--bad)" stroke-width="1.6"/>
+    <text x="345" y="120" text-anchor="end" font-size="12.5" class="bad">aparece en 6.5 − 4.5 = 2 MHz</text>
+    <text x="0" y="182" font-size="13" class="mut">El filtro ⑧ tiene que dejar pasar 0–2 MHz y aplastar lo que hay por encima de 4.5 MHz, que se doblaría a la banda útil.</text>
+  </g>
+</svg>
+</div>
+
+<p>Entre 2 MHz (dejar pasar) y 4.5 MHz (aplastar) solo hay un factor 2.25. Un filtro de orden <i>n</i> cae <b>6·n dB por octava</b>, así que el orden manda. La cuenta para un Butterworth con corte en 2 MHz:</p>
+<div class="math">Atenuación de un Butterworth:   A(f) = 10 · log10( 1 + (f / f_c)^(2n) )  dB</div>
+
+<div class="tw"><table>
+<tr><th>Orden n</th><th>Butterworth a 4.5 MHz</th><th>Bessel a 4.5 MHz</th><th>Comentario</th></tr>
+<tr><td class="n">1 (un RC)</td><td class="n">7.8 dB</td><td class="n">7.8 dB</td><td>Inútil: el alias pasa casi entero</td></tr>
+<tr><td class="n">3</td><td class="n">21 dB</td><td class="n">14 dB</td><td>Lo que tienen muchos osciloscopios baratos</td></tr>
+<tr><td class="n">5</td><td class="n">35 dB</td><td class="n">18 dB</td><td>Butterworth: buen rechazo, pero sobreimpulso en ondas cuadradas</td></tr>
+<tr><td class="n">7</td><td class="n">49 dB</td><td class="n">18 dB</td><td>Más amplificadores y más consumo</td></tr>
+</table></div>
+<p class="cap">Calculado con scipy.signal (butter / bessel analógicos, −3 dB en 2 MHz). Para referencia, 12 bits completos pedirían 72 dB: ningún osciloscopio de este precio lo logra con f_s/BW ≈ 3.</p>
+<div class="box warn"><b>Este es el compromiso central de CH1.</b> Un <b>Bessel</b> respeta la forma de los flancos (sin sobreimpulso en ondas cuadradas), pero filtra poco. Un <b>Butterworth</b> filtra mucho más, pero «suena» en los flancos. Con f_s/BW = 3.25 no se puede tener las dos cosas. <b>Decidido el 3 oct (S5, sección D):</b> el intermedio (Butterworth-Thomson), reescalado. Con la cadena real, 21.7 dB a 4.5 MHz y 3.2 % de sobreimpulso; el Bessel fallaba el Monte Carlo y el Butterworth tardaba 1.08 µs en recuperarse.</div>
+
+<h3>Base de tiempos: el STM32 cambia cada cuánto muestrea</h3>
+<p>Siempre se guardan hasta 8192 muestras repartidas en 10 divisiones. Con eso, la frecuencia de muestreo para cada s/div sale de una cuenta simple, con un techo de 6.5 MSa/s:</p>
+<div class="math">f_s = min( 6.5 MSa/s ,  8192 / (10 · s/div) )</div>
+<div class="tw"><table>
+<tr><th>s/div</th><th>Ventana</th><th>f_s</th><th>Muestras en pantalla</th><th>Cómo lo hace el STM32</th></tr>
+<tr><td class="n">1 µs</td><td class="n">10 µs</td><td class="n">6.5 M</td><td class="n">65</td><td>Al máximo. Pocas muestras: la UI interpola sin(x)/x</td></tr>
+<tr><td class="n">10 µs</td><td class="n">100 µs</td><td class="n">6.5 M</td><td class="n">650</td><td>Al máximo</td></tr>
+<tr><td class="n">100 µs</td><td class="n">1 ms</td><td class="n">6.5 M</td><td class="n">6 500</td><td>Al máximo</td></tr>
+<tr><td class="n">200 µs</td><td class="n">2 ms</td><td class="n">4.1 M</td><td class="n">8 192</td><td>A partir de ~126 µs/div la memoria se llena: hay que bajar f_s</td></tr>
+<tr><td class="n">1 ms</td><td class="n">10 ms</td><td class="n">819 k</td><td class="n">8 192</td><td>Temporizador que dispara el ADC, o decimar con mín/máx</td></tr>
+<tr><td class="n">100 ms</td><td class="n">1 s</td><td class="n">8.2 k</td><td class="n">8 192</td><td>Decimación con detección de picos (RF-12)</td></tr>
+<tr><td class="n">50 s</td><td class="n">500 s</td><td class="n">16.4</td><td class="n">8 192</td><td>Modo roll: la traza avanza en tiempo real</td></tr>
+</table></div>
+<p><b>Decimar</b> es muestrear rápido y quedarse con una de cada N muestras, o con el mínimo y el máximo de cada grupo. Con mín/máx no se pierde un pico estrecho entre dos muestras guardadas. Esa es la «detección de picos» de RF-12. Ojo: al bajar f_s, el filtro ⑧ ya no protege del alias. La decimación con mín/máx, o un promedio, lo compensa por firmware.</p>
+
+<h3>Disparo: cómo se queda quieta la imagen</h3>
+<p>El ADC escribe sin parar en un buffer circular en RAM (DMA). El <b>watchdog analógico AWD1</b> del ADC compara cada muestra con un umbral, que es el nivel de disparo, por hardware y sin gastar CPU. Cuando la señal lo cruza en el sentido elegido, el firmware deja correr las muestras que faltan para la posición de disparo y congela el buffer. Así siempre hay muestras <b>de antes</b> del disparo (pre-disparo). Como se compara la muestra ya digitalizada, el nivel de disparo no necesita hardware analógico extra.</p>
+
+<div class="box"><b>Una restricción del G473 que afecta a CH1: el reloj del ADC.</b><br>
+Si el reloj del ADC no está sincronizado con el de la CPU (modo asíncrono), cada disparo tiene hasta 1 ciclo de 52 MHz de incertidumbre (σ ≈ 5.6 ns). A 2 MHz eso deja la relación señal/ruido en <b>≈ 23 dB</b>: la traza «tiembla». Solución propuesta (P13): CPU a 104 MHz y ADC a HCLK/2 = 52 MHz síncrono. Mantiene los 6.5 MSa/s y además ahorra unos 12.6 mA.</div>
+
+<!-- ============================================================ -->
+<h2><span class="n">7</span>Cómo lo vamos a diseñar: el orden</h2>
+
+<p>Se diseña <b>desde los dos extremos hacia el centro</b>. La entrada la fijan los requisitos del usuario (1 MΩ, ±40 V, protección) y la salida la fija el G473 (0–2.5 V, ≤ 100 Ω, 3.3 V). Lo de en medio se ajusta para unirlos.</p>
+
+<div class="tw"><table>
+<tr><th>Etapa</th><th>Bloques</th><th>Qué se comprueba</th><th>Estado (4 oct)</th></tr>
+<tr><td class="n">S0</td><td>—</td><td>Decisiones, modelos y hojas: ÷100, ±100 V y ESD, trimmer 2–6 pF, buffer OPA810, modelos del OPA810, OPA828 y BAV199</td><td><span class="st ok">hecho</span></td></tr>
+<tr><td class="n">S1 · S1b</td><td>①③ entrada</td><td>1 MΩ y la misma capacidad en ×1 y ÷100 (réplica de carga), planitud, corte AC, sonda ×10, tolerancias y trimmer</td><td><span class="st ok">auditado</span></td></tr>
+<tr><td class="n">S2 · S2b</td><td>② protección</td><td>±100 V encendido y apagado, ESD IEC de ±4 kV en contacto y ±8 kV en aire, fugas, sonda a ±400 V</td><td><span class="st ok">auditado</span></td></tr>
+<tr><td class="n">S3</td><td>④⑤⑥ ganancia</td><td>Buffer, escalera, 74HC4051 y ×5 · ×10 con amplificadores reales (GBW ≥ 100 MHz en CH1): 12 escalas, ruido, gran señal, saturación. S3b: protección 470 Ω + BAV99</td><td><span class="st ok">auditado</span></td></tr>
+<tr><td class="n">S4</td><td>⑦ offset</td><td>Etapa final a 3.3 V (P8): offset de ±5 div y salida que nunca daña el ADC</td><td><span class="st ok">auditado</span></td></tr>
+<tr><td class="n">S5</td><td>⑧ filtro</td><td>Bessel, Butterworth o intermedio a 2 MHz, contando −1.0 dB de ④–⑥ y del RC ⑨</td><td><span class="st ok">auditado (intermedio)</span></td></tr>
+<tr><td class="n">S6</td><td>⑨⑩ ADC</td><td>Muestreo del G473 a 6.5 MSa/s con 68 Ω / 470 pF</td><td><span class="st ok">auditado</span></td></tr>
+<tr><td class="n">S7 · S7b · S7c</td><td>①–⑩</td><td>Canal completo de la BNC a PA0 en las 12 escalas; rieles de ±4.9 V y Monte Carlo de 500 placas con tolerancias reales; trimmer en rango en el 100 %</td><td><span class="st ok">auditado</span></td></tr>
+<tr><td class="n">S8</td><td>esquema</td><td>Hoja plana de CH1 en KiCad (paquete en <code>04_esquematicos/S8_CH1/</code>, dibujo con Konnect). CH2 y CH3 a 1 MHz se simulan en S9</td><td><span class="st prop">preparado</span></td></tr>
+</table></div>
+
+<h3>Decisiones que necesito de ti para CH1</h3>
+<ol>
+  <li><s>P1: grueso ÷20</s> → <b>acordado ÷100 con 6 tomas</b> (2 oct). La página está actualizada.</li>
+  <li><s>P8: una sola etapa final a 3.3 V</s> → <b>adoptada el 3 oct</b> (OPA836, sección E).</li>
+  <li><b>P13: CPU a 104 MHz</b> con el ADC síncrono. Afecta al firmware, no al esquema, pero cambia la calidad del disparo en CH1.</li>
+  <li><s>En el filtro: Bessel o Butterworth</s> → <b>intermedio reescalado</b>, elegido el 3 oct con S5.</li>
+</ol>
+
+<div class="foot">
+Cifras: sección C del documento vivo (<code>rediseno_afe_rev21.html</code>), <code>g473_analogico.html</code> (DS12712 T.61–T.63, RM0440 §21.4) y los requisitos RF-01…RF-19. Las atenuaciones de los filtros y la tabla de base de tiempos se calcularon para esta página. C_AC = 1.8 nF corrige los 1.5 nF de B.8, que daban 10.6 Hz (RF-05 pide ≤ 10 Hz); confirmado en S1 (8.75 Hz) y elegido C0G 50 V (4 oct). Revisión del 4 oct: valores de S3–S7c, relé TQ2SA-5V-Z y rieles de ±4.9 V.
+</div>
+
+</div>
+</body>
+</html>
