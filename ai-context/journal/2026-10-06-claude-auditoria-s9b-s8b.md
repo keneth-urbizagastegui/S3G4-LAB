@@ -21,3 +21,8 @@
 - Resultado: M1 2.52 W y 6.6 h (antes 2.76 W y 6.0 h); M2 1.81 W y 9.2 h; M3 1.63 W y 10.2 h; M4 sin cambio; M5 2.04 W; M6 2.44 W. LM27762: 26/23 mA. BUS5: 153 mA.
 - Corrección: el «≈ 0.16 W» de los relés (D-03 y el callout del 4 oct) era la potencia en el riel de 3.3 V. De la batería salen ≈ 0.28 W porque es un LDO tras el boost. Propuesta, sin decidir: mantenimiento desde el buck 3V3D, ≈ 0.18 W.
 - Actualizados en el documento vivo: G.3 (tabla, nota, callout), G.4, RF-17, G.5, G.6 (≈ 0.11 W por canal + 0.09 W del relé), G.8, D-03 y la línea de meta.
+
+## Versionado y unión con main (6 oct, Claude)
+- Simulaciones en git: scripts, actas, `comun/` y `resultados/`. Fuera de git: las corridas y los 15 resultados de más de 1 MB (lista en `.gitignore`; siguen en disco).
+- `ai/s8-ch1-esquema` unida en `main` (ed3c514), sin push. El cajetín y el ERC 15 siguen pendientes; Keneth los hará en KiCad.
+- Aviso: `main` lleva sin subir `kicad/lib/3d/ER-TFTM035-6_3D.step` (49 MB), que entró con la unión de ai/footprint-tft035, anterior a esta sesión. Hay que decidir antes del push.
