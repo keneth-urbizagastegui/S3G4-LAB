@@ -5795,6 +5795,16 @@
 		(diameter 0)
 		(uuid "d80ff15a-4fd2-4f38-a997-200db70ce710")
 	)
+	(junction
+		(at 55.88 261.62)
+		(diameter 0)
+		(uuid "586242a6-8152-4bb4-9892-948722127735")
+	)
+	(junction
+		(at 111.76 264.16)
+		(diameter 0)
+		(uuid "bc78517b-e913-4511-9ff7-b0c026de600d")
+	)
 	(no_connect
 		(at 139.7 93.98)
 		(uuid "83df6750-8de4-4aac-87b5-1ebd1025c48d")
@@ -7875,6 +7885,115 @@
 		)
 		(uuid "4f7d4b43-3730-4b82-b5b3-2465f7aeb3fa")
 	)
+	(text "2 · Relé K101\nTQ2SA-5V-Z, reposo = ÷100"
+		(at 109.22 48.26 0)
+		(effects
+			(font
+				(size 2.54 2.54)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+		(uuid "bd2d7659-d5c6-4d1f-a7a0-69e2967ddd3d")
+	)
+	(text "3 · Sujeción D101, acoplo SW101,\nC_AC, R_BIAS y R_PROT"
+		(at 168.91 48.26 0)
+		(effects
+			(font
+				(size 2.54 2.54)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+		(uuid "4fcfcfde-ea27-40c0-a29a-3edc74246e3a")
+	)
+	(text "4 · Buffer U101"
+		(at 238.76 48.26 0)
+		(effects
+			(font
+				(size 2.54 2.54)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+		(uuid "3835f6b5-67d5-4c0a-bbe9-0340e02c9c36")
+	)
+	(text "5 · Escalera, VCHECK y U102"
+		(at 275.59 48.26 0)
+		(effects
+			(font
+				(size 2.54 2.54)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+		(uuid "e6116730-904c-4766-8702-8ce4e0d3ca44")
+	)
+	(text "9 · Driver del relé (Q101, D104, R135, R136)\nLa corriente de la bobina vuelve por GND, no por AGND."
+		(at 93.98 151.13 0)
+		(effects
+			(font
+				(size 2.54 2.54)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+		(uuid "1c0d17ec-5d61-4c05-bf36-3e84a9051fa7")
+	)
+	(text "6 · Ganancia ×50\nU103A ×5.016, U103B ×10.08, R_SER y BAV99"
+		(at 15.24 214.63 0)
+		(effects
+			(font
+				(size 2.54 2.54)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+		(uuid "f18e9000-3ee1-4ec0-b4ae-a9e635a6f1b5")
+	)
+	(text "7 · Filtro anti-alias U105 (dos Sallen-Key)"
+		(at 128.27 214.63 0)
+		(effects
+			(font
+				(size 2.54 2.54)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+		(uuid "27cc9465-cf9f-446b-8ed4-f5de04015d9c")
+	)
+	(text "8 · Etapa final U106, VMID y red del pin (CH1_ADC = PA0)"
+		(at 228.6 214.63 0)
+		(effects
+			(font
+				(size 2.54 2.54)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+		(uuid "43d8289e-5f3e-417a-a73f-ed0b830d1b52")
+	)
+	(text "ABIERTO (§5 de CH1_PIEZAS_Y_REDES.md), no dibujado:\n- Circuito común del economizador (P-MOSFET de arranque, Schottky desde 3.3 V,\n  línea RELAY_KICK): va en la hoja de control/alimentación, no en la de CH1.\n- TVS de riel: es de la hoja de alimentación, no de CH1.\n- El 74HC165 que lee CH1_CPL_A/B cuelga del STM32, en el bus de los 74HCT595.\n- Partición AGND/GND: la decide Keneth al hacer la placa; aquí sólo se nombra.\n\nCONTRADICCIONES ANOTADAS (se dibuja la tabla tal cual):\n- VCHECK: S7/S7b simularon 1 kΩ a masa; se dibuja el divisor 12.4 k / 100 Ω\n  del documento vivo (R4). El ensayo de VCHECK queda pendiente.\n- C107: la tabla da ≈ 8.7 pF ≥ 200 V; la BOM (CH1_BOM_precios.csv) da 8.2 pF 1 kV,\n  C54431614. Se selecciona en prueba."
+		(at 392.43 262.89 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "3c9ecf0a-a69b-4f80-9cc0-54dd2842efa8")
+	)
+	(text "1 · Entrada: J101, divisor ÷100,\nrama ×1 y réplica"
+		(at 15.24 48.26 0)
+		(effects
+			(font
+				(size 2.54 2.54)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+		(uuid "3f9aa1c4-728d-46a2-b7fb-dc8b2eacbb8c")
+	)
 	(label "CH1_BNC"
 		(at 24.13 60.96 0)
 		(effects
@@ -8095,16 +8214,6 @@
 		)
 		(uuid "a4dea796-c849-490b-930f-69a9cfaf740a")
 	)
-	(label "CH1_G1_INN"
-		(at 57.15 261.62 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "db2e50c1-f8db-452b-a990-cbe9fdc3f222")
-	)
 	(label "CH1_G1_OUT"
 		(at 88.9 266.7 0)
 		(effects
@@ -8124,16 +8233,6 @@
 			(justify left bottom)
 		)
 		(uuid "4533a4a3-6558-4508-b791-dcf51563f6b9")
-	)
-	(label "CH1_G2_INN"
-		(at 113.03 264.16 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "5626ec76-68be-4090-8d4d-0c0832e7173b")
 	)
 	(label "CH1_RF2_MID"
 		(at 132.08 269.24 270)
@@ -8285,6 +8384,26 @@
 		)
 		(uuid "355cc0fe-7c70-4a13-8b06-d82706eefddb")
 	)
+	(label "CH1_G1_INN"
+		(at 68.58 259.08 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "b1a601b5-3023-4389-b901-e87bddd0ff05")
+	)
+	(label "CH1_G2_INN"
+		(at 124.46 262.89 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "2fd0c827-d29f-4ed6-b37c-f8cfb363d71c")
+	)
 	(global_label "RELAY_COM"
 		(shape input)
 		(at 119.38 81.28 180)
@@ -8395,56 +8514,6 @@
 		)
 		(uuid "6a866ffc-ce4b-42fc-88d1-348714da4718")
 	)
-  (text "2 · Relé K101\nTQ2SA-5V-Z, reposo = ÷100"
-    (at 109.22 48.26 0)
-    (effects (font (size 2.54 2.54) (bold yes)) (justify left bottom))
-    (uuid "bd2d7659-d5c6-4d1f-a7a0-69e2967ddd3d")
-  )
-  (text "3 · Sujeción D101, acoplo SW101,\nC_AC, R_BIAS y R_PROT"
-    (at 168.91 48.26 0)
-    (effects (font (size 2.54 2.54) (bold yes)) (justify left bottom))
-    (uuid "4fcfcfde-ea27-40c0-a29a-3edc74246e3a")
-  )
-  (text "4 · Buffer U101"
-    (at 238.76 48.26 0)
-    (effects (font (size 2.54 2.54) (bold yes)) (justify left bottom))
-    (uuid "3835f6b5-67d5-4c0a-bbe9-0340e02c9c36")
-  )
-  (text "5 · Escalera, VCHECK y U102"
-    (at 275.59 48.26 0)
-    (effects (font (size 2.54 2.54) (bold yes)) (justify left bottom))
-    (uuid "e6116730-904c-4766-8702-8ce4e0d3ca44")
-  )
-  (text "9 · Driver del relé (Q101, D104, R135, R136)\nLa corriente de la bobina vuelve por GND, no por AGND."
-    (at 93.98 151.13 0)
-    (effects (font (size 2.54 2.54) (bold yes)) (justify left bottom))
-    (uuid "1c0d17ec-5d61-4c05-bf36-3e84a9051fa7")
-  )
-  (text "6 · Ganancia ×50\nU103A ×5.016, U103B ×10.08, R_SER y BAV99"
-    (at 15.24 214.63 0)
-    (effects (font (size 2.54 2.54) (bold yes)) (justify left bottom))
-    (uuid "f18e9000-3ee1-4ec0-b4ae-a9e635a6f1b5")
-  )
-  (text "7 · Filtro anti-alias U105 (dos Sallen-Key)"
-    (at 128.27 214.63 0)
-    (effects (font (size 2.54 2.54) (bold yes)) (justify left bottom))
-    (uuid "27cc9465-cf9f-446b-8ed4-f5de04015d9c")
-  )
-  (text "8 · Etapa final U106, VMID y red del pin (CH1_ADC = PA0)"
-    (at 228.6 214.63 0)
-    (effects (font (size 2.54 2.54) (bold yes)) (justify left bottom))
-    (uuid "43d8289e-5f3e-417a-a73f-ed0b830d1b52")
-  )
-  (text "ABIERTO (§5 de CH1_PIEZAS_Y_REDES.md), no dibujado:\n- Circuito común del economizador (P-MOSFET de arranque, Schottky desde 3.3 V,\n  línea RELAY_KICK): va en la hoja de control/alimentación, no en la de CH1.\n- TVS de riel: es de la hoja de alimentación, no de CH1.\n- El 74HC165 que lee CH1_CPL_A/B cuelga del STM32, en el bus de los 74HCT595.\n- Partición AGND/GND: la decide Keneth al hacer la placa; aquí sólo se nombra.\n\nCONTRADICCIONES ANOTADAS (se dibuja la tabla tal cual):\n- VCHECK: S7/S7b simularon 1 kΩ a masa; se dibuja el divisor 12.4 k / 100 Ω\n  del documento vivo (R4). El ensayo de VCHECK queda pendiente.\n- C107: la tabla da ≈ 8.7 pF ≥ 200 V; la BOM (CH1_BOM_precios.csv) da 8.2 pF 1 kV,\n  C54431614. Se selecciona en prueba."
-    (at 392.43 262.89 0)
-    (effects (font (size 1.27 1.27)) (justify left bottom))
-    (uuid "3c9ecf0a-a69b-4f80-9cc0-54dd2842efa8")
-  )
-  (text "1 · Entrada: J101, divisor ÷100,\nrama ×1 y réplica"
-    (at 15.24 48.26 0)
-    (effects (font (size 2.54 2.54) (bold yes)) (justify left bottom))
-    (uuid "3f9aa1c4-728d-46a2-b7fb-dc8b2eacbb8c")
-  )
 	(symbol
 		(lib_id "Device:C")
 		(at 187.96 257.81 0)
@@ -8455,7 +8524,7 @@
 		(dnp no)
 		(uuid "015b32a4-d001-4368-8b79-6dd76703326b")
 		(property "Reference" "C110"
-			(at 180.22 258.86 0)
+			(at 187.96 252.73 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -8466,7 +8535,7 @@
 			)
 		)
 		(property "Value" "47pF C0G"
-			(at 175.18 261.16 0)
+			(at 192.6 263.525 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -8637,7 +8706,7 @@
 		(dnp no)
 		(uuid "05e83f5f-b68f-40ce-929e-85e953dec28c")
 		(property "Reference" "C108"
-			(at 191.77 62.992 90)
+			(at 189.5 60 90)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -8648,7 +8717,7 @@
 			)
 		)
 		(property "Value" "1.8nF C0G 50V"
-			(at 191.77 69.088 90)
+			(at 183.3 62.4 90)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -8999,7 +9068,7 @@
 		(dnp no)
 		(uuid "1523f299-f7d6-4f39-804d-bd998fd10ca8")
 		(property "Reference" "C124"
-			(at 327.68 238.44 90)
+			(at 335 238.6 90)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -9010,7 +9079,7 @@
 			)
 		)
 		(property "Value" "100nF X7R 16V"
-			(at 322.01 240.34 90)
+			(at 342 240.8 90)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -9091,7 +9160,7 @@
 		(dnp no)
 		(uuid "2175d425-f901-4f51-8504-458d16db2f84")
 		(property "Reference" "C111"
-			(at 236.91 240.15 90)
+			(at 243 240.15 90)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -9102,7 +9171,7 @@
 			)
 		)
 		(property "Value" "220pF C0G"
-			(at 236.91 242.45 90)
+			(at 246 242.45 90)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -9556,7 +9625,7 @@
 			)
 		)
 		(property "Value" "OPA836IDBVR"
-			(at 326.39 260.35 0)
+			(at 332.74 252.73 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -11101,7 +11170,7 @@
 		(dnp no)
 		(uuid "60161ebc-123f-4cff-bf0f-a18df8d8a3b9")
 		(property "Reference" "D104"
-			(at 124.46 107.95 0)
+			(at 130.5 110.2 270)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -11111,7 +11180,7 @@
 			)
 		)
 		(property "Value" "1N4148W"
-			(at 124.46 113.03 0)
+			(at 131.5 112.6 270)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -11665,7 +11734,7 @@
 			)
 		)
 		(property "Value" "OPA810IDBVR"
-			(at 245.11 72.39 0)
+			(at 254.5 78.4 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -14140,7 +14209,7 @@
 		(dnp no)
 		(uuid "bb79047b-99a6-43be-b043-e75ba598ef72")
 		(property "Reference" "C107"
-			(at 145.69 100.02 90)
+			(at 150 101 90)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -14151,7 +14220,7 @@
 			)
 		)
 		(property "Value" "~8.7pF C0G 200V"
-			(at 138.76 101.92 90)
+			(at 160 103.3 90)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -14787,7 +14856,7 @@
 		(dnp no)
 		(uuid "ce69cf62-f3a0-48a8-b158-e4f759b39c5c")
 		(property "Reference" "C109"
-			(at 175.95 232.53 90)
+			(at 187 232.4 90)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -14798,7 +14867,7 @@
 			)
 		)
 		(property "Value" "56pF C0G"
-			(at 175.95 234.83 90)
+			(at 190 234.7 90)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -14971,7 +15040,7 @@
 		(dnp no)
 		(uuid "d9933fe0-e258-4648-9373-1527e026c4a3")
 		(property "Reference" "D101"
-			(at 172.72 91.44 0)
+			(at 168.91 96.52 90)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -14981,7 +15050,7 @@
 			)
 		)
 		(property "Value" "BAV199"
-			(at 172.72 93.98 0)
+			(at 167.64 94.615 90)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -16504,7 +16573,7 @@
 			)
 		)
 		(property "Value" "AD8039ARZ-REEL7"
-			(at 78.74 256.54 0)
+			(at 78.74 244.475 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16593,7 +16662,7 @@
 			)
 		)
 		(property "Value" "AD8039ARZ-REEL7"
-			(at 134.62 259.08 0)
+			(at 134.62 247.015 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16771,7 +16840,7 @@
 			)
 		)
 		(property "Value" "AD8039ARZ-REEL7"
-			(at 200.66 261.62 0)
+			(at 194.31 249.555 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16860,7 +16929,7 @@
 			)
 		)
 		(property "Value" "AD8039ARZ-REEL7"
-			(at 254 264.16 0)
+			(at 247.65 252.095 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -17831,7 +17900,7 @@
 			)
 		)
 		(property "Value" "AGND"
-			(at 251.46 74.93 0)
+			(at 257 72.4 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -18380,7 +18449,7 @@
 			)
 		)
 		(property "Value" "AGND"
-			(at 345.44 105.41 0)
+			(at 349.6 103 0)
 			(effects
 				(font
 					(size 1.27 1.27)

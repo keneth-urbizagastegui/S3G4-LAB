@@ -2,7 +2,7 @@
 	(version "E")
 	(design
 		(source "C:\\Users\\Keneth\\Desktop\\S3G4 LAB\\S3G4_LAB_rev2.1\\04_esquematicos\\kicad\\s3g4.kicad_sch")
-		(date "2026-10-04T17:02:48")
+		(date "2026-10-05T23:22:01")
 		(tool "Eeschema 10.0.6")
 		(sheet
 			(number "1")
