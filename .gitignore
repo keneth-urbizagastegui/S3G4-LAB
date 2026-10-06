@@ -79,3 +79,6 @@ ltspice-mcp.toml
 /S3G4_LAB_rev2.1/03_simulaciones/CH23_entrada/resultados/s9b_integridad_base.json
 /S3G4_LAB_rev2.1/03_simulaciones/CH23_entrada/resultados/s9b_mc_components.csv
 /S3G4_LAB_rev2.1/03_simulaciones/CH1_entrada/resultados/s6_smoke_lazo.csv
+
+# Modelo 3D del display (49 MB): en local, fuera de GitHub (6 oct).
+/S3G4_LAB_rev2.1/04_esquematicos/kicad/lib/3d/ER-TFTM035-6_3D.step
