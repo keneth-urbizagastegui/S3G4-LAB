@@ -1,0 +1,50 @@
+{
+  "exit_code": 0,
+  "simulations": 6,
+  "errors": 0,
+  "warnings": 0,
+  "elapsed_seconds": 16.016765100001066,
+  "workers": 10,
+  "smoke": false,
+  "controls_only": true,
+  "protected_files": 21318,
+  "protected_changed": [],
+  "records": [
+    {
+      "id": "b0_a_isolated_scalena_posna_tapna_cplna_zero_t25",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "b0_b_isolated_scalena_posna_tapna_cplna_zero_t25",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "b0_c_isolated_scalena_posna_tapna_cplna_zero_t25",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "b0_d_isolated_scalena_posna_tapna_cplna_zero_t25",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "b2_none_s00_pos1_tap0_cpldc_nomi_zero_t25_controloriginal",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "b2_none_s00_pos1_tap0_cpldc_nomi_zero_t25_controlsheet",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    }
+  ]
+}

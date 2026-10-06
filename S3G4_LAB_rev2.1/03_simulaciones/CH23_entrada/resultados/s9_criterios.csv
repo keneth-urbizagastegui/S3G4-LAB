@@ -1,0 +1,36 @@
+criterion,variant,scope,N,pass_count,fraction,status,population
+S9-C1,A,0.005 V/div MC,500,500,1.0,PASA,True
+S9-C2,A,0.005 V/div MC,500,500,1.0,PASA,True
+S9-C3,A,0.005 V/div MC,500,500,1.0,PASA,True
+S9-C5,A,0.005 V/div MC,500,500,1.0,PASA,True
+S9-C9,A,0.005 V/div MC,500,484,0.968,PASA,True
+S9-C1,A,0.05 V/div MC,500,500,1.0,PASA,True
+S9-C2,A,0.05 V/div MC,500,500,1.0,PASA,True
+S9-C3,A,0.05 V/div MC,500,500,1.0,PASA,True
+S9-C5,A,0.05 V/div MC,500,500,1.0,PASA,True
+S9-C9,A,0.05 V/div MC,500,488,0.976,PASA,True
+S9-C1,A,0.5 V/div MC,500,500,1.0,PASA,True
+S9-C2,A,0.5 V/div MC,500,500,1.0,PASA,True
+S9-C3,A,0.5 V/div MC,500,500,1.0,PASA,True
+S9-C5,A,0.5 V/div MC,500,500,1.0,PASA,True
+S9-C9,A,0.5 V/div MC,500,484,0.968,PASA,True
+S9-C1,A,5.0 V/div MC,500,500,1.0,PASA,True
+S9-C2,A,5.0 V/div MC,500,500,1.0,PASA,True
+S9-C3,A,5.0 V/div MC,500,500,1.0,PASA,True
+S9-C5,A,5.0 V/div MC,500,500,1.0,PASA,True
+S9-C9,A,5.0 V/div MC,500,488,0.976,PASA,True
+S9-C4,A,0.005 V/div MC (100),100,100,1.0,PASA,True
+S9-C4,A,0.5 V/div MC (100),100,100,1.0,PASA,True
+S9-C4,A,12 escalas nominales,12,12,1.0,PASA,False
+S9-C6,A,"K4 compartido, P/Z/R, dos frecuencias",6,6,1.0,PASA,False
+S9-C7,A,"36 barridos deterministas, rieles extremos",36,36,1.0,PASA,False
+S9-C8,A,recuperaciones nominales sin BAV199,10,0,0.0,FALLA,False
+S9-C1,B,Detenida por K0,0,0,,NO EVALUADA,False
+S9-C2,B,Detenida por K0,0,0,,NO EVALUADA,False
+S9-C3,B,Detenida por K0,0,0,,NO EVALUADA,False
+S9-C4,B,Detenida por K0,0,0,,NO EVALUADA,False
+S9-C5,B,Detenida por K0,0,0,,NO EVALUADA,False
+S9-C6,B,Detenida por K0,0,0,,NO EVALUADA,False
+S9-C7,B,Detenida por K0,0,0,,NO EVALUADA,False
+S9-C8,B,Detenida por K0,0,0,,NO EVALUADA,False
+S9-C9,B,Detenida por K0,0,0,,NO EVALUADA,False

@@ -1,0 +1,10 @@
+{
+  "variant": "B",
+  "status": "DETENIDA",
+  "source": "ENCARGO_CODEX_S9.md, punto 3",
+  "reason": "El macromodelo National suministrado no concuerda en ancho ni consumo con la hoja TI SNOS792E suministrada.",
+  "evidence": ["s9_k0.csv", "s9_k0.json", "ACTA_S9.md"],
+  "interpretation_corrected_before_full_campaign": true,
+  "earlier_B_runs": "Diagnóstico histórico; no fracción de placas, no calibración y no aprobación de B.",
+  "design_variant_selected": false
+}

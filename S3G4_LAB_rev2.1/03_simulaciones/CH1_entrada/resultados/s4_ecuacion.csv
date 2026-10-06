@@ -1,0 +1,2 @@
+signal_coefficient,dac_coefficient,intercept_V,center_V,offset_positive_V,offset_negative_V,offset_positive_div,offset_negative_div,linear_nonlinearity_pct_fs,full_nonlinearity_pct_fs
+-0.9999973770769962,-1.2406915348349066,2.7855747727392544,1.234710354195689,1.3027261115765278,-1.2137478074334622,5.210904446306111,-4.854991229733849,7.331912854624534e-12,53.06601868094087

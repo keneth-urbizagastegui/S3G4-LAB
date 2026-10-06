@@ -1,0 +1,9 @@
+{
+  "native_attempts_recorded": 14462,
+  "native_failed_attempts": 17,
+  "native_parallel_elapsed_sum_s": 58811.347867099714,
+  "successful_logical_cases": 4313,
+  "reference_native_runs": 14451,
+  "completed_session_elapsed_s": 6074.026033999995,
+  "interrupted_attempts": "Console y logs conservados; procesos interrumpidos antes de devolver registro no est\u00e1n en el contador de intentos terminados."
+}

@@ -1,0 +1,16 @@
+[
+  {
+    "file": "s3_e11.csv",
+    "before_sha256": "943d5db0d875b41cad60ddf6a922b602fa8843e3ce3468aea461d0ee14964b31",
+    "after_sha256": "a207b1dea2d35c596dc4daaed6037943021d8f04722b47a864d009fdd29c5cf6",
+    "rows": 16,
+    "measured_fields_unchanged": true
+  },
+  {
+    "file": "s3_resultados.csv",
+    "before_sha256": "628517c001c622d2165a39da88ae5dcb2b06f03138cdb996383f70db7ed3a106",
+    "after_sha256": "151fe7f17323bd324448d9dcd4b16e5cefd6497fef438d3d0a9d88ca358ce27a",
+    "rows": 245,
+    "measured_fields_unchanged": true
+  }
+]

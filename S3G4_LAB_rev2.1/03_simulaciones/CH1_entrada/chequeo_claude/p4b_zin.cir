@@ -1,0 +1,53 @@
+* Chequeo rapido de Claude (2 oct 2026): entrada P4b de CH1 con grueso /100.
+* Replica de la carga del nodo SEL en el segundo polo del rele (Req = Rbias, Ceq ~ Csel).
+* POS=1 -> x1 ; POS=100 -> /100 (reposo). DCS = desviacion de la capacidad real de SEL frente a la estimada.
+* COFF = capacidad de contacto abierto del rele. Elementos ideales; sin diodos (su capacidad va en CSEL).
+.param RS=99.8k RBIAS=10Meg REQ={RBIAS} RT1=549k RB=11.0k
+.param CT1=20p COFF=1p CX1=2p CBNC=3p CTAP=3p
+.param CSEL0=6p CBUF=5p CSEL={CSEL0+DCS}
+.param CEQ=12p
+.param CXT={CX1+CSEL0+CBUF+COFF}
+.param CS={RBIAS*CXT/RS}
+.param CTEFF={CT1/2+COFF}
+.param RBL={RB*RBIAS/(RB+RBIAS)}
+.param CBTOT={CTEFF*2*RT1/RBL}
+.param CB={CBTOT-(CSEL0+CBUF+CTAP)}
+.param DCS=0 POS=1
+Vs SRC 0 AC 1
+Vi SRC BNC 0
+Cbnc BNC 0 {CBNC}
+* divisor /100 compensado, siempre conectado
+Rt1 BNC M {RT1}
+Ct1 BNC M {CT1}
+Rt2 M TAP {RT1}
+Ct2 M TAP {CT1}
+Rb TAP 0 {RB}
+Cb TAP 0 {CB}
+Ctap TAP 0 {CTAP}
+* rama x1
+Rs BNC X1 {RS}
+Cs BNC X1 {CS}
+Cx1 X1 0 {CX1}
+* K1a: elige X1 o TAP hacia SEL
+Ra1 X1 SEL {if(POS==1,0.1,1e12)}
+Ra2 TAP SEL {if(POS==1,1e12,0.1)}
+Coa1 X1 SEL {COFF}
+Coa2 TAP SEL {COFF}
+* K1b: en reposo (/100) conecta X1 a la replica de carga
+Rb1 X1 EQ {if(POS==1,1e12,0.1)}
+Cob X1 EQ {COFF}
+Req EQ 0 {REQ}
+Ceq EQ 0 {CEQ}
+* carga del nodo SEL (acoplo DC): Rbias, clamps+conmutador+pista, Rprot y buffer
+Rbias SEL 0 {RBIAS}
+Csel SEL 0 {CSEL}
+Rprot SEL BI 1k
+Cbuf BI 0 {CBUF}
+.ac dec 50 1 10Meg
+.meas ac zin100 FIND mag(V(BNC)/I(Vi)) AT=100
+.meas ac cin1m FIND -im(I(Vi)/V(BNC))/(2*pi*1Meg) AT=1Meg
+.meas ac g100 FIND mag(V(BI)/V(BNC)) AT=100
+.meas ac g1k FIND mag(V(BI)/V(BNC)) AT=1k
+.meas ac g1m FIND mag(V(BI)/V(BNC)) AT=1Meg
+.meas ac g2m FIND mag(V(BI)/V(BNC)) AT=2Meg
+.end

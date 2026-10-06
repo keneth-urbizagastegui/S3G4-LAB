@@ -1,0 +1,136 @@
+{
+  "simulations": 4,
+  "elapsed_seconds": 149.48569030000363,
+  "records": [
+    {
+      "id": "h1_rsw825_z_f0_level2p25_na_na",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "h2_rsw825_p_f1999511p71875_level1p25_na_na",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "h2_rsw825_z_f1999511p71875_level1p25_na_na",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "h3_rsw825_p_f1999511p71875_level1p25_tr_na",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    }
+  ],
+  "differences": [
+    {
+      "id": "h1_rsw825_z_f0_level2p25_na_na",
+      "adc": 1,
+      "error_max_mV_delta": 0.00048690595555456184,
+      "error_rms_mV_delta": 0.0004868051956452568
+    },
+    {
+      "id": "h1_rsw825_z_f0_level2p25_na_na",
+      "adc": 2,
+      "error_max_mV_delta": 0.0004866576475137663,
+      "error_rms_mV_delta": 0.00048744956971402686
+    },
+    {
+      "id": "h2_rsw825_p_f1999511p71875_level1p25_na_na",
+      "adc": 1,
+      "error_max_mV_delta": -0.0006347956400531984,
+      "error_rms_mV_delta": -0.0005740758490446751,
+      "residual_rms_mV_delta": 4.310277934877903e-05,
+      "gain_delta_db_delta": -3.5009071992220253e-06,
+      "phase_delta_deg_delta": 5.32412096707624e-05
+    },
+    {
+      "id": "h2_rsw825_p_f1999511p71875_level1p25_na_na",
+      "adc": 2,
+      "error_max_mV_delta": -0.0008225437886366649,
+      "error_rms_mV_delta": -0.0005698878049784639,
+      "residual_rms_mV_delta": 2.870121755414425e-05,
+      "gain_delta_db_delta": -3.2957159231197797e-06,
+      "phase_delta_deg_delta": 5.2810445719586596e-05
+    },
+    {
+      "id": "h2_rsw825_p_f1999511p71875_level1p25_na_na",
+      "sequence": "loaded",
+      "sfdr_db_delta": -0.40356532645193965,
+      "thd_pct_delta": -3.764101236466672e-08
+    },
+    {
+      "id": "h2_rsw825_p_f1999511p71875_level1p25_na_na",
+      "sequence": "reference",
+      "sfdr_db_delta": 30.454266652762783,
+      "thd_pct_delta": -4.9130423844612635e-06
+    },
+    {
+      "id": "h2_rsw825_z_f1999511p71875_level1p25_na_na",
+      "adc": 1,
+      "error_max_mV_delta": -0.00033746036742599017,
+      "error_rms_mV_delta": -0.00041220358315996464,
+      "residual_rms_mV_delta": -5.683760863259529e-06,
+      "gain_delta_db_delta": -2.889588703036683e-07,
+      "phase_delta_deg_delta": 3.967303162921709e-05
+    },
+    {
+      "id": "h2_rsw825_z_f1999511p71875_level1p25_na_na",
+      "adc": 2,
+      "error_max_mV_delta": -0.0003356676081551768,
+      "error_rms_mV_delta": -0.0004121221997053226,
+      "residual_rms_mV_delta": -5.566418792837298e-06,
+      "gain_delta_db_delta": -2.8857639113727407e-07,
+      "phase_delta_deg_delta": 3.966710749914171e-05
+    },
+    {
+      "id": "h2_rsw825_z_f1999511p71875_level1p25_na_na",
+      "sequence": "loaded",
+      "sfdr_db_delta": 21.66098508501642,
+      "thd_pct_delta": -1.3240388106500388e-06
+    },
+    {
+      "id": "h2_rsw825_z_f1999511p71875_level1p25_na_na",
+      "sequence": "reference",
+      "sfdr_db_delta": 20.923707139767544,
+      "thd_pct_delta": -8.208664418715435e-07
+    },
+    {
+      "id": "h3_rsw825_p_f1999511p71875_level1p25_tr_na",
+      "adc": 1,
+      "error_max_mV_delta": -0.0002960893976649004,
+      "error_rms_mV_delta": -0.0003085954061603502,
+      "residual_rms_mV_delta": -1.4191870172971209e-05,
+      "gain_delta_db_delta": -3.2410640493987786e-06,
+      "phase_delta_deg_delta": 5.338078087246956e-05
+    },
+    {
+      "id": "h3_rsw825_p_f1999511p71875_level1p25_tr_na",
+      "adc": 2,
+      "error_max_mV_delta": -0.0003048636483242717,
+      "error_rms_mV_delta": -0.00030326063052399377,
+      "residual_rms_mV_delta": 4.199243789281058e-06,
+      "gain_delta_db_delta": -3.049625673705314e-06,
+      "phase_delta_deg_delta": 5.28611842520732e-05
+    },
+    {
+      "id": "h3_rsw825_p_f1999511p71875_level1p25_tr_na",
+      "sequence": "loaded",
+      "sfdr_db_delta": 0.35200876393705016,
+      "thd_pct_delta": -1.6265261501458082e-05
+    },
+    {
+      "id": "h3_rsw825_p_f1999511p71875_level1p25_tr_na",
+      "sequence": "reference",
+      "sfdr_db_delta": 0.28997226073103377,
+      "thd_pct_delta": -1.4418428966915574e-05
+    }
+  ],
+  "protected_changed": [],
+  "exit_code": 0
+}

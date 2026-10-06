@@ -51,3 +51,31 @@ S3G4_LAB_rev2.1/herramientas/view_*
 # Estado local del MCP de LTspice (se crea en la carpeta de arranque)
 .ltspice-mcp/
 ltspice-mcp.toml
+
+# Simulaciones de la rev 2.1: se versionan scripts, actas, comun/ y resultados/.
+# Las corridas (decks generados, .raw, .log, .db, consolas) se quedan en local.
+/S3G4_LAB_rev2.1/03_simulaciones/CH*_entrada/*.log
+/S3G4_LAB_rev2.1/03_simulaciones/CH*_entrada/S*/**/*.*
+!/S3G4_LAB_rev2.1/03_simulaciones/CH*_entrada/S*/**/*.py
+!/S3G4_LAB_rev2.1/03_simulaciones/CH*_entrada/S*/**/*.md
+/S3G4_LAB_rev2.1/03_simulaciones/CH1_entrada/chequeo_claude/**/*.*
+!/S3G4_LAB_rev2.1/03_simulaciones/CH1_entrada/chequeo_claude/**/*.py
+!/S3G4_LAB_rev2.1/03_simulaciones/CH1_entrada/chequeo_claude/**/*.md
+!/S3G4_LAB_rev2.1/03_simulaciones/CH1_entrada/chequeo_claude/**/*.cir
+
+# Resultados de más de 1 MB: se quedan en local, no van a GitHub (6 oct).
+/S3G4_LAB_rev2.1/03_simulaciones/CH1_entrada/resultados/s1b_ejecucion.json
+/S3G4_LAB_rev2.1/03_simulaciones/CH1_entrada/resultados/s1b_resultados.csv
+/S3G4_LAB_rev2.1/03_simulaciones/CH1_entrada/resultados/s6_fft_bins.csv
+/S3G4_LAB_rev2.1/03_simulaciones/CH1_entrada/resultados/s6_lazo.csv
+/S3G4_LAB_rev2.1/03_simulaciones/CH1_entrada/resultados/s6_muestras.csv
+/S3G4_LAB_rev2.1/03_simulaciones/CH1_entrada/resultados/s7_mc_components.csv
+/S3G4_LAB_rev2.1/03_simulaciones/CH1_entrada/resultados/s7b_mc_components.csv
+/S3G4_LAB_rev2.1/03_simulaciones/CH23_entrada/resultados/s9_all.csv
+/S3G4_LAB_rev2.1/03_simulaciones/CH23_entrada/resultados/s9_bins.csv
+/S3G4_LAB_rev2.1/03_simulaciones/CH23_entrada/resultados/s9_mc_components.csv
+/S3G4_LAB_rev2.1/03_simulaciones/CH23_entrada/resultados/s9_samples.csv
+/S3G4_LAB_rev2.1/03_simulaciones/CH23_entrada/resultados/s9b_all.csv
+/S3G4_LAB_rev2.1/03_simulaciones/CH23_entrada/resultados/s9b_integridad_base.json
+/S3G4_LAB_rev2.1/03_simulaciones/CH23_entrada/resultados/s9b_mc_components.csv
+/S3G4_LAB_rev2.1/03_simulaciones/CH1_entrada/resultados/s6_smoke_lazo.csv

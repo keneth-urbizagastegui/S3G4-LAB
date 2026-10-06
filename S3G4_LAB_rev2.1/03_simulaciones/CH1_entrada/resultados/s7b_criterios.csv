@@ -1,0 +1,58 @@
+criterion,scope,N,pass_count,fraction,status
+S7b-C1,0.005 V/div nominal,1,1,1.0,PASA
+S7b-C2,0.005 V/div nominal,1,1,1.0,PASA
+S7b-C1,0.005 V/div MC,500,500,1.0,PASA
+S7b-C2,0.005 V/div MC,500,500,1.0,PASA
+S7b-C1,0.01 V/div nominal,1,1,1.0,PASA
+S7b-C2,0.01 V/div nominal,1,1,1.0,PASA
+S7b-C1,0.02 V/div nominal,1,1,1.0,PASA
+S7b-C2,0.02 V/div nominal,1,1,1.0,PASA
+S7b-C1,0.05 V/div nominal,1,1,1.0,PASA
+S7b-C2,0.05 V/div nominal,1,1,1.0,PASA
+S7b-C1,0.05 V/div MC,500,500,1.0,PASA
+S7b-C2,0.05 V/div MC,500,500,1.0,PASA
+S7b-C1,0.1 V/div nominal,1,1,1.0,PASA
+S7b-C2,0.1 V/div nominal,1,1,1.0,PASA
+S7b-C1,0.2 V/div nominal,1,1,1.0,PASA
+S7b-C2,0.2 V/div nominal,1,1,1.0,PASA
+S7b-C1,0.5 V/div nominal,1,1,1.0,PASA
+S7b-C2,0.5 V/div nominal,1,1,1.0,PASA
+S7b-C1,0.5 V/div MC,500,500,1.0,PASA
+S7b-C2,0.5 V/div MC,500,500,1.0,PASA
+S7b-C1,1.0 V/div nominal,1,1,1.0,PASA
+S7b-C2,1.0 V/div nominal,1,1,1.0,PASA
+S7b-C1,2.0 V/div nominal,1,1,1.0,PASA
+S7b-C2,2.0 V/div nominal,1,1,1.0,PASA
+S7b-C1,5.0 V/div nominal,1,1,1.0,PASA
+S7b-C2,5.0 V/div nominal,1,1,1.0,PASA
+S7b-C1,5.0 V/div MC,500,500,1.0,PASA
+S7b-C2,5.0 V/div MC,500,500,1.0,PASA
+S7b-C1,10.0 V/div nominal,1,1,1.0,PASA
+S7b-C2,10.0 V/div nominal,1,1,1.0,PASA
+S7b-C1,20.0 V/div nominal,1,1,1.0,PASA
+S7b-C2,20.0 V/div nominal,1,1,1.0,PASA
+S7b-C3,0.005 V/div nominal,1,1,1.0,PASA
+S7b-C3,0.005 V/div MC,100,100,1.0,PASA
+S7b-C3,0.01 V/div nominal,1,1,1.0,PASA
+S7b-C3,0.02 V/div nominal,1,1,1.0,PASA
+S7b-C3,0.05 V/div nominal,1,1,1.0,PASA
+S7b-C3,0.1 V/div nominal,1,1,1.0,PASA
+S7b-C3,0.2 V/div nominal,1,1,1.0,PASA
+S7b-C3,0.5 V/div nominal,1,1,1.0,PASA
+S7b-C3,0.5 V/div MC,100,100,1.0,PASA
+S7b-C3,1.0 V/div nominal,1,1,1.0,PASA
+S7b-C3,2.0 V/div nominal,1,1,1.0,PASA
+S7b-C3,5.0 V/div nominal,1,1,1.0,PASA
+S7b-C3,10.0 V/div nominal,1,1,1.0,PASA
+S7b-C3,20.0 V/div nominal,1,1,1.0,PASA
+S7b-C4,0.005 V/div,500,500,1.0,PASA
+S7b-C4,0.05 V/div,500,500,1.0,PASA
+S7b-C4,0.5 V/div,500,500,1.0,PASA
+S7b-C4,5.0 V/div,500,500,1.0,PASA
+S7b-C5,placas únicas,500,416,0.832,FALLA
+S7b-C6,casos deterministas K3; no estimador de placas,36,36,1.0,PASA
+S7b-C7,casos nominales K4; no estimador de placas,10,10,1.0,PASA
+S7b-C8,0.005 V/div,500,484,0.968,PASA
+S7b-C8,0.05 V/div,500,488,0.976,PASA
+S7b-C8,0.5 V/div,500,484,0.968,PASA
+S7b-C8,5.0 V/div,500,488,0.976,PASA

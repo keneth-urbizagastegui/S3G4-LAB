@@ -1,0 +1,9 @@
+criterion,value,status
+S3-C1,Loss S3 max 0.0220343922 dB / 0.5,PASA
+S3-C2,Peak S3 1.78462966e-05 dB / 0.5; step 0.000172600053% / 5,PASA
+S3-C3,DC error max 0.956278543% (informativo),PASA
+S3-C4,Noise 1Hz–3.15MHz 0.644338186% div / 0.45,FALLA
+S3-C5,THD 0.00696637201% / 1; SR fraction 0.0292243815 / 0.5,PASA
+S3-C6,Recovery max finite 551.21675 us / 1; not recovered 0 (window 988.98us),FALLA
+S3-C7,"Diff A 0.0591696756, B 0.614658174 / 4V; U101 4.36202684/7V, I 2.18627024/10mA, rail excess 0.919680478/0.5V; AD rail excess -4.00447792V",FALLA
+S3-C8,Settle 0.0932545715 us / 10; glitch 5.28057427e-06 div; not recovered 0,PASA

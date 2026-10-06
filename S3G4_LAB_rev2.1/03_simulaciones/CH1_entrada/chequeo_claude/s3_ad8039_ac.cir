@@ -1,0 +1,37 @@
+* Chequeo Claude S3: AD8038/9 a +-5 V, seguidor, x5.02, x10.09; carga 1k||10p
+.include "C:\Users\Keneth\Desktop\S3G4 LAB\Simulation_LTSpice\models\AD8039\AD8038_ltspice.sub"
+VP vp 0 5
+VN vn 0 -5
+VI in 0 AC 1
+* seguidor
+X1 in o1 vp vn o1 AD8038
+RL1 o1 0 1k
+CL1 o1 0 10p
+* x5.02
+X2 in m2 vp vn o2 AD8038
+RF2 o2 m2 4.02k
+RG2 m2 0 1k
+CM2 m2 0 1p
+RL2 o2 0 1k
+CL2 o2 0 10p
+* x10.09
+X3 in m3 vp vn o3 AD8038
+RF3 o3 m3 9.09k
+RG3 m3 0 1k
+CM3 m3 0 1p
+RL3 o3 0 1k
+CL3 o3 0 10p
+.ac dec 200 1k 1G
+.meas ac g1_dc find mag(V(o1)) at 1k
+.meas ac g5_dc find mag(V(o2)) at 1k
+.meas ac g10_dc find mag(V(o3)) at 1k
+.meas ac f1 when mag(V(o1))=g1_dc/sqrt(2) fall=last
+.meas ac f5 when mag(V(o2))=g5_dc/sqrt(2)
+.meas ac f10 when mag(V(o3))=g10_dc/sqrt(2)
+.meas ac l5_2M find db(V(o2)) at 2Meg
+.meas ac l10_2M find db(V(o3)) at 2Meg
+.meas ac pk1 max mag(V(o1))
+.meas ac pk5 max mag(V(o2))
+.meas ac pk10 max mag(V(o3))
+.meas ac inoise_dummy param 0
+.end

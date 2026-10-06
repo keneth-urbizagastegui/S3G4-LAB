@@ -1,0 +1,12 @@
+* Chequeo Claude S3: ruido de entrada del modelo AD8038 (seguidor, fuente 0 ohm) frente a 8 nV/rtHz de la hoja
+.include "C:\Users\Keneth\Desktop\S3G4 LAB\S3G4_LAB_rev2.1\03_simulaciones\CH1_entrada\chequeo_claude\s3_ruido\AD8038_en4.4.sub"
+VP vp 0 5
+VN vn 0 -5
+VI in 0 0 AC 1
+X1 in o vp vn o AD8038
+RL o 0 2k
+.noise V(o) VI dec 20 10 10Meg
+.meas noise en10k find V(inoise) at 10k
+.meas noise en100k find V(inoise) at 100k
+.meas noise en1M find V(inoise) at 1Meg
+.end

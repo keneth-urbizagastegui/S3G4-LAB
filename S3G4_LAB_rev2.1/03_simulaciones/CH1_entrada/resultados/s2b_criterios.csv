@@ -1,0 +1,10 @@
+criterion,buffer,value,status
+S2b-C1,OPA810,Zin error 0.085388%; Cin 24.443517–24.832964 pF; delta 0.389447 pF; gain 0.187737%; flat 0.084306%; peak 0.001354 dB; fc 8.814669 Hz,PASA
+S2b-C1,OPA828,Zin error 0.092912%; Cin 30.879287–31.297180 pF; delta 0.417893 pF; gain 0.541745%; flat 0.343764%; peak 0.001303 dB; fc 8.783539 Hz,FALLA
+S2b-C2,OPA810,req_v=99.0122; 0.990122 times derated limit (e5b_opa810_pos100_cplac_pwr1_bleed0_sine100_t25_50ohm_real_contact),PASA
+S2b-C2,OPA828,req_v=99.0119; 0.990119 times derated limit (e5b_opa828_pos100_cpldc_pwr1_bleed0_neg100_t25_50ohm_real_contact),PASA
+S2b-C3,OPA810,rail excess 0.838447 V; input 0.000962578 mA; diff 0.886076 V / 7 V,FALLA
+S2b-C3,OPA828,rail excess 0.544754 V; input 0.211425 mA; diff 4.04476 V / 9.95342 V,FALLA
+S2b-C4,GENERATOR,four points at 4 and 8 kV; see calibration CSV,PASA
+S2b-C5,OPA810,BAV max I2t 3.41302 microA2s / 8; input 5.6777 mA; diff 4.40066 V; OFF macro unvalidated,PASA
+S2b-C5,OPA828,BAV max I2t 3.58749 microA2s / 8; input 6.17061 mA; diff 4.08432 V; OFF macro unvalidated,PASA

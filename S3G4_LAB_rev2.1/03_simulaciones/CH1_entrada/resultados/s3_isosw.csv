@@ -1,0 +1,5 @@
+test,scale_V_div,ix,POS,tap,CPL,corner,polarity,level,control,mux_model,id,ron,off_gain
+ISOSW,0.005,0,1,0,DC,nomi,zero,0,0,SWI1,isosw_s00_pos1_tap0_cpldc_ronnomi_zero_level0_control0,69.1320757766,
+ISOSW,0.005,0,1,0,DC,nomi,zero,1,5,SWI1,isosw_s00_pos1_tap0_cpldc_ronnomi_zero_level1_control5,,1.99999999574e-09
+ISOSW,0.005,0,1,0,DC,nomi,zero,2,0,SWI1,isosw_s00_pos1_tap0_cpldc_ronnomi_zero_level2_control0,75.0356713488,
+ISOSW,0.005,0,1,0,DC,nomi,zero,-2,0,SWI1,isosw_s00_pos1_tap0_cpldc_ronnomi_zero_levelneg2_control0,71.6629126354,

@@ -1,0 +1,2 @@
+test,scale_V_div,ix,POS,tap,CPL,corner,polarity,mux_model,id,tap0,tap1,tap2,tap3,tap4,tap5
+ISOLAD,0.005,0,1,0,DC,nomi,zero,SWI1,isolad_s00_pos1_tap0_cpldc_ronnomi_zero,1.0,0.499849654205,0.250275633958,0.0999298386288,0.0499148040493,0.0249574020247

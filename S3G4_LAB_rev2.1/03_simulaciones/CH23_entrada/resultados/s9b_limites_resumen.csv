@@ -1,0 +1,7 @@
+stage,differential_V,input_max_mA,limitacion
+OPA810,0.9204355858361337,7.738920973747053e-09,LM6172: saturación/protecciones heredadas de National; no validadas contra silicio.
+OPA836,0.6011084441029427,0.016627377766121717,LM6172: saturación/protecciones heredadas de National; no validadas contra silicio.
+U103A,0.6884991670584348,0.0014009075254926527,LM6172: saturación/protecciones heredadas de National; no validadas contra silicio.
+U103B,0.6733916843940964,0.001393695822823945,LM6172: saturación/protecciones heredadas de National; no validadas contra silicio.
+U105A,0.003084953109032007,0.0012812403489606587,LM6172: saturación/protecciones heredadas de National; no validadas contra silicio.
+U105B,0.003085532568801508,0.001281241582978115,LM6172: saturación/protecciones heredadas de National; no validadas contra silicio.

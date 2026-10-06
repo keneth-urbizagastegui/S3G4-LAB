@@ -1,0 +1,1123 @@
+{
+  "exit_code": 0,
+  "simulations": 120,
+  "errors": 0,
+  "warnings": 0,
+  "elapsed_seconds": 69.20620509999935,
+  "workers": 10,
+  "smoke": false,
+  "generator_calibrated": true,
+  "second_source": true,
+  "protected_files": 20179,
+  "protected_changed": [],
+  "derived": [
+    {
+      "buffer": "OPA810",
+      "CIN_BUF_pF": 0,
+      "CBUF_EST_pF": 2.5,
+      "CJ_POL_pF": 1.0838258570379375,
+      "C_SEL_EST_pF": 8.667651714075875,
+      "CEQ_pF": 8.667651714075875,
+      "CS_pF": 1169.1033781639155,
+      "CB_pF": 1088.540148285924
+    },
+    {
+      "buffer": "OPA828",
+      "CIN_BUF_pF": 0,
+      "CBUF_EST_pF": 9.0,
+      "CJ_POL_pF": 1.0838258570379375,
+      "C_SEL_EST_pF": 15.167651714075877,
+      "CEQ_pF": 15.167651714075877,
+      "CS_pF": 1820.4059833743363,
+      "CB_pF": 1082.040148285924
+    }
+  ],
+  "generator": {
+    "Cbody": 1.5e-10,
+    "Rbody": 330,
+    "Lbody": 1.8e-06,
+    "Cfast": 5e-12,
+    "Rfast": 155,
+    "Lfast": 1.8e-07,
+    "Rcontact": 0.01,
+    "Rair": 300
+  },
+  "limits": {
+    "S2b-C1": {
+      "zin": 1000000.0,
+      "zin_pct": 2,
+      "cin_lo": 10,
+      "cin_hi": 30,
+      "delta": 2,
+      "gain_pct": 0.5,
+      "flat_pct": 1,
+      "peak_db": 0.1,
+      "fc": 10
+    },
+    "S2b-C2": {
+      "r1206_w": 0.125,
+      "r1206_v": 100.0,
+      "r0805_w": 0.0625,
+      "r0805_v": 75.0,
+      "cap_fraction": 0.8
+    },
+    "S2b-C3": {
+      "rail_extension": 0.5,
+      "input_i": 0.01,
+      "OPA810_diff": 7
+    },
+    "S2b-C4": {
+      "peak_tolerance": 0.15,
+      "rise": 8e-10,
+      "rise_tolerance": 0.25,
+      "tail_tolerance": 0.3,
+      "peak_per_kv": 3.75,
+      "i30_per_kv": 2.0,
+      "i60_per_kv": 1.0
+    },
+    "S2b-C5": {
+      "bav_ifsm": 4,
+      "bav_tp": 1e-06,
+      "fraction": 0.5,
+      "input_i": 0.01,
+      "OPA810_diff": 7
+    },
+    "capacitors": {
+      "ct1": 100,
+      "ct2fixed": 100,
+      "ct2trim": 100,
+      "cb": 50,
+      "cs": 200,
+      "cac": 50,
+      "ceq": 200
+    },
+    "numerical": {
+      "first100ns_step": 5e-11,
+      "t0": 1e-07,
+      "stop": 0.002,
+      "tail_i2t_fraction": 0.0001
+    }
+  },
+  "records": [
+    {
+      "id": "e0b_opa810_pos100_cplac_pwr1_bleed0_zero_t25_50ohm_real_contact",
+      "file": "S2b/generados/e0b_opa810_pos100_cplac_pwr1_bleed0_zero_t25_50ohm_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 7
+    },
+    {
+      "id": "e0b_opa810_pos100_cpldc_pwr1_bleed0_zero_t25_50ohm_real_contact",
+      "file": "S2b/generados/e0b_opa810_pos100_cpldc_pwr1_bleed0_zero_t25_50ohm_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 6
+    },
+    {
+      "id": "e0b_opa810_pos1_cplac_pwr1_bleed0_zero_t25_50ohm_real_contact",
+      "file": "S2b/generados/e0b_opa810_pos1_cplac_pwr1_bleed0_zero_t25_50ohm_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 7
+    },
+    {
+      "id": "e0b_opa810_pos1_cpldc_pwr1_bleed0_zero_t25_50ohm_real_contact",
+      "file": "S2b/generados/e0b_opa810_pos1_cpldc_pwr1_bleed0_zero_t25_50ohm_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 6
+    },
+    {
+      "id": "e0b_opa828_pos100_cplac_pwr1_bleed0_zero_t25_50ohm_real_contact",
+      "file": "S2b/generados/e0b_opa828_pos100_cplac_pwr1_bleed0_zero_t25_50ohm_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 7
+    },
+    {
+      "id": "e0b_opa828_pos100_cpldc_pwr1_bleed0_zero_t25_50ohm_real_contact",
+      "file": "S2b/generados/e0b_opa828_pos100_cpldc_pwr1_bleed0_zero_t25_50ohm_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 6
+    },
+    {
+      "id": "e0b_opa828_pos1_cplac_pwr1_bleed0_zero_t25_50ohm_real_contact",
+      "file": "S2b/generados/e0b_opa828_pos1_cplac_pwr1_bleed0_zero_t25_50ohm_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 7
+    },
+    {
+      "id": "e0b_opa828_pos1_cpldc_pwr1_bleed0_zero_t25_50ohm_real_contact",
+      "file": "S2b/generados/e0b_opa828_pos1_cpldc_pwr1_bleed0_zero_t25_50ohm_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 6
+    },
+    {
+      "id": "e5b_opa810_pos100_cplac_pwr1_bleed0_100_t25_50ohm_real_contact",
+      "file": "S2b/generados/e5b_opa810_pos100_cplac_pwr1_bleed0_100_t25_50ohm_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 62
+    },
+    {
+      "id": "e5b_opa810_pos100_cplac_pwr1_bleed0_neg100_t25_50ohm_real_contact",
+      "file": "S2b/generados/e5b_opa810_pos100_cplac_pwr1_bleed0_neg100_t25_50ohm_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 62
+    },
+    {
+      "id": "e5b_opa810_pos100_cplac_pwr1_bleed0_sine100_t25_50ohm_real_contact",
+      "file": "S2b/generados/e5b_opa810_pos100_cplac_pwr1_bleed0_sine100_t25_50ohm_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 62
+    },
+    {
+      "id": "e5b_opa810_pos100_cpldc_pwr1_bleed0_100_t25_50ohm_real_contact",
+      "file": "S2b/generados/e5b_opa810_pos100_cpldc_pwr1_bleed0_100_t25_50ohm_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 62
+    },
+    {
+      "id": "e5b_opa810_pos100_cpldc_pwr1_bleed0_neg100_t25_50ohm_real_contact",
+      "file": "S2b/generados/e5b_opa810_pos100_cpldc_pwr1_bleed0_neg100_t25_50ohm_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 62
+    },
+    {
+      "id": "e5b_opa810_pos100_cpldc_pwr1_bleed0_sine100_t25_50ohm_real_contact",
+      "file": "S2b/generados/e5b_opa810_pos100_cpldc_pwr1_bleed0_sine100_t25_50ohm_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 62
+    },
+    {
+      "id": "e5b_opa810_pos1_cplac_pwr1_bleed0_100_t25_50ohm_real_contact",
+      "file": "S2b/generados/e5b_opa810_pos1_cplac_pwr1_bleed0_100_t25_50ohm_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 62
+    },
+    {
+      "id": "e5b_opa810_pos1_cplac_pwr1_bleed0_neg100_t25_50ohm_real_contact",
+      "file": "S2b/generados/e5b_opa810_pos1_cplac_pwr1_bleed0_neg100_t25_50ohm_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 62
+    },
+    {
+      "id": "e5b_opa810_pos1_cplac_pwr1_bleed0_sine100_t25_50ohm_real_contact",
+      "file": "S2b/generados/e5b_opa810_pos1_cplac_pwr1_bleed0_sine100_t25_50ohm_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 62
+    },
+    {
+      "id": "e5b_opa810_pos1_cpldc_pwr1_bleed0_100_t25_50ohm_real_contact",
+      "file": "S2b/generados/e5b_opa810_pos1_cpldc_pwr1_bleed0_100_t25_50ohm_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 62
+    },
+    {
+      "id": "e5b_opa810_pos1_cpldc_pwr1_bleed0_neg100_t25_50ohm_real_contact",
+      "file": "S2b/generados/e5b_opa810_pos1_cpldc_pwr1_bleed0_neg100_t25_50ohm_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 62
+    },
+    {
+      "id": "e5b_opa810_pos1_cpldc_pwr1_bleed0_sine100_t25_50ohm_real_contact",
+      "file": "S2b/generados/e5b_opa810_pos1_cpldc_pwr1_bleed0_sine100_t25_50ohm_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 62
+    },
+    {
+      "id": "e5b_opa828_pos100_cplac_pwr1_bleed0_100_t25_50ohm_real_contact",
+      "file": "S2b/generados/e5b_opa828_pos100_cplac_pwr1_bleed0_100_t25_50ohm_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 62
+    },
+    {
+      "id": "e5b_opa828_pos100_cplac_pwr1_bleed0_neg100_t25_50ohm_real_contact",
+      "file": "S2b/generados/e5b_opa828_pos100_cplac_pwr1_bleed0_neg100_t25_50ohm_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 62
+    },
+    {
+      "id": "e5b_opa828_pos100_cpldc_pwr1_bleed0_100_t25_50ohm_real_contact",
+      "file": "S2b/generados/e5b_opa828_pos100_cpldc_pwr1_bleed0_100_t25_50ohm_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 62
+    },
+    {
+      "id": "e5b_opa828_pos100_cpldc_pwr1_bleed0_neg100_t25_50ohm_real_contact",
+      "file": "S2b/generados/e5b_opa828_pos100_cpldc_pwr1_bleed0_neg100_t25_50ohm_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 62
+    },
+    {
+      "id": "e5b_opa828_pos1_cplac_pwr1_bleed0_100_t25_50ohm_real_contact",
+      "file": "S2b/generados/e5b_opa828_pos1_cplac_pwr1_bleed0_100_t25_50ohm_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 62
+    },
+    {
+      "id": "e5b_opa828_pos1_cplac_pwr1_bleed0_neg100_t25_50ohm_real_contact",
+      "file": "S2b/generados/e5b_opa828_pos1_cplac_pwr1_bleed0_neg100_t25_50ohm_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 62
+    },
+    {
+      "id": "e5b_opa828_pos1_cpldc_pwr1_bleed0_100_t25_50ohm_real_contact",
+      "file": "S2b/generados/e5b_opa828_pos1_cpldc_pwr1_bleed0_100_t25_50ohm_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 62
+    },
+    {
+      "id": "e5b_opa828_pos1_cpldc_pwr1_bleed0_neg100_t25_50ohm_real_contact",
+      "file": "S2b/generados/e5b_opa828_pos1_cpldc_pwr1_bleed0_neg100_t25_50ohm_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 62
+    },
+    {
+      "id": "e7a_target2ohm_4kv_contact",
+      "file": "S2b/generados/e7a_target2ohm_4kv_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 2,
+      "transient_points": 35649
+    },
+    {
+      "id": "e7a_target2ohm_8kv_air",
+      "file": "S2b/generados/e7a_target2ohm_8kv_air.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 2,
+      "transient_points": 35656
+    },
+    {
+      "id": "e7a_target2ohm_8kv_contact",
+      "file": "S2b/generados/e7a_target2ohm_8kv_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 2,
+      "transient_points": 35653
+    },
+    {
+      "id": "e7b_opa810_pos100_cpldc_pwr1_bleed0_4kv_t25_50ohm_real_contact",
+      "file": "S2b/generados/e7b_opa810_pos100_cpldc_pwr1_bleed0_4kv_t25_50ohm_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 68,
+      "transient_points": 35665
+    },
+    {
+      "id": "e7b_opa810_pos100_cpldc_pwr1_bleed0_8kv_t25_50ohm_real_air",
+      "file": "S2b/generados/e7b_opa810_pos100_cpldc_pwr1_bleed0_8kv_t25_50ohm_real_air.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 68,
+      "transient_points": 35664
+    },
+    {
+      "id": "e7b_opa810_pos100_cpldc_pwr1_bleed0_8kv_t25_50ohm_real_contact",
+      "file": "S2b/generados/e7b_opa810_pos100_cpldc_pwr1_bleed0_8kv_t25_50ohm_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 68,
+      "transient_points": 35672
+    },
+    {
+      "id": "e7b_opa810_pos100_cpldc_pwr1_bleed0_neg4kv_t25_50ohm_real_contact",
+      "file": "S2b/generados/e7b_opa810_pos100_cpldc_pwr1_bleed0_neg4kv_t25_50ohm_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 68,
+      "transient_points": 35660
+    },
+    {
+      "id": "e7b_opa810_pos100_cpldc_pwr1_bleed0_neg8kv_t25_50ohm_real_contact",
+      "file": "S2b/generados/e7b_opa810_pos100_cpldc_pwr1_bleed0_neg8kv_t25_50ohm_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 68,
+      "transient_points": 35670
+    },
+    {
+      "id": "e7b_opa810_pos1_cpldc_pwr1_bleed0_4kv_t25_50ohm_real_contact",
+      "file": "S2b/generados/e7b_opa810_pos1_cpldc_pwr1_bleed0_4kv_t25_50ohm_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 68,
+      "transient_points": 35669
+    },
+    {
+      "id": "e7b_opa810_pos1_cpldc_pwr1_bleed0_4kv_t25_50ohm_real_contact_tailcheck",
+      "file": "S2b/generados/e7b_opa810_pos1_cpldc_pwr1_bleed0_4kv_t25_50ohm_real_contact_tailcheck.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 68,
+      "transient_points": 45669
+    },
+    {
+      "id": "e7b_opa810_pos1_cpldc_pwr1_bleed0_8kv_t25_50ohm_real_air",
+      "file": "S2b/generados/e7b_opa810_pos1_cpldc_pwr1_bleed0_8kv_t25_50ohm_real_air.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 68,
+      "transient_points": 35680
+    },
+    {
+      "id": "e7b_opa810_pos1_cpldc_pwr1_bleed0_8kv_t25_50ohm_real_contact",
+      "file": "S2b/generados/e7b_opa810_pos1_cpldc_pwr1_bleed0_8kv_t25_50ohm_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 68,
+      "transient_points": 35679
+    },
+    {
+      "id": "e7b_opa810_pos1_cpldc_pwr1_bleed0_neg4kv_t25_50ohm_real_contact",
+      "file": "S2b/generados/e7b_opa810_pos1_cpldc_pwr1_bleed0_neg4kv_t25_50ohm_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 68,
+      "transient_points": 35669
+    },
+    {
+      "id": "e7b_opa810_pos1_cpldc_pwr1_bleed0_neg8kv_t25_50ohm_real_contact",
+      "file": "S2b/generados/e7b_opa810_pos1_cpldc_pwr1_bleed0_neg8kv_t25_50ohm_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 68,
+      "transient_points": 35674
+    },
+    {
+      "id": "e7b_opa828_pos100_cpldc_pwr1_bleed0_4kv_t25_50ohm_real_contact",
+      "file": "S2b/generados/e7b_opa828_pos100_cpldc_pwr1_bleed0_4kv_t25_50ohm_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 68,
+      "transient_points": 35664
+    },
+    {
+      "id": "e7b_opa828_pos100_cpldc_pwr1_bleed0_8kv_t25_50ohm_real_air",
+      "file": "S2b/generados/e7b_opa828_pos100_cpldc_pwr1_bleed0_8kv_t25_50ohm_real_air.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 68,
+      "transient_points": 35661
+    },
+    {
+      "id": "e7b_opa828_pos100_cpldc_pwr1_bleed0_8kv_t25_50ohm_real_contact",
+      "file": "S2b/generados/e7b_opa828_pos100_cpldc_pwr1_bleed0_8kv_t25_50ohm_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 68,
+      "transient_points": 35683
+    },
+    {
+      "id": "e7b_opa828_pos100_cpldc_pwr1_bleed0_neg4kv_t25_50ohm_real_contact",
+      "file": "S2b/generados/e7b_opa828_pos100_cpldc_pwr1_bleed0_neg4kv_t25_50ohm_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 68,
+      "transient_points": 35670
+    },
+    {
+      "id": "e7b_opa828_pos100_cpldc_pwr1_bleed0_neg8kv_t25_50ohm_real_contact",
+      "file": "S2b/generados/e7b_opa828_pos100_cpldc_pwr1_bleed0_neg8kv_t25_50ohm_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 68,
+      "transient_points": 35676
+    },
+    {
+      "id": "e7b_opa828_pos1_cpldc_pwr1_bleed0_4kv_t25_50ohm_real_contact",
+      "file": "S2b/generados/e7b_opa828_pos1_cpldc_pwr1_bleed0_4kv_t25_50ohm_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 68,
+      "transient_points": 35676
+    },
+    {
+      "id": "e7b_opa828_pos1_cpldc_pwr1_bleed0_8kv_t25_50ohm_real_air",
+      "file": "S2b/generados/e7b_opa828_pos1_cpldc_pwr1_bleed0_8kv_t25_50ohm_real_air.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 68,
+      "transient_points": 35682
+    },
+    {
+      "id": "e7b_opa828_pos1_cpldc_pwr1_bleed0_8kv_t25_50ohm_real_contact",
+      "file": "S2b/generados/e7b_opa828_pos1_cpldc_pwr1_bleed0_8kv_t25_50ohm_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 68,
+      "transient_points": 35687
+    },
+    {
+      "id": "e7b_opa828_pos1_cpldc_pwr1_bleed0_neg4kv_t25_50ohm_real_contact",
+      "file": "S2b/generados/e7b_opa828_pos1_cpldc_pwr1_bleed0_neg4kv_t25_50ohm_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 68,
+      "transient_points": 35678
+    },
+    {
+      "id": "e7b_opa828_pos1_cpldc_pwr1_bleed0_neg8kv_t25_50ohm_real_contact",
+      "file": "S2b/generados/e7b_opa828_pos1_cpldc_pwr1_bleed0_neg8kv_t25_50ohm_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 68,
+      "transient_points": 35681
+    },
+    {
+      "id": "e7c_opa810_pos100_cpldc_pwr0_bleed0_4kv_t25_50ohm_off_load_only_contact",
+      "file": "S2b/generados/e7c_opa810_pos100_cpldc_pwr0_bleed0_4kv_t25_50ohm_off_load_only_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 68,
+      "transient_points": 35665
+    },
+    {
+      "id": "e7c_opa810_pos100_cpldc_pwr0_bleed0_4kv_t25_50ohm_real_contact",
+      "file": "S2b/generados/e7c_opa810_pos100_cpldc_pwr0_bleed0_4kv_t25_50ohm_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 68,
+      "transient_points": 35665
+    },
+    {
+      "id": "e7c_opa810_pos100_cpldc_pwr0_bleed0_8kv_t25_50ohm_off_load_only_air",
+      "file": "S2b/generados/e7c_opa810_pos100_cpldc_pwr0_bleed0_8kv_t25_50ohm_off_load_only_air.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 68,
+      "transient_points": 35662
+    },
+    {
+      "id": "e7c_opa810_pos100_cpldc_pwr0_bleed0_8kv_t25_50ohm_real_air",
+      "file": "S2b/generados/e7c_opa810_pos100_cpldc_pwr0_bleed0_8kv_t25_50ohm_real_air.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 68,
+      "transient_points": 35658
+    },
+    {
+      "id": "e7c_opa810_pos100_cpldc_pwr0_bleed0_neg4kv_t25_50ohm_off_load_only_contact",
+      "file": "S2b/generados/e7c_opa810_pos100_cpldc_pwr0_bleed0_neg4kv_t25_50ohm_off_load_only_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 68,
+      "transient_points": 35657
+    },
+    {
+      "id": "e7c_opa810_pos100_cpldc_pwr0_bleed0_neg4kv_t25_50ohm_real_contact",
+      "file": "S2b/generados/e7c_opa810_pos100_cpldc_pwr0_bleed0_neg4kv_t25_50ohm_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 68,
+      "transient_points": 35653
+    },
+    {
+      "id": "e7c_opa810_pos100_cpldc_pwr0_bleed1_4kv_t25_50ohm_off_load_only_contact",
+      "file": "S2b/generados/e7c_opa810_pos100_cpldc_pwr0_bleed1_4kv_t25_50ohm_off_load_only_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 68,
+      "transient_points": 35665
+    },
+    {
+      "id": "e7c_opa810_pos100_cpldc_pwr0_bleed1_4kv_t25_50ohm_real_contact",
+      "file": "S2b/generados/e7c_opa810_pos100_cpldc_pwr0_bleed1_4kv_t25_50ohm_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 68,
+      "transient_points": 35652
+    },
+    {
+      "id": "e7c_opa810_pos100_cpldc_pwr0_bleed1_8kv_t25_50ohm_off_load_only_air",
+      "file": "S2b/generados/e7c_opa810_pos100_cpldc_pwr0_bleed1_8kv_t25_50ohm_off_load_only_air.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 68,
+      "transient_points": 35662
+    },
+    {
+      "id": "e7c_opa810_pos100_cpldc_pwr0_bleed1_8kv_t25_50ohm_real_air",
+      "file": "S2b/generados/e7c_opa810_pos100_cpldc_pwr0_bleed1_8kv_t25_50ohm_real_air.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 68,
+      "transient_points": 35662
+    },
+    {
+      "id": "e7c_opa810_pos100_cpldc_pwr0_bleed1_neg4kv_t25_50ohm_off_load_only_contact",
+      "file": "S2b/generados/e7c_opa810_pos100_cpldc_pwr0_bleed1_neg4kv_t25_50ohm_off_load_only_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 68,
+      "transient_points": 35657
+    },
+    {
+      "id": "e7c_opa810_pos100_cpldc_pwr0_bleed1_neg4kv_t25_50ohm_real_contact",
+      "file": "S2b/generados/e7c_opa810_pos100_cpldc_pwr0_bleed1_neg4kv_t25_50ohm_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 68,
+      "transient_points": 35662
+    },
+    {
+      "id": "e7c_opa810_pos100_cpldc_pwr0_bleed2_4kv_t25_50ohm_off_load_only_contact",
+      "file": "S2b/generados/e7c_opa810_pos100_cpldc_pwr0_bleed2_4kv_t25_50ohm_off_load_only_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 68,
+      "transient_points": 35665
+    },
+    {
+      "id": "e7c_opa810_pos100_cpldc_pwr0_bleed2_4kv_t25_50ohm_real_contact",
+      "file": "S2b/generados/e7c_opa810_pos100_cpldc_pwr0_bleed2_4kv_t25_50ohm_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 68,
+      "transient_points": 35662
+    },
+    {
+      "id": "e7c_opa810_pos100_cpldc_pwr0_bleed2_8kv_t25_50ohm_off_load_only_air",
+      "file": "S2b/generados/e7c_opa810_pos100_cpldc_pwr0_bleed2_8kv_t25_50ohm_off_load_only_air.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 68,
+      "transient_points": 35662
+    },
+    {
+      "id": "e7c_opa810_pos100_cpldc_pwr0_bleed2_8kv_t25_50ohm_real_air",
+      "file": "S2b/generados/e7c_opa810_pos100_cpldc_pwr0_bleed2_8kv_t25_50ohm_real_air.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 68,
+      "transient_points": 35665
+    },
+    {
+      "id": "e7c_opa810_pos100_cpldc_pwr0_bleed2_neg4kv_t25_50ohm_off_load_only_contact",
+      "file": "S2b/generados/e7c_opa810_pos100_cpldc_pwr0_bleed2_neg4kv_t25_50ohm_off_load_only_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 68,
+      "transient_points": 35657
+    },
+    {
+      "id": "e7c_opa810_pos100_cpldc_pwr0_bleed2_neg4kv_t25_50ohm_real_contact",
+      "file": "S2b/generados/e7c_opa810_pos100_cpldc_pwr0_bleed2_neg4kv_t25_50ohm_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 68,
+      "transient_points": 35663
+    },
+    {
+      "id": "e7c_opa828_pos100_cpldc_pwr0_bleed0_4kv_t25_50ohm_off_load_only_contact",
+      "file": "S2b/generados/e7c_opa828_pos100_cpldc_pwr0_bleed0_4kv_t25_50ohm_off_load_only_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 68,
+      "transient_points": 35655
+    },
+    {
+      "id": "e7c_opa828_pos100_cpldc_pwr0_bleed0_4kv_t25_50ohm_real_contact",
+      "file": "S2b/generados/e7c_opa828_pos100_cpldc_pwr0_bleed0_4kv_t25_50ohm_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 68,
+      "transient_points": 35774
+    },
+    {
+      "id": "e7c_opa828_pos100_cpldc_pwr0_bleed0_8kv_t25_50ohm_off_load_only_air",
+      "file": "S2b/generados/e7c_opa828_pos100_cpldc_pwr0_bleed0_8kv_t25_50ohm_off_load_only_air.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 68,
+      "transient_points": 35662
+    },
+    {
+      "id": "e7c_opa828_pos100_cpldc_pwr0_bleed0_8kv_t25_50ohm_real_air",
+      "file": "S2b/generados/e7c_opa828_pos100_cpldc_pwr0_bleed0_8kv_t25_50ohm_real_air.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 68,
+      "transient_points": 35707
+    },
+    {
+      "id": "e7c_opa828_pos100_cpldc_pwr0_bleed0_neg4kv_t25_50ohm_off_load_only_contact",
+      "file": "S2b/generados/e7c_opa828_pos100_cpldc_pwr0_bleed0_neg4kv_t25_50ohm_off_load_only_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 68,
+      "transient_points": 35666
+    },
+    {
+      "id": "e7c_opa828_pos100_cpldc_pwr0_bleed0_neg4kv_t25_50ohm_real_contact",
+      "file": "S2b/generados/e7c_opa828_pos100_cpldc_pwr0_bleed0_neg4kv_t25_50ohm_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 68,
+      "transient_points": 35783
+    },
+    {
+      "id": "e7c_opa828_pos100_cpldc_pwr0_bleed1_4kv_t25_50ohm_off_load_only_contact",
+      "file": "S2b/generados/e7c_opa828_pos100_cpldc_pwr0_bleed1_4kv_t25_50ohm_off_load_only_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 68,
+      "transient_points": 35661
+    },
+    {
+      "id": "e7c_opa828_pos100_cpldc_pwr0_bleed1_4kv_t25_50ohm_real_contact",
+      "file": "S2b/generados/e7c_opa828_pos100_cpldc_pwr0_bleed1_4kv_t25_50ohm_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 68,
+      "transient_points": 35792
+    },
+    {
+      "id": "e7c_opa828_pos100_cpldc_pwr0_bleed1_8kv_t25_50ohm_off_load_only_air",
+      "file": "S2b/generados/e7c_opa828_pos100_cpldc_pwr0_bleed1_8kv_t25_50ohm_off_load_only_air.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 68,
+      "transient_points": 35662
+    },
+    {
+      "id": "e7c_opa828_pos100_cpldc_pwr0_bleed1_8kv_t25_50ohm_real_air",
+      "file": "S2b/generados/e7c_opa828_pos100_cpldc_pwr0_bleed1_8kv_t25_50ohm_real_air.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 68,
+      "transient_points": 35709
+    },
+    {
+      "id": "e7c_opa828_pos100_cpldc_pwr0_bleed1_neg4kv_t25_50ohm_off_load_only_contact",
+      "file": "S2b/generados/e7c_opa828_pos100_cpldc_pwr0_bleed1_neg4kv_t25_50ohm_off_load_only_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 68,
+      "transient_points": 35666
+    },
+    {
+      "id": "e7c_opa828_pos100_cpldc_pwr0_bleed1_neg4kv_t25_50ohm_real_contact",
+      "file": "S2b/generados/e7c_opa828_pos100_cpldc_pwr0_bleed1_neg4kv_t25_50ohm_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 68,
+      "transient_points": 35783
+    },
+    {
+      "id": "e7c_opa828_pos100_cpldc_pwr0_bleed2_4kv_t25_50ohm_off_load_only_contact",
+      "file": "S2b/generados/e7c_opa828_pos100_cpldc_pwr0_bleed2_4kv_t25_50ohm_off_load_only_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 68,
+      "transient_points": 35656
+    },
+    {
+      "id": "e7c_opa828_pos100_cpldc_pwr0_bleed2_4kv_t25_50ohm_real_contact",
+      "file": "S2b/generados/e7c_opa828_pos100_cpldc_pwr0_bleed2_4kv_t25_50ohm_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 68,
+      "transient_points": 35705
+    },
+    {
+      "id": "e7c_opa828_pos100_cpldc_pwr0_bleed2_8kv_t25_50ohm_off_load_only_air",
+      "file": "S2b/generados/e7c_opa828_pos100_cpldc_pwr0_bleed2_8kv_t25_50ohm_off_load_only_air.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 68,
+      "transient_points": 35662
+    },
+    {
+      "id": "e7c_opa828_pos100_cpldc_pwr0_bleed2_8kv_t25_50ohm_real_air",
+      "file": "S2b/generados/e7c_opa828_pos100_cpldc_pwr0_bleed2_8kv_t25_50ohm_real_air.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 68,
+      "transient_points": 35729
+    },
+    {
+      "id": "e7c_opa828_pos100_cpldc_pwr0_bleed2_neg4kv_t25_50ohm_off_load_only_contact",
+      "file": "S2b/generados/e7c_opa828_pos100_cpldc_pwr0_bleed2_neg4kv_t25_50ohm_off_load_only_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 68,
+      "transient_points": 35666
+    },
+    {
+      "id": "e7c_opa828_pos100_cpldc_pwr0_bleed2_neg4kv_t25_50ohm_real_contact",
+      "file": "S2b/generados/e7c_opa828_pos100_cpldc_pwr0_bleed2_neg4kv_t25_50ohm_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 68,
+      "transient_points": 35712
+    },
+    {
+      "id": "e9_opa810_pos100_cplac_pwr1_bleed0_zero_t25_50ohm_real_contact",
+      "file": "S2b/generados/e9_opa810_pos100_cplac_pwr1_bleed0_zero_t25_50ohm_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 3
+    },
+    {
+      "id": "e9_opa810_pos100_cplac_pwr1_bleed0_zero_t25_air_real_contact",
+      "file": "S2b/generados/e9_opa810_pos100_cplac_pwr1_bleed0_zero_t25_air_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 3
+    },
+    {
+      "id": "e9_opa810_pos100_cplac_pwr1_bleed0_zero_t85_50ohm_real_contact",
+      "file": "S2b/generados/e9_opa810_pos100_cplac_pwr1_bleed0_zero_t85_50ohm_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 3
+    },
+    {
+      "id": "e9_opa810_pos100_cplac_pwr1_bleed0_zero_t85_air_real_contact",
+      "file": "S2b/generados/e9_opa810_pos100_cplac_pwr1_bleed0_zero_t85_air_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 3
+    },
+    {
+      "id": "e9_opa810_pos100_cpldc_pwr1_bleed0_zero_t25_50ohm_real_contact",
+      "file": "S2b/generados/e9_opa810_pos100_cpldc_pwr1_bleed0_zero_t25_50ohm_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 3
+    },
+    {
+      "id": "e9_opa810_pos100_cpldc_pwr1_bleed0_zero_t25_air_real_contact",
+      "file": "S2b/generados/e9_opa810_pos100_cpldc_pwr1_bleed0_zero_t25_air_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 3
+    },
+    {
+      "id": "e9_opa810_pos100_cpldc_pwr1_bleed0_zero_t85_50ohm_real_contact",
+      "file": "S2b/generados/e9_opa810_pos100_cpldc_pwr1_bleed0_zero_t85_50ohm_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 3
+    },
+    {
+      "id": "e9_opa810_pos100_cpldc_pwr1_bleed0_zero_t85_air_real_contact",
+      "file": "S2b/generados/e9_opa810_pos100_cpldc_pwr1_bleed0_zero_t85_air_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 3
+    },
+    {
+      "id": "e9_opa810_pos1_cplac_pwr1_bleed0_zero_t25_50ohm_real_contact",
+      "file": "S2b/generados/e9_opa810_pos1_cplac_pwr1_bleed0_zero_t25_50ohm_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 3
+    },
+    {
+      "id": "e9_opa810_pos1_cplac_pwr1_bleed0_zero_t25_air_real_contact",
+      "file": "S2b/generados/e9_opa810_pos1_cplac_pwr1_bleed0_zero_t25_air_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 3
+    },
+    {
+      "id": "e9_opa810_pos1_cplac_pwr1_bleed0_zero_t85_50ohm_real_contact",
+      "file": "S2b/generados/e9_opa810_pos1_cplac_pwr1_bleed0_zero_t85_50ohm_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 3
+    },
+    {
+      "id": "e9_opa810_pos1_cplac_pwr1_bleed0_zero_t85_air_real_contact",
+      "file": "S2b/generados/e9_opa810_pos1_cplac_pwr1_bleed0_zero_t85_air_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 3
+    },
+    {
+      "id": "e9_opa810_pos1_cpldc_pwr1_bleed0_zero_t25_50ohm_real_contact",
+      "file": "S2b/generados/e9_opa810_pos1_cpldc_pwr1_bleed0_zero_t25_50ohm_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 3
+    },
+    {
+      "id": "e9_opa810_pos1_cpldc_pwr1_bleed0_zero_t25_air_real_contact",
+      "file": "S2b/generados/e9_opa810_pos1_cpldc_pwr1_bleed0_zero_t25_air_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 3
+    },
+    {
+      "id": "e9_opa810_pos1_cpldc_pwr1_bleed0_zero_t85_50ohm_real_contact",
+      "file": "S2b/generados/e9_opa810_pos1_cpldc_pwr1_bleed0_zero_t85_50ohm_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 3
+    },
+    {
+      "id": "e9_opa810_pos1_cpldc_pwr1_bleed0_zero_t85_air_real_contact",
+      "file": "S2b/generados/e9_opa810_pos1_cpldc_pwr1_bleed0_zero_t85_air_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 3
+    },
+    {
+      "id": "e9_opa828_pos100_cplac_pwr1_bleed0_zero_t25_50ohm_real_contact",
+      "file": "S2b/generados/e9_opa828_pos100_cplac_pwr1_bleed0_zero_t25_50ohm_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 3
+    },
+    {
+      "id": "e9_opa828_pos100_cplac_pwr1_bleed0_zero_t25_air_real_contact",
+      "file": "S2b/generados/e9_opa828_pos100_cplac_pwr1_bleed0_zero_t25_air_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 3
+    },
+    {
+      "id": "e9_opa828_pos100_cplac_pwr1_bleed0_zero_t85_50ohm_real_contact",
+      "file": "S2b/generados/e9_opa828_pos100_cplac_pwr1_bleed0_zero_t85_50ohm_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 3
+    },
+    {
+      "id": "e9_opa828_pos100_cplac_pwr1_bleed0_zero_t85_air_real_contact",
+      "file": "S2b/generados/e9_opa828_pos100_cplac_pwr1_bleed0_zero_t85_air_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 3
+    },
+    {
+      "id": "e9_opa828_pos100_cpldc_pwr1_bleed0_zero_t25_50ohm_real_contact",
+      "file": "S2b/generados/e9_opa828_pos100_cpldc_pwr1_bleed0_zero_t25_50ohm_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 3
+    },
+    {
+      "id": "e9_opa828_pos100_cpldc_pwr1_bleed0_zero_t25_air_real_contact",
+      "file": "S2b/generados/e9_opa828_pos100_cpldc_pwr1_bleed0_zero_t25_air_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 3
+    },
+    {
+      "id": "e9_opa828_pos100_cpldc_pwr1_bleed0_zero_t85_50ohm_real_contact",
+      "file": "S2b/generados/e9_opa828_pos100_cpldc_pwr1_bleed0_zero_t85_50ohm_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 3
+    },
+    {
+      "id": "e9_opa828_pos100_cpldc_pwr1_bleed0_zero_t85_air_real_contact",
+      "file": "S2b/generados/e9_opa828_pos100_cpldc_pwr1_bleed0_zero_t85_air_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 3
+    },
+    {
+      "id": "e9_opa828_pos1_cplac_pwr1_bleed0_zero_t25_50ohm_real_contact",
+      "file": "S2b/generados/e9_opa828_pos1_cplac_pwr1_bleed0_zero_t25_50ohm_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 3
+    },
+    {
+      "id": "e9_opa828_pos1_cplac_pwr1_bleed0_zero_t25_air_real_contact",
+      "file": "S2b/generados/e9_opa828_pos1_cplac_pwr1_bleed0_zero_t25_air_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 3
+    },
+    {
+      "id": "e9_opa828_pos1_cplac_pwr1_bleed0_zero_t85_50ohm_real_contact",
+      "file": "S2b/generados/e9_opa828_pos1_cplac_pwr1_bleed0_zero_t85_50ohm_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 3
+    },
+    {
+      "id": "e9_opa828_pos1_cplac_pwr1_bleed0_zero_t85_air_real_contact",
+      "file": "S2b/generados/e9_opa828_pos1_cplac_pwr1_bleed0_zero_t85_air_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 3
+    },
+    {
+      "id": "e9_opa828_pos1_cpldc_pwr1_bleed0_zero_t25_50ohm_real_contact",
+      "file": "S2b/generados/e9_opa828_pos1_cpldc_pwr1_bleed0_zero_t25_50ohm_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 3
+    },
+    {
+      "id": "e9_opa828_pos1_cpldc_pwr1_bleed0_zero_t25_air_real_contact",
+      "file": "S2b/generados/e9_opa828_pos1_cpldc_pwr1_bleed0_zero_t25_air_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 3
+    },
+    {
+      "id": "e9_opa828_pos1_cpldc_pwr1_bleed0_zero_t85_50ohm_real_contact",
+      "file": "S2b/generados/e9_opa828_pos1_cpldc_pwr1_bleed0_zero_t85_50ohm_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 3
+    },
+    {
+      "id": "e9_opa828_pos1_cpldc_pwr1_bleed0_zero_t85_air_real_contact",
+      "file": "S2b/generados/e9_opa828_pos1_cpldc_pwr1_bleed0_zero_t85_air_real_contact.cir",
+      "returncode": 0,
+      "errors": [],
+      "warnings": [],
+      "measures": 3
+    }
+  ]
+}

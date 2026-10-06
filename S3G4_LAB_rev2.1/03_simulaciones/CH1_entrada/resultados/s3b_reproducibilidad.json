@@ -1,0 +1,129 @@
+{
+  "exit_code": 0,
+  "simulations": 162,
+  "elapsed_seconds": 549.2499410000019,
+  "replay_path": "C:\\Users\\Keneth\\AppData\\Local\\Temp\\s3b-replay-tkyf8n48\\rev\\sim\\CH1_entrada",
+  "console_path": "C:\\Users\\Keneth\\AppData\\Local\\Temp\\s3b-replay-tkyf8n48\\console.txt",
+  "models": "C:\\Users\\Keneth\\Desktop\\S3G4 LAB\\Simulation_LTSpice\\models",
+  "csv_count": 10,
+  "csv_identical": 10,
+  "comparisons": [
+    {
+      "file": "s3b_b0.csv",
+      "original_sha256": "230d62b7b5f9d8aed43d068ed23d71e09f01c515a4ea09d68b3007aeee1ab31b",
+      "replay_sha256": "230d62b7b5f9d8aed43d068ed23d71e09f01c515a4ea09d68b3007aeee1ab31b",
+      "identical": true
+    },
+    {
+      "file": "s3b_b1.csv",
+      "original_sha256": "d0265dfd619cb4ad2d381528cc861b51d4e630cd81beab53816d5ea4eb469ebf",
+      "replay_sha256": "d0265dfd619cb4ad2d381528cc861b51d4e630cd81beab53816d5ea4eb469ebf",
+      "identical": true
+    },
+    {
+      "file": "s3b_b2.csv",
+      "original_sha256": "0d7e03d7c1001542ab8ff7ab1f5466d04aaf6be13d6be88bd89bc2b97d720018",
+      "replay_sha256": "0d7e03d7c1001542ab8ff7ab1f5466d04aaf6be13d6be88bd89bc2b97d720018",
+      "identical": true
+    },
+    {
+      "file": "s3b_b3.csv",
+      "original_sha256": "3c812996d1272df946cfb31bc972a83ddce19754e8b5a6995032b636d4d33a78",
+      "replay_sha256": "3c812996d1272df946cfb31bc972a83ddce19754e8b5a6995032b636d4d33a78",
+      "identical": true
+    },
+    {
+      "file": "s3b_b4.csv",
+      "original_sha256": "76b03c69547a1c1a030631816a752a72fbda547fe8bed48b321b0a92f0d78ffd",
+      "replay_sha256": "76b03c69547a1c1a030631816a752a72fbda547fe8bed48b321b0a92f0d78ffd",
+      "identical": true
+    },
+    {
+      "file": "s3b_b5.csv",
+      "original_sha256": "3534c4e50835631994c781b4f5b69cd4c2ddab82eff2ce15f6adfb007161d34b",
+      "replay_sha256": "3534c4e50835631994c781b4f5b69cd4c2ddab82eff2ce15f6adfb007161d34b",
+      "identical": true
+    },
+    {
+      "file": "s3b_b6.csv",
+      "original_sha256": "2bbe3dc890b41107c78f6d4ad3be7b717fdd0950702a10d671ce51b706dfead1",
+      "replay_sha256": "2bbe3dc890b41107c78f6d4ad3be7b717fdd0950702a10d671ce51b706dfead1",
+      "identical": true
+    },
+    {
+      "file": "s3b_resultados.csv",
+      "original_sha256": "c7a3cc4850b7f0f8f0af8456985e2bd0dbbbbe6e3adcfb02b39b0d925946c61f",
+      "replay_sha256": "c7a3cc4850b7f0f8f0af8456985e2bd0dbbbbe6e3adcfb02b39b0d925946c61f",
+      "identical": true
+    },
+    {
+      "file": "s3b_criterios.csv",
+      "original_sha256": "b0f02abce982911d1dc38aa0e2edb1e2ef2e062e6a1d0f9fbae3abb7d0e7d87f",
+      "replay_sha256": "b0f02abce982911d1dc38aa0e2edb1e2ef2e062e6a1d0f9fbae3abb7d0e7d87f",
+      "identical": true
+    },
+    {
+      "file": "s3b_escalas.csv",
+      "original_sha256": "70154ce21ff3c95a0785035932281995ddacb272aeb8e39373cb8ea5949065cc",
+      "replay_sha256": "70154ce21ff3c95a0785035932281995ddacb272aeb8e39373cb8ea5949065cc",
+      "identical": true
+    }
+  ],
+  "sources": [
+    {
+      "file": "ejecutar_s3b.py",
+      "original_sha256": "994e7e3f969644dfb9585e2f09a8252a07f37ec24ff6bff7693a0ffbde0116e2",
+      "replay_sha256": "994e7e3f969644dfb9585e2f09a8252a07f37ec24ff6bff7693a0ffbde0116e2",
+      "identical": true
+    },
+    {
+      "file": "ejecutar_s3.py",
+      "original_sha256": "4cc0c43d9a05dada5eb9ea8a8d07558ab67e7b7222e1b45bed3efb03c5abdc36",
+      "replay_sha256": "4cc0c43d9a05dada5eb9ea8a8d07558ab67e7b7222e1b45bed3efb03c5abdc36",
+      "identical": true
+    },
+    {
+      "file": "ejecutar_s2b.py",
+      "original_sha256": "663f9e91c081ba63af84d0125e63f8333a633d30bd4432863d6eee71d31aad47",
+      "replay_sha256": "663f9e91c081ba63af84d0125e63f8333a633d30bd4432863d6eee71d31aad47",
+      "identical": true
+    },
+    {
+      "file": "ejecutar_s2.py",
+      "original_sha256": "42ccb29316d64497be555cf0f1eef68c6bab4a834493d128c68dc8ebff62851a",
+      "replay_sha256": "42ccb29316d64497be555cf0f1eef68c6bab4a834493d128c68dc8ebff62851a",
+      "identical": true
+    },
+    {
+      "file": "ejecutar_s1b.py",
+      "original_sha256": "4f04eed44524cd0d1837afbbff11fff18f794bcc68b1c2663b90a196879b2d3c",
+      "replay_sha256": "4f04eed44524cd0d1837afbbff11fff18f794bcc68b1c2663b90a196879b2d3c",
+      "identical": true
+    },
+    {
+      "file": "ejecutar_s1.py",
+      "original_sha256": "9b14e5ed0bcb53ee51f7bb82f05f14f3aa60de01dee7a478025c7334a919893e",
+      "replay_sha256": "9b14e5ed0bcb53ee51f7bb82f05f14f3aa60de01dee7a478025c7334a919893e",
+      "identical": true
+    },
+    {
+      "file": "comun/ch1_comun_s3b.inc",
+      "original_sha256": "472b282d05a9dcb987e2c1bff4a20d83679d19e40d93cb8253b43aa4984f4db6",
+      "replay_sha256": "472b282d05a9dcb987e2c1bff4a20d83679d19e40d93cb8253b43aa4984f4db6",
+      "identical": true
+    },
+    {
+      "file": "comun/ch1_comun_s3.inc",
+      "original_sha256": "83eebd872422c0c70110f353bd918cd591657b51263dd09754741ab5dc58721e",
+      "replay_sha256": "83eebd872422c0c70110f353bd918cd591657b51263dd09754741ab5dc58721e",
+      "identical": true
+    },
+    {
+      "file": "comun/ch1_comun_s2b.inc",
+      "original_sha256": "d6fea5559da236f2a8a1724375a7139481a09f4eb4bb3f97b4e8e43b5cee5318",
+      "replay_sha256": "d6fea5559da236f2a8a1724375a7139481a09f4eb4bb3f97b4e8e43b5cee5318",
+      "identical": true
+    }
+  ],
+  "protected_changed": []
+}

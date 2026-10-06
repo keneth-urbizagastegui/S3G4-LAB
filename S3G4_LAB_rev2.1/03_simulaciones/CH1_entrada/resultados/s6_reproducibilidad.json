@@ -1,0 +1,80 @@
+{
+  "original_code": 0,
+  "original_simulations": 67,
+  "original_seconds": 455.12206680000236,
+  "replay_code": 0,
+  "replay_simulations": 67,
+  "replay_seconds": 436.70395930000814,
+  "csv_count": 11,
+  "identical_count": 11,
+  "protected_original": [],
+  "protected_replay": [],
+  "checks": [
+    {
+      "file": "s6_h1.csv",
+      "identical": true,
+      "sha256": "0145529cb66af86a14cbc335a1e52f87a05fd41efb563aad352934b94fddaa3d",
+      "replay_sha256": "0145529cb66af86a14cbc335a1e52f87a05fd41efb563aad352934b94fddaa3d"
+    },
+    {
+      "file": "s6_h2.csv",
+      "identical": true,
+      "sha256": "1389f25e807f84c6debbff24bb9d1bcd86ac8c6899cad7b0b499d0a3f6b2fa31",
+      "replay_sha256": "1389f25e807f84c6debbff24bb9d1bcd86ac8c6899cad7b0b499d0a3f6b2fa31"
+    },
+    {
+      "file": "s6_h3.csv",
+      "identical": true,
+      "sha256": "685075860e3fcaab932cf28f575ce67e96b0c182da4c3905b2d856f05353b92e",
+      "replay_sha256": "685075860e3fcaab932cf28f575ce67e96b0c182da4c3905b2d856f05353b92e"
+    },
+    {
+      "file": "s6_muestras.csv",
+      "identical": true,
+      "sha256": "cb904f0645630ba0895c428a6187c85a089d1a6259ad090090fd1815fb4c4518",
+      "replay_sha256": "cb904f0645630ba0895c428a6187c85a089d1a6259ad090090fd1815fb4c4518"
+    },
+    {
+      "file": "s6_fft.csv",
+      "identical": true,
+      "sha256": "5d25687be37d8042f0a5a3f5be26b552074f71beac5533251071fef3a6a9f0e4",
+      "replay_sha256": "5d25687be37d8042f0a5a3f5be26b552074f71beac5533251071fef3a6a9f0e4"
+    },
+    {
+      "file": "s6_fft_bins.csv",
+      "identical": true,
+      "sha256": "de1246e1f7949afa972ffe6be675c55ab355b67559208ca017c9988cf56040b3",
+      "replay_sha256": "de1246e1f7949afa972ffe6be675c55ab355b67559208ca017c9988cf56040b3"
+    },
+    {
+      "file": "s6_h4.csv",
+      "identical": true,
+      "sha256": "37e72a15446e0580d63ad23076b7337071c95e83cbd5ecdbbf7bd39dbc6d4688",
+      "replay_sha256": "37e72a15446e0580d63ad23076b7337071c95e83cbd5ecdbbf7bd39dbc6d4688"
+    },
+    {
+      "file": "s6_lazo.csv",
+      "identical": true,
+      "sha256": "161a3ba9a16af4d13faa5d90a0efeade90c7d5dd682036de44d0743eda765581",
+      "replay_sha256": "161a3ba9a16af4d13faa5d90a0efeade90c7d5dd682036de44d0743eda765581"
+    },
+    {
+      "file": "s6_criterios.csv",
+      "identical": true,
+      "sha256": "a0822bdd97ffef88202a029d25b572a113f11da938decd6db423ae28624e4732",
+      "replay_sha256": "a0822bdd97ffef88202a029d25b572a113f11da938decd6db423ae28624e4732"
+    },
+    {
+      "file": "s6_h0_flancos.csv",
+      "identical": true,
+      "sha256": "b59b8cbe4a66e226456e5b300544e3b25edfbcef5003772ea332c563c51865ba",
+      "replay_sha256": "b59b8cbe4a66e226456e5b300544e3b25edfbcef5003772ea332c563c51865ba"
+    },
+    {
+      "file": "s6_calibracion.csv",
+      "identical": true,
+      "sha256": "852f008d103ff2fde878300e4d06ca430f9975bc4d0b5cf4ec5602eed9556b25",
+      "replay_sha256": "852f008d103ff2fde878300e4d06ca430f9975bc4d0b5cf4ec5602eed9556b25"
+    }
+  ]
+}

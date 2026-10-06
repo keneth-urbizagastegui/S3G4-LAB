@@ -1,0 +1,35 @@
+{
+  "rows": [
+    {
+      "test": "F6",
+      "scale_V_div": 0.01,
+      "ix": 1,
+      "POS": 1,
+      "tap": 1,
+      "CPL": "DC",
+      "corner": "nomi",
+      "polarity": "both",
+      "mux_model": "SWI1",
+      "id": "f6_m2_c1_chain_s1_viac1dc0_d1p25_both_vdd3p3_e1",
+      "vmid": "M2",
+      "cf": "C1",
+      "scope": "chain",
+      "vdac_V": 1.25,
+      "vin_V": 0.0,
+      "esd": 1,
+      "supply": "3p3",
+      "onoise_100k": 4.9298938114e-07,
+      "noise_adc_uV": 818.431431495452,
+      "noise_pct_div": 0.3273725725981808,
+      "noise_trace": "v(onoise)"
+    }
+  ],
+  "records": [
+    {
+      "id": "f6_m2_c1_chain_s1_viac1dc0_d1p25_both_vdd3p3_e1",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+* S6 fixed circuit. S4/S5 sources and manufacturer models unchanged.
+.include "ch1_comun_s5.inc"
+.param FCLK_S6=52Meg TS_S6=3.5/FCLK_S6 PERIOD_S6=16/FCLK_S6
+.param SHIFT_S6=8/FCLK_S6 START_S6=1u EDGE_S6=20p
+.param CPAD_S6=5p CS_S6=5p
+* Independent M1 per loaded/reference copy; same ideal supplies and source.
+.subckt STAGE_S6 IN PIN VDDA VREF DAC params: LV=0 LI=0
+RT VREF VM {RT_MID}
+RB VM 0 {RB_MID}
+CMID VM 0 1u
+RIN IN SUM {R_IN_S4}
+ROFF DAC SUM {R_OFF_S4}
+RF O SUM {R_F_S4}
+CF O SUM 1p
+CSUM SUM 0 {C_SUM_S4}
+VIP VM IP 0
+* Middlebrook probes: LV voltage, LI current injection; zero in transient.
+VIM SUM IM DC 0 AC {LV}
+ITEST 0 IM DC 0 AC {LI}
+XAMP IP IM O VDDA 0 VDDA OPA836_S4_ESD
+RADC O PIN {R_ADC_S4}
+CADC PIN 0 {C_ADC_S4}
+CPAD PIN 0 {CPAD_S6}
+.ends STAGE_S6
+.subckt FILTER_TR_S6 IN OUT VP VN
+XA IN OA VP VN IPA IMA SK_S5 RA=1.11k RB=1.11k CF=56p CG=47p
+XB OA OUT VP VN IPB IMB SK_S5 RA=499 RB=499 CF=220p CG=56p
+.ends FILTER_TR_S6
+* STATE 0=P retains own previous sample; 1=Z; 2=R.
+* Switching thresholds at START+j*SHIFT and START+j*SHIFT+TS exactly.
+.subckt ADC_S6 PIN C1 C2 CLK1 CLK2 RESET1 RESET2 params: RSW=825 STATE=0
+VCLK1 CLK1 0 PULSE(0 1 {START_S6-EDGE_S6/2} {EDGE_S6} {EDGE_S6} {TS_S6-EDGE_S6} {PERIOD_S6})
+VCLK2 CLK2 0 PULSE(0 1 {START_S6+SHIFT_S6-EDGE_S6/2} {EDGE_S6} {EDGE_S6} {TS_S6-EDGE_S6} {PERIOD_S6})
+S1 PIN C1 CLK1 0 SAMPLE
+S2 PIN C2 CLK2 0 SAMPLE
+CS1 C1 0 {CS_S6}
+CS2 C2 0 {CS_S6}
+BRESET1 RESET1 0 V=if(STATE>0,if(V(CLK1)<0.5,1,0),0)
+BRESET2 RESET2 0 V=if(STATE>0,if(V(CLK2)<0.5,1,0),0)
+VPRE PRE 0 {if(STATE==2,VREF_NOM,0)}
+SR1 PRE C1 RESET1 0 RESET
+SR2 PRE C2 RESET2 0 RESET
+.model SAMPLE SW(Ron={RSW} Roff=1e15 Vt=0.5 Vh=0)
+.model RESET SW(Ron=1m Roff=1e15 Vt=0.5 Vh=0)
+.ends ADC_S6

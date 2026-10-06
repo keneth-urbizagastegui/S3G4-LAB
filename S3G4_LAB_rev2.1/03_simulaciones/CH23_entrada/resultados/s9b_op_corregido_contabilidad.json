@@ -1,0 +1,7 @@
+{
+  "reference_simulations": 12000,
+  "native_attempts": 12005,
+  "failed_native_attempts": 1,
+  "successful_logical_cases": 2000,
+  "explanation": "Native history includes timed-out and repeated points; reference count comes from final successful case records."
+}

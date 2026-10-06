@@ -1,0 +1,52 @@
+{
+  "exit_code": 0,
+  "simulations": 6,
+  "expected_simulations": 6,
+  "errors": 0,
+  "warnings": 0,
+  "elapsed_seconds": 5.64329639999778,
+  "workers": 10,
+  "smoke": false,
+  "controls_only": true,
+  "protected_files": 11439,
+  "protected_changed": [],
+  "seed": 20261003,
+  "records": [
+    {
+      "id": "g0_be_sna_posna_tapna_dc_mcnom_isolated_bipolar_a0_f0_sec1",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "g0_be_sna_posna_tapna_dc_mcnom_isolated_bipolar_a0_f0_sec2",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "g0_bu_sna_posna_tapna_dc_mcnom_isolated_bipolar_a0_f0_sec1",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "g0_bu_sna_posna_tapna_dc_mcnom_isolated_bipolar_a0_f0_sec2",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "g0_tr_sna_posna_tapna_dc_mcnom_isolated_bipolar_a0_f0_sec1",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "g0_tr_sna_posna_tapna_dc_mcnom_isolated_bipolar_a0_f0_sec2",
+      "returncode": 0,
+      "errors": [],
+      "warnings": []
+    }
+  ]
+}

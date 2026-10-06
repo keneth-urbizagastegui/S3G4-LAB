@@ -1,0 +1,21 @@
+[
+  {
+    "mode": "source1",
+    "seconds": 38.2630560999969,
+    "pin_V": 0.015087257063002728,
+    "reference_pin_V": 0.015087257063002735,
+    "difference_V": -6.938893903907228e-18
+  },
+  {
+    "mode": "gminsteps",
+    "error": {
+      "id": "s9_k5op_b_s00_pos1_tap0_mc0_cpl0_rp4p9844424025_rn4p84719952244_f12370_f21100_a0_dac1p25_dac_high_src0_dac2p3_gminsteps_diagnostico",
+      "seconds": 60.27653920001467,
+      "returncode": 1,
+      "errors": [
+        "TimeoutExpired(['C:\\\\Users\\\\Keneth\\\\AppData\\\\Local\\\\Programs\\\\ADI\\\\LTspice\\\\LTspice.exe', '-b', 'C:\\\\Users\\\\Keneth\\\\Desktop\\\\S3G4 LAB\\\\S3G4_LAB_rev2.1\\\\03_simulaciones\\\\CH23_entrada\\\\S9\\\\B_hoja\\\\numerica_op\\\\s9_k5op_b_s00_pos1_tap0_mc0_cpl0_rp4p9844424025_rn4p84719952244_f12370_f21100_a0_dac1p25_dac_high_src0_dac2p3_gminsteps_diagnostico.cir'], 60)"
+      ],
+      "warnings": []
+    }
+  }
+]

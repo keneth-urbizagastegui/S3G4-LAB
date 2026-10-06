@@ -1,0 +1,8 @@
+{
+  "model": "C:\\Users\\Keneth\\Desktop\\S3G4 LAB\\Simulation_LTSpice\\models\\AD8039\\AD8038_ltspice.sub",
+  "method": "Static algebraic inspection; no simulation",
+  "intrinsic_input_offset_mV": 0,
+  "conditions": "Equal inputs, symmetric supplies and matched ideal model branches; numerical/common-mode errors not independently measured",
+  "same_double_counting": false,
+  "explanation": "B1/B2 use identical functions with opposite current directions; no fixed VOS source. Independent MC +/-3 mV is not added to a preexisting fixed 3 mV offset in this model. Other stages and nonsymmetric-supply effects not requalified."
+}

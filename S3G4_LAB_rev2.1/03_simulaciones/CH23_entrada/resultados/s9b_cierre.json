@@ -1,0 +1,50 @@
+[
+  {
+    "script": "verificar_s9_b.py",
+    "options": [],
+    "returncode": 0,
+    "seconds": 16.288059699998485,
+    "console": "C:\\Users\\Keneth\\AppData\\Local\\Temp\\s9b_cierre_verificar_s9_b.log"
+  },
+  {
+    "script": "verificar_s9_b.py",
+    "options": [
+      "--smoke"
+    ],
+    "returncode": 1,
+    "seconds": 2.5152991999930236,
+    "console": "C:\\Users\\Keneth\\AppData\\Local\\Temp\\s9b_cierre_verificar_s9_b_20261006_041546.log"
+  },
+  {
+    "script": "verificar_s9_b.py",
+    "options": [
+      "--smoke"
+    ],
+    "returncode": 0,
+    "seconds": 8.948676799991517,
+    "console": "C:\\Users\\Keneth\\AppData\\Local\\Temp\\s9b_cierre_verificar_s9_b_20261006_041638.log"
+  },
+  {
+    "script": "ejecutar_s9_b_op_corregido.py",
+    "options": [
+      "--resume"
+    ],
+    "returncode": 0,
+    "seconds": 9320.885490699991,
+    "console": "C:\\Users\\Keneth\\AppData\\Local\\Temp\\s9b_cierre_ejecutar_s9_b_op_corregido_20261006_041638.log"
+  },
+  {
+    "script": "verificar_s9_b_op_corregido.py",
+    "options": [],
+    "returncode": 0,
+    "seconds": 191.71946269999899,
+    "console": "C:\\Users\\Keneth\\AppData\\Local\\Temp\\s9b_cierre_verificar_s9_b_op_corregido_20261006_041638.log"
+  },
+  {
+    "script": "informar_s9_b.py",
+    "options": [],
+    "returncode": 0,
+    "seconds": 4.394616999998107,
+    "console": "C:\\Users\\Keneth\\AppData\\Local\\Temp\\s9b_cierre_informar_s9_b_20261006_041638.log"
+  }
+]

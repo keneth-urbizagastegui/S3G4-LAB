@@ -1,0 +1,3 @@
+test,scale_V_div,ix,POS,tap,CPL,corner,polarity,stage,mux_model,id,gain_dc,loss_2m_db,peak_db,peak_Hz,minus3_Hz,ideal
+ISOAMP,0.005,0,1,0,DC,nomi,zero,a,SWI1,isoamp_s00_pos1_tap0_cpldc_ronnomi_zero_stagea,4.999745221851348,0.0011771818326452926,1.928654933106574e-15,1.2232071190499327,85200534.21975593,5.016064257028113
+ISOAMP,0.005,0,1,0,DC,nomi,zero,b,SWI1,isoamp_s00_pos1_tap0_cpldc_ronnomi_zero_stageb,10.011555092849296,0.015794136645117317,0.0,1.0,32481166.55054551,10.076305220883533

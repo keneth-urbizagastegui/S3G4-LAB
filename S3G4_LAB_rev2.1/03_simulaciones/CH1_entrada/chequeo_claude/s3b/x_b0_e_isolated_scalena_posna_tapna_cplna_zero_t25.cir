@@ -1,0 +1,34 @@
+* S3 b0_c_isolated_scalena_posna_tapna_cplna_zero_t25
+.model BAV99HY D(Is=10.825E-15 N=0.9242 Rs=896.25E-3 Ikf=1.7426E-6 Cjo=640.32E-15 M=0.0662 Vj=0.6504 Isr=9.7471E-9 Bv=100 Tt=4.5428E-9 Iave=0.215 Vpk=100 mfg=Rohm type=Silicon)
+.subckt PROTECT_BAV99 COMMON IP IM params: R_SER=470
+RSER COMMON IP {R_SER}
+DP IP IM BAV99HY
+DN IM IP BAV99HY
+.ends PROTECT_BAV99
+.include "C:\Users\Keneth\Desktop\S3G4 LAB\S3G4_LAB_rev2.1\03_simulaciones\CH1_entrada\comun\ch1_comun_s3b.inc"
+.include "C:\Users\Keneth\Desktop\S3G4 LAB\Simulation_LTSpice\models\OPA810\opa810_a.lib"
+.include "C:\Users\Keneth\Desktop\S3G4 LAB\Simulation_LTSpice\models\AD8039\AD8038_ltspice.sub"
+.include "C:\Users\Keneth\Desktop\S3G4 LAB\Simulation_LTSpice\models\74HC4051\hc_tnomi.cir"
+.options numdgt=15 plotwinsize=0 threads=1
+.options method=gear solver=alt reltol=0.0001 gminsteps=0
+.temp 25
+.param BUFFER_KIND=810
+VP VP 0 5
+VN VN 0 -5
+CPB VP 0 10u
+CND VN 0 10u
+CPP VP 0 100n
+CNN VN 0 100n
+VI COMMON 0 AC 1
+XPROT COMMON IPA IMA PROTECT_BAV99 R_SER=470
+XAMP IPA IMA VP VN OUT AD8039_S3
+RF OUT IMA {RF1}
+RG IMA 0 {RG1}
+CM IMA 0 1p
+RL OUT 0 1k
+CL OUT 0 10p
+.ac dec 100 1k 1G
+.meas AC gdc FIND mag(V(OUT)) AT=1k
+.meas AC gpk MAX mag(V(OUT))
+.meas AC fpk WHEN mag(V(OUT))=gpk
+.end

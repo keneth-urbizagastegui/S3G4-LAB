@@ -1,0 +1,30 @@
+{
+  "returncode": 1,
+  "logical_cases": 4295,
+  "successful": 4295,
+  "simulations": 14391,
+  "seconds": 2854.1365833,
+  "workers": 10,
+  "seed": 2026100371,
+  "profile": "campaign",
+  "protected_count": 26403,
+  "protected_changed": [
+    "C:\\Users\\Keneth\\Desktop\\S3G4 LAB\\ai-context\\STATE.md"
+  ],
+  "filters": {
+    "A": [
+      2370.0,
+      1100.0
+    ],
+    "B": [
+      2370.0,
+      1100.0
+    ]
+  },
+  "model_sha256": "4fb5d82e3319553113ba8ff7c8ff5bc4b7fa65e9a13b59dea2173140fe90d31b",
+  "native_attempts": 14667,
+  "native_failed_attempts": 248,
+  "native_parallel_elapsed_sum_s": 115276.5880407966,
+  "wall_since_campaign_directory_s": 122316.26847147942,
+  "interrupted_attempts": "Own Python23944 and10LTspice interrupted; before final native records; details in journal/console"
+}

@@ -1,0 +1,18 @@
+* Chequeo Claude S3: Ron de SWI1 (Nexperia HC4051 nominal) con VCC=5, VEE=-5; 100 uA de carga
+.include "C:\Users\Keneth\Desktop\S3G4 LAB\Simulation_LTSpice\models\74HC4051\hc_tnomi.cir"
+VCC vcc 0 5
+VEE vee 0 -5
+VC ctl 0 {VCTL}
+VY y 0 0
+X1 ctl y z vee vcc 0 SWI1
+IL z 0 100u
+.param VCTL=5
+.step param VCTL list 0 5
+.dc VY -4.5 4.5 0.5
+.meas dc ron_m4 find (V(y)-V(z))/100u at -4
+.meas dc ron_m2 find (V(y)-V(z))/100u at -2
+.meas dc ron_0 find (V(y)-V(z))/100u at 0
+.meas dc ron_p2 find (V(y)-V(z))/100u at 2
+.meas dc ron_p4 find (V(y)-V(z))/100u at 4
+.meas dc ron_max max (V(y)-V(z))/100u
+.end

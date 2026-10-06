@@ -1,0 +1,5 @@
+test,scale_V_div,ix,POS,tap,CPL,corner,polarity,mux_model,id,variant,temp_C,noise_model,gain_dc,loss_2m_db,peak_db,peak_Hz,minus3_Hz
+B0,0.005,0,1,0,DC,nomi,zero,SWI1,b0_a_isolated_scalena_posna_tapna_cplna_zero_t25,A,25,original,4.9994399002305325,-0.07012093101245019,8.362274876563157,20535250.264573053,32188525.934162885
+B0,0.005,0,1,0,DC,nomi,zero,SWI1,b0_b_isolated_scalena_posna_tapna_cplna_zero_t25,B,25,original,4.999119267339638,-0.12507944520366396,8.349011457770875,15399265.260596095,24164396.555408146
+B0,0.005,0,1,0,DC,nomi,zero,SWI1,b0_c_isolated_scalena_posna_tapna_cplna_zero_t25,C,25,original,4.99951024473808,-0.009578955476671504,2.263648708221728,38311868.49557596,63749811.20987373
+B0,0.005,0,1,0,DC,nomi,zero,SWI1,b0_d_isolated_scalena_posna_tapna_cplna_zero_t25,D,25,original,4.999245297085557,-0.016415504927390676,2.238000527893525,29006811.986933835,48548974.21639818

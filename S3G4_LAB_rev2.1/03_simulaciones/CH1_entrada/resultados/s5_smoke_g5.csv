@@ -1,0 +1,7 @@
+POS,amplitude_V,candidate,freq_Hz,id,ix,kind,mc,noise_pct_div,noise_trace,noise_uV,onoise_100k,polarity,scale_V_div,section,tap,test
+1,0.0,BE,0.0,g5_be_s00_pos1_tap0_dc_mcnom_noise_bipolar_a0_f0_sec0,0,noise,-1,0.31345351351753686,v(onoise),783.6337837938422,5.71029803623e-07,bipolar,0.005,0,0,G5
+100,0.0,BE,0.0,g5_be_s06_pos100_tap0_dc_mcnom_noise_bipolar_a0_f0_sec0,6,noise,-1,0.31262274867144696,v(onoise),781.5568716786174,5.75268828946e-07,bipolar,0.5,0,0,G5
+1,0.0,BU,0.0,g5_bu_s00_pos1_tap0_dc_mcnom_noise_bipolar_a0_f0_sec0,0,noise,-1,0.3164977331816914,v(onoise),791.2443329542284,5.7136756652e-07,bipolar,0.005,0,0,G5
+100,0.0,BU,0.0,g5_bu_s06_pos100_tap0_dc_mcnom_noise_bipolar_a0_f0_sec0,6,noise,-1,0.31566136814430107,v(onoise),789.1534203607528,5.7560870467e-07,bipolar,0.5,0,0,G5
+1,0.0,TR,0.0,g5_tr_s00_pos1_tap0_dc_mcnom_noise_bipolar_a0_f0_sec0,0,noise,-1,0.3188120743319457,v(onoise),797.0301858298642,5.71204588784e-07,bipolar,0.005,0,0,G5
+100,0.0,TR,0.0,g5_tr_s06_pos100_tap0_dc_mcnom_noise_bipolar_a0_f0_sec0,6,noise,-1,0.31796413191567485,v(onoise),794.9103297891871,5.75444682773e-07,bipolar,0.5,0,0,G5

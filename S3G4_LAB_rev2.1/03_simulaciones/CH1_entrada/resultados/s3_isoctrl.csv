@@ -1,0 +1,3 @@
+test,scale_V_div,ix,POS,tap,CPL,corner,polarity,mux_model,id,native_converged,stall_time_s,collapsed_step_s
+ISOCTRL,0.005,0,1,0,DC,nomi,zero,SWI1,isoctrl_s00_pos1_tap0_cpldc_ronnomi_zero,False,1.0151585158976798e-06,7.254225211928691e-16
+ISOCTRL,0.005,0,1,0,DC,slow,zero,SWI1,isoctrl_s00_pos1_tap0_cpldc_ronslow_zero,False,1.0158188724994948e-06,4.259709633500563e-16

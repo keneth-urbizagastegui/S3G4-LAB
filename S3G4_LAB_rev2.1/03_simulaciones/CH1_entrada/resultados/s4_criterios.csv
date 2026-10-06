@@ -1,0 +1,33 @@
+variant,criterion,status,value,inherited
+M1-C0,S4-C1,FALLA,error G lineal=0.000262292304%; NL F0 completo=53.0660187% FS; offset +5.21090445/-4.85499123 div,True
+M1-C0,S4-C2,FALLA,por debajo 0=0.484858466 V; exceso VDDA=0.485626199 V,True
+M1-C0,S4-C3,FALLA,I=0.235293868 mA /0.43; exceso VS+-0.7=0.623434622 V; dif=0.682288059 V /1,True
+M1-C0,S4-C4,FALLA,"S4 perdida=-0.0923969266 dB; pico=1.50369681; cadena pico=1.77212954e-05, perdida=0.585181126 dB",False
+M1-C0,S4-C5,PASA,rec=0.221204365 us; sin recuperar=0,False
+M1-C0,S4-C6,INFORMADO,VMID durante max=0.00174761752 V; despues max=0.0017376428 V,False
+M1-C0,S4-C7,FALLA,THD=10.1696882%,False
+M1-C0,S4-C8,PASA,ruido=0.386022706% div; escalas=12/12,False
+M1-C1,S4-C1,FALLA,error G lineal=0.000262292304%; NL F0 completo=53.0660187% FS; offset +5.21090445/-4.85499123 div,False
+M1-C1,S4-C2,FALLA,por debajo 0=0.484858466 V; exceso VDDA=0.485626199 V,False
+M1-C1,S4-C3,FALLA,I=0.235293868 mA /0.43; exceso VS+-0.7=0.623434622 V; dif=0.682288059 V /1,False
+M1-C1,S4-C4,PASA,"S4 perdida=0.0814283515 dB; pico=0; cadena pico=1.77212687e-05, perdida=0.758999632 dB",False
+M1-C1,S4-C5,PASA,rec=0.22847365 us; sin recuperar=0,False
+M1-C1,S4-C6,INFORMADO,VMID durante max=0.00174720754 V; despues max=0.00173728179 V,False
+M1-C1,S4-C7,FALLA,THD=9.90984885%,False
+M1-C1,S4-C8,PASA,ruido=0.380349233% div; escalas=12/12,False
+M2-C0,S4-C1,FALLA,rango F1 +5.21090467/-4.85755013 div; F0 ganancia/NL solo M1,True
+M2-C0,S4-C2,FALLA,por debajo 0=0.48519571 V; exceso VDDA=0.485194101 V,True
+M2-C0,S4-C3,FALLA,I=0.279889903 mA /0.43; exceso VS+-0.7=0.435138017 V; dif=0.687226582 V /1,True
+M2-C0,S4-C4,FALLA,"S4 perdida=-0.0923969266 dB; pico=1.50369681; cadena pico=1.7743711e-05, perdida=0.585181446 dB",False
+M2-C0,S4-C5,PASA,rec=0.220717898 us; sin recuperar=0,False
+M2-C0,S4-C6,PASA,interferencia=1.13881104e-07 div,True
+M2-C0,S4-C7,FALLA,THD=10.1507028%,False
+M2-C0,S4-C8,PASA,ruido=0.3860236% div; escalas=12/12,False
+M2-C1,S4-C1,FALLA,rango F1 +5.21090467/-4.85755013 div; F0 ganancia/NL solo M1,False
+M2-C1,S4-C2,FALLA,por debajo 0=0.48519571 V; exceso VDDA=0.485194101 V,False
+M2-C1,S4-C3,FALLA,I=0.279889903 mA /0.43; exceso VS+-0.7=0.435138017 V; dif=0.687226582 V /1,False
+M2-C1,S4-C4,PASA,"S4 perdida=0.0814283515 dB; pico=0; cadena pico=1.77436782e-05, perdida=0.758999944 dB",False
+M2-C1,S4-C5,PASA,rec=0.228355618 us; sin recuperar=0,False
+M2-C1,S4-C6,PASA,interferencia=1.13881104e-07 div,False
+M2-C1,S4-C7,FALLA,THD=9.89135732%,False
+M2-C1,S4-C8,PASA,ruido=0.380350141% div; escalas=12/12,False

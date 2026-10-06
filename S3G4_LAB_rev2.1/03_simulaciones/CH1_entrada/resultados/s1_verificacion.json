@@ -1,0 +1,17 @@
+{
+  "verified_at": "2026-10-02T19:25:27-05:00",
+  "final_exit_code": 0,
+  "simulations": 494,
+  "declared_measures": 23796,
+  "simulation_errors": 0,
+  "simulation_warnings": 0,
+  "csv_rows_first": 2868,
+  "csv_rows_final": 2868,
+  "csv_different_cells": 0,
+  "csv_byte_identical": true,
+  "state_name_mismatches": 0,
+  "independent_ac_comparisons": 32,
+  "independent_ac_max_relative_difference": 2.2167965374464416e-6,
+  "temporal_error2_max_difference_percentage_points": 3.8154953715618944e-5,
+  "temporal_overshoot_max_difference_percentage_points": 0
+}

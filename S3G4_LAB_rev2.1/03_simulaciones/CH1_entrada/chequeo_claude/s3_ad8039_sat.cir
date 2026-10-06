@@ -1,0 +1,20 @@
+* Chequeo Claude S3: saturacion de x5.02 y x10.09; diferencial de entrada (lim. hoja +-4 V)
+.include "C:\Users\Keneth\Desktop\S3G4 LAB\Simulation_LTSpice\models\AD8039\AD8038_ltspice.sub"
+VP vp 0 5
+VN vn 0 -5
+VI in 0 PULSE(0 4.9 1u 10n 10n 5u 20u)
+X2 in m2 vp vn o2 AD8038
+RF2 o2 m2 4.02k
+RG2 m2 0 1k
+RL2 o2 0 1k
+X3 o2 m3 vp vn o3 AD8038
+RF3 o3 m3 9.09k
+RG3 m3 0 1k
+RL3 o3 0 1k
+.tran 0 12u 0 1n
+.meas tran o2max max V(o2)
+.meas tran o3max max V(o3)
+.meas tran vd2max max V(in)-V(m2)
+.meas tran vd3max max V(o2)-V(m3)
+.meas tran iq_vp find I(VP) at 0.5u
+.end

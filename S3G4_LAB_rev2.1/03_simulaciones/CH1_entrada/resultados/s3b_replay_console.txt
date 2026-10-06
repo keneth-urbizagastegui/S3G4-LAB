@@ -1,0 +1,9 @@
+Replay: C:\Users\Keneth\AppData\Local\Temp\s3b-replay-tkyf8n48\rev\sim\CH1_entrada S3G4_MODELS: C:\Users\Keneth\Desktop\S3G4 LAB\Simulation_LTSpice\models
+{
+  "exit_code": 0,
+  "simulations": 162,
+  "elapsed_seconds": 549.2499410000019,
+  "csv_count": 10,
+  "csv_identical": 10,
+  "protected_changed": []
+}
