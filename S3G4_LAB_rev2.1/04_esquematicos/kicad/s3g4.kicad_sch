@@ -22117,63 +22117,97 @@
 		)
 	)
 	(sheet
-    (at 500 50)
-    (size 40 25)
-    (exclude_from_sim no)
-    (in_bom yes)
-    (on_board yes)
-    (dnp no)
-    (fields_autoplaced yes)
-    (stroke (width 0.1524) (type solid))
-    (fill (color 0 0 0 0.0))
-    (uuid "5e187e68-818d-43a9-afdc-63610a361d71")
-    (property "Sheetname" "CH2"
-      (at 500 49.365 0)
-      (show_name no)
-      (do_not_autoplace no)
-      (effects (font (size 1.27 1.27)) (justify left bottom))
-    )
-    (property "Sheetfile" "ch2.kicad_sch"
-      (at 500 75.635 0)
-      (show_name no)
-      (do_not_autoplace no)
-      (effects (font (size 1.27 1.27)) (justify left top))
-    )
-    (instances
-      (project "s3g4"
-        (path "/de82ce61-fda9-4439-b3fa-fd2016785b6d" (page "2"))
-      )
-    )
-  )
+		(at 500 50)
+		(size 40 25)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0)
+		)
+		(uuid "5e187e68-818d-43a9-afdc-63610a361d71")
+		(property "Sheetname" "CH2"
+			(at 500 49.365 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "ch2.kicad_sch"
+			(at 500 75.635 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "s3g4"
+				(path "/de82ce61-fda9-4439-b3fa-fd2016785b6d"
+					(page "2")
+				)
+			)
+		)
+	)
 	(sheet
-    (at 500 90)
-    (size 40 25)
-    (exclude_from_sim no)
-    (in_bom yes)
-    (on_board yes)
-    (dnp no)
-    (fields_autoplaced yes)
-    (stroke (width 0.1524) (type solid))
-    (fill (color 0 0 0 0.0))
-    (uuid "858ffe77-d4b9-49a9-8a73-be943cd15991")
-    (property "Sheetname" "CH3"
-      (at 500 89.365 0)
-      (show_name no)
-      (do_not_autoplace no)
-      (effects (font (size 1.27 1.27)) (justify left bottom))
-    )
-    (property "Sheetfile" "ch3.kicad_sch"
-      (at 500 115.635 0)
-      (show_name no)
-      (do_not_autoplace no)
-      (effects (font (size 1.27 1.27)) (justify left top))
-    )
-    (instances
-      (project "s3g4"
-        (path "/de82ce61-fda9-4439-b3fa-fd2016785b6d" (page "3"))
-      )
-    )
-  )
+		(at 500 90)
+		(size 40 25)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0)
+		)
+		(uuid "858ffe77-d4b9-49a9-8a73-be943cd15991")
+		(property "Sheetname" "CH3"
+			(at 500 89.365 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "ch3.kicad_sch"
+			(at 500 115.635 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "s3g4"
+				(path "/de82ce61-fda9-4439-b3fa-fd2016785b6d"
+					(page "3")
+				)
+			)
+		)
+	)
 	(sheet_instances
 		(path "/"
 			(page "1")
