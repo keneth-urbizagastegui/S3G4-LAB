@@ -299,6 +299,16 @@ Keneth, 7 oct:
 - **Se mantiene:** 50 V DC / 50 Vrms de medida y 230 Vrms durante 10 s sin daño (RD-04, RD-10). La ganancia la pone el OPA2188 y el driver pasa a diferencial con escala ×1, no ×44 como el TIDA.
 - Fuente: chat del 7 oct; `S3G4_LAB_rev2.1/02_referencias/dmm_tida01012.html` §3–§5.
 
+### 2026-10-07 — DMM bloque 1: protección de ohmios B2 con PTC de 35 Ω
+
+Keneth eligió **B2** y la PTC propuesta por Claude:
+- En la fuente de ohmios, como máximo **1 mA**: los rangos de 200 Ω y 2 kΩ comparten 1 mA, y el de 200 Ω usa A ×10.
+- No hay escalera P42. Camino: relé TQ2SA → **PTC PTCTL4MR500SBE** (Vishay, C3760522, 600 V, 35 Ω en frío) → TVS SMAJ12CA a COM → R_S → BAV199 a ±4.9 V → fuente.
+- Motivo de la PTC de 35 Ω: deja ≈ 3.7–4.0 V para la prueba de diodo a 1 mA (RD-08 pide ~3.5 V). Con una PTC de 1 kΩ quedaban ≈ 3.1 V.
+- Por confirmar en S11.1: la energía en la TVS (hasta ≈ 9 A de pico hasta que dispara la PTC), R_S (100 o 330 Ω) y la fuga en 20 MΩ. Plan B: la PTCEL67R501 de 200 Ω (C28219210).
+- La PTC tiene poco stock en LCSC (32 unidades) y es de 0 a 70 °C.
+- Fuente: chat del 7 oct; `S3G4_LAB_rev2.1/03_simulaciones/DMM/PLAN_SIMULACION_S11_1.md`.
+
 ### 2026-10-06 — D-07 aceptada, RE-01 en espera y orden: DMM → AWG → mapa de pines
 
 Keneth, 6 oct, tras cerrar CH1–CH3:

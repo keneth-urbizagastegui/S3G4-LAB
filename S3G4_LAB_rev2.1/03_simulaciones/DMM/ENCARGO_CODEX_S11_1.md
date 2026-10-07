@@ -1,0 +1,44 @@
+# Encargo para Codex — S11.1, DMM bloque 1: bornes y protección
+
+Pegar este texto como encargo. Codex arranca en la raíz `S3G4 LAB`.
+
+**Lanzamiento (lo hace Claude):** `C:\Users\Keneth\AppData\Local\OpenAI\Codex\bin\5ea220ae823df3d7\codex.exe`, `-m gpt-6.1-sol`, esfuerzo `medium`. Como proceso independiente (`Start-Process`), con el prompt por stdin desde un fichero y `-o` para la respuesta final.
+
+---
+
+## Entorno
+
+```
+Raíz:               C:\Users\Keneth\Desktop\S3G4 LAB   (ruta con ESPACIO: entrecomilla siempre)
+Carpeta de trabajo: ...\S3G4_LAB_rev2.1\03_simulaciones\DMM
+LTspice 26:         C:\Users\Keneth\AppData\Local\Programs\ADI\LTspice\LTspice.exe  (-b "ruta Windows del .cir")
+Biblioteca LTspice: C:\Users\Keneth\AppData\Local\LTspice\lib (standard.* en UTF-16)
+Modelos (lectura):  C:\Users\Keneth\Desktop\S3G4 LAB\Simulation_LTSpice\models\  (lee su LEEME.md)
+Hojas:              C:\Users\Keneth\Desktop\S3G4 LAB\datasheet - componentes\
+Python 3.12 con numpy, scipy y pymupdf. Los valores derivados se calculan, no se escriben a mano.
+```
+
+## Qué hacer
+
+1. Lee `AGENTS.md`, `ai-context/START.md` y, entero, `DMM/PLAN_SIMULACION_S11_1.md` (tu contrato).
+2. Abre tu diario en `ai-context/journal/` al empezar.
+3. **P0** primero: el modelo térmico de la PTC y los datos de las hojas. Anota en el diario el modelo de la PTC y su ajuste a la curva de la hoja antes de seguir.
+4. `comun/dmm_bloque1.inc` y `ejecutar_s11_1.py`: 10 trabajadores, `--smoke`, `--resume` y `S3G4_MODELS`. Los transitorios de 10 s, con paso máximo acotado y tiempo límite.
+5. `--smoke` y después la campaña. Prioridad: P0, P3, P2, P4, P5, P1, P6, P7.
+6. Acta y cierre del diario.
+
+## Reglas
+
+No cambies valores salvo R_S. No elijas piezas ni remedios. Las contradicciones se anotan. Cada `.meas` lleva en el nombre su estado real (borne, modo, relé, R_S, rieles y tiempo de apertura). No toques `../CH1_entrada/`, `../CH23_entrada/`, `models/`, `01_diseno/`, `STATE.md` ni `DECISIONS.md`. No descargues nada.
+
+## Respuesta final
+
+- Ficheros creados.
+- Simulaciones y tiempo.
+- P0 con páginas.
+- El modelo de la PTC.
+- La tabla S11.1-C1…C7 con R_S = 100 | 330 Ω lado a lado.
+- La pieza más cargada en cada caso.
+- Los rieles con el DMM apagado.
+- Tiempo de disparo de la PTC.
+- Dudas.
