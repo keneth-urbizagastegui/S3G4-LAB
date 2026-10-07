@@ -1,0 +1,50 @@
+* O3_O0_ptc570_r1630_rs3300_ph0
+.options numdgt=15 plotwinsize=0 gmin=1e-15
+.model RELAY SW(Ron=.1 Roff=1e12 Vt=.5 Vh=0)
+.model BAV199 D(IS=805.84E-18 N=1.0246 RS=.05 IKF=362.16E-6 CJO=1.9002E-12 M=.35193 VJ=1.2722 ISR=298.95E-15 BV=113.30 IBV=10 TT=1.0230E-6)
+.model BODY D(Is=1n N=1 Rs=.1)
+.model REGSUP D(Ron=1u Roff=1e18 Vfwd=0)
+.model ICHC D(Ron=1 Roff=1T Vfwd=.5)
+.model ICTLV D(Ron=1 Roff=1T Vfwd=.2)
+.model ZD D(Is=1e-14 Rs=1 BV=5.6 IBV=1m)
+.subckt PINHC a rp rn
+Dhi a rp ICHC
+Dlo rn a ICHC
+Cin a 0 5p
+.ends
+.subckt PINTLV a rp rn
+Dhi a rp ICTLV
+Dlo rn a ICTLV
+Cin a 0 8p
+.ends
+Vgrid g 0 SIN(0 325.269 60 0 0 0)
+Rgrid g vin 1m
+Vrc rc 0 1
+Srelay vin ptin rc 0 RELAY
+Coff vin ptin 1p
+Vsr ptin pt 0
+Rptc pt pt2 570.0
+Rser pt2 n1 1630.0
+Btvs n1 0 I=sgn(V(n1))*max(abs(V(n1))-14.0,0)/0.2587193392706104
+Rs n1 n2 3300.0
+Vn2 n2 n2s 0
+D2p n2 rp BAV199
+D2n rn n2 BAV199
+Vhead rp ms 0.7
+Vsense ms msource 0
+Bsource msource n2s I=0.001*limit(V(msource,n2s)/.1,0,1)
+Xtl1 ms rp rn PINTLV
+Xtl2 msource rp rn PINTLV
+Dmosbody n2s msource BODY
+Xh6 n2s rp rn PINHC
+Vregp regp 0 4.9
+Vregn regn 0 -4.9
+Rdp regp regpf .5
+Rdn regnf regn .5
+Dregp regpf rp REGSUP
+Dregn rn regnf REGSUP
+Rload rp rn {9.8/.003}
+Crp rp 0 1u
+Crn rn 0 1u
+.tran 0 0.0834 0 2e-05
+.end
