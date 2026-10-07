@@ -1,0 +1,273 @@
+<title>Síntesis del DMM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@500;600&display=swap">
+<style>
+:root{
+  --bg:#f4f6f5; --paper:#fff; --ink:#1b2a2e; --muted:#5d6d72; --rule:#dde3e1;
+  --accent:#12667f; --accent2:#a9541c; --ok:#2f7d54; --warn:#9a6100; --crit:#b22d22; --open:#6a4fa3;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#11181a; --paper:#182125; --ink:#dce6e7; --muted:#93a3a8; --rule:#2a3639;
+  --accent:#5fb9d2; --accent2:#f0a06a; --ok:#63c891; --warn:#f0b75a; --crit:#ff8d80; --open:#b79ae8;}}
+:root[data-theme="dark"]{
+  --bg:#11181a; --paper:#182125; --ink:#dce6e7; --muted:#93a3a8; --rule:#2a3639;
+  --accent:#5fb9d2; --accent2:#f0a06a; --ok:#63c891; --warn:#f0b75a; --crit:#ff8d80; --open:#b79ae8;}
+body{background:var(--bg);color:var(--ink);font:15px/1.6 "IBM Plex Sans",system-ui,sans-serif}
+.wrap{max-width:1000px;margin:0 auto;padding-inline:20px;padding-block:28px 64px}
+h1,h2,h3,h4{font-family:"IBM Plex Sans Condensed","IBM Plex Sans",sans-serif;margin:0;text-wrap:balance}
+h1{font-size:clamp(26px,4vw,36px);font-weight:600}
+h2{font-size:24px;font-weight:600;margin-top:8px}
+h3{font-size:18px;font-weight:600;margin-bottom:4px}
+code{font:0.88em "IBM Plex Mono",ui-monospace,monospace;color:var(--accent)}
+.eyebrow{font:500 12px "IBM Plex Mono",monospace;letter-spacing:.09em;text-transform:uppercase;color:var(--accent);margin:0 0 6px}
+.lede{color:var(--muted);max-width:74ch}
+header.hero{border-bottom:1px solid var(--rule);padding-bottom:18px;margin-bottom:26px}
+section{background:var(--paper);border:1px solid var(--rule);border-radius:10px;padding:20px 22px;margin-bottom:18px}
+section>p,li{max-width:80ch}
+.tag{display:inline-block;font:500 11px "IBM Plex Mono",monospace;text-transform:uppercase;letter-spacing:.06em;padding:2px 9px;border-radius:999px;border:1px solid currentColor}
+.t-ok{color:var(--ok)} .t-open{color:var(--open)} .t-warn{color:var(--warn)} .t-crit{color:var(--crit)}
+.shead{display:flex;align-items:center;gap:12px;margin-bottom:10px;flex-wrap:wrap}
+.num{font:500 14px "IBM Plex Mono",monospace;background:var(--accent);color:var(--paper);width:28px;height:28px;border-radius:50%;display:grid;place-items:center}
+.tw{overflow-x:auto;margin:12px 0}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th{text-align:left;font-weight:600;color:var(--muted);border-bottom:1.5px solid var(--rule);padding:7px 9px;white-space:nowrap}
+td{border-bottom:1px solid var(--rule);padding:7px 9px;vertical-align:top}
+td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
+.pick{background:color-mix(in srgb, var(--ok) 10%, transparent)}
+.callout{border-left:3px solid var(--accent);padding:10px 14px;margin:14px 0;background:color-mix(in srgb, var(--accent) 7%, transparent);font-size:14px}
+.callout.w{border-color:var(--warn);background:color-mix(in srgb, var(--warn) 9%, transparent)}
+ul.tight{margin:8px 0;padding-left:20px}
+ul.tight li{margin-bottom:5px}
+.meta{font:12.5px "IBM Plex Mono",monospace;color:var(--muted);margin:0}
+.q{border:1px dashed var(--open);border-radius:8px;padding:12px 14px;margin:10px 0}
+.q b{color:var(--open)}
+footer{font-size:12.5px;color:var(--muted);border-top:1px solid var(--rule);padding-top:12px}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-size:14px}
+.kv dt{color:var(--muted)} .kv dd{margin:0}
+
+/* --- esquematico --- */
+figure{margin:16px 0}
+.sx{overflow-x:auto;border:1px solid var(--rule);border-radius:8px;background:var(--bg);padding:8px}
+.sx svg{display:block;max-width:none;height:auto}
+figcaption{font-size:13px;color:var(--muted);margin-top:6px}
+svg text{font-family:"IBM Plex Mono",ui-monospace,monospace}
+.w{fill:none;stroke:var(--ink);stroke-width:1.5;stroke-linejoin:round}
+.sym{fill:none;stroke:var(--ink);stroke-width:1.6;stroke-linejoin:round}
+.fillsym{fill:var(--ink);stroke:var(--ink);stroke-width:1}
+.dot{fill:var(--ink)}
+.op{fill:var(--paper);stroke:var(--ink);stroke-width:1.7}
+.ic{fill:var(--paper);stroke:var(--ink);stroke-width:1.5}
+.hdr{fill:none;stroke:var(--open);stroke-width:1.5;stroke-dasharray:3 2}
+.grp{fill:none;stroke:var(--muted);stroke-width:1.1;stroke-dasharray:5 4}
+.grp-t{font-size:10.5px;fill:var(--muted)}
+.blade{stroke:var(--ink);stroke-width:2}
+.ct{fill:var(--paper);stroke:var(--ink);stroke-width:1.3}
+.gnd line{stroke:var(--ink);stroke-width:1.5}
+.railbar{stroke:var(--crit);stroke-width:2.2}
+.rail{font-size:10.5px;fill:var(--crit);font-weight:500}
+.railsm{font-size:9px;fill:var(--crit)}
+.port{fill:color-mix(in srgb, var(--accent) 14%, transparent);stroke:var(--accent);stroke-width:1.3}
+.portt{font-size:10.5px;fill:var(--ink)}
+.tp{fill:none;stroke:var(--ok);stroke-width:1.6}
+.tpt{font-size:9.5px;fill:var(--ok)}
+.ref{font-size:11px;font-weight:500;fill:var(--ink)}
+.val{font-size:10px;fill:var(--muted)}
+.net{font-size:10px;fill:var(--accent2)}
+.pin{font-size:9.5px;fill:var(--muted)}
+.pm{font-size:15px;fill:var(--ink)}
+.note{font-size:10.5px;fill:var(--muted);font-style:italic}
+.src{color:var(--muted);font-size:12.5px}
+
+.lesson td:first-child{font-weight:600}
+pre.mermaid{background:var(--paper);border:1px solid var(--rule);border-radius:8px;padding:12px;overflow-x:auto}
+.meta{color:var(--muted);font-size:13px}
+.toc{columns:2 260px;column-gap:28px;margin:6px 0 0;padding-left:20px;font-size:14px}
+.toc li{break-inside:avoid;margin:2px 0}
+.toc a{color:var(--accent);text-decoration:none} .toc a:hover{text-decoration:underline}
+.eq{font-family:"IBM Plex Mono",monospace;font-size:13.5px;background:var(--paper);border:1px solid var(--rule);border-radius:6px;padding:8px 12px;margin:10px 0;overflow-x:auto;white-space:pre}
+code,a{overflow-wrap:anywhere}
+</style>
+<div class="wrap">
+<header class="hero">
+  <p class="eyebrow">S3G4 LAB · DMM de la rev 2.1 · síntesis de las 9 referencias</p>
+  <h1>Síntesis del DMM</h1>
+  <p class="lede">Qué aprendimos de las nueve referencias, qué corrige en la sección H y qué arquitectura proponemos: simple, barata y con especificaciones de instrumento, para calibrar por software al fabricar.</p>
+  <ul class="toc"><li><a href="#resumen">En una página</a></li><li><a href="#referencias">1 · Las nueve referencias</a></li><li><a href="#patrones">2 · Lo que se repite</a></li><li><a href="#correcciones">3 · Correcciones a H</a></li><li><a href="#arquitectura">4 · Arquitectura recomendada</a></li><li><a href="#propuestas">5 · Veredicto P17–P42</a></li><li><a href="#especificacion">6 · Especificación</a></li><li><a href="#s11">7 · Qué simula S11</a></li><li><a href="#fabricar">8 · Calibración al fabricar</a></li><li><a href="#decisiones">9 · Lo que decides</a></li><li><a href="#descartes">10 · Lo que no tomamos</a></li></ul>
+</header>
+<section id="resumen">
+  <div class="shead"><span class="num">★</span><h2>En una página</h2></div>
+
+  <p>Estudiamos nueve referencias: dos diseños de TI, dos DMM abiertos, uno comercial certificado, dos con el ADC de un STM32, un método de errores de Analog Devices y el 34401A de banco. La conclusión principal: <b>la arquitectura de la sección H estaba bien orientada</b>. Divisor de 10 MΩ con tomas, multiplexor, amplificador de deriva cero, driver diferencial, ADC5 sobremuestreado, ohmios por razón y continuidad por comparador coinciden con lo mejor de las referencias. El estudio la corrige en ocho puntos y le añade casi todo lo demás <b>en firmware, sin piezas</b>.</p>
+  <ul class="tight">
+    <li><b>Lo que cambia en el hardware</b> (céntimos):
+      <ul class="tight">
+        <li>la protección de la fuente de ohmios pasa de una PTC a un diodo y dos transistores (P42);</li>
+        <li>ningún divisor en el lado del DUT (P25);</li>
+        <li>derivador de 4 terminales (P27), fusible cerámico con puente de diodos (P31) y filtro de muestreo calculado (P20);</li>
+        <li>una huella sin montar para un ADC ΣΔ de respaldo.</li>
+      </ul></li>
+    <li><b>Lo que se hace en firmware</b>: autocero con tiempo de asiento, integración a 60 Hz, corrección de la alterna, calibración multipunto con linealización del ADC5, autoprueba, cable abierto y aviso de tensión en ohmios.</li>
+    <li><b>La especificación se mantiene</b> en ±(0.1 % + 10) en continua <b>tras la calibración por software al fabricar</b>. Sin linealizar el ADC5, lo que garantiza la hoja de datos es ±(0.1 % + 40).</li>
+    <li><b>Te toca decidir</b> siete puntos (§9). Para cada uno hay una recomendación.</li>
+  </ul>
+  <p class="meta">Criterio aplicado (Keneth, 7 oct): estudiar y simular para dejar margen; al fabricar, calibrar por software. Especificaciones algo holgadas pero de instrumento profesional. Bajo coste y pocos componentes, sin sesgo hacia ninguna referencia. Nada de esto está aplicado a la sección H todavía.</p>
+
+</section>
+<section id="referencias">
+  <div class="shead"><span class="num">1</span><h2>Las nueve referencias, de un vistazo</h2></div>
+
+  <div class="tw"><table>
+    <thead><tr><th>#</th><th>Referencia</th><th>Qué es</th><th>ADC</th><th>Lo que más aportó</th><th>Propuestas</th></tr></thead>
+    <tbody>
+      <tr><td>R1</td><td><a href="https://claude.ai/artifact/BzuS4XnvR7xVfP3ZutR9No">TIDA-01012</a></td><td>Diseño de TI, 4½ dígitos</td><td>SAR 18 bits externo</td><td>Divisor de 10 MΩ con patas conmutadas, driver diferencial con VCM, valor eficaz por firmware</td><td>P17–P22</td></tr>
+      <tr><td>R2</td><td><a href="https://claude.ai/artifact/5j4fYKqbpLK8TxGpkFgE7D">HydraMeter</a></td><td>DMM abierto, todo discreto</td><td>ΣΔ 16 bits + PGA</td><td>Protección escalonada, ohmios con tensión medida en el borne, derivador de 4 terminales</td><td>P23–P27</td></tr>
+      <tr><td>R6</td><td><a href="https://claude.ai/artifact/XKxwSffsJUNX7j4EGX2iLx">TIDA-00879</a></td><td>Antecesor del 01012</td><td>ΣΔ 24 bits del MCU</td><td>Resistencia de alta tensión de entrada; calibración que no debe ir en el código</td><td>P28–P29</td></tr>
+      <tr><td>R7</td><td><a href="https://claude.ai/artifact/YcB94Hqks4aYz739W2KLwM">121GW</a></td><td>Comercial, CAT III 600 V</td><td>Chip de DMM</td><td>Protección certificada, fusibles de alto poder de corte y puente de diodos</td><td>P30–P32</td></tr>
+      <tr><td>R3</td><td><a href="https://claude.ai/artifact/VXTHBpRXxs9tDhqPwQFTb6">Micro-DMM</a></td><td>DMM casero</td><td>ADS1115</td><td>Cable abierto (puente de Mann); el límite de un ohmímetro de divisor</td><td>P33–P34</td></tr>
+      <tr><td>R8</td><td><a href="https://claude.ai/artifact/R3vvm1wXKejCDjdHz8xVFR">Martin</a></td><td>DMM abierto, STM32F373</td><td>ΣΔ 16 bits del MCU</td><td>Errores medibles: referencia de corriente lejos del derivador y RMS mal corregido</td><td>refuerza</td></tr>
+      <tr><td>R4</td><td><a href="https://claude.ai/artifact/JMeU9V49kriNvnQjgBTxeg">EEWorld 77845</a></td><td>Concurso, ficha corta</td><td>SAR 12 bits del F103</td><td>Límite inferior: ≈ 1 % sin referencia propia ni autocero</td><td>refuerza</td></tr>
+      <tr><td>R5</td><td><a href="https://claude.ai/artifact/LsJG4aZhYxcP8A2SGfAiZN">Analog Devices</a></td><td>Método de 7½ dígitos</td><td>SAR 24 bits</td><td>El presupuesto de errores; la INL del ADC5 son 26–39 cuentas</td><td>P35–P37</td></tr>
+      <tr><td>R9</td><td><a href="https://claude.ai/artifact/Gd8rGXutjjVU3zHBf2p9LY">34401A</a></td><td>Banco de 6½ dígitos</td><td>Multipendiente</td><td>Autocero con precarga, compensación de alterna programable, fuente de ohmios protegida con semiconductores, autoprueba</td><td>P38–P42</td></tr>
+    </tbody>
+  </table></div>
+
+</section>
+<section id="patrones">
+  <div class="shead"><span class="num">2</span><h2>Lo que repiten los buenos diseños</h2></div>
+
+  <div class="tw"><table>
+    <thead><tr><th>Idea</th><th>Quién la usa</th><th>En la sección H</th></tr></thead>
+    <tbody>
+      <tr><td>Entrada de 10 MΩ con un divisor de precisión</td><td>TIDA ×2, 121GW, 34401A (Martin y HydraMeter, 1 MΩ)</td><td><span class="tag t-ok">Sí</span></td></tr>
+      <tr><td>Conmutadores solo en nodos de baja tensión y en el lado de sentido</td><td>TIDA, 34401A, Martin, HydraMeter</td><td><span class="tag t-ok">Sí</span> (R_PROT, sujeciones, sentido en ohmios y en la ganancia de A)</td></tr>
+      <tr><td>Amplificador sin deriva y autocero</td><td>34401A (MC/MZ), TIDA (OPA333), 121GW (MAX4238)</td><td><span class="tag t-ok">Sí</span> (OPA2188 + X3)</td></tr>
+      <tr><td>Todo el ADC detrás de un buffer</td><td>TIDA, Martin, 34401A; el Micro-DMM, que no lo tiene, pierde un 2 % entre ganancias</td><td><span class="tag t-ok">Sí</span></td></tr>
+      <tr><td>Ohmios ratiométricos</td><td>34401A (corriente de la misma referencia), HydraMeter</td><td><span class="tag t-ok">Sí</span> (razón con R_ref)</td></tr>
+      <tr><td>Valor eficaz por firmware</td><td>TIDA ×2, Martin (los comerciales lo hacen analógico)</td><td><span class="tag t-ok">Sí</span></td></tr>
+      <tr><td>Calibración multipunto en memoria no volátil</td><td>Todas</td><td><span class="tag t-warn">Parcial</span> (ganancia y offset por rango; P26, P29)</td></tr>
+      <tr><td>Protección de ohmios que no limita la corriente de medida</td><td>34401A (semiconductores), 121GW (PTC con fuente de mA)</td><td><span class="tag t-crit">No</span> (la PTC de kΩ choca con 9.8 mA; P42)</td></tr>
+      <tr><td>Fusible de alto poder de corte y puente de diodos en A</td><td>121GW, 34401A</td><td><span class="tag t-warn">Parcial</span> (P31)</td></tr>
+    </tbody>
+  </table></div>
+
+</section>
+<section id="correcciones">
+  <div class="shead"><span class="num">3</span><h2>Lo que el estudio corrige de la sección H</h2></div>
+
+  <div class="tw"><table>
+    <thead><tr><th>Punto de H</th><th>Lo vio</th><th>Cifra</th><th>Solución propuesta</th></tr></thead>
+    <tbody><tr><td>INL del ADC5</td><td>R5</td><td>26–39 cuentas (hoja, 25 °C), no menos de 10</td><td>Linealización al fabricar (P26) y huella ΣΔ de respaldo; especificación honesta sin linealizar: +40 (D1)</td></tr><tr><td>PTC «de pocos kΩ» en serie con R_ref</td><td>síntesis</td><td>Con 2 kΩ, el rango de 200 Ω baja de 9.8 a 2.0 mA y usa el 20 % de la ventana</td><td>P42 (diodo + 2 transistores): 78 % de la ventana, sin corriente de sujeción (D3)</td></tr><tr><td>Divisor ÷4 en X6, en el lado del DUT</td><td>R2</td><td>Roba corriente que no pasa por el DUT</td><td>Medir ese nodo sin cargarlo, o meter la carga en la calibración (P25)</td></tr><tr><td>Fuga del 74HC4051 «unos nA»</td><td>R9</td><td>La hoja solo garantiza 0.1 µA; con 1 nA ya son ≈ 9 cuentas en 20 V</td><td>Calibrar el offset por rango y fijar en S11 la fuga tolerable (D4)</td></tr><tr><td>OPA2188 «160 pA»</td><td>R5</td><td>Es la típica; la máxima es de 850 pA (≈ 8 cuentas en 200 mV)</td><td>Entra en el presupuesto; no cambia la pieza</td></tr><tr><td>Red de 50 Hz implícita</td><td>R9</td><td>En Perú es de 60 Hz: integrando 20 ms, solo 16 dB de rechazo</td><td>60 Hz por defecto, o 100 ms (P40)</td></tr><tr><td>Autocero sin tiempo de asiento</td><td>R9</td><td>Al volver de X3, la toma ÷10 cae un 33 % y tarda 0.8 ms en recuperarse</td><td>Esperar ≈ 1 ms por conmutación (P38)</td></tr><tr><td>Trimmer o condensador «elegido en prueba» en ÷10</td><td>R9 + P18</td><td>Con un 2 % de desajuste de τ, −1.7 % a 20 kHz</td><td>C0G fijos y corrección por firmware calibrada (P39)</td></tr></tbody>
+  </table></div>
+
+</section>
+<section id="arquitectura">
+  <div class="shead"><span class="num">4</span><h2>Arquitectura recomendada</h2></div>
+
+  <figure><div class="sx"><svg class="sch" viewBox="0 0 1220 640" width="1220" role="img" aria-label="DMM rev 2.1: arquitectura recomendada tras la sintesis" xmlns="http://www.w3.org/2000/svg"><circle class="ban" cx="70" cy="100" r="9" style="stroke:#b3261e"/><circle class="fillsym" cx="70" cy="100" r="3.5"/><text class="ref" x="54" y="104" text-anchor="end">V/Ω</text><polyline class="w" points="79,100 110,100"/><circle class="dot" cx="95" cy="100" r="3.2"/><rect class="blk" x="110" y="70" width="160" height="62" rx="4"/><text class="ref" x="190.0" y="90" text-anchor="middle">Protección</text><text class="pin" x="190.0" y="108" text-anchor="middle">R_PROT 3 × 33 kΩ</text><text class="pin" x="190.0" y="123" text-anchor="middle">BAV199 a ±4.9 V</text><rect class="blk" x="300" y="70" width="170" height="62" rx="4"/><text class="ref" x="385.0" y="90" text-anchor="middle">Divisor 10 MΩ</text><text class="pin" x="385.0" y="108" text-anchor="middle">3 × 3 MΩ + 900 k + 100 k</text><text class="pin" x="385.0" y="123" text-anchor="middle">tomas ÷10 (sujeta) y ÷100</text><rect class="blk" x="500" y="70" width="150" height="62" rx="4"/><text class="ref" x="575.0" y="90" text-anchor="middle">Mux de señal</text><text class="pin" x="575.0" y="108" text-anchor="middle">74HC4051 · X0…X7</text><text class="pin" x="575.0" y="123" text-anchor="middle">X3 = COM (autocero)</text><rect class="blk" x="680" y="70" width="130" height="62" rx="4"/><text class="ref" x="745.0" y="90" text-anchor="middle">A · OPA2188</text><text class="pin" x="745.0" y="108" text-anchor="middle">×1 / ×10</text><text class="pin" x="745.0" y="123" text-anchor="middle">deriva cero</text><rect class="blk" x="840" y="70" width="150" height="62" rx="4"/><text class="ref" x="915.0" y="90" text-anchor="middle">Driver diferencial</text><text class="pin" x="915.0" y="108" text-anchor="middle">3.3 V · VCM 1.25 V</text><text class="pin" x="915.0" y="123" text-anchor="middle">filtro de muestreo (P20)</text><rect class="blk" x="1020" y="70" width="150" height="62" rx="4"/><text class="ref" x="1095.0" y="90" text-anchor="middle">ADC5 del G473</text><text class="pin" x="1095.0" y="108" text-anchor="middle">diferencial ±2 V</text><text class="pin" x="1095.0" y="123" text-anchor="middle">×1024 y NPLC</text><rect class="grp" x="1020" y="160" width="150" height="64" rx="4"/><text class="ref" x="1095.0" y="180" text-anchor="middle">ΣΔ opcional</text><text class="pin" x="1095.0" y="198" text-anchor="middle">ADS1115 · huella</text><text class="pin" x="1095.0" y="213" text-anchor="middle">sin montar</text><polyline class="w" points="270,100 300,100"/><polyline class="w" points="470,100 500,100"/><polyline class="w" points="650,100 680,100"/><polyline class="w" points="810,100 840,100"/><polyline class="w" points="990,100 1020,100"/><circle class="dot" cx="1005" cy="100" r="3.2"/><polyline class="w" points="1005,100 1005,192 1020,192"/><rect class="blk" x="500" y="232" width="150" height="62" rx="4"/><text class="ref" x="575.0" y="252" text-anchor="middle">Fuente de ohmios</text><text class="pin" x="575.0" y="270" text-anchor="middle">4.9 V · R_ref 301 Ω…10 MΩ</text><text class="pin" x="575.0" y="285" text-anchor="middle">4051 fuerza / sentido</text><rect class="blk" x="300" y="232" width="170" height="62" rx="4"/><text class="ref" x="385.0" y="252" text-anchor="middle">Bloqueo (P42)</text><text class="pin" x="385.0" y="270" text-anchor="middle">1N4007W + 2 × MMBTA92</text><text class="pin" x="385.0" y="285" text-anchor="middle">en lugar de la PTC</text><polyline class="w" points="500,263 470,263"/><polyline class="w" points="300,263 95,263 95,100"/><polyline class="w" points="575,232 575,132"/><text class="net" x="585" y="190" text-anchor="start">X5, X6</text><text class="note" x="110" y="290" text-anchor="start">V_x se lee en el borne por X0</text><rect class="blk" x="680" y="232" width="130" height="62" rx="4"/><text class="ref" x="745.0" y="252" text-anchor="middle">Continuidad</text><text class="pin" x="745.0" y="270" text-anchor="middle">÷2 → PB14 · COMP7</text><text class="pin" x="745.0" y="285" text-anchor="middle">umbral DAC2 · &lt; 1 ms</text><polyline class="w" points="745,132 745,232"/><circle class="ban" cx="70" cy="400" r="9" style="stroke:#b3261e"/><circle class="fillsym" cx="70" cy="400" r="3.5"/><text class="ref" x="54" y="404" text-anchor="end">A</text><polyline class="w" points="79,400 110,400"/><rect class="blk" x="110" y="370" width="160" height="62" rx="4"/><text class="ref" x="190.0" y="390" text-anchor="middle">Fusible HRC 3.15 A</text><text class="pin" x="190.0" y="408" text-anchor="middle">cerámico (P31)</text><text class="pin" x="190.0" y="423" text-anchor="middle">+ puente DF10S</text><rect class="blk" x="300" y="370" width="170" height="62" rx="4"/><text class="ref" x="385.0" y="390" text-anchor="middle">Derivador 0.1 Ω</text><text class="pin" x="385.0" y="408" text-anchor="middle">4 terminales (P27)</text><text class="pin" x="385.0" y="423" text-anchor="middle">estrella en el borne COM</text><rect class="blk" x="500" y="370" width="150" height="62" rx="4"/><text class="ref" x="575.0" y="390" text-anchor="middle">B · OPA2188</text><text class="pin" x="575.0" y="408" text-anchor="middle">×10 del derivador</text><text class="pin" x="575.0" y="423" text-anchor="middle">→ X4 del mux</text><polyline class="w" points="270,400 300,400"/><polyline class="w" points="470,400 500,400"/><polyline class="w" points="650,400 665,400 665,120 650,120"/><circle class="ban" cx="70" cy="480" r="9" style="stroke:#1b2a2e"/><circle class="fillsym" cx="70" cy="480" r="3.5"/><text class="ref" x="54" y="484" text-anchor="end">COM</text><polyline class="w" points="79,480 385,480 385,432"/><rect class="grp" x="840" y="240" width="330" height="250" rx="6"/><text class="grp-t" x="848" y="255" text-anchor="start">Firmware del G473 (sin piezas)</text><text class="note" x="856" y="280" text-anchor="start">autocero X3 con asiento de ≈ 1 ms (P38)</text><text class="note" x="856" y="305" text-anchor="start">integración: 60 Hz o 100 ms (P40)</text><text class="note" x="856" y="330" text-anchor="start">valor eficaz y corrección de alterna (P21, P39)</text><text class="note" x="856" y="355" text-anchor="start">calibración multipunto y linealización (P26)</text><text class="note" x="856" y="380" text-anchor="start">constantes en memoria, editables (P29)</text><text class="note" x="856" y="405" text-anchor="start">autoprueba al encender (P41)</text><text class="note" x="856" y="430" text-anchor="start">cable abierto en tensión (P33)</text><text class="note" x="856" y="455" text-anchor="start">tensión externa en ohmios (P34)</text><text class="note" x="40" y="560" text-anchor="start">Discontinuo: huella opcional, sin montar, por si la linealización del ADC5 no basta (P36).</text><text class="note" x="40" y="580" text-anchor="start">Cambios frente a la sección H: P42 en vez de la PTC, ningún divisor en el lado del DUT (P25), filtro P20,</text><text class="note" x="40" y="600" text-anchor="start">fusible HRC con puente (P31), derivador Kelvin (P27), huella del ΣΔ y las funciones de firmware de la derecha.</text></svg></div><figcaption>Arquitectura del DMM tras la síntesis. Es la de la sección H con las correcciones de §3. Es una propuesta, no aplicada.</figcaption></figure>
+
+  <div class="tw"><table>
+    <thead><tr><th>Bloque</th><th>Qué tomamos y de quién</th><th>Coste o complejidad</th></tr></thead>
+    <tbody>
+      <tr><td>Protección V/Ω</td><td>R_PROT de alta tensión en piezas repartidas y sujeción a los rieles (H, como el osciloscopio; reparto de tensión del HydraMeter y del 121GW). Sin descargadores ni varistores: no hay categoría y RD-10 son 10 s</td><td>Igual que H</td></tr>
+      <tr><td>Divisor y rangos</td><td>10 MΩ con tomas ÷10 y ÷100; 200 mV y 2 V por X0 (H). Compensación con la misma τ y C0G fijos, más una R de amortiguación (P18, 121GW)</td><td>Igual que H; sin trimmer</td></tr>
+      <tr><td>Mux, amplificador y ADC</td><td>74HC4051, OPA2188 de deriva cero, driver diferencial a 3.3 V y ADC5 sobremuestreado (H, TIDA-01012). Filtro de muestreo calculado (P20)</td><td>Igual que H</td></tr>
+      <tr><td>ADC de respaldo</td><td>Huella sin montar para un ADS1115 (16 bits, INL de 1 LSB, LCSC C37593, 1.22 USD) en paralelo con el ADC5, solo para continua. Una cuenta suya son 0.62 cuentas nuestras</td><td>0 USD si no se monta</td></tr>
+      <tr><td>Ohmios</td><td>Razón con R_ref por rango y tensión leída en el borne (H, HydraMeter, 34401A). Protección con un diodo de 1 kV y dos PNP de 300 V (P42, 34401A). Ningún divisor en el lado del DUT (P25)</td><td>≈ 0.07 USD, en lugar de una PTC</td></tr>
+      <tr><td>Corriente</td><td>Un derivador de 0.1 Ω de 4 terminales con estrella en COM (P27, HydraMeter, Martin), fusible cerámico de alto poder de corte y puente DF10S (P31, 121GW, 34401A)</td><td>Unos céntimos más que H</td></tr>
+      <tr><td>Continuidad</td><td>COMP7 con umbral del DAC2: &lt; 1 ms sin CPU (H). Ninguna referencia es más rápida (34401A: 300 muestras/s)</td><td>Igual que H</td></tr>
+      <tr><td>Firmware</td><td>Media y RMS sin continua (P21, TIDA), NPLC de 60 Hz (P40, 34401A), corrección de alterna (P39, 34401A), calibración multipunto con linealización (P26, HydraMeter, Micro-DMM), memoria con CRC (P29), autoprueba (P41), cable abierto (P33, Micro-DMM), tensión en ohmios (P34)</td><td>Sin piezas</td></tr>
+    </tbody>
+  </table></div>
+
+</section>
+<section id="propuestas">
+  <div class="shead"><span class="num">5</span><h2>Veredicto sobre las 26 propuestas</h2></div>
+
+  <p>Resumen: 7 de hardware (pocos céntimos), 11 de firmware o documento, 2 que ya están en H, 3 opcionales, 1 descartada, 1 sustituida y 1 por decidir.</p>
+  <div class="tw"><table>
+    <thead><tr><th>#</th><th>Propuesta</th><th>Veredicto</th><th>Motivo y dónde se comprueba</th></tr></thead>
+    <tbody><tr><td>P17</td><td>Patas bajas conmutadas a COM</td><td><span class="tag t-crit">Descartar</span></td><td>En 200 mV dejaría 10 MΩ de fuente: los 850 pA del OPA2188 serían 8.5 mV (4 % del fondo). H ya protege el mux con R_PROT y sujeciones</td></tr><tr><td>P18</td><td>Misma τ en todas las patas, C0G fijos y R de amortiguación</td><td><span class="tag t-ok">Adoptar · hardware</span></td><td>Sin trimmer; el residuo lo quita P39 · S11</td></tr><tr><td>P19</td><td>Conmutadores en el lado de sentido</td><td><span class="tag t-ok">Ya en H</span></td><td>Ohmios y ganancia de A</td></tr><tr><td>P20</td><td>Filtro del ADC5 calculado por la carga de muestreo</td><td><span class="tag t-ok">Adoptar · hardware</span></td><td>S11</td></tr><tr><td>P21</td><td>Medida en firmware: media, RMS sin continua, NPLC</td><td><span class="tag t-ok">Adoptar · firmware</span></td><td></td></tr><tr><td>P22</td><td>Riel propio del DMM, apagable</td><td><span class="tag t-ok">Adoptar · hardware</span></td><td>Interruptor de carga; RF-18 (D7)</td></tr><tr><td>P23</td><td>Protección escalonada</td><td><span class="tag t-open">Opcional</span></td><td>Sí al reparto en piezas de alta tensión (ya en H); no a descargadores ni varistores</td></tr><tr><td>P24</td><td>Ohmios con la tensión medida en el borne</td><td><span class="tag t-ok">Ya en H</span></td><td></td></tr><tr><td>P25</td><td>Ningún divisor en el lado del DUT</td><td><span class="tag t-ok">Adoptar · hardware</span></td><td>S11</td></tr><tr><td>P26</td><td>Calibración multipunto por tramos</td><td><span class="tag t-ok">Adoptar · firmware</span></td><td>Es también la linealización del ADC5 · al fabricar</td></tr><tr><td>P27</td><td>Derivador de 4 terminales, estrella en COM</td><td><span class="tag t-ok">Adoptar · hardware</span></td><td>PCB</td></tr><tr><td>P28</td><td>Resistencia de entrada de alta tensión</td><td><span class="tag t-open">Opcional</span></td><td>H ya reparte 9 MΩ en 3 piezas (D6)</td></tr><tr><td>P29</td><td>Calibración en memoria, con CRC y versión, editable desde S3G4-UI</td><td><span class="tag t-ok">Adoptar · firmware</span></td><td></td></tr><tr><td>P30</td><td>PTC en la fuente de ohmios</td><td><span class="tag t-crit">Sustituida</span></td><td>Por P42: una PTC de kΩ deja el rango de 200 Ω al 20 % de la ventana</td></tr><tr><td>P31</td><td>Fusible cerámico de alto poder de corte + puente DF10S</td><td><span class="tag t-ok">Adoptar · hardware</span></td><td>BOM</td></tr><tr><td>P32</td><td>Aviso de fusible abierto</td><td><span class="tag t-open">Opcional</span></td><td>Una resistencia y una entrada libre (D6)</td></tr><tr><td>P33</td><td>Cable abierto con la fuente de 20 MΩ</td><td><span class="tag t-ok">Adoptar · firmware</span></td><td>Sin piezas · S11</td></tr><tr><td>P34</td><td>Detectar tensión externa en ohmios y desconectar la fuente</td><td><span class="tag t-ok">Adoptar · firmware</span></td><td>S11 (tiempo de detección)</td></tr><tr><td>P35</td><td>Presupuesto de errores con el método de ADI</td><td><span class="tag t-ok">Adoptar · firmware</span></td><td>Documento: en la revisión de H</td></tr><tr><td>P36</td><td>INL del ADC5</td><td><span class="tag t-warn">Decidir</span></td><td>D1: linealización al fabricar + huella ΣΔ</td></tr><tr><td>P37</td><td>Cuatro ensayos: ruido, INL, temperatura, estabilidad</td><td><span class="tag t-ok">Adoptar · firmware</span></td><td>Con el prototipo, no en la placa WeAct</td></tr><tr><td>P38</td><td>Autocero con tiempo de asiento</td><td><span class="tag t-ok">Adoptar · firmware</span></td><td>La precarga se descarta por ahora · S11</td></tr><tr><td>P39</td><td>Corrección de la alterna por firmware</td><td><span class="tag t-ok">Adoptar · firmware</span></td><td>S11 + calibración</td></tr><tr><td>P40</td><td>Integración ligada a 60 Hz, o 100 ms</td><td><span class="tag t-ok">Adoptar · firmware</span></td><td></td></tr><tr><td>P41</td><td>Autoprueba al encender</td><td><span class="tag t-ok">Adoptar · firmware</span></td><td></td></tr><tr><td>P42</td><td>Protección de ohmios con diodo + transistores</td><td><span class="tag t-ok">Adoptar · hardware</span></td><td>D3 · S11</td></tr></tbody>
+  </table></div>
+
+</section>
+<section id="especificacion">
+  <div class="shead"><span class="num">6</span><h2>Especificación propuesta: holgada, pero de instrumento</h2></div>
+
+  <div class="tw"><table>
+    <thead><tr><th>Función</th><th>Garantizada por diseño (sin linealizar)</th><th>Tras la calibración al fabricar</th><th>Referencias profesionales</th></tr></thead>
+    <tbody><tr><td>Tensión continua (200 mV–50 V)</td><td>±(0.1 % + 40)</td><td><b>±(0.1 % + 10)</b></td><td>121GW: 0.05 % + 5 (55 000 cuentas); 34401A: 0.0035 % + 0.0005 %</td></tr><tr><td>Tensión alterna, 40 Hz–20 kHz</td><td>±(1 % + 40)</td><td><b>±(1 % + 20)</b></td><td>121GW: 0.3 % + 10 (45–400 Hz), 1.5 % + 10 hasta 5 kHz</td></tr><tr><td>Resistencia, 200 Ω–2 MΩ</td><td>±(0.2 % + 40)</td><td><b>±(0.2 % + 10)</b></td><td>121GW: 0.2 % + 5 (5 kΩ–500 kΩ)</td></tr><tr><td>Resistencia, 20 MΩ</td><td>±(1 % + 40)</td><td><b>±(1 % + 10)</b></td><td>121GW: 1.2 % + 20 (50 MΩ)</td></tr><tr><td>Corriente continua</td><td>±(0.5 % + 40)</td><td><b>±(0.5 % + 10)</b></td><td>121GW: 0.25 % + 5 (mA)</td></tr><tr><td>Corriente alterna</td><td>±(1.5 % + 40)</td><td><b>±(1.5 % + 20)</b></td><td>—</td></tr></tbody>
+  </table></div>
+  <ul class="tight">
+    <li><b>Condiciones</b> (como el 34401A y el 121GW): un año desde la calibración, a 23 ± 5 °C, y al menos un ciclo de red de 60 Hz. Fuera de 18–28 °C se añade 0.1 × la exactitud por °C.</li>
+    <li><b>El término de lectura</b> (0.1 % en continua) sale del presupuesto de R5: 630 ppm en el peor rango con la REF3325, resistencias del 0.1 % y 25 ppm/°C y un patrón del 0.05 %. Queda margen para la deriva de un año sin redes apareadas.</li>
+    <li><b>El término de cuentas</b> lo fija la INL del ADC5: 26 cuentas típicas y 39 máximas según la hoja. Linealizada al fabricar, debería bajar a ≈ 10. Si no baja, se monta el ΣΔ de respaldo.</li>
+    <li>20 000 cuentas con +10 sigue siendo un instrumento de 4½ dígitos honesto: por encima de los de 6000 cuentas, por debajo del 121GW.</li>
+  </ul>
+
+</section>
+<section id="s11">
+  <div class="shead"><span class="num">7</span><h2>Qué tiene que demostrar la simulación S11 antes de fabricar</h2></div>
+
+  <p>Monte Carlo con tolerancias reales y aceptación en ≥ 95 % de las placas, como en el osciloscopio:</p>
+  <ol class="tight">
+    <li><b>Continua por rango</b>: resistencias, REF3325, OPA2188 (Vos, Ib) y fuga del 4051 barrida de 0.1 a 10 nA. Sale la fuga máxima tolerable con la calibración de offset por rango.</li>
+    <li><b>Alterna</b>: planitud de 40 Hz a 20 kHz con C0G ±5 % y parásitas. Comprobar que la corrección de P39 la deja por debajo del 0.5 %.</li>
+    <li><b>Ohmios</b>: los 6 rangos con la caída de P42, la ventana usada, la corriente de prueba y la prueba de diodo con un LED de 3 V.</li>
+    <li><b>Corriente</b>: offset y ruido en 200 mA, caída a 2 A y el cruce con el divisor de tensión (P27).</li>
+    <li><b>Autocero</b>: el asiento en cada toma tras volver de X3.</li>
+    <li><b>Continuidad</b>: COMP7 con su divisor y sujeción.</li>
+    <li><b>RD-10</b>: la red durante 10 s en tensión, en ohmios (P42) y con el equipo apagado. Ninguna pieza por encima del 80 % de su tensión ni del 50 % de su potencia.</li>
+    <li><b>ESD</b>: ±4 kV por contacto y ±8 kV por aire en los tres bornes.</li>
+    <li><b>Driver y muestreo del ADC5</b> (P20).</li>
+  </ol>
+  <p class="meta">La INL no se puede simular (es del chip): se resuelve al fabricar. La fuga del 4051 sí entra como parámetro.</p>
+
+</section>
+<section id="fabricar">
+  <div class="shead"><span class="num">8</span><h2>Qué se hace al fabricar: calibración por software</h2></div>
+
+  <p>Una vez montada la placa, con una fuente estable y el mejor multímetro del laboratorio, sin tocar el hardware. Todo se guarda con CRC (P29) y se puede repetir desde S3G4-UI:</p>
+  <ol class="tight">
+    <li><b>Autoprueba</b> (P41), con las puntas al aire.</li>
+    <li><b>Linealización del ADC5</b>: un barrido de ≈ 41 puntos en el rango de 2 V. Como todos los rangos llevan ±2 V al ADC, sirve para todos (P26, P36).</li>
+    <li><b>Ganancia y offset</b> de cada rango y función, incluido el offset por la fuga del 4051.</li>
+    <li><b>Alterna</b>: un punto a 1 kHz y otro a 20 kHz por rango, para la corrección de P39.</li>
+    <li><b>El divisor de 10 MΩ</b>, medido para corregir el rango de 20 MΩ.</li>
+    <li><b>Verificación</b> con los cuatro ensayos de P37. Si la INL no baja a ≈ 10 cuentas, se monta el ADS1115 y se repite el paso 2 con él.</li>
+  </ol>
+
+</section>
+<section id="decisiones">
+  <div class="shead"><span class="num">9</span><h2>Lo que decides tú</h2></div>
+
+  <div class="tw"><table>
+    <thead><tr><th>#</th><th>Pregunta</th><th>Opciones</th><th>Recomendación</th></tr></thead>
+    <tbody>
+      <tr><td>D1</td><td>¿Cómo se trata la INL del ADC5?</td><td>(a) linealizar al fabricar, con huella ΣΔ sin montar · (b) solo ADC5 y +40 · (c) ΣΔ desde el principio</td><td><b>(a)</b>: no añade piezas y tiene salida si falla</td></tr>
+      <tr><td>D2</td><td>¿Divisor con tomas (H) o patas conmutadas (P17)?</td><td>Tomas · patas</td><td><b>Tomas</b> (§5, P17)</td></tr>
+      <tr><td>D3</td><td>¿Cómo se protege la fuente de ohmios?</td><td>Diodo + 2 transistores (P42) · PTC de pocos Ω con TVS robusta</td><td><b>P42</b>, a confirmar en S11</td></tr>
+      <tr><td>D4</td><td>¿74HC4051 o mux de fuga garantizada?</td><td>74HC4051 (0.21 USD) con offset calibrado · uno garantizado (el MAX4051A cuesta 9.50 USD en LCSC)</td><td><b>74HC4051</b> si S11 tolera ≥ 1 nA</td></tr>
+      <tr><td>D5</td><td>¿La especificación de §6?</td><td>Tal cual · más estricta · más holgada</td><td><b>Tal cual</b></td></tr>
+      <tr><td>D6</td><td>¿Opcionales P28 (resistencia de alta tensión) y P32 (aviso de fusible)?</td><td>Sí · no</td><td>P32 sí si queda una entrada libre en el mapa de pines; P28 no</td></tr>
+      <tr><td>D7</td><td>¿Riel propio del DMM, apagable (P22)?</td><td>Sí · no</td><td><b>Sí</b> (RF-18, céntimos)</td></tr>
+    </tbody>
+  </table></div>
+  <p>Con tus respuestas reviso la sección H (y su hoja de especificaciones) y escribo el encargo S11.</p>
+
+</section>
+<section id="descartes">
+  <div class="shead"><span class="num">10</span><h2>Lo que no tomamos de nadie</h2></div>
+
+  <ul class="tight">
+    <li>Módulos (Arduino, Pico, ACS712, placas ADC): regla del plan.</li>
+    <li>Chips de multímetro (HY3131): fijan la arquitectura y el firmware.</li>
+    <li>ADC multipendiente, referencias de Zener enterrado y alimentaciones de ±18 V (34401A).</li>
+    <li>Relés de función, convertidores RMS analógicos y caminos de alterna separados.</li>
+    <li>Aislar todo el DMM o llevar COM a media alimentación (HydraMeter, Martin, Micro-DMM): va contra RD-05.</li>
+    <li>Descargadores y varistores: son para categorías de medida que no buscamos.</li>
+    <li>Ohmímetro de divisor con la referencia supuesta (Micro-DMM).</li>
+  </ul>
+
+</section>
+<footer><p class="meta">Síntesis de Claude Code, 7 oct 2026, paso 8 de <code>06_plan/PLAN_REFERENCIAS_DMM.md</code>. Páginas de cada referencia en <code>02_referencias/dmm_*.html</code>. Cifras: <code>herramientas/calc_dmm_sintesis.py</code>, <code>calc_dmm_adi.py</code> y <code>calc_dmm_34401a.py</code>. Nada está aplicado a la sección H hasta que Keneth decida.</p></footer>
+</div>

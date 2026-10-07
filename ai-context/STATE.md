@@ -223,6 +223,12 @@ No se ha elegido automáticamente uno de estos frentes como nueva tarea de ingen
   - Propuestas P38 (autocero con tiempo de asiento o precarga), P39 (corrección de alterna por firmware), P40 (red de 60 Hz en Perú; 100 ms rechaza 50 y 60 Hz), P41 (autoprueba) y P42 (protección de la fuente de ohmios con semiconductores, alternativa a la PTC). Ninguna aplicada.
   - **Para la síntesis:** la fuga garantizada del 74HC4051 (±0.1 µA a 25 °C) son ~1000 cuentas en la toma ÷10; hay que medirla o cambiar de conmutador.
   - Siguiente: la síntesis. Detalle en `journal/2026-10-07-claude-dmm-34401a.md`.
+- **7 oct, síntesis del DMM publicada:** `01_diseno/dmm_sintesis.html` (artefacto FzUFdinBfx7Yf3mbvAnsy4).
+  - **Criterio de Keneth** (DECISIONS, 7 oct): no caracterizar lo analógico en banco antes de fabricar (la placa WeAct une VDDA/VREF a la alimentación digital). Simular con margen y calibrar por software al fabricar. Especificaciones holgadas pero profesionales, con bajo coste y pocos componentes.
+  - **Conclusión:** la arquitectura de H se mantiene. Ocho correcciones: INL de 26–39 cuentas; la PTC de kΩ deja el rango de 200 Ω al 20 % de la ventana (nuevo, se sustituye por P42); el ÷4 de X6; la fuga del 4051; Ib del OPA2188; red de 60 Hz; asiento del autocero; compensación de alterna.
+  - **Veredicto P17–P42:** 7 de hardware (céntimos), 11 de firmware, 2 ya en H, 3 opcionales, P17 descartada, P30 sustituida por P42 y P36 por decidir.
+  - **Especificación en dos niveles:** sin linealizar, ±(0.1 % + 40) en continua; tras calibrar al fabricar, ±(0.1 % + 10). Huella sin montar de un ADS1115 (C37593, 1.22 USD) como respaldo.
+  - **Pendiente de Keneth:** D1–D7 (INL, divisor con tomas, P42, 74HC4051, especificación, opcionales y riel propio). Después, revisión de H y encargo S11. Detalle en `journal/2026-10-07-claude-dmm-sintesis.md`.
 
 ## Punto de retomada — referencias del DMM (7 oct 2026, Claude)
 
@@ -230,6 +236,6 @@ No se ha elegido automáticamente uno de estos frentes como nueva tarea de ingen
   - el estado: las 9 referencias hechas (TIDA-01012, HydraMeter, TIDA-00879, 121GW, Micro-DMM, Martin, EEWorld 77845, Analog Devices y 34401A);
   - las propuestas P17–P42 resumidas, sin aplicar;
   - los riesgos para la síntesis;
-  - el orden siguiente: síntesis y revisión de la sección H → encargo S11;
+  - el orden siguiente: respuestas de Keneth a D1–D7 de la síntesis (`01_diseno/dmm_sintesis.html`) → revisión de la sección H → encargo S11;
   - las herramientas y las trampas conocidas.
 - La sección H del DMM sigue en pausa hasta la síntesis.

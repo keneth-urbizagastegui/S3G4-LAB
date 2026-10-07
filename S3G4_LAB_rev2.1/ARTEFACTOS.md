@@ -19,6 +19,7 @@ Cada artefacto es una copia publicada en claude.ai del archivo local indicado. L
 | Ficha del EEWorld 77845 (DMM, 7 de 9) | https://claude.ai/artifact/JMeU9V49kriNvnQjgBTxeg | `02_referencias/dmm_eeworld77845.html` | 1 |
 | Errores según ADI (DMM, 8 de 9) | https://claude.ai/artifact/LsJG4aZhYxcP8A2SGfAiZN | `02_referencias/dmm_adi_errores.html` | 1 |
 | Anatomía del 34401A (DMM, 9 de 9) | https://claude.ai/artifact/Gd8rGXutjjVU3zHBf2p9LY | `02_referencias/dmm_34401a.html` | 1 |
+| Síntesis del DMM (9 referencias, decisiones D1–D7) | https://claude.ai/artifact/FzUFdinBfx7Yf3mbvAnsy4 | `01_diseno/dmm_sintesis.html` | 1 |
 | Anatomía del DSO112 | https://claude.ai/artifact/1Q3Ajh4q39Pdic6AV6w1LR | `02_referencias/analisis_dso112.html` | 4 |
 | Anatomía del WAVE2 | https://claude.ai/artifact/LgEYV3M8LjE8RqbTvAQMcE | `02_referencias/analisis_wave2.html` | 2 |
 | Anatomía del OpenScope MZ | https://claude.ai/artifact/8KbSKL4sWnYoQzPJgKsRwf | `02_referencias/analisis_openscope.html` | 2 |

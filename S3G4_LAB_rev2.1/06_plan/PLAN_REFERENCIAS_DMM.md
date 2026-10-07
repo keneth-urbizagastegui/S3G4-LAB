@@ -110,4 +110,6 @@ Los archivos de EEWorld solo se bajan con una cuenta iniciada. Claude no crea cu
 
 Orden actualizado: … 6 · R8 Martin + R4 EEWorld 77845 · 7 · R5 Analog Devices · **7b · R9 Agilent 34401A** · 8 · Síntesis.
 
-**7b hecho el 7 oct** (`02_referencias/dmm_34401a.html`, P38–P42). Las nueve referencias están estudiadas; lo siguiente es la síntesis (paso 8).
+**7b hecho el 7 oct** (`02_referencias/dmm_34401a.html`, P38–P42). Las nueve referencias están estudiadas.
+
+**Paso 8, síntesis, publicada el 7 oct** (`01_diseno/dmm_sintesis.html`): arquitectura recomendada, veredicto P17–P42, especificación en dos niveles (sin linealizar y tras calibrar) y siete decisiones D1–D7 para Keneth. Con sus respuestas: revisar la sección H y su hoja, y escribir el encargo S11. Las medidas en banco de P36/P37 pasan al prototipo (DECISIONS, 7 oct).

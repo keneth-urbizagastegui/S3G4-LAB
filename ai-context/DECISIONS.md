@@ -247,6 +247,16 @@ Keneth eligió las cuatro opciones recomendadas por Claude al empezar el DMM:
   - 20 000 cuentas, recortado a 50 V en el rango alto.
 - Fuentes: `S3G4_LAB_rev2.1/00_requisitos/requisitos_dmm_awg.html` (RD-01…RD-10) y la referencia TI TIDA-01012 (`research_and_tests/tidubv5b (1).pdf`).
 
+### 2026-10-07 — Criterio de diseño del DMM: simular con margen y calibrar por software al fabricar
+
+Keneth, 7 oct, al pedir la síntesis de las referencias del DMM (en respuesta a la propuesta de medir en banco la INL del ADC5 y la fuga del 74HC4051):
+- **La parte analógica no se caracteriza en banco antes de fabricar.** La placa del G473 del banco es una WeAct Studio: VDDA y VSSA van unidos a la alimentación digital (con filtros) y VREF+ a VDDA (habría que desoldar una resistencia). Además, la placa final llevará otro chip. Las placas actuales sirven para lo que no es analógico.
+- **Método:** estudiar las referencias y simular para dejar margen, de modo que al fabricar baste con **calibrar por software**. Especificaciones algo holgadas, pero de nivel de instrumento profesional.
+- **Estilo:** proyecto universitario de bajo coste, entendible y con pocos componentes, como el osciloscopio y el TIDA-01012, «sin sesgarse» por ellos.
+- **Consecuencia:** las medidas en banco de P36/P37 se hacen con el prototipo, no antes. La INL del ADC5 se resuelve con linealización al fabricar (propuesta D1 de la síntesis).
+- Amplía el criterio de tolerancias del 3 oct (≥ 95 % de placas, criterios funcionales con margen). No sustituye ninguna decisión.
+- Fuente: chat del 7 oct; síntesis en `S3G4_LAB_rev2.1/01_diseno/dmm_sintesis.html`.
+
 ### 2026-10-06 — D-07 aceptada, RE-01 en espera y orden: DMM → AWG → mapa de pines
 
 Keneth, 6 oct, tras cerrar CH1–CH3:

@@ -73,7 +73,9 @@ Todas en `S3G4_LAB_rev2.1/02_referencias/`, publicadas (enlaces en `ARTEFACTOS.m
 2. ~~R8 Martin + R4 EEWorld 77845~~: hechos el 7 oct, sin propuestas nuevas (diario `2026-10-07-claude-dmm-martin-eeworld.md`).
 3. ~~R5 Analog Devices~~: hecho el 7 oct, P35–P37 (diario `2026-10-07-claude-dmm-adi.md`).
 4. ~~R9 Agilent 34401A~~: hecho el 7 oct, P38–P42 (diario `2026-10-07-claude-dmm-34401a.md`).
-5. **Síntesis (lo siguiente):** comparación de las nueve referencias, la lista P17–P42 para que decida Keneth, la revisión de la sección H y el encargo S11. La medida de la INL y de la fuga del 4051 en el banco (P36, P37) puede adelantarse si Keneth quiere.
+5. ~~Síntesis~~: publicada el 7 oct, `01_diseno/dmm_sintesis.html` (diario `2026-10-07-claude-dmm-sintesis.md`).
+   - **Lo siguiente:** las respuestas de Keneth a D1–D7; después, revisar la sección H y su hoja de especificaciones, y escribir el encargo S11.
+   - Las medidas en banco (P36, P37) **no** se adelantan: la placa WeAct no sirve para lo analógico (DECISIONS, 7 oct).
 6. Pendiente de Keneth: si quiere la ficha del 95152 de EEWorld, tiene que bajarlo él (pide cuenta).
 
 ## Método y herramientas (para no redescubrirlas)
