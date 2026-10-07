@@ -1,0 +1,208 @@
+<title>Ficha del EEWorld 77845</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@500;600&display=swap">
+<style>
+:root{
+  --bg:#f4f6f5; --paper:#fff; --ink:#1b2a2e; --muted:#5d6d72; --rule:#dde3e1;
+  --accent:#12667f; --accent2:#a9541c; --ok:#2f7d54; --warn:#9a6100; --crit:#b22d22; --open:#6a4fa3;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#11181a; --paper:#182125; --ink:#dce6e7; --muted:#93a3a8; --rule:#2a3639;
+  --accent:#5fb9d2; --accent2:#f0a06a; --ok:#63c891; --warn:#f0b75a; --crit:#ff8d80; --open:#b79ae8;}}
+:root[data-theme="dark"]{
+  --bg:#11181a; --paper:#182125; --ink:#dce6e7; --muted:#93a3a8; --rule:#2a3639;
+  --accent:#5fb9d2; --accent2:#f0a06a; --ok:#63c891; --warn:#f0b75a; --crit:#ff8d80; --open:#b79ae8;}
+body{background:var(--bg);color:var(--ink);font:15px/1.6 "IBM Plex Sans",system-ui,sans-serif}
+.wrap{max-width:1000px;margin:0 auto;padding-inline:20px;padding-block:28px 64px}
+h1,h2,h3,h4{font-family:"IBM Plex Sans Condensed","IBM Plex Sans",sans-serif;margin:0;text-wrap:balance}
+h1{font-size:clamp(26px,4vw,36px);font-weight:600}
+h2{font-size:24px;font-weight:600;margin-top:8px}
+h3{font-size:18px;font-weight:600;margin-bottom:4px}
+code{font:0.88em "IBM Plex Mono",ui-monospace,monospace;color:var(--accent)}
+.eyebrow{font:500 12px "IBM Plex Mono",monospace;letter-spacing:.09em;text-transform:uppercase;color:var(--accent);margin:0 0 6px}
+.lede{color:var(--muted);max-width:74ch}
+header.hero{border-bottom:1px solid var(--rule);padding-bottom:18px;margin-bottom:26px}
+section{background:var(--paper);border:1px solid var(--rule);border-radius:10px;padding:20px 22px;margin-bottom:18px}
+section>p,li{max-width:80ch}
+.tag{display:inline-block;font:500 11px "IBM Plex Mono",monospace;text-transform:uppercase;letter-spacing:.06em;padding:2px 9px;border-radius:999px;border:1px solid currentColor}
+.t-ok{color:var(--ok)} .t-open{color:var(--open)} .t-warn{color:var(--warn)} .t-crit{color:var(--crit)}
+.shead{display:flex;align-items:center;gap:12px;margin-bottom:10px;flex-wrap:wrap}
+.num{font:500 14px "IBM Plex Mono",monospace;background:var(--accent);color:var(--paper);width:28px;height:28px;border-radius:50%;display:grid;place-items:center}
+.tw{overflow-x:auto;margin:12px 0}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th{text-align:left;font-weight:600;color:var(--muted);border-bottom:1.5px solid var(--rule);padding:7px 9px;white-space:nowrap}
+td{border-bottom:1px solid var(--rule);padding:7px 9px;vertical-align:top}
+td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
+.pick{background:color-mix(in srgb, var(--ok) 10%, transparent)}
+.callout{border-left:3px solid var(--accent);padding:10px 14px;margin:14px 0;background:color-mix(in srgb, var(--accent) 7%, transparent);font-size:14px}
+.callout.w{border-color:var(--warn);background:color-mix(in srgb, var(--warn) 9%, transparent)}
+ul.tight{margin:8px 0;padding-left:20px}
+ul.tight li{margin-bottom:5px}
+.meta{font:12.5px "IBM Plex Mono",monospace;color:var(--muted);margin:0}
+.q{border:1px dashed var(--open);border-radius:8px;padding:12px 14px;margin:10px 0}
+.q b{color:var(--open)}
+footer{font-size:12.5px;color:var(--muted);border-top:1px solid var(--rule);padding-top:12px}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-size:14px}
+.kv dt{color:var(--muted)} .kv dd{margin:0}
+
+/* --- esquematico --- */
+figure{margin:16px 0}
+.sx{overflow-x:auto;border:1px solid var(--rule);border-radius:8px;background:var(--bg);padding:8px}
+.sx svg{display:block;max-width:none;height:auto}
+figcaption{font-size:13px;color:var(--muted);margin-top:6px}
+svg text{font-family:"IBM Plex Mono",ui-monospace,monospace}
+.w{fill:none;stroke:var(--ink);stroke-width:1.5;stroke-linejoin:round}
+.sym{fill:none;stroke:var(--ink);stroke-width:1.6;stroke-linejoin:round}
+.fillsym{fill:var(--ink);stroke:var(--ink);stroke-width:1}
+.dot{fill:var(--ink)}
+.op{fill:var(--paper);stroke:var(--ink);stroke-width:1.7}
+.ic{fill:var(--paper);stroke:var(--ink);stroke-width:1.5}
+.hdr{fill:none;stroke:var(--open);stroke-width:1.5;stroke-dasharray:3 2}
+.grp{fill:none;stroke:var(--muted);stroke-width:1.1;stroke-dasharray:5 4}
+.grp-t{font-size:10.5px;fill:var(--muted)}
+.blade{stroke:var(--ink);stroke-width:2}
+.ct{fill:var(--paper);stroke:var(--ink);stroke-width:1.3}
+.gnd line{stroke:var(--ink);stroke-width:1.5}
+.railbar{stroke:var(--crit);stroke-width:2.2}
+.rail{font-size:10.5px;fill:var(--crit);font-weight:500}
+.railsm{font-size:9px;fill:var(--crit)}
+.port{fill:color-mix(in srgb, var(--accent) 14%, transparent);stroke:var(--accent);stroke-width:1.3}
+.portt{font-size:10.5px;fill:var(--ink)}
+.tp{fill:none;stroke:var(--ok);stroke-width:1.6}
+.tpt{font-size:9.5px;fill:var(--ok)}
+.ref{font-size:11px;font-weight:500;fill:var(--ink)}
+.val{font-size:10px;fill:var(--muted)}
+.net{font-size:10px;fill:var(--accent2)}
+.pin{font-size:9.5px;fill:var(--muted)}
+.pm{font-size:15px;fill:var(--ink)}
+.note{font-size:10.5px;fill:var(--muted);font-style:italic}
+.src{color:var(--muted);font-size:12.5px}
+
+.lesson td:first-child{font-weight:600}
+pre.mermaid{background:var(--paper);border:1px solid var(--rule);border-radius:8px;padding:12px;overflow-x:auto}
+.meta{color:var(--muted);font-size:13px}
+.toc{columns:2 260px;column-gap:28px;margin:6px 0 0;padding-left:20px;font-size:14px}
+.toc li{break-inside:avoid;margin:2px 0}
+.toc a{color:var(--accent);text-decoration:none} .toc a:hover{text-decoration:underline}
+.eq{font-family:"IBM Plex Mono",monospace;font-size:13.5px;background:var(--paper);border:1px solid var(--rule);border-radius:6px;padding:8px 12px;margin:10px 0;overflow-x:auto;white-space:pre}
+code,a{overflow-wrap:anywhere}
+</style>
+<div class="wrap">
+<header class="hero">
+  <p class="eyebrow">S3G4 LAB · referencia para el DMM de la rev 2.1 · 7 de 9 · ficha corta</p>
+  <h1>Ficha del EEWorld 77845</h1>
+  <p class="lede">Un multímetro con el ADC de 12 bits de un STM32F103 que llega a ≈ 1 % con técnicas básicas. Sin esquema publicado: sirve como límite inferior de lo que se consigue con el ADC del MCU.</p>
+  <ul class="toc"><li><a href="#resumen">Lo que nos llevamos</a></li><li><a href="#metodo">1 · Qué hay</a></li><li><a href="#especificacion">2 · Requisitos y resultados</a></li><li><a href="#arquitectura">3 · Arquitectura</a></li><li><a href="#deducciones">4 · Lo que se deduce</a></li><li><a href="#precision">5 · Cómo llegan al 1 %</a></li><li><a href="#modulos">6 · Módulos</a></li><li><a href="#propuestas">7 · Para la rev 2.1</a></li><li><a href="#correcciones">8 · Correcciones</a></li></ul>
+</header>
+<section id="resumen">
+  <div class="shead"><span class="num">★</span><h2>Lo que nos llevamos</h2></div>
+
+  <p>Es un multímetro de concurso (Lichuang / LCSC) con un STM32F103C8T6 en una placa «blue pill» y su ADC SAR de 12 bits. Medido contra un UNI-T UT71C, el autor da errores medios por debajo del 1 %. <b>No hay esquema</b>: en la página solo están el texto, dos diagramas, fotos, un vídeo y el binario. Por eso es una ficha corta. Su valor es el <b>límite inferior</b>: lo que da un SAR de 12 bits del MCU con cuidado, pero sin referencia propia, sin sobremuestreo y sin autocero.</p>
+  <div class="tw"><table class="lesson">
+    <thead><tr><th>Hallazgo</th><th>En el EEWorld 77845</th><th>Para la rev 2.1</th><th>Veredicto</th></tr></thead>
+    <tbody>
+      <tr><td>≈ 1 % con un SAR de 12 bits</td><td>Errores medios de 0.74 % (V), 0.96 % (I) y 0.85 % (Ω), con resistencias del 0.1 % y un ajuste lineal (§2, §5)</td><td>Nuestro objetivo es ±(0.1 % + 10): hay que ganar un factor 10 con referencia, autocero, buffer y sobremuestreo</td><td><span class="tag t-open">Para la síntesis</span></td></tr>
+      <tr><td>Ajuste lineal por rango contra un patrón</td><td>Lecturas frente a un DMM de 40 000 cuentas y regresión en MATLAB (r = 0.9999981) (§5)</td><td>El mínimo de P26, que pide más puntos</td><td><span class="tag t-ok">Confirma P26</span></td></tr>
+      <tr><td>Tiempo de muestreo máximo</td><td>239.5 ciclos del ADC para que la fuente cargue bien el condensador de muestreo (§5)</td><td>Nosotros lo resolvemos con el driver y el filtro de P20</td><td><span class="tag t-ok">Confirma P20</span></td></tr>
+      <tr><td>Amplificador de corriente solo de lado alto</td><td>MAX4080 (×20): modo común de 4.5 a 76 V y un solo sentido (§4)</td><td>No vale para un borne A cerca de masa; nuestro OPA2188 sí</td><td><span class="tag t-crit">No adoptar</span></td></tr>
+      <tr><td>Relés en el camino de la corriente</td><td>Eligen el derivador; su contacto queda en serie (§4)</td><td>Sin conmutadores en la corriente (P19, sección H)</td><td><span class="tag t-crit">No adoptar</span></td></tr>
+    </tbody>
+  </table></div>
+
+</section>
+<section id="metodo">
+  <div class="shead"><span class="num">1</span><h2>Qué hay y cómo se analizó</h2></div>
+
+  <ul class="tight">
+    <li>Página <a href="https://en.eeworld.com.cn/Reference_Designs/detail/77845">en.eeworld.com.cn/Reference_Designs/detail/77845</a>, leída en el navegador integrado el 7 oct 2026, sin iniciar sesión. Contiene el texto, el diagrama de bloques, el del software y fotos. Los archivos son un vídeo («Lichuang Invitational_1.mp4») y el binario <code>.axf</code>.</li>
+    <li>El título del vídeo apunta a un concurso de LCSC/JLC, cuyos proyectos suelen estar en OSHWHub. Busqué en OSHWHub («MAX4080», «数字万用表 MAX4080») y en la web general: el proyecto original no aparece.</li>
+    <li>Lo que sigue sale del texto y de los diagramas. Las deducciones sobre piezas concretas se marcan y se apoyan en las hojas de datos.</li>
+  </ul>
+
+</section>
+<section id="especificacion">
+  <div class="shead"><span class="num">2</span><h2>Requisitos y resultados</h2></div>
+
+  <div class="tw"><table>
+    <thead><tr><th>Magnitud</th><th>Requisito</th><th>Error medio medido</th></tr></thead>
+    <tbody><tr><td>Tensión (0–30 V)</td><td>±1 %</td><td>0.74 %</td></tr><tr><td>Corriente (0–2 A)</td><td>±1 %</td><td>0.96 %</td></tr><tr><td>Resistencia (0–100 kΩ)</td><td>±1 %</td><td>0.85 %</td></tr></tbody>
+  </table></div>
+  <ul class="tight">
+    <li>El patrón es un UNI-T UT71C (40 000 cuentas, verdadero RMS). Se promediaron 20 lecturas en cada punto.</li>
+    <li>En la foto, el DMM marca 0.5009 V y el UT71C 0.5017 V (-0.16 %).</li>
+    <li>Solo continua y solo positivos (0–30 V, 0–2 A). La placa se alimenta con +12 V y tiene autorango.</li>
+  </ul>
+
+</section>
+<section id="arquitectura">
+  <div class="shead"><span class="num">3</span><h2>Arquitectura (del diagrama de bloques)</h2></div>
+
+  <ul class="tight">
+    <li><b>Alimentación</b>: dos LM1117 en cascada, de 12 V a 5 V y de 5 V a 3.3 V.</li>
+    <li><b>Tensión</b>: un LM324 en tres caminos (amplificador, atenuador y seguidor) y un CD4052 que elige cuál llega al ADC.</li>
+    <li><b>Corriente</b>: un MAX4080 de ganancia 20; los relés eligen el derivador.</li>
+    <li><b>Resistencia</b>: un divisor con resistencias de rango que eligen MOSFET, y un buffer.</li>
+    <li><b>MCU y resto</b>: STM32F103C8T6, OLED de 1.91″, teclado matricial, puerto serie y SWD. El firmware está hecho con STM32CubeMX y HAL.</li>
+  </ul>
+
+</section>
+<section id="deducciones">
+  <div class="shead"><span class="num">4</span><h2>Lo que se deduce sin esquema</h2></div>
+
+  <ul class="tight">
+    <li><b>Referencia</b>: en el encapsulado de 48 pines del F103, VREF+ está unido a VDDA, así que la referencia es el LM1117 de 3.3 V. Su tolerancia entra entera en la medida, y de ahí el ajuste lineal por unidad.</li>
+    <li><b>Resolución</b>: un LSB vale 0.81 mV. Para meter 30 V en 3.3 V hay que dividir al menos por 9.1, así que una cuenta vale ≥ 7.3 mV en la entrada: unas 4,096 cuentas a 30 V (3½ dígitos) sin sobremuestreo.</li>
+    <li><b>Corriente</b>: según Analog Devices, el MAX4080 es de lado alto, con un modo común de 4.5 a 76 V y un solo sentido. El derivador tiene que estar al menos 4.5 V por encima de la masa del amplificador, y la corriente solo puede ir en un sentido. Cómo lo resolvieron no se ve sin esquema: <b>NO VERIFICADO</b>. Los relés quedan en serie con el derivador; si no se mide después del contacto, su resistencia entra en la lectura.</li>
+    <li><b>Tensión</b>: el LM324 no es carril a carril. Que su salida quepa en los 3.3 V del ADC depende de su alimentación, que no se publica.</li>
+  </ul>
+
+</section>
+<section id="precision">
+  <div class="shead"><span class="num">5</span><h2>Cómo llegan al 1 %</h2></div>
+
+  <ol class="tight">
+    <li>Resistencias de división del 0.1 %.</li>
+    <li>La autocalibración del ADC (<code>HAL_ADCEx_Calibration_Start</code>).</li>
+    <li>El tiempo de muestreo máximo (239.5 ciclos), porque la medida no tiene prisa.</li>
+    <li>Un filtro de ventana deslizante.</li>
+    <li>Un ajuste lineal por rango: lecturas frente al UT71C y regresión en MATLAB (r = 0.9999981).</li>
+  </ol>
+  <p>Son las técnicas básicas, y dan ≈ 1 %. Faltan las que dan el siguiente factor 10:</p>
+  <ul class="tight">
+    <li>una referencia propia (nuestro REF3325);</li>
+    <li>el autocero en cada lectura (X3 de la sección H);</li>
+    <li>el buffer y el driver del ADC;</li>
+    <li>el sobremuestreo (×256 + ×4);</li>
+    <li>y una calibración de varios puntos guardada en memoria (P26, P29).</li>
+  </ul>
+
+</section>
+<section id="modulos">
+  <div class="shead"><span class="num">6</span><h2>Módulos</h2></div>
+
+  <div class="tw"><table>
+    <thead><tr><th>Módulo</th><th>Función</th><th>En la rev 2.1</th></tr></thead>
+    <tbody>
+      <tr><td>«Blue pill» STM32F103C8T6</td><td>MCU y ADC</td><td>STM32G473 en placa</td></tr>
+      <tr><td>OLED de 1.91″ y teclado de 4 × 4</td><td>Interfaz</td><td>TFT táctil del ESP32-S3</td></tr>
+    </tbody>
+  </table></div>
+
+</section>
+<section id="propuestas">
+  <div class="shead"><span class="num">7</span><h2>Para la rev 2.1</h2></div>
+
+  <p><b>Sin propuestas nuevas.</b> Confirma P20 (muestreo con tiempo suficiente, en nuestro caso con driver) y P26 (ajuste por rango contra un patrón). Para la síntesis deja el dato del límite inferior: ≈ 1 % con un SAR de 12 bits del MCU sin referencia propia.</p>
+  <p>Y una advertencia de piezas: un amplificador de corriente solo de lado alto (MAX4080, INA180 y similares de modo común alto) no sirve para el borne A de un DMM con COM a masa.</p>
+
+</section>
+<section id="correcciones">
+  <div class="shead"><span class="num">8</span><h2>Correcciones a lo dicho antes</h2></div>
+
+  <ul class="tight">
+    <li>Nada que corregir en el plan: STM32F1, LM324 y CD4052, MAX4080 con relés, MOSFET en ohmios y ≈ 1 % medido se confirman. El proyecto original no aparece en OSHWHub, así que se queda en ficha corta.</li>
+  </ul>
+
+</section>
+<footer><p class="meta">Análisis de Claude Code, 7 oct 2026, según <code>06_plan/PLAN_REFERENCIAS_DMM.md</code>. Fuente: <a href="https://en.eeworld.com.cn/Reference_Designs/detail/77845">EEWorld, Reference Design 77845</a>. Cifras en <code>herramientas/build_dmm_eeworld77845.py</code>.</p></footer>
+</div>

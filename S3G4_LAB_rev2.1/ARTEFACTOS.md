@@ -15,6 +15,8 @@ Cada artefacto es una copia publicada en claude.ai del archivo local indicado. L
 | Anatomía del TIDA-00879 (DMM, 3 de 9) | https://claude.ai/artifact/XKxwSffsJUNX7j4EGX2iLx | `02_referencias/dmm_tida00879.html` | 1 |
 | Anatomía del 121GW (DMM, 4 de 9) | https://claude.ai/artifact/YcB94Hqks4aYz739W2KLwM | `02_referencias/dmm_121gw.html` | 1 |
 | Anatomía del Micro-DMM (DMM, 5 de 9) | https://claude.ai/artifact/VXTHBpRXxs9tDhqPwQFTb6 | `02_referencias/dmm_microdmm.html` | 2 |
+| Anatomía del DMM de Martin (DMM, 6 de 9) | https://claude.ai/artifact/R3vvm1wXKejCDjdHz8xVFR | `02_referencias/dmm_martin.html` | 1 |
+| Ficha del EEWorld 77845 (DMM, 7 de 9) | https://claude.ai/artifact/JMeU9V49kriNvnQjgBTxeg | `02_referencias/dmm_eeworld77845.html` | 1 |
 | Anatomía del DSO112 | https://claude.ai/artifact/1Q3Ajh4q39Pdic6AV6w1LR | `02_referencias/analisis_dso112.html` | 4 |
 | Anatomía del WAVE2 | https://claude.ai/artifact/LgEYV3M8LjE8RqbTvAQMcE | `02_referencias/analisis_wave2.html` | 2 |
 | Anatomía del OpenScope MZ | https://claude.ai/artifact/8KbSKL4sWnYoQzPJgKsRwf | `02_referencias/analisis_openscope.html` | 2 |

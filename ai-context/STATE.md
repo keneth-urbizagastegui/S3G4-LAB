@@ -207,13 +207,19 @@ No se ha elegido automáticamente uno de estos frentes como nueva tarea de ingen
   - Propuestas P33 (cable abierto con resistencias definidas; variante B = lectura breve en el rango de 20 MΩ, sin piezas) y P34 (en ohmios, detectar tensión externa y desconectar la fuente). Ninguna aplicada.
   - Corrige el matiz de RD-09: el Micro-DMM no inyecta una corriente definida.
   - Siguiente: R8 Martin + R4 EEWorld 77845. Detalle en `journal/2026-10-07-claude-dmm-microdmm.md`.
+- **7 oct, R8 Martin y R4 EEWorld 77845 hechos:** `02_referencias/dmm_martin.html` (artefacto R3vvm1wXKejCDjdHz8xVFR) y `dmm_eeworld77845.html` (ficha corta, JMeU9V49kriNvnQjgBTxeg).
+  - Martin, rev 1.5: STM32F373 con dos ΣΔ de 16 bits sincronizados; 1 MΩ con patas de 15/150 kΩ a COM; COM a VREF/2 = 0.9 V; derivadores de 50 + 5 mΩ en serie con toma elegida e INA199.
+  - Cuantificados: cruce V→I del 2.6–2.8 % del fondo (IN− lejos del derivador), error del RMS (4.2 mV en vacío y +23 % con 10 mV en el rango de 60 mV) y calibración escrita por un firmware aparte. Las ganancias de corriente calibradas no cuadran con ninguna variante del INA199 (NO VERIFICADO).
+  - EEWorld: STM32F103 con SAR de 12 bits, ≈ 1 % medido; sin esquema, no está en OSHWHub. El MAX4080 solo trabaja en el lado alto (4.5–76 V).
+  - Sin propuestas nuevas: refuerzan P17, P19, P20, P21, P26, P27 y P29.
+  - Siguiente: R5 Analog Devices. Detalle en `journal/2026-10-07-claude-dmm-martin-eeworld.md`.
 
 ## Punto de retomada — referencias del DMM (7 oct 2026, Claude)
 
 - **Retomar con:** `ai-context/journal/2026-10-07-claude-retomar-referencias-dmm.md`. Contiene:
-  - el estado: 5 de 9 referencias hechas (TIDA-01012, HydraMeter, TIDA-00879, 121GW y Micro-DMM);
+  - el estado: 7 de 9 referencias hechas (TIDA-01012, HydraMeter, TIDA-00879, 121GW, Micro-DMM, Martin y EEWorld 77845);
   - las propuestas P17–P34 resumidas, sin aplicar;
   - los riesgos para la síntesis;
-  - el orden siguiente: R8 Martin + R4 EEWorld → R5 Analog Devices → R9 34401A → síntesis y revisión de la sección H → encargo S11;
+  - el orden siguiente: R5 Analog Devices → R9 34401A → síntesis y revisión de la sección H → encargo S11;
   - las herramientas y las trampas conocidas.
 - La sección H del DMM sigue en pausa hasta la síntesis.

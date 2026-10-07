@@ -13,7 +13,7 @@ Lo deja la sesión del 6–7 oct, que se quedó sin contexto. Para empezar el ch
 - **Sección H (borrador, EN PAUSA):** `S3G4_LAB_rev2.1/01_diseno/dmm_rev21.html` y la hoja `00_requisitos/especificaciones_dmm.html`, publicadas. Se escribieron antes de estudiar las referencias: **se revisan en la síntesis** y después se encarga S11 a Codex.
 - **Plan:** `S3G4_LAB_rev2.1/06_plan/PLAN_REFERENCIAS_DMM.md` (método, referencias, orden y la evaluación de los enlaces 95152/57000/57006 de EEWorld).
 
-## Referencias hechas (5 de 9)
+## Referencias hechas (7 de 9)
 
 Todas en `S3G4_LAB_rev2.1/02_referencias/`, publicadas (enlaces en `ARTEFACTOS.md`), con scripts `herramientas/calc_dmm_*.py`, `draw_dmm_*.py` y `build_dmm_*.py`, y diario propio:
 
@@ -24,6 +24,8 @@ Todas en `S3G4_LAB_rev2.1/02_referencias/`, publicadas (enlaces en `ARTEFACTOS.m
 | R6 | TI TIDA-00879 | `dmm_tida00879.html` | P28–P29 |
 | R7 | EEVblog 121GW | `dmm_121gw.html` | P30–P32 |
 | R3 | Micro-DMM | `dmm_microdmm.html` | P33–P34 |
+| R8 | Martin (STM32F373) | `dmm_martin.html` | — (refuerza P17, P19, P21, P27, P29) |
+| R4 | EEWorld 77845 (ficha corta) | `dmm_eeworld77845.html` | — (confirma P20, P26) |
 
 ## Propuestas acumuladas (NINGUNA aplicada; se deciden en la síntesis)
 
@@ -50,14 +52,13 @@ Todas en `S3G4_LAB_rev2.1/02_referencias/`, publicadas (enlaces en `ARTEFACTOS.m
 
 - **Resolución:** en H, una cuenta vale ≈ 1/12 de LSB del ADC5 de 12 bits (todo depende del sobremuestreo). En el TIDA-01012, una cuenta son 2.3 LSB de un ADC de 18 bits; en el TIDA-00879 es un ΣΔ de 24 bits. Hay que justificar las 20 000 cuentas o rebajarlas.
 - COM a media alimentación (TIDA, HydraMeter): no aplicable, porque nuestro COM es la masa común (RD-05).
-- Lazos de masa (Micro-DMM): con masa común, si el S3G4 está conectado por USB a un PC enchufado y se mide un equipo enchufado a la red, COM queda unido a la tierra del PC. El Micro-DMM aísla todo por eso. Decir en la síntesis cómo se avisa al usuario.
+- Lazos de masa (Micro-DMM): con masa común, si el S3G4 está conectado por USB a un PC enchufado y se mide un equipo enchufado a la red, COM queda unido a la tierra del PC. El Micro-DMM aísla todo por eso. Decir en la síntesis cómo se avisa al usuario. Martin aísla solo los datos del USB: al cargar, un conmutador une las masas (mismo compromiso).
+- Límite inferior (EEWorld 77845): ≈ 1 % con el SAR de 12 bits de un F103, sin referencia propia ni autocero. Martin, con un ΣΔ de 16 bits y 25 000 muestras por lectura, aún calibra offsets del 3.5 % del fondo en su rango más bajo.
 
 ## Siguiente, en orden
 
 1. ~~R3 Micro-DMM~~: hecho el 7 oct (diario `2026-10-07-claude-dmm-microdmm.md`).
-2. **R8 Martin + R4 EEWorld 77845.**
-   - Martin: `research_and_tests/Martin_STM32_multimeter/`, rev 1.5 con STM32F373 y ΣΔ de 16 bits; EAGLE `hardware/v15.sch`, PNG del esquema, BOM y firmware.
-   - EEWorld 77845: solo texto y diagrama de bloques, sin esquema: ficha corta.
+2. ~~R8 Martin + R4 EEWorld 77845~~: hechos el 7 oct, sin propuestas nuevas (diario `2026-10-07-claude-dmm-martin-eeworld.md`).
 3. **R5 Analog Devices** «7.5-Digit Accuracy» partes 1 y 2 (`research_and_tests/Analog_/`): teoría de errores, para revisar el presupuesto de la sección H §8.
 4. **R9 Agilent 34401A**: `research_and_tests/Agilent_34401A/34401A_Service_Guide.pdf` (167 p). Teoría de funcionamiento en pp. 99–115 y esquemas en pp. 150–165. Front-end profesional: protección, divisor, fuente de ohmios, autocero y alterna.
 5. **Síntesis:** comparación de todas las referencias, lista P17–P32+ para que decida Keneth, revisión de la sección H y encargo S11.

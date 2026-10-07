@@ -15,6 +15,8 @@
 - `calc_dmm_tida00879.py` + `draw_dmm_tida00879.py` + `build_dmm_tida00879.py`: lo mismo para `02_referencias/dmm_tida00879.html` (7 oct).
 - `calc_dmm_121gw.py` + `draw_dmm_121gw.py` + `build_dmm_121gw.py`: lo mismo para `02_referencias/dmm_121gw.html` (7 oct).
 - `calc_dmm_microdmm.py` + `draw_dmm_microdmm.py` + `build_dmm_microdmm.py`: lo mismo para `02_referencias/dmm_microdmm.html` (7 oct). Las netlists de las cuatro placas estudiadas se exportan con `kicad-cli` y se leen con `kinet.py`.
+- `calc_dmm_martin.py` + `draw_dmm_martin.py` + `build_dmm_martin.py`: lo mismo para `02_referencias/dmm_martin.html` (7 oct). El esquema EAGLE (`v15.sch`) se lee como XML.
+- `build_dmm_eeworld77845.py`: ficha corta `02_referencias/dmm_eeworld77845.html` (7 oct); sin esquema, sus pocas cifras están en el propio generador.
 - `kinet.py <netlist.net> <salida.txt>`: lista las piezas de una netlist de KiCad por hoja, con la red de cada pin (usado para el HydraMeter).
 - `fix_ruido.py`: parche que corrigió el modelo de ruido (kT/C) en los documentos; se conserva como registro de las cifras.
 - **El texto del documento vivo se mantiene editándolo directamente**; los scripts sólo generan los dibujos y las páginas de análisis.
