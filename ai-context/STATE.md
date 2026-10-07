@@ -159,3 +159,9 @@ No se ha elegido automáticamente uno de estos frentes como nueva tarea de ingen
 - Keneth: D-07 aceptada; RE-01 en espera (criterio: componentes baratos y circuitos mínimos); **siguiente, el DMM, después el AWG y luego el mapa de pines**, separando los recursos analógicos de los digitales del STM32. Los esquemas de CH1–CH3 se dejan como están. Todo en DECISIONS (6 oct).
 - Actualizados: `06_plan/PLAN.md` (reescrito), el documento vivo (D-07 cerrada, S9 cerrado con la AD8039, K4), `LEEME.md` de la rev 2.1, `05_informes/LEEME.md` y `03_simulaciones/LEEME.md`.
 - Corregido en S10: el −3 dB nominal de CH2/CH3 con la AD8039 es 1.001 MHz; en la tabla había puesto la cifra del LM6172.
+
+## DMM empezado — 7 oct 2026, Claude
+
+- Decisiones de Keneth (DECISIONS, 7 oct): divisor de 10 MΩ con tomas y 74HC4051 (sin relés); amplificador doble de deriva cero externo; aguantar la red unos segundos (RD-10); rangos aceptados.
+- Borrador de arquitectura: `S3G4_LAB_rev2.1/01_diseno/dmm_arquitectura.md`, con bloques, rangos, la lista de reserva de recursos del G473 (ADC5 diferencial PD13/PD14, OPAMP5/COMP7 en PB14, DAC2_CH1) y lo abierto. Lo principal abierto: el riel de la pieza de deriva cero, porque las habituales son de 5.5 V como máximo.
+- Siguiente: sección H del documento vivo con valores y la pieza elegida; luego la simulación S11 con Codex.

@@ -234,6 +234,19 @@ Keneth, 6 oct, tras la auditoría de S9 hecha por Claude: «Elijo AD8039 para CH
 - Se renuncia al ahorro estimado de ≈ 8 USD por placa.
 - Siguiente paso: rehacer la tabla de consumo G.3/G.4 con las cifras de A.
 
+### 2026-10-07 — DMM: arquitectura (rangos, mux, amplificador de deriva cero y RD-10)
+
+Keneth eligió las cuatro opciones recomendadas por Claude al empezar el DMM:
+- **Cambio de rango en tensión:** divisor de 10 MΩ con tomas (÷1, ÷10, ÷100) y un **74HC4051** que elige la toma (sin relés). El mux solo ve tensiones divididas o la entrada ya sujetada. Una posición a COM da el autocero.
+- **Amplificador:** **uno de deriva cero externo**, doble y barato, entre la toma y el ADC5 diferencial: buffer de alta impedancia para tensión y ganancia ×10/×100 para el derivador. Autocero por el mux para lo que quede.
+- **RD-10:** **aguantar unos segundos** una conexión a la red (230 Vrms). Resistencias de alta tensión en el divisor, PTC y sujeción en la fuente de ohmios, y fusible en el borne A. No es una categoría de medida; el equipo sigue sin medir la red.
+- **Rangos aceptados:**
+  - DC y AC: 200 mV, 2 V, 20 V y 50 V;
+  - Ω: de 200 Ω a 20 MΩ;
+  - corriente: 200 mA y 2 A con un solo derivador de 0.1 Ω;
+  - 20 000 cuentas, recortado a 50 V en el rango alto.
+- Fuentes: `S3G4_LAB_rev2.1/00_requisitos/requisitos_dmm_awg.html` (RD-01…RD-10) y la referencia TI TIDA-01012 (`research_and_tests/tidubv5b (1).pdf`).
+
 ### 2026-10-06 — D-07 aceptada, RE-01 en espera y orden: DMM → AWG → mapa de pines
 
 Keneth, 6 oct, tras cerrar CH1–CH3:
