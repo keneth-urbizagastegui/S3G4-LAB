@@ -263,3 +263,12 @@ No se ha elegido automáticamente uno de estos frentes como nueva tarea de ingen
   - **Relé:** conmutar 230 Vac supera sus 125 Vac.
   - **Fuga del modelo de la TVS en N1:** inaceptable para 2–20 MΩ (falta un dato garantizado a 4 V).
   - Diodo: ≥ 4.1 V, pasa.
+- **7 oct, auditoría de S11.1 (Opus):** `03_simulaciones/DMM/AUDITORIA_CLAUDE_S11_1.md`. La reejecución coincide exactamente (3974 valores) y el bloque 1 se confirma NO aprobado. Fallos reales:
+  - **Rieles:** 65–131 mA entran por el diodo de cuerpo del BSS84 y por la protección del 4051, frente a 3 mA de carga.
+  - **Relé:** con la orden a 20 ms corta 4.6 A a 230 V.
+  - **TVS:** 128 W repetidos, frente a ≈ 150–200 W no repetitivos.
+  - **PTC:** 7.7 A de pico frente a 1 A de Imax.
+  - **DF08S:** 386 A (falta la I²t de fusión del fusible para cerrarlo).
+  - **Fuga de la TVS:** el 74 % era exagerado, pero C5 sigue sin poder cumplirse.
+  - BSS84 a 24 V: no es fallo.
+  - Siguiente: rediseño del bloque 1, opción (b).
