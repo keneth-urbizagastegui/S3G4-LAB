@@ -309,6 +309,16 @@ Keneth eligió **B2** y la PTC propuesta por Claude:
 - La PTC tiene poco stock en LCSC (32 unidades) y es de 0 a 70 °C.
 - Fuente: chat del 7 oct; `S3G4_LAB_rev2.1/03_simulaciones/DMM/PLAN_SIMULACION_S11_1.md`.
 
+### 2026-10-07 — DMM bloque 1: rediseño tras S11.1 (O2, diodo como el ELVIS, GBU808)
+
+Keneth, 7 oct, tras la auditoría de S11.1 y `03_simulaciones/DMM/REDISENO_BLOQUE1.md`:
+- **Ohmios, opción O2:** un limitador de corriente bidireccional de deplexión (2 × BSS126 de 600 V + resistencia, ≤ 2 mA con la red) **sustituye a la PTC y a la TVS** del camino de ohmios. Se añaden la sujeción de la entrada de la fuente a COM y un diodo que bloquea el diodo de cuerpo del BSS84.
+- **Prueba de diodo como el ELVIS II:** LED a 100 µA (≈ 4.0 V disponibles) y silicio a 1 mA (≈ 3.0–3.3 V).
+- **Borne A:** **GBU808** (C42406072) en lugar del DF08S, con un fusible rápido 5×20 de 3.15 A y I²t ≤ 8.5 A²s, y R_B ≥ 10 kΩ en la entrada de B.
+- **Se mantiene RD-10** (230 Vrms, 10 s) también en ohmios.
+- **Queda por confirmar en S11.2 (Codex):** el BSS126 con su hoja (IDSS, V_p, temperatura), la red durante 10 s sin abrir el relé, la ESD y el borne A con las piezas reales.
+- Fuente: chat del 7 oct.
+
 ### 2026-10-06 — D-07 aceptada, RE-01 en espera y orden: DMM → AWG → mapa de pines
 
 Keneth, 6 oct, tras cerrar CH1–CH3:
