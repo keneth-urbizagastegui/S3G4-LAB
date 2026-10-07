@@ -10,6 +10,7 @@
 - `calc_rieles.py` + `seccion_g.py`: presupuesto de energía y parche que insertó la sección G en el documento vivo (23 sep, noche).
 - `build_requisitos_dmm_awg.py`: genera `S3G4_LAB_rev2.1/00_requisitos/requisitos_dmm_awg.html` (requisitos del DMM y del AWG, 23 sep).
 - `build_requisitos.py`: genera `S3G4_LAB_rev2.1/00_requisitos/requisitos_osciloscopio.html` (requisitos funcionales acordados el 23 sep).
+- `calc_dmm_tida01012.py` + `draw_dmm_tida01012.py` + `build_dmm_tida01012.py`: cifras, redibujos (tensión, corriente y cadena) y generación de `S3G4_LAB_rev2.1/02_referencias/dmm_tida01012.html` (7 oct). `chk_dmm.py <modulo> <funciones>` comprueba los solapes de cualquier redibujo del DMM.
 - `fix_ruido.py`: parche que corrigió el modelo de ruido (kT/C) en los documentos; se conserva como registro de las cifras.
 - **El texto del documento vivo se mantiene editándolo directamente**; los scripts sólo generan los dibujos y las páginas de análisis.
 - `chk_c.py`, `chk_d.py`, `chk_w.py`, `chk_o.py`, `chk_b.py`: comprobador geométrico de textos solapados o cruzando cables.

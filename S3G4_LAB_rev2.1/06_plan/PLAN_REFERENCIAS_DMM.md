@@ -63,7 +63,7 @@ Archivos: `02_referencias/dmm_<referencia>.html`, uno por referencia.
 |---|---|---|---|---|
 | R6 | **TI TIDA-00879** (ti.com/tool/TIDA-00879) | Guía TIDUBM4, esquemático TIDRMI4, BOM, Gerber | DMM de 4½ dígitos (60 000 cuentas) con el **ADC integrado del MCU** (MSP430F6736, ΣΔ de 24 bits) y front-end discreto; verdadero valor eficaz por firmware. Es el caso «ADC del micro + front-end propio» | Ninguno |
 | R7 | **EEVblog 121GW** (eevblog.com/product/121gw) | Esquemático completo publicado y manual | La **protección de un DMM de verdad**: fusible HRC, TVS, PTC, MOV y puente de diodos; red de rangos y fuente de ohmios con PTC. Usa un ASIC de DMM (HY3131), que no adoptaremos | Ninguno (el BLE no se usa) |
-| R8 | **Open Source Multimeter de Martin** (EmbedBlog, 2019; repositorio por localizar) | Por buscar: esquemático y firmware en GitHub | STM32F1 con su ADC interno, conmutación electrónica de rango, ±60 V / ±6 V, mA, componentes y RMS por unos 10 USD. Lo más cercano a nosotros en microcontrolador | Por verificar |
+| R8 | **Open Source Multimeter de Martin** (EmbedBlog; clonado en `research_and_tests/Martin_STM32_multimeter/`, rev 1.5 con STM32F373 y su ADC ΣΔ de 16 bits) | EAGLE (`hardware/v15.sch`), PNG del esquema, BOM, firmware y calibración | STM32F1 con su ADC interno, conmutación electrónica de rango, ±60 V / ±6 V, mA, componentes y RMS por unos 10 USD. Lo más cercano a nosotros en microcontrolador | Por verificar |
 
 Descartadas de entrada: TIDA-010970 (ADC de 24 bits de alta gama, fuera de nuestro coste) y los manuales de servicio de DMM de banco (Keysight 34401A). Se pueden añadir si hacen falta para un detalle.
 
@@ -73,7 +73,7 @@ Una referencia por sesión, con calma. Al terminar cada una, Keneth la revisa an
 
 | Paso | Estudio | Por qué en este orden |
 |---|---|---|
-| 1 | R1 TIDA-01012 | Fija el vocabulario y es la base de la sección H |
+| 1 | R1 TIDA-01012 — **hecho el 7 oct** (`02_referencias/dmm_tida01012.html`, propuestas P17–P22) | Fija el vocabulario y es la base de la sección H |
 | 2 | R2 HydraMeter | Todo discreto y abierto: el contraste directo con R1 |
 | 3 | R6 TIDA-00879 | ADC del micro con front-end propio, nuestro caso |
 | 4 | R7 121GW | Protección y seguridad, que aún es lo más flojo de nuestro diseño |

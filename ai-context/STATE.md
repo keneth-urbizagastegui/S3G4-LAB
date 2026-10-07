@@ -181,3 +181,7 @@ No se ha elegido automáticamente uno de estos frentes como nueva tarea de ingen
   - Sin adoptar módulos. Propuestas numeradas desde P17.
   - **La sección H queda en pausa** hasta la síntesis; luego S11.
   - Pendiente de Keneth: permiso de descarga, incluir R6–R8 y el orden.
+- **7 oct, referencias del DMM:**
+  - Descargados: TIDA-00879 (guía, esquemático, BOM y layout, de ti.com); esquemático del 121GW (copia de archive.org, porque eevblog da 502) y su manual; repositorio de Martin (STM32F373).
+  - **R1 TIDA-01012 hecho:** `02_referencias/dmm_tida01012.html` (artefacto BzuS4XnvR7xVfP3ZutR9No). Propuestas sin aplicar: P17 patas bajas conmutadas, P18 compensación con la misma τ, P19 fuerza y sentido, P20 filtro del ADC5 por carga de muestreo, P21 firmware de medida, P22 riel propio del DMM.
+  - Siguiente: R2 HydraMeter.
