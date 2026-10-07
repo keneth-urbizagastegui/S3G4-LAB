@@ -148,3 +148,8 @@ No se ha elegido automáticamente uno de estos frentes como nueva tarea de ingen
   - `ENCARGO_KONNECT_S10.md`.
 - Decisiones de Keneth del 6 oct en DECISIONS: una hoja por canal, referencias 2xx/3xx y RFILT1 = 2.2 kΩ + 150 Ω.
 - **Siguiente:** Keneth cierra KiCad, abre una sesión de Claude en `04_esquematicos/kicad` y pega «Lee y cumple ../S10_CH23/ENCARGO_KONNECT_S10.md». Después, auditoría de Claude.
+
+## S10 ejecutado: CH2 y CH3 dibujados — 6 oct 2026, Claude (Konnect)
+
+- Hojas `ch2.kicad_sch` y `ch3.kicad_sch` (87 piezas cada una) en la rama `ai/s10-ch23-esquema`, sin push. `verificar_ch23.py` código 0; ERC 31 (7 rieles + 9 pin_not_driven + 15 isolated_pin_label, sin otros tipos); 0 solapes de texto.
+- **Pendiente de Keneth:** abrir y guardar ch2/ch3 en KiCad (ch2 trae una ruta de instancia obsoleta) y rellenar el cajetín; después auditoría de Claude. Detalle: `S10_CH23/INFORME_S10.md` y `ai-context/journal/2026-10-06-claude-s10-esquema-ch23.md`.
