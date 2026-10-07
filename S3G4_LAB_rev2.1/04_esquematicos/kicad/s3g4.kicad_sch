@@ -22116,6 +22116,64 @@
 			)
 		)
 	)
+	(sheet
+    (at 500 50)
+    (size 40 25)
+    (exclude_from_sim no)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (fields_autoplaced yes)
+    (stroke (width 0.1524) (type solid))
+    (fill (color 0 0 0 0.0))
+    (uuid "5888b09f-b461-4d43-98f8-7fe9cbeb058d")
+    (property "Sheetname" "CH2"
+      (at 500 49.365 0)
+      (show_name no)
+      (do_not_autoplace no)
+      (effects (font (size 1.27 1.27)) (justify left bottom))
+    )
+    (property "Sheetfile" "ch2.kicad_sch"
+      (at 500 75.635 0)
+      (show_name no)
+      (do_not_autoplace no)
+      (effects (font (size 1.27 1.27)) (justify left top))
+    )
+    (instances
+      (project "s3g4"
+        (path "/de82ce61-fda9-4439-b3fa-fd2016785b6d" (page "2"))
+      )
+    )
+  )
+	(sheet
+    (at 500 90)
+    (size 40 25)
+    (exclude_from_sim no)
+    (in_bom yes)
+    (on_board yes)
+    (dnp no)
+    (fields_autoplaced yes)
+    (stroke (width 0.1524) (type solid))
+    (fill (color 0 0 0 0.0))
+    (uuid "99bd9b2c-60eb-42b9-ac18-d1a4498773e0")
+    (property "Sheetname" "CH3"
+      (at 500 89.365 0)
+      (show_name no)
+      (do_not_autoplace no)
+      (effects (font (size 1.27 1.27)) (justify left bottom))
+    )
+    (property "Sheetfile" "ch3.kicad_sch"
+      (at 500 115.635 0)
+      (show_name no)
+      (do_not_autoplace no)
+      (effects (font (size 1.27 1.27)) (justify left top))
+    )
+    (instances
+      (project "s3g4"
+        (path "/de82ce61-fda9-4439-b3fa-fd2016785b6d" (page "3"))
+      )
+    )
+  )
 	(sheet_instances
 		(path "/"
 			(page "1")
