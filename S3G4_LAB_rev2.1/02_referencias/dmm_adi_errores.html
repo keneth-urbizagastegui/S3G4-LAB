@@ -1,0 +1,238 @@
+<title>Errores según ADI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@500;600&display=swap">
+<style>
+:root{
+  --bg:#f4f6f5; --paper:#fff; --ink:#1b2a2e; --muted:#5d6d72; --rule:#dde3e1;
+  --accent:#12667f; --accent2:#a9541c; --ok:#2f7d54; --warn:#9a6100; --crit:#b22d22; --open:#6a4fa3;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#11181a; --paper:#182125; --ink:#dce6e7; --muted:#93a3a8; --rule:#2a3639;
+  --accent:#5fb9d2; --accent2:#f0a06a; --ok:#63c891; --warn:#f0b75a; --crit:#ff8d80; --open:#b79ae8;}}
+:root[data-theme="dark"]{
+  --bg:#11181a; --paper:#182125; --ink:#dce6e7; --muted:#93a3a8; --rule:#2a3639;
+  --accent:#5fb9d2; --accent2:#f0a06a; --ok:#63c891; --warn:#f0b75a; --crit:#ff8d80; --open:#b79ae8;}
+body{background:var(--bg);color:var(--ink);font:15px/1.6 "IBM Plex Sans",system-ui,sans-serif}
+.wrap{max-width:1000px;margin:0 auto;padding-inline:20px;padding-block:28px 64px}
+h1,h2,h3,h4{font-family:"IBM Plex Sans Condensed","IBM Plex Sans",sans-serif;margin:0;text-wrap:balance}
+h1{font-size:clamp(26px,4vw,36px);font-weight:600}
+h2{font-size:24px;font-weight:600;margin-top:8px}
+h3{font-size:18px;font-weight:600;margin-bottom:4px}
+code{font:0.88em "IBM Plex Mono",ui-monospace,monospace;color:var(--accent)}
+.eyebrow{font:500 12px "IBM Plex Mono",monospace;letter-spacing:.09em;text-transform:uppercase;color:var(--accent);margin:0 0 6px}
+.lede{color:var(--muted);max-width:74ch}
+header.hero{border-bottom:1px solid var(--rule);padding-bottom:18px;margin-bottom:26px}
+section{background:var(--paper);border:1px solid var(--rule);border-radius:10px;padding:20px 22px;margin-bottom:18px}
+section>p,li{max-width:80ch}
+.tag{display:inline-block;font:500 11px "IBM Plex Mono",monospace;text-transform:uppercase;letter-spacing:.06em;padding:2px 9px;border-radius:999px;border:1px solid currentColor}
+.t-ok{color:var(--ok)} .t-open{color:var(--open)} .t-warn{color:var(--warn)} .t-crit{color:var(--crit)}
+.shead{display:flex;align-items:center;gap:12px;margin-bottom:10px;flex-wrap:wrap}
+.num{font:500 14px "IBM Plex Mono",monospace;background:var(--accent);color:var(--paper);width:28px;height:28px;border-radius:50%;display:grid;place-items:center}
+.tw{overflow-x:auto;margin:12px 0}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th{text-align:left;font-weight:600;color:var(--muted);border-bottom:1.5px solid var(--rule);padding:7px 9px;white-space:nowrap}
+td{border-bottom:1px solid var(--rule);padding:7px 9px;vertical-align:top}
+td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
+.pick{background:color-mix(in srgb, var(--ok) 10%, transparent)}
+.callout{border-left:3px solid var(--accent);padding:10px 14px;margin:14px 0;background:color-mix(in srgb, var(--accent) 7%, transparent);font-size:14px}
+.callout.w{border-color:var(--warn);background:color-mix(in srgb, var(--warn) 9%, transparent)}
+ul.tight{margin:8px 0;padding-left:20px}
+ul.tight li{margin-bottom:5px}
+.meta{font:12.5px "IBM Plex Mono",monospace;color:var(--muted);margin:0}
+.q{border:1px dashed var(--open);border-radius:8px;padding:12px 14px;margin:10px 0}
+.q b{color:var(--open)}
+footer{font-size:12.5px;color:var(--muted);border-top:1px solid var(--rule);padding-top:12px}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-size:14px}
+.kv dt{color:var(--muted)} .kv dd{margin:0}
+
+/* --- esquematico --- */
+figure{margin:16px 0}
+.sx{overflow-x:auto;border:1px solid var(--rule);border-radius:8px;background:var(--bg);padding:8px}
+.sx svg{display:block;max-width:none;height:auto}
+figcaption{font-size:13px;color:var(--muted);margin-top:6px}
+svg text{font-family:"IBM Plex Mono",ui-monospace,monospace}
+.w{fill:none;stroke:var(--ink);stroke-width:1.5;stroke-linejoin:round}
+.sym{fill:none;stroke:var(--ink);stroke-width:1.6;stroke-linejoin:round}
+.fillsym{fill:var(--ink);stroke:var(--ink);stroke-width:1}
+.dot{fill:var(--ink)}
+.op{fill:var(--paper);stroke:var(--ink);stroke-width:1.7}
+.ic{fill:var(--paper);stroke:var(--ink);stroke-width:1.5}
+.hdr{fill:none;stroke:var(--open);stroke-width:1.5;stroke-dasharray:3 2}
+.grp{fill:none;stroke:var(--muted);stroke-width:1.1;stroke-dasharray:5 4}
+.grp-t{font-size:10.5px;fill:var(--muted)}
+.blade{stroke:var(--ink);stroke-width:2}
+.ct{fill:var(--paper);stroke:var(--ink);stroke-width:1.3}
+.gnd line{stroke:var(--ink);stroke-width:1.5}
+.railbar{stroke:var(--crit);stroke-width:2.2}
+.rail{font-size:10.5px;fill:var(--crit);font-weight:500}
+.railsm{font-size:9px;fill:var(--crit)}
+.port{fill:color-mix(in srgb, var(--accent) 14%, transparent);stroke:var(--accent);stroke-width:1.3}
+.portt{font-size:10.5px;fill:var(--ink)}
+.tp{fill:none;stroke:var(--ok);stroke-width:1.6}
+.tpt{font-size:9.5px;fill:var(--ok)}
+.ref{font-size:11px;font-weight:500;fill:var(--ink)}
+.val{font-size:10px;fill:var(--muted)}
+.net{font-size:10px;fill:var(--accent2)}
+.pin{font-size:9.5px;fill:var(--muted)}
+.pm{font-size:15px;fill:var(--ink)}
+.note{font-size:10.5px;fill:var(--muted);font-style:italic}
+.src{color:var(--muted);font-size:12.5px}
+
+.lesson td:first-child{font-weight:600}
+pre.mermaid{background:var(--paper);border:1px solid var(--rule);border-radius:8px;padding:12px;overflow-x:auto}
+.meta{color:var(--muted);font-size:13px}
+.toc{columns:2 260px;column-gap:28px;margin:6px 0 0;padding-left:20px;font-size:14px}
+.toc li{break-inside:avoid;margin:2px 0}
+.toc a{color:var(--accent);text-decoration:none} .toc a:hover{text-decoration:underline}
+.eq{font-family:"IBM Plex Mono",monospace;font-size:13.5px;background:var(--paper);border:1px solid var(--rule);border-radius:6px;padding:8px 12px;margin:10px 0;overflow-x:auto;white-space:pre}
+code,a{overflow-wrap:anywhere}
+</style>
+<div class="wrap">
+<header class="hero">
+  <p class="eyebrow">S3G4 LAB · referencia para el DMM de la rev 2.1 · 8 de 9</p>
+  <h1>Errores según ADI</h1>
+  <p class="lede">El método de Analog Devices para el presupuesto de errores de un DMM de 7½ dígitos, aplicado a nuestra sección H. El 0.1 % de lectura se sostiene; el «+10 cuentas» no, por la INL del ADC5.</p>
+  <ul class="toc"><li><a href="#resumen">Lo que nos llevamos</a></li><li><a href="#metodo">1 · Qué se analizó</a></li><li><a href="#metodo-adi">2 · El método</a></li><li><a href="#cadenas">3 · Su cadena y la nuestra</a></li><li><a href="#medidas">4 · Lo que midieron</a></li><li><a href="#presupuesto">5 · Nuestro presupuesto</a></li><li><a href="#ensayos">6 · Cómo comprobarlo</a></li><li><a href="#propuestas">7 · Propuestas P35–P37</a></li><li><a href="#correcciones">8 · Correcciones</a></li></ul>
+</header>
+<section id="resumen">
+  <div class="shead"><span class="num">★</span><h2>Lo que nos llevamos</h2></div>
+
+  <p>Los dos artículos de Analog Devices (D. Guo y O. Liu, 2024) no describen un multímetro. Explican <b>cómo se hace el presupuesto de errores</b> de una cadena de medida de 7½ dígitos y luego lo comprueban en placa. El método no depende de la escala: lo aplicamos a nuestra sección H, que pide ±(0.1 % + 10) con el ADC5 del G473. El resultado cambia una cifra de la especificación.</p>
+  <div class="tw"><table class="lesson">
+    <thead><tr><th>Hallazgo</th><th>En ADI</th><th>Para la rev 2.1</th><th>Veredicto</th></tr></thead>
+    <tbody>
+      <tr><td>Dos cubos: lectura y rango</td><td>Los errores de ganancia van a «% de lectura» y los de offset a «% de rango»; cada término entra como coeficiente de temperatura × ΔT, más la deriva con el tiempo, y se suman en cuadratura (§2)</td><td>Nuestra tabla de §8 mezcla «sin calibrar» y «tras calibrar» sin decir a qué temperatura ni durante cuánto tiempo (P35)</td><td><span class="tag t-ok">Adoptar</span></td></tr>
+      <tr><td>La INL cuenta como offset</td><td>«Como no se sabe dónde cae su pico», la INL del ADC va al término de rango (§2)</td><td>La INL del ADC5 es de 2.1–3.2 LSB diferenciales: <b>26–39 cuentas</b>, no menos de 10 (§5, P36)</td><td><span class="tag t-crit">Corregir H</span></td></tr>
+      <tr><td>El 0.1 % de lectura se sostiene</td><td>—</td><td>Con 23 ± 5 °C, la REF3325, resistencias del 0.1 % y 25 ppm/°C y un patrón del 0.05 %, la ganancia suma 579–630 ppm. Queda margen para la deriva de un año sin redes apareadas (§5)</td><td><span class="tag t-ok">Confirma H</span></td></tr>
+      <tr><td>El ruido no es el problema</td><td>El sobremuestreo baja el ruido con √n: 16 veces más muestras dan 4 veces menos ruido (§4)</td><td>Con ×1024, el ruido del ADC5 baja a 0.23 cuentas; manda la INL, no el ruido</td><td><span class="tag t-ok">Confirma H</span></td></tr>
+      <tr><td>Cuatro ensayos para demostrarlo</td><td>Ruido con la entrada en corto, INL con un barrido y calibración de 2 puntos, coeficiente de temperatura a tres temperaturas y estabilidad a 24 h (§4)</td><td>Plantilla para S11 y para el banco del DMM (P37)</td><td><span class="tag t-ok">Adoptar</span></td></tr>
+      <tr><td>La referencia manda en la ganancia</td><td>Con la misma placa, cambiar la referencia lleva el coeficiente de 0.59 a 1.44 ppm/°C y la deriva de 24 h de 0.55 a 9.2 ppm (§4)</td><td>La REF3325 (30 ppm/°C) es nuestro término de ganancia mayor después del patrón</td><td><span class="tag t-open">Para la síntesis</span></td></tr>
+    </tbody>
+  </table></div>
+
+</section>
+<section id="metodo">
+  <div class="shead"><span class="num">1</span><h2>Qué se analizó y cómo</h2></div>
+
+  <ul class="tight">
+    <li><code>research_and_tests/Analog_/achieve-7-pt-5-digits-accuracy-instrumentation-apps-part1.pdf</code> (7 p, teoría y cálculo) y <code>7-5-digit-accuracy-in-instrumentation-apps-part-2.pdf</code> (8 p, medidas). Ambos de 2024, texto extraído con PyMuPDF.</li>
+    <li>Todas las cifras de ADI se recalcularon en <code>herramientas/calc_dmm_adi.py</code> y salen iguales, salvo un signo de la ecuación de Arrhenius (§2).</li>
+    <li>Para nuestra parte: la tabla 63 (y 64–68) de exactitud del ADC del G473 en <code>datasheet/stm32g473.pdf</code> (DS12712 Rev 5, pp. 138–146); la REF3325 y el OPA2188, de sus páginas en ti.com; y el §8 de <code>01_diseno/dmm_rev21.html</code>.</li>
+    <li>No hay circuito que redibujar: la página tiene tablas y no figuras.</li>
+  </ul>
+
+</section>
+<section id="metodo-adi">
+  <div class="shead"><span class="num">2</span><h2>El método, en seis reglas</h2></div>
+
+  <ol class="tight">
+    <li><b>Dos cubos.</b> El offset no depende de la señal y se especifica como «ppm de rango». La ganancia es proporcional a la señal y va como «ppm de lectura». La especificación final es ±(lectura + rango).</li>
+    <li><b>La INL va al offset</b>, porque no se sabe en qué parte del rango cae su pico.</li>
+    <li><b>Lo absoluto se calibra; lo que cambia con la temperatura y el tiempo, no.</b> Cada término entra como coeficiente × ΔT: ±1 °C para la exactitud de 24 h y ±5 °C para la de un año (23 ± 5 °C).</li>
+    <li><b>Suma cuadrática</b> de fuentes independientes. ADI: offset √(0.002² + 0.005² + 0.2² + 0.007²) = 0.20 ppm/°C, y con la INL de 0.9 ppm, 0.92 ppm a 24 h. Ganancia: 0.54 ppm/°C, que da 0.56 ppm a 24 h y 2.7 ppm con ±5 °C.</li>
+    <li><b>Deriva con el tiempo</b>: crece con √t y se lleva a la temperatura de uso con Arrhenius (Ea = 0.68 eV). Para el LT5400 sale un factor 1.81 y 3.1 ppm en un año; para la ADR1001, 14 ppm. Es el término mayor del año.</li>
+    <li><b>Condiciones explícitas</b>: velocidad de lectura (10 o 100 ciclos de red), temperatura, tiempo desde la calibración y coeficiente fuera del intervalo.</li>
+  </ol>
+  <p class="meta">Corrección al artículo: la ecuación (1) está impresa con el signo cambiado; con ella sale 0.55. El 1.81 del texto, que es el bueno, corresponde a exp(+Ea/k · (1/T_uso − 1/T_ensayo)).</p>
+
+</section>
+<section id="cadenas">
+  <div class="shead"><span class="num">3</span><h2>La cadena de ADI frente a la nuestra</h2></div>
+
+  <div class="tw"><table>
+    <thead><tr><th>Bloque</th><th>ADI (7½ dígitos)</th><th>Sección H (4½ dígitos)</th></tr></thead>
+    <tbody>
+      <tr><td>Entrada</td><td>Buffer de deriva cero (ADA4523-1), alta impedancia</td><td>OPA2188 (deriva cero), detrás del mux</td></tr>
+      <tr><td>Escalado</td><td>Red apareada LT5400 (÷4), 1 ppm/°C de seguimiento</td><td>Resistencias del 0.1 % y 25 ppm/°C</td></tr>
+      <tr><td>Paso a diferencial</td><td>Amplificador con VCOM = 2.5 V sacado de la referencia</td><td>Driver con VCM = 1.25 V sacado de VREF</td></tr>
+      <tr><td>ADC</td><td>AD4630-24, SAR de 24 bits, INL de 0.1 ppm típica</td><td>ADC5 del G473, SAR de 12 bits, INL de 2.1 LSB típica</td></tr>
+      <tr><td>Referencia</td><td>ADR1001, Zener enterrado con horno (&lt; 0.2 ppm/°C)</td><td>REF3325 (30 ppm/°C máx.)</td></tr>
+      <tr><td>Promedio</td><td>Promediador del ADC (×1024 a ×65 536) y 10 o 100 ciclos de red</td><td>×256 por hardware, ×4 por firmware y un número entero de ciclos de red</td></tr>
+    </tbody>
+  </table></div>
+  <p>La arquitectura es la misma; cambian las piezas, unas 10 000 veces. Por eso el método sirve tal cual: solo hay que cambiar las cifras.</p>
+
+</section>
+<section id="medidas">
+  <div class="shead"><span class="num">4</span><h2>Lo que midieron (parte 2)</h2></div>
+
+  <ul class="tight">
+    <li><b>Ruido</b> (entrada en corto, 50 lecturas a 10 ciclos de red): 0.44–0.82 µV rms muestreando a 62.5 kHz y 0.12–0.32 µV rms a 1 MHz. Con 16 veces más muestras por lectura, el ruido baja unas 4 veces, como predice √n. El buffer ADA4523-1 hace menos ruido que el ADA4522.</li>
+    <li><b>INL</b>: barrido de ±9 V con una fuente verificada por un DMM de 8½ dígitos y calibración de dos puntos (los extremos). El residuo queda por debajo de 0.2 ppm a 100 ciclos de red y de 0.32 ppm a 10 ciclos: con más ruido empeora la linealidad medida.</li>
+    <li><b>Coeficiente de temperatura</b> (0, 23 y 40 °C; entradas de 0, ±5 y ±9 V): ganancia 0.59 ppm/°C y offset 0.017 ppm/°C con la ADR1001.</li>
+    <li><b>Estabilidad a 24 h</b>: 0.55 ppm de lectura + 0.07 ppm de rango, dentro de lo que dice el cálculo de la parte 1.</li>
+    <li><b>La referencia manda</b>: con la ADR1399, 1.12 ppm/°C y 1.84 ppm en 24 h; con la ADR4550D, 1.44 ppm/°C y 9.2 ppm en 24 h. El offset no cambia con la referencia, porque viene de la red de resistencias.</li>
+  </ul>
+
+</section>
+<section id="presupuesto">
+  <div class="shead"><span class="num">5</span><h2>Nuestro presupuesto, con este método</h2></div>
+
+  <h3>La INL del ADC5, en cuentas del DMM</h3>
+  <p>En diferencial, el ADC5 va de −VREF+ a +VREF+: un LSB vale 2 × 2.5 V / 4096 = 1.221 mV. La sección H fija que una cuenta valga 100 µV en el ADC (±19 999 = ±2 V). Con la tabla 63 de la hoja:</p>
+  <div class="tw"><table>
+    <thead><tr><th>INL diferencial</th><th>LSB</th><th>Tensión</th><th>Cuentas del DMM</th><th>% de 2 V</th></tr></thead>
+    <tbody><tr><td>típica (25 °C)</td><td>2.1 LSB</td><td>2.56 mV</td><td>26</td><td>0.13 %</td></tr><tr><td>máx. (25 °C, VDDA = VREF+ = 3 V)</td><td>3.2 LSB</td><td>3.91 mV</td><td>39</td><td>0.20 %</td></tr><tr><td>máx. (otras condiciones)</td><td>4.1 LSB</td><td>5.00 mV</td><td>50</td><td>0.25 %</td></tr></tbody>
+  </table></div>
+  <p>El §8 de la sección H dice «≈ 0.06 % del fondo» y que las 10 cuentas cubren la no linealidad. Ese 0.06 % es del recorrido de códigos del ADC (3.0 mV), que en cuentas del DMM son ≈ 30, no 10. El sobremuestreo no lo arregla: la INL es sistemática y no se promedia. La hoja advierte además que estos valores salen de caracterización, sin ensayo en producción.</p>
+  <h3>Ganancia (ppm de lectura), un año, 23 ± 5 °C, tras calibrar a 23 °C</h3>
+  <div class="tw"><table>
+    <thead><tr><th>Rango</th><th>Fuente</th><th>ppm</th></tr></thead>
+    <tbody><tr><td>200 mV</td><td>REF3325 · 30 ppm/°C × 5 °C</td><td>150</td></tr><tr><td></td><td>×10 de A · relación 50 ppm/°C × 5 °C</td><td>250</td></tr><tr><td></td><td>Driver · relación 50 ppm/°C × 5 °C</td><td>250</td></tr><tr><td></td><td>Patrón de calibración (supuesto)</td><td>500</td></tr><tr><td></td><td><b>Suma cuadrática</b> (queda 776 ppm para la deriva de un año)</td><td><b>630</b></td></tr><tr><td>2 V</td><td>REF3325 · 30 ppm/°C × 5 °C</td><td>150</td></tr><tr><td></td><td>Driver · relación 50 ppm/°C × 5 °C</td><td>250</td></tr><tr><td></td><td>Patrón de calibración (supuesto)</td><td>500</td></tr><tr><td></td><td><b>Suma cuadrática</b> (queda 815 ppm para la deriva de un año)</td><td><b>579</b></td></tr><tr><td>20 V</td><td>REF3325 · 30 ppm/°C × 5 °C</td><td>150</td></tr><tr><td></td><td>Divisor ÷10 · relación 50 ppm/°C × 5 °C</td><td>250</td></tr><tr><td></td><td>Driver · relación 50 ppm/°C × 5 °C</td><td>250</td></tr><tr><td></td><td>Patrón de calibración (supuesto)</td><td>500</td></tr><tr><td></td><td><b>Suma cuadrática</b> (queda 776 ppm para la deriva de un año)</td><td><b>630</b></td></tr></tbody>
+  </table></div>
+  <p class="meta">El patrón de calibración (el multímetro de banco con el que se ajusta) entra entero: aquí se supone del 0.05 %. Falta la deriva anual de la REF3325, que no figura en la página de producto, y la deriva de ganancia del ADC5, que la hoja no especifica: las dos caben en el margen, pero hay que medirlas. Una relación de resistencias del 0.1 % y 25 ppm/°C da como mucho 250 ppm con ±5 °C, así que <b>no hace falta una red apareada</b>.</p>
+  <h3>Offset (cuentas), por rango</h3>
+  <div class="tw"><table>
+    <thead><tr><th>Rango</th><th>INL típ. / máx.</th><th>Ib del OPA2188 (850 pA máx.)</th><th>Fuga del 4051 (1 nA, supuesto de H)</th><th>Ruido con ×1024</th><th>Total típ. / máx.</th></tr></thead>
+    <tbody><tr><td>200 mV</td><td>26 / 39</td><td>8.4</td><td>0.0</td><td>0.23</td><td><b>27 / 40</b></td></tr><tr><td>2 V</td><td>26 / 39</td><td>0.8</td><td>0.0</td><td>0.23</td><td><b>26 / 39</b></td></tr><tr><td>20 V</td><td>26 / 39</td><td>7.7</td><td>9.0</td><td>0.23</td><td><b>28 / 41</b></td></tr></tbody>
+  </table></div>
+  <p><b>Resultado</b>: con el ADC5 tal cual, la especificación honesta es <b>±(0.1 % + 30)</b> en condiciones típicas y <b>±(0.1 % + 40)</b> en el peor caso a 25 °C. Para volver a «+10» hay que quitar unas 3/4 partes de la INL, y eso solo se sabe midiéndola (P36).</p>
+
+</section>
+<section id="ensayos">
+  <div class="shead"><span class="num">6</span><h2>Cómo lo comprobaríamos</h2></div>
+
+  <p>Los cuatro ensayos de ADI, a nuestra escala:</p>
+  <ol class="tight">
+    <li><b>Ruido</b>: entrada en corto, 50 lecturas por rango a 1 y 10 ciclos de red. Criterio: menos de 1 cuenta rms.</li>
+    <li><b>INL</b>: barrido de −2 V a +2 V en el ADC (y por cada rango), en ≥ 41 puntos. La fuente se mide a la vez con el mejor multímetro del laboratorio; se calibra con dos puntos y se mira el residuo. Repetirlo en varias placas (criterio de Keneth: ≥ 95 % de placas).</li>
+    <li><b>Coeficiente de temperatura</b>: 0 V y ±1.8 V a dos o tres temperaturas (una caja con calefactor basta para 23 → 33 °C). Se separan ganancia y offset.</li>
+    <li><b>Estabilidad</b>: las mismas lecturas tras 24 h y tras una semana, para estimar la deriva sin esperar un año.</li>
+  </ol>
+  <p class="meta">La INL del ensayo 2 también se puede medir antes de tener el DMM: basta la placa del G473 con el ADC5 en diferencial y una fuente estable.</p>
+
+</section>
+<section id="propuestas">
+  <div class="shead"><span class="num">7</span><h2>Propuestas para la rev 2.1</h2></div>
+
+  <p>Siguen a P17–P34. <b>Ninguna está aplicada.</b></p>
+  <h3>P35 · Presupuesto de errores con el método de ADI <span class="tag t-ok">Adoptar</span></h3>
+  <p>Sustituir la tabla del §8 por dos tablas separadas:</p>
+  <ul class="tight">
+    <li>ganancia en % de lectura: referencia, relaciones de resistencias, ganancia del ADC y patrón de calibración;</li>
+    <li>offset en cuentas: INL, ruido, Ib × Rs y fugas.</li>
+  </ul>
+  <p>Cada término, como coeficiente × ΔT más la deriva, sumado en cuadratura. Hay que declarar las condiciones: un año, 23 ± 5 °C, la velocidad de lectura y el coeficiente fuera del intervalo. Las cifras de §5 de esta página son la primera versión.</p>
+  <h3>P36 · El término de cuentas: medir la INL del ADC5 y elegir <span class="tag t-warn">Decidir</span></h3>
+  <p>Con la hoja, la INL vale 26–39 cuentas: el «+10» de RD-03 / §8 no se cumple. Antes de fijar la especificación, medir la INL del ADC5 en diferencial en el banco (ensayo 2 de §6) en varias placas. Según lo que salga:</p>
+  <ol class="tight" type="a">
+    <li>especificar ±(0.1 % + 40);</li>
+    <li>una tabla de linealización por placa, si la INL es estable con la temperatura y entre lecturas;</li>
+    <li>o un ADC ΣΔ externo solo para el DMM, decisión de la síntesis, que también resolvería el riesgo de resolución.</li>
+  </ol>
+  <h3>P37 · Plan de ensayo del DMM con los cuatro ensayos de ADI <span class="tag t-ok">Adoptar</span></h3>
+  <p>Ruido, INL, coeficiente de temperatura y estabilidad (§6), como parte de S11 y del banco del DMM, con el criterio de ≥ 95 % de placas.</p>
+
+</section>
+<section id="correcciones">
+  <div class="shead"><span class="num">8</span><h2>Correcciones a lo dicho antes</h2></div>
+
+  <ul class="tight">
+    <li><b>Sección H §8</b>: la INL del ADC5 no es «≈ 0.06 % del fondo» cubierto por 10 cuentas, sino 26–39 cuentas (0.13–0.20 % de 2 V). Afecta a la especificación ±(0.1 % + 10) de la hoja del DMM.</li>
+    <li><b>Sección H §2</b>: el OPA2188 tiene 160 pA de corriente de polarización <i>típica</i>; la máxima es de 850 pA a 25 °C. En el rango de 200 mV, con los 99 kΩ de R_PROT, eso son 8 cuentas.</li>
+    <li><b>Artículo de ADI</b>: la ecuación (1) de la parte 1 tiene el signo cambiado (§2).</li>
+  </ul>
+
+</section>
+<footer><p class="meta">Análisis de Claude Code, 7 oct 2026, según <code>06_plan/PLAN_REFERENCIAS_DMM.md</code>. Fuentes: D. Guo y O. Liu, «How to Achieve 7.5-Digit Accuracy in Instrumentation Applications», partes 1 y 2 (Analog Devices, 2024), en <code>research_and_tests/Analog_/</code>; DS12712 Rev 5. Cifras: <code>herramientas/calc_dmm_adi.py</code>.</p></footer>
+</div>

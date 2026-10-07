@@ -13,7 +13,7 @@ Lo deja la sesión del 6–7 oct, que se quedó sin contexto. Para empezar el ch
 - **Sección H (borrador, EN PAUSA):** `S3G4_LAB_rev2.1/01_diseno/dmm_rev21.html` y la hoja `00_requisitos/especificaciones_dmm.html`, publicadas. Se escribieron antes de estudiar las referencias: **se revisan en la síntesis** y después se encarga S11 a Codex.
 - **Plan:** `S3G4_LAB_rev2.1/06_plan/PLAN_REFERENCIAS_DMM.md` (método, referencias, orden y la evaluación de los enlaces 95152/57000/57006 de EEWorld).
 
-## Referencias hechas (7 de 9)
+## Referencias hechas (8 de 9)
 
 Todas en `S3G4_LAB_rev2.1/02_referencias/`, publicadas (enlaces en `ARTEFACTOS.md`), con scripts `herramientas/calc_dmm_*.py`, `draw_dmm_*.py` y `build_dmm_*.py`, y diario propio:
 
@@ -26,6 +26,7 @@ Todas en `S3G4_LAB_rev2.1/02_referencias/`, publicadas (enlaces en `ARTEFACTOS.m
 | R3 | Micro-DMM | `dmm_microdmm.html` | P33–P34 |
 | R8 | Martin (STM32F373) | `dmm_martin.html` | — (refuerza P17, P19, P21, P27, P29) |
 | R4 | EEWorld 77845 (ficha corta) | `dmm_eeworld77845.html` | — (confirma P20, P26) |
+| R5 | Analog Devices, 7½ dígitos (método) | `dmm_adi_errores.html` | P35–P37 |
 
 ## Propuestas acumuladas (NINGUNA aplicada; se deciden en la síntesis)
 
@@ -47,10 +48,13 @@ Todas en `S3G4_LAB_rev2.1/02_referencias/`, publicadas (enlaces en `ARTEFACTOS.m
 - **P32** Aviso de fusible abierto: el borne A medido antes del fusible a través de ≈ 10 MΩ.
 - **P33** Cable abierto en tensión (RD-09) con resistencias definidas, cuando la lectura lleva ≥ 5 ms bajo un umbral. Variante B, sin piezas: lectura breve en el rango de 20 MΩ (≤ 0.49 µA). Variante A, como el puente de Mann: brazo de 10 MΩ de la toma de P17 a VREF (≤ 0.12 µA).
 - **P34** En ohmios, si aparece tensión externa, desconectar la fuente y la R_ref, avisar y pasar a tensión (la PTC solo aguanta unos ms).
+- **P35** Presupuesto de errores con el método de ADI: ganancia en % de lectura y offset en cuentas, coeficiente × ΔT (23 ± 5 °C) más deriva, suma cuadrática y condiciones declaradas. Primera versión en `dmm_adi_errores.html` §5.
+- **P36** Medir la INL del ADC5 en diferencial en el banco y elegir: ±(0.1 % + 40), linealización por placa o un ΣΔ externo para el DMM. **Corrige H §8:** la INL es de 26–39 cuentas, no menos de 10.
+- **P37** Plan de ensayo del DMM con los cuatro ensayos de ADI: ruido, INL, coeficiente de temperatura y estabilidad.
 
 ## Riesgos para la síntesis
 
-- **Resolución:** en H, una cuenta vale ≈ 1/12 de LSB del ADC5 de 12 bits (todo depende del sobremuestreo). En el TIDA-01012, una cuenta son 2.3 LSB de un ADC de 18 bits; en el TIDA-00879 es un ΣΔ de 24 bits. Hay que justificar las 20 000 cuentas o rebajarlas.
+- **Resolución:** en H, una cuenta vale ≈ 1/12 de LSB del ADC5 de 12 bits (todo depende del sobremuestreo). En el TIDA-01012, una cuenta son 2.3 LSB de un ADC de 18 bits; en el TIDA-00879 es un ΣΔ de 24 bits. Hay que justificar las 20 000 cuentas o rebajarlas. **R5 lo concreta:** el ruido con ×1024 queda en 0.23 cuentas, pero la INL de la hoja (2.1–3.2 LSB diferenciales) son 26–39 cuentas. Lo que limita es la INL, no el ruido (P36).
 - COM a media alimentación (TIDA, HydraMeter): no aplicable, porque nuestro COM es la masa común (RD-05).
 - Lazos de masa (Micro-DMM): con masa común, si el S3G4 está conectado por USB a un PC enchufado y se mide un equipo enchufado a la red, COM queda unido a la tierra del PC. El Micro-DMM aísla todo por eso. Decir en la síntesis cómo se avisa al usuario. Martin aísla solo los datos del USB: al cargar, un conmutador une las masas (mismo compromiso).
 - Límite inferior (EEWorld 77845): ≈ 1 % con el SAR de 12 bits de un F103, sin referencia propia ni autocero. Martin, con un ΣΔ de 16 bits y 25 000 muestras por lectura, aún calibra offsets del 3.5 % del fondo en su rango más bajo.
@@ -59,7 +63,7 @@ Todas en `S3G4_LAB_rev2.1/02_referencias/`, publicadas (enlaces en `ARTEFACTOS.m
 
 1. ~~R3 Micro-DMM~~: hecho el 7 oct (diario `2026-10-07-claude-dmm-microdmm.md`).
 2. ~~R8 Martin + R4 EEWorld 77845~~: hechos el 7 oct, sin propuestas nuevas (diario `2026-10-07-claude-dmm-martin-eeworld.md`).
-3. **R5 Analog Devices** «7.5-Digit Accuracy» partes 1 y 2 (`research_and_tests/Analog_/`): teoría de errores, para revisar el presupuesto de la sección H §8.
+3. ~~R5 Analog Devices~~: hecho el 7 oct, P35–P37 (diario `2026-10-07-claude-dmm-adi.md`).
 4. **R9 Agilent 34401A**: `research_and_tests/Agilent_34401A/34401A_Service_Guide.pdf` (167 p). Teoría de funcionamiento en pp. 99–115 y esquemas en pp. 150–165. Front-end profesional: protección, divisor, fuente de ohmios, autocero y alterna.
 5. **Síntesis:** comparación de todas las referencias, lista P17–P32+ para que decida Keneth, revisión de la sección H y encargo S11.
 6. Pendiente de Keneth: si quiere la ficha del 95152 de EEWorld, tiene que bajarlo él (pide cuenta).

@@ -79,7 +79,7 @@ Una referencia por sesión, con calma. Al terminar cada una, Keneth la revisa an
 | 4 | R7 121GW — **hecho el 7 oct** (`02_referencias/dmm_121gw.html`, P30–P32) | Protección y seguridad, que aún es lo más flojo de nuestro diseño |
 | 5 | R3 Micro-DMM — **hecho el 7 oct** (`02_referencias/dmm_microdmm.html`, P33–P34) | Cable abierto (RD-09) y ohmios bajos |
 | 6 | R8 Martin + R4 EEWorld — **hechos el 7 oct** (`02_referencias/dmm_martin.html` y `dmm_eeworld77845.html`, ficha corta; sin propuestas nuevas) | Los dos con ADC de STM32: el límite inferior de lo que se logra |
-| 7 | R5 Analog Devices | Teoría para cerrar el presupuesto de errores |
+| 7 | R5 Analog Devices — **hecho el 7 oct** (`02_referencias/dmm_adi_errores.html`, P35–P37) | Teoría para cerrar el presupuesto de errores |
 | 8 | **Síntesis** | Comparación de todas las referencias con la sección H, lista de propuestas P17+ para que decida Keneth y revisión de la sección H. Después, el encargo S11 |
 
 ## 5. Lo que necesito de Keneth antes de empezar

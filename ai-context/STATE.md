@@ -213,13 +213,18 @@ No se ha elegido automáticamente uno de estos frentes como nueva tarea de ingen
   - EEWorld: STM32F103 con SAR de 12 bits, ≈ 1 % medido; sin esquema, no está en OSHWHub. El MAX4080 solo trabaja en el lado alto (4.5–76 V).
   - Sin propuestas nuevas: refuerzan P17, P19, P20, P21, P26, P27 y P29.
   - Siguiente: R5 Analog Devices. Detalle en `journal/2026-10-07-claude-dmm-martin-eeworld.md`.
+- **7 oct, R5 Analog Devices hecho:** `02_referencias/dmm_adi_errores.html` (artefacto LsJG4aZhYxcP8A2SGfAiZN).
+  - Método de presupuesto de errores de ADI (7½ dígitos): ganancia en % de lectura y offset en % de rango; la INL cuenta como offset; coeficiente × ΔT más deriva (√t, Arrhenius); suma cuadrática. Sus cifras se reproducen; la ecuación (1) del artículo tiene el signo cambiado.
+  - **Hallazgo para la sección H:** la INL diferencial del ADC5 (DS12712, T.63: 2.1 típ. / 3.2 máx. LSB) son **26–39 cuentas** de 100 µV, no menos de 10 como dice §8. El 0.1 % de lectura se sostiene (579–630 ppm con 23 ± 5 °C y un patrón del 0.05 %, sin redes apareadas). Además, Ib del OPA2188 es de 850 pA máx. (H citaba 160 pA, la típica).
+  - Propuestas P35 (presupuesto con el método de ADI), P36 (medir la INL del ADC5 y elegir: +40 cuentas, linealización o ΣΔ externo) y P37 (los cuatro ensayos de ADI en S11 y en el banco). Ninguna aplicada.
+  - Siguiente: R9 Agilent 34401A. Detalle en `journal/2026-10-07-claude-dmm-adi.md`.
 
 ## Punto de retomada — referencias del DMM (7 oct 2026, Claude)
 
 - **Retomar con:** `ai-context/journal/2026-10-07-claude-retomar-referencias-dmm.md`. Contiene:
-  - el estado: 7 de 9 referencias hechas (TIDA-01012, HydraMeter, TIDA-00879, 121GW, Micro-DMM, Martin y EEWorld 77845);
-  - las propuestas P17–P34 resumidas, sin aplicar;
+  - el estado: 8 de 9 referencias hechas (TIDA-01012, HydraMeter, TIDA-00879, 121GW, Micro-DMM, Martin, EEWorld 77845 y Analog Devices);
+  - las propuestas P17–P37 resumidas, sin aplicar;
   - los riesgos para la síntesis;
-  - el orden siguiente: R5 Analog Devices → R9 34401A → síntesis y revisión de la sección H → encargo S11;
+  - el orden siguiente: R9 34401A → síntesis y revisión de la sección H → encargo S11;
   - las herramientas y las trampas conocidas.
 - La sección H del DMM sigue en pausa hasta la síntesis.
