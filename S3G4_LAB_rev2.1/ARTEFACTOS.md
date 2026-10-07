@@ -8,8 +8,8 @@ Cada artefacto es una copia publicada en claude.ai del archivo local indicado. L
 | Requisitos del osciloscopio S3G4 | https://claude.ai/artifact/X1DWGzQBZB2zT57mXPD4sG | `00_requisitos/requisitos_osciloscopio.html` | 5 |
 | Requisitos del DMM y del AWG | https://claude.ai/artifact/5TwLhVKhkoYHuPQXJq9y2n | `00_requisitos/requisitos_dmm_awg.html` | 6 |
 | Especificaciones del osciloscopio (hoja preliminar, 30 sep) | https://claude.ai/artifact/YMa7uusboCbYFR8hos2wGa | `00_requisitos/especificaciones_osciloscopio.html` | 2 |
-| Multímetro DMM (guía de la sección H, revisada con D1–D7, 7 oct) | https://claude.ai/artifact/4iveEdvtCBTvhQj9jHjsvY | `01_diseno/dmm_rev21.html` | 3 |
-| Especificaciones del DMM (hoja preliminar, revisada con D1–D7, 7 oct) | https://claude.ai/artifact/9wuyJcNBxPcee2dNuThttm | `00_requisitos/especificaciones_dmm.html` | 3 |
+| Multímetro DMM (guía de la sección H, revisada con D1–D7, 7 oct) | https://claude.ai/artifact/4iveEdvtCBTvhQj9jHjsvY | `01_diseno/dmm_rev21.html` | 4 |
+| Especificaciones del DMM (hoja preliminar, revisada con D1–D7, 7 oct) | https://claude.ai/artifact/9wuyJcNBxPcee2dNuThttm | `00_requisitos/especificaciones_dmm.html` | 4 |
 | Anatomía del TIDA-01012 (DMM, 1 de 8) | https://claude.ai/artifact/BzuS4XnvR7xVfP3ZutR9No | `02_referencias/dmm_tida01012.html` | 1 |
 | Anatomía del HydraMeter (DMM, 2 de 9) | https://claude.ai/artifact/5j4fYKqbpLK8TxGpkFgE7D | `02_referencias/dmm_hydrameter.html` | 1 |
 | Anatomía del TIDA-00879 (DMM, 3 de 9) | https://claude.ai/artifact/XKxwSffsJUNX7j4EGX2iLx | `02_referencias/dmm_tida00879.html` | 1 |

@@ -75,7 +75,11 @@ Todas en `S3G4_LAB_rev2.1/02_referencias/`, publicadas (enlaces en `ARTEFACTOS.m
 4. ~~R9 Agilent 34401A~~: hecho el 7 oct, P38–P42 (diario `2026-10-07-claude-dmm-34401a.md`).
 5. ~~Síntesis~~: publicada el 7 oct, `01_diseno/dmm_sintesis.html` (diario `2026-10-07-claude-dmm-sintesis.md`).
    - ~~Respuestas a D1–D7 y revisión de la sección H y su hoja~~: hechas el 7 oct. D1 quedó sin huella del ADS1115 (DECISIONS; diario `2026-10-07-claude-revision-seccion-h.md`).
-   - **Lo siguiente:** la respuesta de Keneth a D8 (P43) y después el encargo S11.
+   - ~~D8 (P43) y encargo S11a~~: hechos el 7 oct (`S3G4_LAB_rev2.1/03_simulaciones/DMM/`; diario `2026-10-07-claude-encargo-s11a.md`).
+   - **Lo siguiente:**
+     - Que Keneth deje los modelos y las hojas de TI (o que dé permiso para bajarlos).
+     - Lanzar S11a con Codex y auditarlo.
+     - Diseñar el circuito de la escalera P42 y escribir S11b (red y ESD).
    - Las medidas en banco (P36, P37) **no** se adelantan: la placa WeAct no sirve para lo analógico (DECISIONS, 7 oct).
 6. Pendiente de Keneth: si quiere la ficha del 95152 de EEWorld, tiene que bajarlo él (pide cuenta).
 

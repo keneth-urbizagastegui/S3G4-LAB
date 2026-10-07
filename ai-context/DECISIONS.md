@@ -274,8 +274,20 @@ Keneth, 7 oct: «de acuerdo con D1–D7, revisa la sección H, sin huella del ad
 - **D6 · opcionales:** P32 (aviso de fusible abierto) sí, por X5; P28 no.
 - **D7 · alimentación:** riel propio del DMM, apagable (P22, RF-18).
 - La sección H revisada también aplica las demás propuestas que la síntesis marcó «adoptar» (P18, P20, P21, P26, P27, P29, P31, P33, P34, P38–P41). Son diseño por confirmar en S11, no decisiones aparte de Keneth.
-- **Sin aceptar:** P43, la fuente de corriente ratiométrica para ohmios (H §6). Es una propuesta pendiente de Keneth (D8). Sin ella, los ohmios vuelven a la razón con un buffer (P25), con ≈ 0.6 % sin linealizar.
+- **Sin aceptar:** P43, la fuente de corriente ratiométrica para ohmios (H §6). Es una propuesta pendiente de Keneth (D8). Sin ella, los ohmios vuelven a la razón con un buffer (P25), con ≈ 0.6 % sin linealizar. *(Aceptada después, el mismo día: ver D8.)*
 - Fuente: chat del 7 oct; `S3G4_LAB_rev2.1/01_diseno/dmm_sintesis.html` (D1–D7) y `01_diseno/dmm_rev21.html` revisada.
+
+### 2026-10-07 — DMM: D8, fuente de corriente de ohmios P43 aceptada
+
+Keneth, 7 oct: «de acuerdo con P43, escribe el encargo S11».
+- **P43 aceptada:** fuente de corriente ratiométrica a VREF, como la del 34401A.
+  - IREF = VREF/R1 (24.9 kΩ) por R2 (4.99 kΩ) → 0.5 V bajo el riel de +4.9 V.
+  - Un TLV2372 copia la caída en R_rango (50 Ω … 2.49 MΩ, 0.1 %), con 2 × 74HC4051 en fuerza y sentido.
+  - 10 mA … 0.2 µA (0.2 µA en 20 MΩ); diodo a 1 mA. Calibrada al fabricar.
+- **Lo que queda para S11 (no decidido):**
+  - el elemento de paso: bipolar (MMBT3904/3906) o MOSFET (2N7002/BSS84);
+  - el circuito concreto de la escalera P42 (S11b).
+- Fuente: chat del 7 oct; `S3G4_LAB_rev2.1/01_diseno/dmm_rev21.html` §6 y `03_simulaciones/DMM/PLAN_SIMULACION_S11a.md`.
 
 ### 2026-10-06 — D-07 aceptada, RE-01 en espera y orden: DMM → AWG → mapa de pines
 

@@ -92,7 +92,7 @@ svg .lineB{stroke:var(--bad);stroke-width:2;fill:none}
 <div class="box"><b>Qué cambió en esta revisión</b><br>
 Se aplicaron las decisiones D1–D7 de la <code>01_diseno/dmm_sintesis.html</code> (síntesis de las nueve referencias). D1 queda <b>sin ADC externo</b>: la no linealidad del ADC5 se corrige al fabricar.
 <ul>
-<li><b>Ohmios:</b> la PTC se cambia por un bloqueo con semiconductores (P42). <span class="st prop">PROPUESTA</span> La medida pasa a ser una fuente de corriente ratiométrica (P43, §6), pendiente de tu visto bueno.</li>
+<li><b>Ohmios:</b> la PTC se cambia por un bloqueo con semiconductores (P42). <span class="st ok">ACEPTADA (D8)</span> La medida pasa a ser una fuente de corriente ratiométrica (P43, §6).</li>
 <li><b>Corriente:</b> fusible cerámico de alto poder de corte con puente DF10S (P31), derivador con punto estrella (P27) y aviso de fusible abierto (P32).</li>
 <li><b>Alterna:</b> sin trimmer, con corrección por firmware (P18, P39).</li>
 <li><b>Correcciones:</b> autocero con tiempo de asiento (P38), red de 60 Hz (P40) y la INL y las fugas corregidas en el presupuesto (§8).</li>
@@ -158,7 +158,7 @@ Se aplicaron las decisiones D1–D7 de la <code>01_diseno/dmm_sintesis.html</cod
 <tr><td>Ancho de banda en alterna</td><td><span class="tag both">AMBOS</span></td><td class="n">40 Hz–20 kHz</td><td>Divisor compensado con C0G fijos y el resto corregido por firmware (P18, P39); RC del driver calculado con la carga de muestreo (P20)</td></tr>
 <tr><td>Verdadero valor eficaz</td><td><span class="tag mcu">G473</span></td><td class="n">TRMS</td><td>Muestreo a ≈ 200 kSa/s; RMS con la continua y el ruido restados en cuadratura (P21)</td></tr>
 <tr><td>Caída en corriente</td><td><span class="tag afe">AFE</span></td><td class="n">0.2 V a 2 A</td><td>Derivador de 0.1 Ω más el fusible (RD-06)</td></tr>
-<tr><td>Corriente de prueba en ohmios</td><td><span class="tag afe">AFE</span></td><td class="n">10 mA … 0.2 µA</td><td>Fuente de corriente ratiométrica a VREF, calibrada (P43, propuesta, §6). En vacío, ≈ 3.4 V como máximo</td></tr>
+<tr><td>Corriente de prueba en ohmios</td><td><span class="tag afe">AFE</span></td><td class="n">10 mA … 0.2 µA</td><td>Fuente de corriente ratiométrica a VREF, calibrada (P43, §6). En vacío, ≈ 3.4 V como máximo</td></tr>
 <tr><td>Continuidad sin retardo</td><td><span class="tag mcu">G473</span></td><td class="n">&lt; 1 ms</td><td>COMP7 en PB14 contra el DAC2_CH1, sin pasar por la CPU</td></tr>
 <tr><td>Rango de entrada del pin</td><td><span class="tag mcu">G473</span></td><td class="n">0 … 2.5 V por pin</td><td>VREF+ = 2.5 V; en diferencial, ±2.5 V entre PD13 y PD14</td></tr>
 <tr><td>Supervivencia a la red</td><td><span class="tag afe">AFE</span></td><td class="n">230 Vrms · 10 s</td><td>R_PROT y divisor de alta tensión; bloqueo con semiconductores en ohmios (P42); fusible cerámico en A (RD-10, §7)</td></tr>
@@ -373,11 +373,11 @@ Si alguien pone 12 V entre A y COM, por el derivador pasarían 120 A. El puente 
   <text x="20" y="238" font-size="12" class="mono">I = (VREF/R1)·R2 / R_rango ≈ 0.5 V / R_rango · Rx = V_x / I (∥ 10 MΩ corregido) · VREF se cancela</text>
 </svg>
 </div>
-<p><span class="st prop">PROPUESTA P43 · pendiente de tu visto bueno (D8)</span></p>
+<p><span class="st ok">P43 · ACEPTADA (D8, 7 oct)</span> · S11 elige el elemento de paso y mide la protección</p>
 <p>La medida usa una <b>fuente de corriente ratiométrica</b>, como la del 34401A, y la tensión se mide en el borne:</p>
 <ul>
 <li>Un amplificador y un NPN hacen pasar IREF = VREF / R1 por R2. Así queda una tensión de <b>0.5 V bajo el riel</b> que solo depende de VREF y de la relación R2/R1.</li>
-<li>Otro amplificador copia esa caída sobre la resistencia del rango, moviendo un PNP de paso: I = 0.5 V / R_rango.</li>
+<li>Otro amplificador copia esa caída sobre la resistencia del rango, moviendo un PNP de paso: I = 0.5 V / R_rango. La corriente de base del PNP sale por el amplificador y no llega a Rx. Con β = 100 se pierde ≈ 1 %, que se calibra, pero β cambia con la temperatura y con V_CE: ≈ 300 ppm con ±5 °C. Por eso S11 lo compara con un MOSFET de canal P (BSS84), sin corriente de puerta, como el JFET del 34401A.</li>
 <li>Un 4051 lleva la corriente (fuerza) y otro lee la resistencia (sentido), de modo que la resistencia del mux no entra en la corriente.</li>
 <li>La corriente cruza el bloqueo P42 y llega al borne; V_x se lee en el borne por X0.</li>
 </ul>
@@ -400,7 +400,7 @@ La versión anterior medía la corriente con el propio ADC5: V_alto y V_bajo de 
 <li><b>0.24 %</b> aun linealizada: no cabe en ±(0.2 % + 10).</li>
 </ul>
 Con la fuente calibrada, la INL solo afecta a V_x, en el término de cuentas. La corriente deriva unos 280 ppm con ±5 °C (R_rango, R2/R1 y el amplificador), y la ganancia total de ohmios queda en ≈ 630 ppm con el patrón del 0.05 %.
-<p>Cuesta un TLV2372 y dos transistores, y ahorra los divisores ÷4, dos entradas del mux y dos lecturas por medida. X5 pasa al aviso de fusible (P32) y X6 queda libre. Si no la apruebas, se vuelve a la razón leyendo V_bajo a través de un buffer, sin cargarlo (P25), y aceptando ese error.</p></div>
+<p>Cuesta un TLV2372 y dos transistores, y ahorra los divisores ÷4, dos entradas del mux y dos lecturas por medida. X5 pasa al aviso de fusible (P32) y X6 queda libre. Si S11 la descartara, la alternativa es volver a la razón leyendo V_bajo a través de un buffer, sin cargarlo (P25), y aceptar ese error.</p></div>
 <div class="box"><b>Ejemplo 3 · 4.7 kΩ en el rango de 20 kΩ</b><br>
 I = 0.5 V / 5 kΩ = <b>100 µA</b>, así que V_x = 100 µA × (4.7 kΩ ∥ 10.1 MΩ) = <b>0.470 V</b>. El firmware divide por la corriente calibrada y corrige el paralelo del divisor: <code>4.700 kΩ</code> (1 Ω por cuenta).</div>
 <p><b>Diodo:</b> se usa la corriente del rango de 2 kΩ, <b>1 mA constante</b>, como en los multímetros de banco. Con hasta ≈ 3.3 V disponibles se encienden los LED rojos y verdes y la mayoría de los azules. RD-08 pide ~3.5 V: los azules y blancos más altos quedan en el límite, y S11 lo comprueba. La tensión se lee por la toma ÷10 (X1).</p>
@@ -410,9 +410,15 @@ I = 0.5 V / 5 kΩ = <b>100 µA</b>, así que V_x = 100 µA × (4.7 kΩ ∥ 10.1 
 Es el modo más expuesto: la fuente está conectada al borne. El bloqueo con semiconductores (P42, como el 34401A) sustituye a la PTC:
 <ul>
 <li>con tensión positiva en V/Ω, el 1N4007W (1 kV, LCSC C18199088) queda en inverso y no deja pasar corriente;</li>
-<li>con tensión negativa, la bloquean dos MMBTA92 en serie (2 × 300 V, C20069146), con resistencias de base que reparten la tensión.</li>
+<li>con tensión negativa, el diodo conduce y dos MMBTA92 en serie (2 × 300 V, C20069146) se reparten la tensión, con resistencias de base, para que no llegue al PNP de paso ni a los 4051.</li>
 </ul>
-No hay corriente que sujetar ni nada que se caliente, y cuesta ≈ 0.07 USD. Además, el firmware detecta la tensión externa (lecturas negativas, por encima de lo que da la fuente, o que no siguen a la corriente), apaga la fuente y avisa (P34).
+No hay corriente de sujeción y cuesta ≈ 0.07 USD. <b>Lo que no hace es limitar la corriente.</b> Con tensión negativa, la fuente sigue entregando la corriente de su rango, y la escalera disipa I × V:
+<ul>
+<li>con la red, en el rango de 200 Ω (10 mA), ≈ 1.6 W de pico por transistor, muy por encima de lo que aguanta un SOT-23;</li>
+<li>en el de 2 kΩ, ≈ 0.17 W, el 47 %;</li>
+<li>en los demás, casi nada (<code>calc_dmm_s11.py</code>).</li>
+</ul>
+Por eso el firmware tiene que apagar la fuente en cuanto ve tensión externa (P34): lecturas negativas, por encima de lo que da la fuente o que no siguen a la corriente. Después avisa. S11 mide cuánto tiempo aguantan los transistores con la fuente encendida.
 <p>La PTC «de pocos kΩ» de la versión anterior no servía: en el rango de 200 Ω dejaba la corriente en 2 mA y usaba solo el 20 % de la ventana. S11 comprueba el reparto de tensión entre los escalones y la fuga sobre la entrada cuando la fuente está apagada.</p></div>
 
 <!-- ============================================================ -->
@@ -459,7 +465,7 @@ No hay corriente que sujetar ni nada que se caliente, y cuesta ≈ 0.07 USD. Ade
 <tr><td>Corriente continua</td><td class="n">±(0.5 % + 40)</td><td class="n"><b>±(0.5 % + 10)</b></td></tr>
 <tr><td>Corriente alterna</td><td class="n">±(1.5 % + 40)</td><td class="n"><b>±(1.5 % + 20)</b></td></tr>
 </table></div>
-<p class="cap">Un año desde la calibración, a 23 ± 5 °C y con al menos un ciclo de red de 60 Hz; fuera de 18–28 °C se añade 0.1 × la exactitud por °C. Sin ADC externo (D1): si la linealización no baja la INL a ≈ 10 cuentas, vale la columna garantizada. Los ohmios de 0.2 % dependen de la fuente de corriente (P43); con la razón anterior serían ≈ 0.6 % sin linealizar. En ohmios, las cuentas del ADC se pasan a Ω con la curva de cada rango. Recorriendo del 10 al 100 % del rango, el error usa del 76 al 95 % de la tolerancia en el nivel garantizado y del 25 al 81 % en el calibrado (<code>calc_dmm_h.py</code>).</p>
+<p class="cap">Un año desde la calibración, a 23 ± 5 °C y con al menos un ciclo de red de 60 Hz; fuera de 18–28 °C se añade 0.1 × la exactitud por °C. Sin ADC externo (D1): si la linealización no baja la INL a ≈ 10 cuentas, vale la columna garantizada. Los ohmios de 0.2 % dependen de la fuente de corriente (P43, D8); con la razón anterior serían ≈ 0.6 % sin linealizar. En ohmios, las cuentas del ADC se pasan a Ω con la curva de cada rango. Recorriendo del 10 al 100 % del rango, el error usa del 76 al 95 % de la tolerancia en el nivel garantizado y del 25 al 81 % en el calibrado (<code>calc_dmm_h.py</code>).</p>
 
 <!-- ============================================================ -->
 <h2><span class="n">9</span>Recursos del STM32G473 que reserva el DMM</h2>
@@ -508,8 +514,8 @@ No hay corriente que sujetar ni nada que se caliente, y cuesta ≈ 0.07 USD. Ade
 <li><b>S11 (Codex, auditoría de Claude)</b>, con Monte Carlo y tolerancias reales, aceptando si cumple en ≥ 95 % de las placas:
   <ul>
     <li>continua por rango: resistencias, REF3325, OPA2188 (Vos, Ib) y fuga del 4051 barrida de 0.1 a 10 nA, para fijar la fuga tolerable;</li>
-    <li>planitud en alterna de 40 Hz a 20 kHz con C0G ±5 % y parásitas, y la corrección de P39 (residuo &lt; 0.5 %);</li>
-    <li>fuente de corriente de ohmios (P43): los 6 rangos, la tensión disponible, la deriva y la prueba de diodo;</li>
+    <li>planitud en alterna de 40 Hz a 20 kHz con C0G ±5 % y parásitas, y la corrección de P39 (residuo &lt; 0.5 %). Incluye el polo de R_PROT con la capacidad de X0: ≈ 40 kHz, −10 % a 20 kHz en 200 mV y 2 V;</li>
+    <li>fuente de corriente de ohmios (P43): los 6 rangos, la tensión disponible, la deriva y la prueba de diodo. También PNP o BSS84 como elemento de paso, y la entrada del OPA2188 con las puntas al aire (≈ 3.3–3.4 V, en el límite de su modo común);</li>
     <li>el camino de 200 mA (ruido y offset) y el punto estrella (P27);</li>
     <li>el asiento del autocero en cada toma (P38);</li>
     <li>la continuidad con COMP7;</li>
@@ -517,7 +523,7 @@ No hay corriente que sujetar ni nada que se caliente, y cuesta ≈ 0.07 USD. Ade
     <li>ESD de ±4 kV por contacto y ±8 kV por aire;</li>
     <li>el RC del driver con la carga de muestreo del ADC5 (P20).</li>
   </ul></li>
-<li><span class="st prop">PROPUESTA</span> <b>Fuente de corriente de ohmios (P43)</b>: pendiente de tu visto bueno (D8).</li>
+<li><span class="st ok">ACEPTADA</span> <b>Fuente de corriente de ohmios (P43)</b>, D8 del 7 oct. Plan de S11a: <code>03_simulaciones/DMM/PLAN_SIMULACION_S11a.md</code>. La escalera P42, la red y las ESD van en S11b, cuando se fije el circuito de P42.</li>
 <li><span class="st open">ABIERTO</span> <b>Fusible y portafusibles</b>: cerámico de 3.15 A con alto poder de corte (≥ 35 A a 250 V), por elegir en LCSC.</li>
 <li><span class="st open">ABIERTO</span> <b>Driver diferencial</b>: qué doble RRIO de 3.3 V barato.</li>
 <li><span class="st open">ABIERTO</span> <b>Interruptor de carga del DMM</b> (P22, decidido): elegir la pieza. El DMM gasta ≈ 3 mA de los ±4.9 V, más hasta 10 mA de la fuente de ohmios.</li>

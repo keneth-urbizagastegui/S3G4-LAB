@@ -234,6 +234,16 @@ No se ha elegido automáticamente uno de estos frentes como nueva tarea de ingen
   - **Hallazgo nuevo** (`herramientas/calc_dmm_h.py`): en la razón de ohmios, la corriente también se mide con el ADC5, así que la INL entra en % de lectura: 0.62 % típ., 0.94 % máx. y 0.24 % aun linealizada. No cabe en ±(0.2 % + 10).
   - **Propuesta P43 (pendiente, D8):** fuente de corriente ratiométrica a VREF, como el 34401A. TLV2372 (C27204) + NPN + PNP, R_rango de 50 Ω a 2.49 MΩ, 10 mA … 0.2 µA, ≈ 3.4 V en vacío y diodo a 1 mA hasta ≈ 3.3 V. Ganancia de ohmios ≈ 630 ppm. En 20 MΩ se usa 0.2 µA y no 0.1 µA: con 0.1 µA, la curva aplanada por el divisor de 10 MΩ daba 1.5 veces la tolerancia garantizada. Sin ella, la razón con buffer (P25) da ≈ 0.6 %.
   - **Siguiente:** respuesta de Keneth a D8 y después el encargo S11. Detalle en `journal/2026-10-07-claude-revision-seccion-h.md`.
+- **7 oct, D8 aceptada y encargo S11a escrito:** Keneth aceptó P43 (DECISIONS, D8). Encargo y plan en `S3G4_LAB_rev2.1/03_simulaciones/DMM/`: `ENCARGO_CODEX_S11a.md` y `PLAN_SIMULACION_S11a.md` (K0–K13, S11-C1…C14). **Sin lanzar.**
+  - Al escribir el plan aparecieron riesgos de diseño (`herramientas/calc_dmm_s11.py`). S11 los mide; nada se ha cambiado sin datos:
+    - **P42 con la fuente encendida:** con la red en V/Ω y en el rango de 200 Ω (10 mA), ≈ 1.65 W de pico por MMBTA92, el 472 % de un SOT-23 (47 % en 2 kΩ). H decía «nada que se caliente»: corregido. Depende de que P34 apague la fuente a tiempo.
+    - **El circuito de la escalera P42 no está definido**, y su caída de ≈ 0.8 V no está justificada con un riel de 4.9 V. Pasa a S11b, después de que Claude lo diseñe. En S11a se modela con un 1N4007 + 0.2 V.
+    - **PNP de paso:** su β deja ≈ 1 % fuera de Rx, con ≈ 300 ppm de deriva con ±5 °C. Variante B: 2N7002/BSS84.
+    - **Tensión en vacío** de 2 kΩ a 2 MΩ, en el límite del modo común del OPA2188 (V+ − 1.5 V).
+    - **Polo de R_PROT con ≈ 40 pF en X0:** −10 % a 20 kHz en 200 mV y 2 V; lo corrige P39.
+  - Variantes del driver: TLV2372 | OPA365.
+  - **Falta:** que Keneth deje los modelos de TI (OPA2188, TLV2372 y REF3325) y las hojas del §2 del plan; Claude puede bajarlos con su permiso. Después, lanzar Codex. CLI: `…\Codex\bin\5ea220ae823df3d7\codex.exe`, 0.160.1.
+  - Detalle en `journal/2026-10-07-claude-encargo-s11a.md`.
 
 ## Punto de retomada — referencias del DMM (7 oct 2026, Claude)
 
@@ -241,6 +251,6 @@ No se ha elegido automáticamente uno de estos frentes como nueva tarea de ingen
   - el estado: las 9 referencias hechas (TIDA-01012, HydraMeter, TIDA-00879, 121GW, Micro-DMM, Martin, EEWorld 77845, Analog Devices y 34401A);
   - las propuestas P17–P42 resumidas, sin aplicar;
   - los riesgos para la síntesis;
-  - el orden siguiente: ~~respuestas a D1–D7~~ y ~~revisión de la sección H~~ (hechas el 7 oct) → respuesta de Keneth a D8 (P43) → encargo S11;
+  - el orden siguiente: ~~respuestas a D1–D7~~, ~~revisión de la sección H~~, ~~D8~~ y ~~encargo S11a~~ (hechos el 7 oct) → modelos y hojas de TI → lanzar S11a → circuito de P42 y S11b;
   - las herramientas y las trampas conocidas.
-- La sección H del DMM está revisada (7 oct). Solo falta D8 antes de encargar S11.
+- La sección H del DMM está revisada y P43 aceptada (7 oct). El encargo S11a está escrito y sin lanzar.

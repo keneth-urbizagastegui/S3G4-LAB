@@ -115,3 +115,5 @@ Orden actualizado: … 6 · R8 Martin + R4 EEWorld 77845 · 7 · R5 Analog Devic
 **Paso 8, síntesis, publicada el 7 oct** (`01_diseno/dmm_sintesis.html`): arquitectura recomendada, veredicto P17–P42, especificación en dos niveles (sin linealizar y tras calibrar) y siete decisiones D1–D7 para Keneth. Con sus respuestas: revisar la sección H y su hoja, y escribir el encargo S11. Las medidas en banco de P36/P37 pasan al prototipo (DECISIONS, 7 oct).
 
 **Paso 9, revisión de la sección H, hecha el 7 oct:** Keneth aceptó D1–D7, con D1 sin huella del ADS1115. `01_diseno/dmm_rev21.html` y `00_requisitos/especificaciones_dmm.html` revisadas y republicadas. Queda pendiente la propuesta P43 (fuente de corriente de ohmios, D8). Después, el encargo S11.
+
+**Paso 10, D8 y encargo S11a, hechos el 7 oct:** Keneth aceptó P43. Encargo y plan en `03_simulaciones/DMM/`. S11b (escalera P42, red y ESD) espera al circuito de P42.
