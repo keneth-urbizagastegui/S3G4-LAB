@@ -12,6 +12,7 @@ Cada artefacto es una copia publicada en claude.ai del archivo local indicado. L
 | Especificaciones del DMM (hoja preliminar, 7 oct) | https://claude.ai/artifact/9wuyJcNBxPcee2dNuThttm | `00_requisitos/especificaciones_dmm.html` | 1 |
 | Anatomía del TIDA-01012 (DMM, 1 de 8) | https://claude.ai/artifact/BzuS4XnvR7xVfP3ZutR9No | `02_referencias/dmm_tida01012.html` | 1 |
 | Anatomía del HydraMeter (DMM, 2 de 9) | https://claude.ai/artifact/5j4fYKqbpLK8TxGpkFgE7D | `02_referencias/dmm_hydrameter.html` | 1 |
+| Anatomía del TIDA-00879 (DMM, 3 de 9) | https://claude.ai/artifact/XKxwSffsJUNX7j4EGX2iLx | `02_referencias/dmm_tida00879.html` | 1 |
 | Anatomía del DSO112 | https://claude.ai/artifact/1Q3Ajh4q39Pdic6AV6w1LR | `02_referencias/analisis_dso112.html` | 4 |
 | Anatomía del WAVE2 | https://claude.ai/artifact/LgEYV3M8LjE8RqbTvAQMcE | `02_referencias/analisis_wave2.html` | 2 |
 | Anatomía del OpenScope MZ | https://claude.ai/artifact/8KbSKL4sWnYoQzPJgKsRwf | `02_referencias/analisis_openscope.html` | 2 |

@@ -12,6 +12,7 @@
 - `build_requisitos.py`: genera `S3G4_LAB_rev2.1/00_requisitos/requisitos_osciloscopio.html` (requisitos funcionales acordados el 23 sep).
 - `calc_dmm_tida01012.py` + `draw_dmm_tida01012.py` + `build_dmm_tida01012.py`: cifras, redibujos (tensión, corriente y cadena) y generación de `S3G4_LAB_rev2.1/02_referencias/dmm_tida01012.html` (7 oct). `chk_dmm.py <modulo> <funciones>` comprueba los solapes de cualquier redibujo del DMM.
 - `calc_dmm_hydrameter.py` + `draw_dmm_hydrameter.py` + `build_dmm_hydrameter.py`: lo mismo para `02_referencias/dmm_hydrameter.html` (7 oct). La netlist se exporta con `kicad-cli` de las fuentes KiCad del proyecto; el generador reutiliza la plantilla de `build_dmm_tida01012.py` (al importarla, regenera también esa página, igual).
+- `calc_dmm_tida00879.py` + `draw_dmm_tida00879.py` + `build_dmm_tida00879.py`: lo mismo para `02_referencias/dmm_tida00879.html` (7 oct).
 - `fix_ruido.py`: parche que corrigió el modelo de ruido (kT/C) en los documentos; se conserva como registro de las cifras.
 - **El texto del documento vivo se mantiene editándolo directamente**; los scripts sólo generan los dibujos y las páginas de análisis.
 - `chk_c.py`, `chk_d.py`, `chk_w.py`, `chk_o.py`, `chk_b.py`: comprobador geométrico de textos solapados o cruzando cables.

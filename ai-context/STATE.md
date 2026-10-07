@@ -190,3 +190,8 @@ No se ha elegido automáticamente uno de estos frentes como nueva tarea de ingen
   - Hallazgo para la síntesis: los divisores ÷4 de X6 en la sección H roban corriente al DUT.
   - El manual de servicio del 34401A ya está en `research_and_tests/Agilent_34401A/` (167 p, esquemas en pp. 150–165). Ojo: la URL /us/ de Keysight devuelve su web en PDF; vale la /mu/.
   - Siguiente: R6 TIDA-00879.
+- **7 oct, R6 TIDA-00879 hecho:** `02_referencias/dmm_tida00879.html` (artefacto XKxwSffsJUNX7j4EGX2iLx).
+  - Es el antecesor del TIDA-01012: mismo front-end, con los ADC ΣΔ de 24 bits del MSP430F6736.
+  - Hallazgos: R19 CRHV1206 de alta tensión; dos trimmers de 4.5–20 pF que el 01012 quitó; DC ±(0.03 % + 5) pero alterna solo hasta 1 kHz; calibración compilada en el código.
+  - Propuestas P28 (resistencia de entrada de alta tensión) y P29 (calibración en memoria no volátil).
+  - Siguiente: R7 EEVblog 121GW.

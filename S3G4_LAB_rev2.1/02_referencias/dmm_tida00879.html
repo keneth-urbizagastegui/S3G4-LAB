@@ -1,0 +1,289 @@
+<title>Anatomía del TIDA-00879</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@500;600&display=swap">
+<style>
+:root{
+  --bg:#f4f6f5; --paper:#fff; --ink:#1b2a2e; --muted:#5d6d72; --rule:#dde3e1;
+  --accent:#12667f; --accent2:#a9541c; --ok:#2f7d54; --warn:#9a6100; --crit:#b22d22; --open:#6a4fa3;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#11181a; --paper:#182125; --ink:#dce6e7; --muted:#93a3a8; --rule:#2a3639;
+  --accent:#5fb9d2; --accent2:#f0a06a; --ok:#63c891; --warn:#f0b75a; --crit:#ff8d80; --open:#b79ae8;}}
+:root[data-theme="dark"]{
+  --bg:#11181a; --paper:#182125; --ink:#dce6e7; --muted:#93a3a8; --rule:#2a3639;
+  --accent:#5fb9d2; --accent2:#f0a06a; --ok:#63c891; --warn:#f0b75a; --crit:#ff8d80; --open:#b79ae8;}
+body{background:var(--bg);color:var(--ink);font:15px/1.6 "IBM Plex Sans",system-ui,sans-serif}
+.wrap{max-width:1000px;margin:0 auto;padding-inline:20px;padding-block:28px 64px}
+h1,h2,h3,h4{font-family:"IBM Plex Sans Condensed","IBM Plex Sans",sans-serif;margin:0;text-wrap:balance}
+h1{font-size:clamp(26px,4vw,36px);font-weight:600}
+h2{font-size:24px;font-weight:600;margin-top:8px}
+h3{font-size:18px;font-weight:600;margin-bottom:4px}
+code{font:0.88em "IBM Plex Mono",ui-monospace,monospace;color:var(--accent)}
+.eyebrow{font:500 12px "IBM Plex Mono",monospace;letter-spacing:.09em;text-transform:uppercase;color:var(--accent);margin:0 0 6px}
+.lede{color:var(--muted);max-width:74ch}
+header.hero{border-bottom:1px solid var(--rule);padding-bottom:18px;margin-bottom:26px}
+section{background:var(--paper);border:1px solid var(--rule);border-radius:10px;padding:20px 22px;margin-bottom:18px}
+section>p,li{max-width:80ch}
+.tag{display:inline-block;font:500 11px "IBM Plex Mono",monospace;text-transform:uppercase;letter-spacing:.06em;padding:2px 9px;border-radius:999px;border:1px solid currentColor}
+.t-ok{color:var(--ok)} .t-open{color:var(--open)} .t-warn{color:var(--warn)} .t-crit{color:var(--crit)}
+.shead{display:flex;align-items:center;gap:12px;margin-bottom:10px;flex-wrap:wrap}
+.num{font:500 14px "IBM Plex Mono",monospace;background:var(--accent);color:var(--paper);width:28px;height:28px;border-radius:50%;display:grid;place-items:center}
+.tw{overflow-x:auto;margin:12px 0}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th{text-align:left;font-weight:600;color:var(--muted);border-bottom:1.5px solid var(--rule);padding:7px 9px;white-space:nowrap}
+td{border-bottom:1px solid var(--rule);padding:7px 9px;vertical-align:top}
+td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
+.pick{background:color-mix(in srgb, var(--ok) 10%, transparent)}
+.callout{border-left:3px solid var(--accent);padding:10px 14px;margin:14px 0;background:color-mix(in srgb, var(--accent) 7%, transparent);font-size:14px}
+.callout.w{border-color:var(--warn);background:color-mix(in srgb, var(--warn) 9%, transparent)}
+ul.tight{margin:8px 0;padding-left:20px}
+ul.tight li{margin-bottom:5px}
+.meta{font:12.5px "IBM Plex Mono",monospace;color:var(--muted);margin:0}
+.q{border:1px dashed var(--open);border-radius:8px;padding:12px 14px;margin:10px 0}
+.q b{color:var(--open)}
+footer{font-size:12.5px;color:var(--muted);border-top:1px solid var(--rule);padding-top:12px}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-size:14px}
+.kv dt{color:var(--muted)} .kv dd{margin:0}
+
+/* --- esquematico --- */
+figure{margin:16px 0}
+.sx{overflow-x:auto;border:1px solid var(--rule);border-radius:8px;background:var(--bg);padding:8px}
+.sx svg{display:block;max-width:none;height:auto}
+figcaption{font-size:13px;color:var(--muted);margin-top:6px}
+svg text{font-family:"IBM Plex Mono",ui-monospace,monospace}
+.w{fill:none;stroke:var(--ink);stroke-width:1.5;stroke-linejoin:round}
+.sym{fill:none;stroke:var(--ink);stroke-width:1.6;stroke-linejoin:round}
+.fillsym{fill:var(--ink);stroke:var(--ink);stroke-width:1}
+.dot{fill:var(--ink)}
+.op{fill:var(--paper);stroke:var(--ink);stroke-width:1.7}
+.ic{fill:var(--paper);stroke:var(--ink);stroke-width:1.5}
+.hdr{fill:none;stroke:var(--open);stroke-width:1.5;stroke-dasharray:3 2}
+.grp{fill:none;stroke:var(--muted);stroke-width:1.1;stroke-dasharray:5 4}
+.grp-t{font-size:10.5px;fill:var(--muted)}
+.blade{stroke:var(--ink);stroke-width:2}
+.ct{fill:var(--paper);stroke:var(--ink);stroke-width:1.3}
+.gnd line{stroke:var(--ink);stroke-width:1.5}
+.railbar{stroke:var(--crit);stroke-width:2.2}
+.rail{font-size:10.5px;fill:var(--crit);font-weight:500}
+.railsm{font-size:9px;fill:var(--crit)}
+.port{fill:color-mix(in srgb, var(--accent) 14%, transparent);stroke:var(--accent);stroke-width:1.3}
+.portt{font-size:10.5px;fill:var(--ink)}
+.tp{fill:none;stroke:var(--ok);stroke-width:1.6}
+.tpt{font-size:9.5px;fill:var(--ok)}
+.ref{font-size:11px;font-weight:500;fill:var(--ink)}
+.val{font-size:10px;fill:var(--muted)}
+.net{font-size:10px;fill:var(--accent2)}
+.pin{font-size:9.5px;fill:var(--muted)}
+.pm{font-size:15px;fill:var(--ink)}
+.note{font-size:10.5px;fill:var(--muted);font-style:italic}
+.src{color:var(--muted);font-size:12.5px}
+
+.lesson td:first-child{font-weight:600}
+pre.mermaid{background:var(--paper);border:1px solid var(--rule);border-radius:8px;padding:12px;overflow-x:auto}
+.meta{color:var(--muted);font-size:13px}
+.toc{columns:2 260px;column-gap:28px;margin:6px 0 0;padding-left:20px;font-size:14px}
+.toc li{break-inside:avoid;margin:2px 0}
+.toc a{color:var(--accent);text-decoration:none} .toc a:hover{text-decoration:underline}
+.eq{font-family:"IBM Plex Mono",monospace;font-size:13.5px;background:var(--paper);border:1px solid var(--rule);border-radius:6px;padding:8px 12px;margin:10px 0;overflow-x:auto;white-space:pre}
+</style>
+<div class="wrap">
+<header class="hero">
+  <p class="eyebrow">S3G4 LAB · referencia para el DMM de la rev 2.1 · 3 de 9</p>
+  <h1>Anatomía del TIDA-00879</h1>
+  <p class="lede">El primer DMM de referencia de TI de esta familia: el mismo front-end que el TIDA-01012, pero con los ADC ΣΔ de 24 bits del propio microcontrolador. Muy preciso en continua, limitado en alterna, y una buena lección de por qué TI cambió de ADC.</p>
+  <ul class="toc"><li><a href="#resumen">Lo que nos llevamos</a></li><li><a href="#metodo">1 · Qué se analizó</a></li><li><a href="#arquitectura">2 · Arquitectura</a></li><li><a href="#tension">3 · Tensión</a></li><li><a href="#corriente">4 · Corriente</a></li><li><a href="#adc">5 · ADC ΣΔ</a></li><li><a href="#firmware">6 · Firmware</a></li><li><a href="#resultados">7 · Lo que midió TI</a></li><li><a href="#alimentacion">8 · Alimentación</a></li><li><a href="#seguridad">9 · Seguridad</a></li><li><a href="#evolucion">10 · Del 00879 al 01012</a></li><li><a href="#no-copiar">11 · Lo que no conviene copiar</a></li><li><a href="#modulos">12 · Módulos</a></li><li><a href="#propuestas">13 · Propuestas P28–P29</a></li><li><a href="#correcciones">14 · Correcciones</a></li></ul>
+</header>
+<section id="resumen">
+  <div class="shead"><span class="num">★</span><h2>Lo que nos llevamos</h2></div>
+
+  <p>El TIDA-00879 (junio de 2016) es el <b>antecesor directo del TIDA-01012</b>: el mismo autor de TI, el mismo front-end con patas conmutadas y derivadores con fuerza y sentido. La gran diferencia es que no tiene ADC externo: usa los <b>tres ADC ΣΔ de 24 bits del MSP430F6736</b> y su driver de LCD de segmentos. Comparar los dos diseños enseña qué cambió TI y por qué.</p>
+  <div class="tw"><table class="lesson">
+    <thead><tr><th>Hallazgo</th><th>En el TIDA-00879</th><th>Para la rev 2.1</th><th>Veredicto</th></tr></thead>
+    <tbody>
+      <tr><td>ADC integrado en el micro</td><td>ΣΔ de 24 bits con PGA ×16, a 31 kSa/s; 60 000 cuentas y ±(0.03 % + 5) en continua (§5, §7)</td><td>Un ΣΔ integrado da precisión DC con pocas piezas, pero poco ancho de banda en alterna (1 kHz). Nuestro G473 no tiene ΣΔ: la comparación con nuestro ADC5 es menos directa de lo que dije en el plan</td><td><span class="tag t-warn">Contexto</span></td></tr>
+      <tr><td>Resistencia de entrada de alta tensión</td><td>R19 es una Vishay CRHV1206 (serie de alta tensión, 0.3 W) (§3)</td><td>Una pieza concreta para los 10 MΩ de arriba (P28)</td><td><span class="tag t-ok">Adoptar</span></td></tr>
+      <tr><td>Dos trimmers de compensación</td><td>4.5–20 pF en las patas de 1 MΩ y de 100 MΩ (§3)</td><td>El TIDA-01012 los quitó y usó condensadores fijos, con mejor resultado en alterna. Refuerza P18</td><td><span class="tag t-ok">Confirma P18</span></td></tr>
+      <tr><td>Interruptor de carga para el AFE</td><td>El TPS62740 tiene un conmutador integrado que apaga el AFE (§8)</td><td>Igual que P22: el DMM con su riel apagable</td><td><span class="tag t-ok">Confirma P22</span></td></tr>
+      <tr><td>Potencia real con muestreo simultáneo</td><td>Dos ADC ΣΔ a la vez, tensión y corriente; producto muestra a muestra (§6)</td><td>No está en nuestros requisitos; con un solo ADC5 no se puede. Se anota como idea</td><td><span class="tag t-open">Idea</span></td></tr>
+      <tr><td>Calibración compilada en el código</td><td>Ganancia y offset por rango en un <code>#define</code>; para recalibrar hay que recompilar (§6)</td><td>Guardar las constantes en memoria no volátil y editarlas desde S3G4-UI (P29)</td><td><span class="tag t-crit">Evitar</span></td></tr>
+      <tr><td>Bornes de colores confusos</td><td>El rojo es la referencia común de tensión y corriente; la tensión entra por el negro y la corriente por el azul (§3, §4)</td><td>Nuestros bornes V/Ω, COM y A con el COM a masa son lo habitual</td><td><span class="tag t-crit">Evitar</span></td></tr>
+      <tr><td>Sin protección de tensión</td><td>Igual que el 01012: solo una PTC de 0.2 A en corriente (§9)</td><td>RD-10 pide más</td><td><span class="tag t-crit">Evitar</span></td></tr>
+    </tbody>
+  </table></div>
+
+</section>
+<section id="metodo">
+  <div class="shead"><span class="num">1</span><h2>Qué se analizó y cómo</h2></div>
+
+  <ul class="tight">
+    <li><b>Guía de diseño</b> <code>research_and_tests/TIDA-00879/tidubm4.pdf</code> (TIDUBM4A, rev. de enero de 2017, 38 p): especificación, teoría (§4), calibración (§5.2.3) y resultados (§8, gráficas renderizadas).</li>
+    <li><b>Esquemático</b> <code>tidrmi4.pdf</code> (5 hojas: bloques, MCU, AFE, prueba y varios), leído por zonas a 200 ppp; <b>BOM</b> <code>tidrmi5.pdf</code> para números de pieza, tolerancias y encapsulados.</li>
+    <li>Bajados de ti.com el 7 oct 2026 con permiso de Keneth. El firmware (zip para IAR) no se bajó: lo que sale de él viene de la guía.</li>
+    <li>Cálculos en <code>herramientas/calc_dmm_tida00879.py</code>; redibujos en <code>draw_dmm_tida00879.py</code> (0 solapes, revisados a la vista).</li>
+  </ul>
+
+</section>
+<section id="arquitectura">
+  <div class="shead"><span class="num">2</span><h2>Arquitectura</h2></div>
+
+  <pre class="mermaid">flowchart LR
+  J8["Borne negro J8 · tensión"] --> DIV["10 MΩ (o 499 kΩ por J7)<br/>+ patas a la referencia (TS5A3359)"]
+  DIV --> U4["OPA333 · V−"]
+  J9["Borne azul J9 · corriente"] --> SH["95.3 Ω / 0.5 Ω + PTC 0.2 A<br/>(TS3A24159)"]
+  SH --> U10["OPA333 · I−"]
+  J6["Borne rojo J6 · referencia"] --- U3["OPA333 · AVCC/2 = 1.2 V"]
+  U4 --> SD0["SD24 canal 0 (V+ − V−)"]
+  U10 --> SD1["SD24 canal 1 (I+ − I−)"]
+  SD0 --> MCU["MSP430F6736<br/>multiplicador de 32 bits"]
+  SD1 --> MCU
+  MCU --> LCD["LCD de segmentos"]
+  MCU --> UART["UART aislado (prueba y calibración)"]</pre>
+  <p>Cada señal tiene su propio ADC ΣΔ con PGA, y los dos muestrean a la vez: por eso puede medir potencia real. El borne rojo es la referencia común: lo fija un OPA333 a la mitad de la alimentación analógica (2.4 V). El instrumento flota con sus pilas, como el TIDA-01012.</p>
+
+</section>
+<section id="tension">
+  <div class="shead"><span class="num">3</span><h2>Entrada de tensión</h2></div>
+
+  <figure><div class="sx"><svg class="sch" viewBox="0 0 1400 600" width="1400" role="img" aria-label="TIDA-00879: entrada de tension con patas conmutadas y dos trimmers" xmlns="http://www.w3.org/2000/svg"><circle class="ban" cx="70" cy="130" r="9" style="stroke:#1b2a2e"/><circle class="fillsym" cx="70" cy="130" r="3.5"/><text class="ref" x="54" y="134" text-anchor="end">J8 negro</text><polyline class="w" points="79,130 120,130"/><circle class="dot" cx="120" cy="130" r="3.2"/><polyline class="w" points="120,130 120,80 160,80"/><polyline class="w" points="160,80 200.0,80.0"/><polyline class="w" points="240.0,80.0 280,80"/><polyline class="sym" points="-20,0 -15,-6 -10,6 -5,-6 0,6 5,-6 10,6 15,-6 20,0" transform="translate(220.0,80.0) rotate(0.0)"/><text class="ref" x="220.0" y="68.0" text-anchor="middle">R19</text><text class="val" x="220.0" y="102.0" text-anchor="middle">10.0 MΩ · CRHV1206</text><polyline class="w" points="280,80 330,80"/><polyline class="w" points="170,80 170,40 210,40"/><polyline class="w" points="210,40 226.0,40.0"/><polyline class="w" points="234.0,40.0 250,40"/><g transform="translate(230.0,40.0) rotate(0.0)"><line class="sym" x1="-4" y1="-11" x2="-4" y2="11"/><line class="sym" x1="4" y1="-11" x2="4" y2="11"/></g><text class="ref" x="230.0" y="28.0" text-anchor="middle">C27 · 100 pF</text><polyline class="w" points="250,40 300,40 300,80"/><circle class="dot" cx="170" cy="80" r="3.2"/><circle class="dot" cx="300" cy="80" r="3.2"/><polyline class="w" points="120,130 120,190 160,190"/><polyline class="w" points="160,190 200.0,190.0"/><polyline class="w" points="240.0,190.0 280,190"/><polyline class="sym" points="-20,0 -15,-6 -10,6 -5,-6 0,6 5,-6 10,6 15,-6 20,0" transform="translate(220.0,190.0) rotate(0.0)"/><text class="ref" x="220.0" y="216.0" text-anchor="middle">R20</text><text class="val" x="220.0" y="228.0" text-anchor="middle">499 kΩ</text><polyline class="w" points="280,190 330,190"/><polyline class="w" points="170,190 170,246 210,246"/><polyline class="w" points="210,246 226.0,246.0"/><polyline class="w" points="234.0,246.0 250,246"/><g transform="translate(230.0,246.0) rotate(0.0)"><line class="sym" x1="-4" y1="-11" x2="-4" y2="11"/><line class="sym" x1="4" y1="-11" x2="4" y2="11"/></g><text class="ref" x="230.0" y="272.0" text-anchor="middle">C30 · 100 pF</text><polyline class="w" points="250,246 300,246 300,190"/><circle class="dot" cx="170" cy="190" r="3.2"/><circle class="dot" cx="300" cy="190" r="3.2"/><circle class="ct" cx="420" cy="130" r="2.6"/><circle class="ct" cx="376" cy="104" r="2.6"/><circle class="ct" cx="376" cy="156" r="2.6"/><line class="blade" x1="420" y1="130" x2="380" y2="109"/><text class="pin" x="370" y="100" text-anchor="end"></text><text class="pin" x="370" y="168" text-anchor="end"></text><text class="ref" x="420" y="90" text-anchor="middle">J7 (puente)</text><polyline class="w" points="330,80 350,80 350,104 376,104"/><polyline class="w" points="330,190 350,190 350,156 376,156"/><text class="note" x="160" y="300" text-anchor="start">J7: 499 kΩ solo para 60 mV</text><polyline class="w" points="420,130 1260,130"/><text class="net" x="484" y="122" text-anchor="start">toma (±54.5 mV a fondo)</text><polygon class="port" points="1260,122 1361.4,122 1369.4,130 1361.4,138 1260,138"/><text class="portt" x="1265" y="134" text-anchor="start">V− → U4 OPA333</text><circle class="dot" cx="470" cy="130" r="3.2"/><polyline class="w" points="470,130 470.0,170.0"/><polyline class="w" points="470.0,210.0 470,250"/><polyline class="sym" points="-20,0 -15,-6 -10,6 -5,-6 0,6 5,-6 10,6 15,-6 20,0" transform="translate(470.0,190.0) rotate(90.0)"/><text class="ref" x="456.0" y="187.0" text-anchor="end">R10+R14</text><text class="val" x="456.0" y="201.0" text-anchor="end">9.10 kΩ</text><polyline class="w" points="470,140 514,140"/><circle class="dot" cx="470" cy="140" r="3.2"/><polyline class="w" points="514,140 514.0,191.0"/><polyline class="w" points="514.0,199.0 514,250"/><g transform="translate(514.0,195.0) rotate(90.0)"><line class="sym" x1="-4" y1="-11" x2="-4" y2="11"/><line class="sym" x1="4" y1="-11" x2="4" y2="11"/></g><text class="ref" x="528.0" y="192.0" text-anchor="start">C41/C42/C23</text><text class="val" x="528.0" y="206.0" text-anchor="start">110 nF</text><polyline class="w" points="470,250 514,250"/><circle class="dot" cx="470" cy="250" r="3.2"/><polyline class="w" points="470,250 470,330"/><text class="note" x="478" y="294" text-anchor="start">60 V · ÷1100</text><circle class="dot" cx="680" cy="130" r="3.2"/><polyline class="w" points="680,130 680.0,170.0"/><polyline class="w" points="680.0,210.0 680,250"/><polyline class="sym" points="-20,0 -15,-6 -10,6 -5,-6 0,6 5,-6 10,6 15,-6 20,0" transform="translate(680.0,190.0) rotate(90.0)"/><text class="ref" x="666.0" y="187.0" text-anchor="end">R11+R15</text><text class="val" x="666.0" y="201.0" text-anchor="end">91.8 kΩ</text><polyline class="w" points="680,140 724,140"/><circle class="dot" cx="680" cy="140" r="3.2"/><polyline class="w" points="724,140 724.0,191.0"/><polyline class="w" points="724.0,199.0 724,250"/><g transform="translate(724.0,195.0) rotate(90.0)"><line class="sym" x1="-4" y1="-11" x2="-4" y2="11"/><line class="sym" x1="4" y1="-11" x2="4" y2="11"/></g><text class="ref" x="738.0" y="192.0" text-anchor="start">C43+C44</text><text class="val" x="738.0" y="206.0" text-anchor="start">10.9 nF</text><polyline class="w" points="680,250 724,250"/><circle class="dot" cx="680" cy="250" r="3.2"/><polyline class="w" points="680,250 680,330"/><text class="note" x="688" y="294" text-anchor="start">6 V · ÷110</text><circle class="dot" cx="890" cy="130" r="3.2"/><polyline class="w" points="890,130 890.0,170.0"/><polyline class="w" points="890.0,210.0 890,250"/><polyline class="sym" points="-20,0 -15,-6 -10,6 -5,-6 0,6 5,-6 10,6 15,-6 20,0" transform="translate(890.0,190.0) rotate(90.0)"/><text class="ref" x="876.0" y="187.0" text-anchor="end">R12+R16</text><text class="val" x="876.0" y="201.0" text-anchor="end">1.01 MΩ</text><polyline class="w" points="890,140 934,140"/><circle class="dot" cx="890" cy="140" r="3.2"/><polyline class="w" points="934,140 934.0,191.0"/><polyline class="w" points="934.0,199.0 934,250"/><g transform="translate(934.0,195.0) rotate(90.0)"><line class="sym" x1="-4" y1="-11" x2="-4" y2="11"/><line class="sym" x1="4" y1="-11" x2="4" y2="11"/><line class="sym" x1="-12" y1="12" x2="12" y2="-12"/><polyline class="sym" points="6,-12 12,-12 12,-6"/></g><text class="ref" x="948.0" y="192.0" text-anchor="start">C38+C25 + C33</text><text class="val" x="948.0" y="206.0" text-anchor="start">980 pF + 4.5–20 pF</text><polyline class="w" points="890,250 934,250"/><circle class="dot" cx="890" cy="250" r="3.2"/><polyline class="w" points="890,250 890,330"/><text class="note" x="898" y="294" text-anchor="start">600 mV · ÷11</text><rect class="ic" x="420" y="342" width="520" height="56" rx="3"/><text class="ref" x="680.0" y="334" text-anchor="middle"></text><polyline class="w" points="470,342 470,330"/><text class="pin" x="470" y="355" text-anchor="middle">NO2</text><polyline class="w" points="680,342 680,330"/><text class="pin" x="680" y="355" text-anchor="middle">NO1</text><polyline class="w" points="890,342 890,330"/><text class="pin" x="890" y="355" text-anchor="middle">NO0</text><polyline class="w" points="680,398 680,410"/><text class="pin" x="680" y="393" text-anchor="middle">COM</text><text class="ref" x="680" y="376" text-anchor="middle">U5 · TS5A3359 (SP3T, ≈1 Ω, a AVCC 2.4 V)</text><polyline class="w" points="680,410 680,470"/><circle class="dot" cx="1140" cy="130" r="3.2"/><polyline class="w" points="1140,130 1140.0,170.0"/><polyline class="w" points="1140.0,210.0 1140,250"/><polyline class="sym" points="-20,0 -15,-6 -10,6 -5,-6 0,6 5,-6 10,6 15,-6 20,0" transform="translate(1140.0,190.0) rotate(90.0)"/><text class="ref" x="1126.0" y="187.0" text-anchor="end">R13</text><text class="val" x="1126.0" y="201.0" text-anchor="end">100 MΩ</text><polyline class="w" points="1140,140 1184,140"/><circle class="dot" cx="1140" cy="140" r="3.2"/><polyline class="w" points="1184,140 1184.0,191.0"/><polyline class="w" points="1184.0,199.0 1184,250"/><g transform="translate(1184.0,195.0) rotate(90.0)"><line class="sym" x1="-4" y1="-11" x2="-4" y2="11"/><line class="sym" x1="4" y1="-11" x2="4" y2="11"/><line class="sym" x1="-12" y1="12" x2="12" y2="-12"/><polyline class="sym" points="6,-12 12,-12 12,-6"/></g><text class="ref" x="1198.0" y="192.0" text-anchor="start">C34</text><text class="val" x="1198.0" y="206.0" text-anchor="start">4.5–20 pF</text><polyline class="w" points="1140,250 1184,250"/><circle class="dot" cx="1140" cy="250" r="3.2"/><polyline class="w" points="1140,250 1140,470"/><polyline class="w" points="380,470 1140,470"/><circle class="dot" cx="680" cy="470" r="3.2"/><polygon class="port" points="380,462 219.20000000000002,462 211.20000000000002,470 219.20000000000002,478 380,478"/><text class="portt" x="375" y="474" text-anchor="end">J6 rojo = referencia V+</text><text class="note" x="20" y="540" text-anchor="start">Todas las patas cierran 1 ms como R19 ∥ C27. Los trimmers ajustan las dos patas de alta impedancia (C34 ideal ≈ 10 pF).</text><text class="note" x="20" y="560" text-anchor="start">La referencia (borne rojo) la fija U3, un OPA333 que sigue AVCC/2 = 1.2 V, a través de R7 de 4.7 Ω. No hay protección en la entrada.</text></svg></div><figcaption>Redibujo de la hoja 3 (AFE Block). C33 y C34 son trimmers Murata TZB4 de 4.5–20 pF.</figcaption></figure>
+
+  <p>Es el mismo esquema que el TIDA-01012: 10 MΩ fijos arriba, un SP3T de baja tensión que elige la pata hacia la referencia y 100 MΩ siempre. Cada pata da <b>54.5 mV a fondo</b> en la toma, en todos los rangos.</p>
+  <div class="tw"><table>
+    <thead><tr><th>Rango</th><th>División</th><th>Toma a fondo</th><th>Z de entrada</th><th>τ de la pata</th></tr></thead>
+    <tbody><tr><td>60 V</td><td class='n'>÷1100.0</td><td class='n'>54.5 mV</td><td class='n'>10.0 MΩ</td><td class='n'>1.00 ms</td></tr><tr><td>6 V</td><td class='n'>÷110.0</td><td class='n'>54.5 mV</td><td class='n'>10.1 MΩ</td><td class='n'>1.00 ms</td></tr><tr><td>600 mV</td><td class='n'>÷11.0</td><td class='n'>54.6 mV</td><td class='n'>11.0 MΩ</td><td class='n'>0.99–1.01 ms</td></tr><tr><td>60 mV</td><td class='n'>÷1.1</td><td class='n'>54.5 mV</td><td class='n'>110.0 MΩ</td><td class='n'>0.45–2.00 ms</td></tr><tr><td>60 mV (J7 en 499 kΩ)</td><td class='n'>÷1.0</td><td class='n'>59.7 mV</td><td class='n'>100.5 MΩ</td><td class='n'>0.45–2.00 ms</td></tr></tbody>
+  </table></div>
+  <ul class="tight">
+    <li><b>R19 es una resistencia de alta tensión</b> (Vishay CRHV1206, 10.0 MΩ al 1 %, 0.3 W). Es la única pieza que ve la tensión de entrada; el resto son 0402 al 1 %. La tensión máxima de la serie CRHV en 1206 está <b>NO VERIFICADA</b>.</li>
+    <li><b>Dos trimmers</b> (4.5–20 pF) ajustan las patas de alta impedancia: C33 en la de 1 MΩ (junto a 980 pF fijos) y C34 en la de 100 MΩ, donde el valor ideal es 10 pF. En el TIDA-01012, TI quitó los dos (C18 y C19 sin montar) y fijó 950 pF en la pata de 1 MΩ.</li>
+    <li><b>60 mV con 499 kΩ por un puente</b> (J7): baja el ruido térmico, igual que el deslizante S2 del 01012, pero aquí el firmware no sabe en qué posición está.</li>
+    <li>La división del rango de 60 mV con R19 es ÷1.1 (entrada de 110 MΩ); con R20, ÷1.005 (100.5 MΩ).</li>
+  </ul>
+
+</section>
+<section id="corriente">
+  <div class="shead"><span class="num">4</span><h2>Corriente</h2></div>
+
+  <figure><div class="sx"><svg class="sch" viewBox="0 0 1300 440" width="1300" role="img" aria-label="TIDA-00879: entrada de corriente con fuerza y sentido" xmlns="http://www.w3.org/2000/svg"><circle class="ban" cx="70" cy="330" r="9" style="stroke:#12667f"/><circle class="fillsym" cx="70" cy="330" r="3.5"/><text class="ref" x="54" y="334" text-anchor="end">J9 azul</text><polyline class="w" points="79,330 300,330"/><circle class="dot" cx="300" cy="330" r="3.2"/><text class="net" x="310" y="346" text-anchor="start">B</text><polyline class="w" points="300,330 300.0,290.0"/><polyline class="w" points="300.0,250.0 300,210"/><polyline class="sym" points="-20,0 -15,-6 -10,6 -5,-6 0,6 5,-6 10,6 15,-6 20,0" transform="translate(300.0,270.0) rotate(-90.0)"/><text class="ref" x="286.0" y="267.0" text-anchor="end">R22</text><text class="val" x="286.0" y="281.0" text-anchor="end">95.3 Ω · 1 W</text><circle class="dot" cx="300" cy="210" r="3.2"/><text class="net" x="310" y="226" text-anchor="start">A</text><polyline class="w" points="300,210 300.0,180.0"/><polyline class="w" points="300.0,140.0 300,110"/><polyline class="sym" points="-20,0 -15,-6 -10,6 -5,-6 0,6 5,-6 10,6 15,-6 20,0" transform="translate(300.0,160.0) rotate(-90.0)"/><text class="ref" x="286.0" y="157.0" text-anchor="end">R23</text><text class="val" x="286.0" y="171.0" text-anchor="end">0.5 Ω</text><circle class="dot" cx="300" cy="110" r="3.2"/><polyline class="w" points="300,110 300,90"/><polyline class="w" points="300,90 300.0,78.0"/><polyline class="w" points="300.0,42.0 300,30"/><g transform="translate(300.0,60.0) rotate(-90.0)"><rect class="sym" x="-18" y="-6" width="36" height="12"/><polyline class="sym" points="-16,12 -8,12 12,-12"/></g><text class="ref" x="286.0" y="57.0" text-anchor="end">F1</text><text class="val" x="286.0" y="71.0" text-anchor="end">PTC 0.2 A</text><polyline class="w" points="300,30 300,20 560,20"/><polygon class="port" points="560,12 701.0,12 709.0,20 701.0,28 560,28"/><text class="portt" x="565" y="24" text-anchor="start">J6 rojo (referencia)</text><polyline class="w" points="300,110 1000,110"/><polygon class="port" points="1000,102 1075.0,102 1083.0,110 1075.0,118 1000,118"/><text class="portt" x="1005" y="114" text-anchor="start">I+ → SD1P0</text><circle class="ct" cx="560" cy="250" r="2.6"/><circle class="ct" cx="510" cy="224" r="2.6"/><circle class="ct" cx="510" cy="276" r="2.6"/><line class="blade" x1="560" y1="250" x2="514" y2="229"/><text class="pin" x="504" y="220" text-anchor="end">A</text><text class="pin" x="504" y="288" text-anchor="end"></text><text class="ref" x="560" y="210" text-anchor="middle">U13 sección 2 (puente)</text><polyline class="w" points="300,330 620,330 620,250 560,250"/><polyline class="w" points="510,224 470,224 470,210 300,210"/><text class="note" x="640" y="254" text-anchor="start">60 mA: une B con A y la corriente evita R22</text><circle class="ct" cx="560" cy="390" r="2.6"/><circle class="ct" cx="510" cy="364" r="2.6"/><circle class="ct" cx="510" cy="416" r="2.6"/><line class="blade" x1="560" y1="390" x2="514" y2="369"/><text class="pin" x="504" y="360" text-anchor="end">A (60 mA)</text><text class="pin" x="504" y="428" text-anchor="end">B (600 µA)</text><text class="ref" x="560" y="350" text-anchor="middle">U13 sección 1 (sentido)</text><polyline class="w" points="510,364 420,364 420,210"/><circle class="dot" cx="420" cy="210" r="3.2"/><polyline class="w" points="510,416 380,416 380,330"/><circle class="dot" cx="380" cy="330" r="3.2"/><polyline class="w" points="560,390 800,390"/><polygon class="port" points="800,382 960.8,382 968.8,390 960.8,398 800,398"/><text class="portt" x="805" y="394" text-anchor="start">U10 OPA333 → I− (SD1N0)</text><text class="note" x="640" y="160" text-anchor="start">600 µA → 57.5 mV en R22+R23 · 60 mA → 30 mV en R23</text><text class="note" x="640" y="180" text-anchor="start">La PTC queda fuera de la medida: I+ se toma encima de R23.</text></svg></div><figcaption>Redibujo de la parte de corriente. I+ se toma encima de R23; I− lo elige la sección 1 del TS3A24159 y lo sigue U10.</figcaption></figure>
+
+  <ul class="tight">
+    <li>600 µA: R22 + R23 = 95.8 Ω → 57.5 mV a fondo. 60 mA: R23 = 0.5 Ω → 30 mV. R22 es una 2512 de 1 W.</li>
+    <li>La misma técnica de fuerza y sentido que el 01012 (P19). <b>La PTC queda fuera de la medida</b>: I+ se toma entre la PTC y R23.</li>
+    <li>La corriente entra por el borne azul y sale por el rojo, que es la referencia común. Para medir potencia, la guía obliga a un montaje «del lado alto»: en el otro sentido, los derivadores harían de cortocircuito entre los dos lados de la fuente.</li>
+  </ul>
+
+</section>
+<section id="adc">
+  <div class="shead"><span class="num">5</span><h2>El ADC ΣΔ del MSP430F6736</h2></div>
+
+  <ul class="tight">
+    <li>Tres ADC <b>SD24_B</b> de 24 bits con PGA. Modulador a 2 MHz y sobremuestreo ×64: 31.25 kSa/s y 19 bits útiles (18 + signo), según la guía.</li>
+    <li><b>PGA ×16</b> en tensión y en corriente: la toma de ±54.5 mV llega a ±0.87 V. ×32 saturaría. La guía pide la misma ganancia en los dos canales para que el desfase sea igual en el modo de potencia.</li>
+    <li>El filtro SINC3 del ΣΔ limita la alterna: TI promete ±1 % <b>hasta 1 kHz</b> (el TIDA-01012, con un SAR externo, llega a 100 kHz).</li>
+    <li>El fondo de escala exacto del SD24 depende de su referencia; con el esquema no se puede confirmar si es la interna. <b>NO VERIFICADO.</b></li>
+  </ul>
+
+</section>
+<section id="firmware">
+  <div class="shead"><span class="num">6</span><h2>Firmware y calibración</h2></div>
+
+  <ul class="tight">
+    <li>El multiplicador hardware de 32 bits eleva al cuadrado (o multiplica V × I) cada muestra en los 30.5 µs entre muestras. Se acumulan 4096 muestras por lectura: 7.6 lecturas por segundo (la guía dice 8).</li>
+    <li>Los offsets se restan antes de multiplicar en alterna y en potencia; en continua, al final, para ahorrar energía. Después, raíz cuadrada (en alterna) y ganancia de calibración en coma flotante, y un filtro exponencial.</li>
+    <li><b>Calibración de tres puntos</b> por modo y rango (−fondo, 0, +fondo) con una Keithley 2400 y regresión lineal. En el modo de potencia las constantes son distintas, porque los dos canales están activos.</li>
+    <li><b>Las constantes viven en <code>dmm_00879_defines.h</code></b>: recalibrar obliga a recompilar y reprogramar. El modo de calibración solo envía los códigos crudos por el UART aislado.</li>
+  </ul>
+
+</section>
+<section id="resultados">
+  <div class="shead"><span class="num">7</span><h2>Lo que midió TI</h2></div>
+
+  <div class="tw"><table>
+    <thead><tr><th>Ensayo</th><th>Resultado (leído de las gráficas)</th><th>Límite</th></tr></thead>
+    <tbody>
+      <tr><td>Linealidad, 60 V</td><td class="n">−10 … +4 mV</td><td>±(0.03 % + 5): 5 mV en cero, 23 mV a fondo</td></tr>
+      <tr><td>Linealidad, 6 V</td><td class="n">−0.3 … +0.9 mV</td><td>0.5 … 2.3 mV</td></tr>
+      <tr><td>Linealidad, 600 mV</td><td class="n">−30 … +110 µV</td><td>50 … 230 µV</td></tr>
+      <tr><td>Linealidad, 60 mV</td><td class="n">−8 … +12 µV</td><td>5 … 23 µV</td></tr>
+      <tr><td>Alterna, 6 V, seno</td><td class="n">±1 % hasta ≈ 2 kHz; +6 % a 4 kHz</td><td>±1 % hasta 1 kHz</td></tr>
+      <tr><td>Alterna, ondas cuadradas</td><td class="n">+14 … +18 % a 4 kHz</td><td>sus armónicos superan el ancho de banda</td></tr>
+      <tr><td>Consumo</td><td class="n">1.6–2.6 mA a 3.6 V; 13 µA apagado</td><td>≈ 676 h con 3 × AAA</td></tr>
+    </tbody>
+  </table></div>
+  <p class="meta">Límites calculados con la tabla 1, ±(0.03 % + 5 cuentas). Las líneas verdes de las gráficas de TI dibujan límites más anchos (35 mV a fondo en 60 V, es decir ±(0.05 % + 5)): parecen copiadas del criterio del 01012.</p>
+  <p>En continua, el 00879 es algo mejor que el 01012 (ΣΔ de 24 bits frente a SAR de 18). En alterna es mucho peor: el error crece con la frecuencia porque el filtro del ΣΔ y los 31 kSa/s no dan más.</p>
+
+</section>
+<section id="alimentacion">
+  <div class="shead"><span class="num">8</span><h2>Alimentación</h2></div>
+
+  <ul class="tight">
+    <li>Tres pilas AAA (2.4–4.8 V) con un P-MOS (FDN302P) de protección y encendido, y un divisor para medir la batería (la función existe en hardware pero no en el firmware).</li>
+    <li>Un TPS62740 da 2.4 V a todo; es el mínimo del SD24. Sus pines VSEL van al MCU, que puede subir la tensión si necesita más velocidad.</li>
+    <li>El <b>conmutador de carga integrado</b> del TPS62740 alimenta el AFE (AVCC, con 10 Ω y 22 µF): el MCU lo apaga en reposo.</li>
+    <li>El puerto de prueba (UART por optoacopladores PS8802 y una SRAM de 8 KB) tiene su propio LDO de 3 V, encendido solo en modo prueba.</li>
+  </ul>
+
+</section>
+<section id="seguridad">
+  <div class="shead"><span class="num">9</span><h2>Seguridad</h2></div>
+
+  <p>Igual que el 01012: <b>sin protección en la entrada de tensión</b> (la guía lo dice en §4.1) y una PTC de 0.2 A en corriente. Tiene un pictograma de tensión peligrosa en la placa, pero ninguna medida que lo respalde. Como en la R19 de alta tensión cae casi toda la entrada, el resto del divisor ve solo milivoltios mientras el rango sea el correcto.</p>
+
+</section>
+<section id="evolucion">
+  <div class="shead"><span class="num">10</span><h2>Del TIDA-00879 al TIDA-01012: qué cambió TI</h2></div>
+
+  <div class="tw"><table>
+    <thead><tr><th>Aspecto</th><th>TIDA-00879 (jun. 2016)</th><th>TIDA-01012 (oct. 2016)</th><th>Lectura</th></tr></thead>
+    <tbody>
+      <tr><td>ADC</td><td>ΣΔ 24 bits integrado, 31 kSa/s, PGA ×16</td><td>SAR 18 bits externo, 210 kSa/s, ×44.2 diferencial</td><td>Para tener alterna hasta 100 kHz hizo falta un SAR rápido</td></tr>
+      <tr><td>Exactitud DC</td><td>±(0.03 % + 5), 60 000 cuentas</td><td>±(0.05 % + 5), 50 000 cuentas</td><td>El ΣΔ gana en continua</td></tr>
+      <tr><td>Alterna</td><td>±1 % hasta 1 kHz</td><td>3 % hasta 100 kHz (±1.5 % hasta 10 kHz medido)</td><td>El SAR gana en alterna</td></tr>
+      <tr><td>Compensación</td><td>Dos trimmers</td><td>Condensadores fijos</td><td>Los trimmers no hacían falta</td></tr>
+      <tr><td>Rango más bajo</td><td>Puente J7</td><td>Deslizante S2 con lectura de posición</td><td>El firmware necesita saber la posición</td></tr>
+      <tr><td>Buffers</td><td>OPA333 (deriva cero, 17 µA, 350 kHz)</td><td>OPA2313 (RRIO, 1 MHz)</td><td>Más ancho de banda para la alterna</td></tr>
+      <tr><td>Bornes</td><td>Tres (rojo = referencia)</td><td>Dos y un selector V/A</td><td>Ninguno es lo habitual</td></tr>
+      <tr><td>Interfaz</td><td>LCD de segmentos</td><td>BLE hacia el PC</td><td>—</td></tr>
+      <tr><td>Energía</td><td>3 × AAA, 6–9 mW</td><td>Li-ion, 19 mW</td><td>—</td></tr>
+    </tbody>
+  </table></div>
+  <p>Para nosotros, el G473 no tiene ΣΔ: estamos más cerca del 01012 (un SAR) que del 00879, pero con 12 bits y sobremuestreo en lugar de 18 bits. La alterna hasta 20 kHz (RD-07) no es problema; la precisión en continua sí lo es, y por eso la síntesis tiene que mirar con cuidado las 20 000 cuentas.</p>
+
+</section>
+<section id="no-copiar">
+  <div class="shead"><span class="num">11</span><h2>Lo que no conviene copiar</h2></div>
+
+  <ul class="tight">
+    <li>Las constantes de calibración compiladas en el código.</li>
+    <li>El borne rojo como referencia común y los tres colores fuera de lo habitual.</li>
+    <li>Puentes y trimmers que obligan a abrir el equipo.</li>
+    <li>La entrada sin protección (igual que el 01012).</li>
+  </ul>
+
+</section>
+<section id="modulos">
+  <div class="shead"><span class="num">12</span><h2>Módulos</h2></div>
+
+  <p><b>Ninguno.</b> El LCD de segmentos se conecta directo al MSP430; el UART de prueba usa optoacopladores sueltos.</p>
+
+</section>
+<section id="propuestas">
+  <div class="shead"><span class="num">13</span><h2>Propuestas para la rev 2.1</h2></div>
+
+  <p>Siguen a P17–P27. <b>Ninguna está aplicada.</b></p>
+  <h3>P28 · Resistencia de entrada de alta tensión específica <span class="tag t-ok">Adoptar</span></h3>
+  <p>Los 10 MΩ de arriba (P17) en una pieza de la familia de alta tensión (tipo CRHV1206), o en varias 1206 de alta tensión en serie si así se reparte mejor la tensión con la red (P23). Hay que buscar el equivalente en LCSC y su tensión máxima de trabajo.</p>
+  <h3>P29 · Constantes de calibración en memoria no volátil <span class="tag t-ok">Adoptar</span></h3>
+  <p>Ganancia, offset y tablas de varios puntos (P21, P26) por rango, guardadas en la flash del G473 (o en una EEPROM) con un número de versión, y editables con un procedimiento guiado desde S3G4-UI. Así se recalibra sin recompilar.</p>
+  <p class="meta">Confirma además P18 (condensadores fijos, sin trimmer), P19 (fuerza y sentido) y P22 (riel del DMM apagable). La potencia real con muestreo simultáneo queda como idea fuera de los requisitos.</p>
+
+</section>
+<section id="correcciones">
+  <div class="shead"><span class="num">14</span><h2>Correcciones a lo dicho antes</h2></div>
+
+  <ul class="tight">
+    <li>En el plan presenté el TIDA-00879 como «nuestro caso: ADC del micro con front-end propio». Es cierto que usa el ADC del micro, pero es un <b>ΣΔ de 24 bits</b>, no un SAR de 12 bits como el del G473. Su precisión en continua no se puede trasladar a nuestro ADC5.</li>
+  </ul>
+
+</section>
+<footer><p class="meta">Análisis de Claude Code, 7 oct 2026, según <code>06_plan/PLAN_REFERENCIAS_DMM.md</code>. Fuentes en <code>research_and_tests/TIDA-00879/</code>, de <a href="https://www.ti.com/tool/TIDA-00879">ti.com/tool/TIDA-00879</a>. Cifras: <code>herramientas/calc_dmm_tida00879.py</code>.</p></footer>
+</div>
