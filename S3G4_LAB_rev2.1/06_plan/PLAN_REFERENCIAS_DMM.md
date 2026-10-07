@@ -97,3 +97,15 @@ Una referencia por sesión, con calma. Al terminar cada una, Keneth la revisa an
 - **R4 (EEWorld)** no tiene esquemático: puede quedar en una ficha corta.
 - Las cifras de cada referencia salen de su documentación. Si el esquemático contradice al texto, manda el esquemático y se dice, como pasó con el DSO112.
 - La sección H puede cambiar bastante tras la síntesis. Es lo esperado: es la razón de hacer este estudio.
+
+## 7. Enlaces de EEWorld que añadió Keneth el 7 oct (evaluados)
+
+Los archivos de EEWorld solo se bajan con una cuenta iniciada. Claude no crea cuentas ni inicia sesión: si hacen falta, los baja Keneth.
+
+| Enlace | Qué es | Valor para nuestro DMM | Propuesta |
+|---|---|---|---|
+| [95152](https://en.eeworld.com.cn/Reference_Designs/detail/95152) | Proyecto de estudiante: resistencia por divisor con 1 kΩ, inductancia por oscilador LC con LM393, frecuencia con LM393 y tensión pico a pico con rectificador de media onda de precisión; reconoce la forma de onda por el factor de cresta. Sobre una Raspberry Pi Pico (módulo). Esquema en PDF, Altium/PADS y BOM, pero detrás de la cuenta | Bajo: no tiene rangos de tensión DC ni corriente, el ohmímetro es de un solo rango y la propia página admite errores de más de 100 mV en alterna por encima de 10 kHz | Ficha corta (R10), solo si Keneth baja el PDF del esquema; si no, descartar |
+| [57000](https://en.eeworld.com.cn/Reference_Designs/detail/57000) | El Open Source Multimeter de Martin (STM32F1 → F3) | Es **R8**, ya clonado de GitHub (`research_and_tests/Martin_STM32_multimeter/`) | Nada nuevo: se estudia como R8 |
+| [57006](https://en.eeworld.com.cn/Reference_Designs/detail/57006) | Manual de servicio del **Agilent 34401A** (34401-90013), DMM de banco de 6½ dígitos, con los esquemas en el apéndice | Alto como **escuela de front-end profesional**: protección de entrada, divisor de alta tensión, fuente de corriente de ohmios, autocero, conmutación de rangos y convertidor de alterna. Su ADC multipendiente es propio y no se copia | Añadir como **R9**, antes de la síntesis. El manual es público en keysight.com; bajarlo de ahí con permiso de Keneth |
+
+Orden actualizado: … 6 · R8 Martin + R4 EEWorld 77845 · 7 · R5 Analog Devices · **7b · R9 Agilent 34401A** · 8 · Síntesis.
