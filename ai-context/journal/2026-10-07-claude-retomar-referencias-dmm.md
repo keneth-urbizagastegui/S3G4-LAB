@@ -13,7 +13,7 @@ Lo deja la sesión del 6–7 oct, que se quedó sin contexto. Para empezar el ch
 - **Sección H (borrador, EN PAUSA):** `S3G4_LAB_rev2.1/01_diseno/dmm_rev21.html` y la hoja `00_requisitos/especificaciones_dmm.html`, publicadas. Se escribieron antes de estudiar las referencias: **se revisan en la síntesis** y después se encarga S11 a Codex.
 - **Plan:** `S3G4_LAB_rev2.1/06_plan/PLAN_REFERENCIAS_DMM.md` (método, referencias, orden y la evaluación de los enlaces 95152/57000/57006 de EEWorld).
 
-## Referencias hechas (4 de 9)
+## Referencias hechas (5 de 9)
 
 Todas en `S3G4_LAB_rev2.1/02_referencias/`, publicadas (enlaces en `ARTEFACTOS.md`), con scripts `herramientas/calc_dmm_*.py`, `draw_dmm_*.py` y `build_dmm_*.py`, y diario propio:
 
@@ -23,6 +23,7 @@ Todas en `S3G4_LAB_rev2.1/02_referencias/`, publicadas (enlaces en `ARTEFACTOS.m
 | R2 | HydraMeter 0.4 | `dmm_hydrameter.html` | P23–P27 |
 | R6 | TI TIDA-00879 | `dmm_tida00879.html` | P28–P29 |
 | R7 | EEVblog 121GW | `dmm_121gw.html` | P30–P32 |
+| R3 | Micro-DMM | `dmm_microdmm.html` | P33–P34 |
 
 ## Propuestas acumuladas (NINGUNA aplicada; se deciden en la síntesis)
 
@@ -42,18 +43,18 @@ Todas en `S3G4_LAB_rev2.1/02_referencias/`, publicadas (enlaces en `ARTEFACTOS.m
 - **P30** PTC de alta tensión (1–2 kΩ en frío) en la fuente de ohmios y diodo. Cierra el pendiente «PTC» de la sección H.
 - **P31** Fusible HRC cerámico con poder de corte declarado y puente de diodos (DF10S, con los terminales de continua unidos) como sujeción del derivador.
 - **P32** Aviso de fusible abierto: el borne A medido antes del fusible a través de ≈ 10 MΩ.
+- **P33** Cable abierto en tensión (RD-09) con resistencias definidas, cuando la lectura lleva ≥ 5 ms bajo un umbral. Variante B, sin piezas: lectura breve en el rango de 20 MΩ (≤ 0.49 µA). Variante A, como el puente de Mann: brazo de 10 MΩ de la toma de P17 a VREF (≤ 0.12 µA).
+- **P34** En ohmios, si aparece tensión externa, desconectar la fuente y la R_ref, avisar y pasar a tensión (la PTC solo aguanta unos ms).
 
 ## Riesgos para la síntesis
 
 - **Resolución:** en H, una cuenta vale ≈ 1/12 de LSB del ADC5 de 12 bits (todo depende del sobremuestreo). En el TIDA-01012, una cuenta son 2.3 LSB de un ADC de 18 bits; en el TIDA-00879 es un ΣΔ de 24 bits. Hay que justificar las 20 000 cuentas o rebajarlas.
 - COM a media alimentación (TIDA, HydraMeter): no aplicable, porque nuestro COM es la masa común (RD-05).
+- Lazos de masa (Micro-DMM): con masa común, si el S3G4 está conectado por USB a un PC enchufado y se mide un equipo enchufado a la red, COM queda unido a la tierra del PC. El Micro-DMM aísla todo por eso. Decir en la síntesis cómo se avisa al usuario.
 
 ## Siguiente, en orden
 
-1. **R3 Micro-DMM** (`research_and_tests/Micro-DMM/`, 399 MB): estudiar la placa principal `PCBDesigns/DMM_KiCAD_V4_next/` (5 hojas KiCad), el cable abierto `PCBDesigns/OpenLead_Headless_V3/` y el *white paper* `An Open-Lead Detection Voltmeter Circuit.pdf`.
-   - Usa módulos (Arduino/Feather/XIAO, ACS712, placas ADS aisladas): solo se documentan.
-   - Interesa para RD-09 (cable abierto) y ohmios bajos.
-   - Método: exportar la netlist con kicad-cli como en el HydraMeter. Parser: `python S3G4_LAB_rev2.1/herramientas/kinet.py netlist.net salida.txt` (piezas por hoja, con la red de cada pin).
+1. ~~R3 Micro-DMM~~: hecho el 7 oct (diario `2026-10-07-claude-dmm-microdmm.md`).
 2. **R8 Martin + R4 EEWorld 77845.**
    - Martin: `research_and_tests/Martin_STM32_multimeter/`, rev 1.5 con STM32F373 y ΣΔ de 16 bits; EAGLE `hardware/v15.sch`, PNG del esquema, BOM y firmware.
    - EEWorld 77845: solo texto y diagrama de bloques, sin esquema: ficha corta.

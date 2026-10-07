@@ -1,0 +1,404 @@
+<title>Anatomía del Micro-DMM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@500;600&display=swap">
+<style>
+:root{
+  --bg:#f4f6f5; --paper:#fff; --ink:#1b2a2e; --muted:#5d6d72; --rule:#dde3e1;
+  --accent:#12667f; --accent2:#a9541c; --ok:#2f7d54; --warn:#9a6100; --crit:#b22d22; --open:#6a4fa3;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#11181a; --paper:#182125; --ink:#dce6e7; --muted:#93a3a8; --rule:#2a3639;
+  --accent:#5fb9d2; --accent2:#f0a06a; --ok:#63c891; --warn:#f0b75a; --crit:#ff8d80; --open:#b79ae8;}}
+:root[data-theme="dark"]{
+  --bg:#11181a; --paper:#182125; --ink:#dce6e7; --muted:#93a3a8; --rule:#2a3639;
+  --accent:#5fb9d2; --accent2:#f0a06a; --ok:#63c891; --warn:#f0b75a; --crit:#ff8d80; --open:#b79ae8;}
+body{background:var(--bg);color:var(--ink);font:15px/1.6 "IBM Plex Sans",system-ui,sans-serif}
+.wrap{max-width:1000px;margin:0 auto;padding-inline:20px;padding-block:28px 64px}
+h1,h2,h3,h4{font-family:"IBM Plex Sans Condensed","IBM Plex Sans",sans-serif;margin:0;text-wrap:balance}
+h1{font-size:clamp(26px,4vw,36px);font-weight:600}
+h2{font-size:24px;font-weight:600;margin-top:8px}
+h3{font-size:18px;font-weight:600;margin-bottom:4px}
+code{font:0.88em "IBM Plex Mono",ui-monospace,monospace;color:var(--accent)}
+.eyebrow{font:500 12px "IBM Plex Mono",monospace;letter-spacing:.09em;text-transform:uppercase;color:var(--accent);margin:0 0 6px}
+.lede{color:var(--muted);max-width:74ch}
+header.hero{border-bottom:1px solid var(--rule);padding-bottom:18px;margin-bottom:26px}
+section{background:var(--paper);border:1px solid var(--rule);border-radius:10px;padding:20px 22px;margin-bottom:18px}
+section>p,li{max-width:80ch}
+.tag{display:inline-block;font:500 11px "IBM Plex Mono",monospace;text-transform:uppercase;letter-spacing:.06em;padding:2px 9px;border-radius:999px;border:1px solid currentColor}
+.t-ok{color:var(--ok)} .t-open{color:var(--open)} .t-warn{color:var(--warn)} .t-crit{color:var(--crit)}
+.shead{display:flex;align-items:center;gap:12px;margin-bottom:10px;flex-wrap:wrap}
+.num{font:500 14px "IBM Plex Mono",monospace;background:var(--accent);color:var(--paper);width:28px;height:28px;border-radius:50%;display:grid;place-items:center}
+.tw{overflow-x:auto;margin:12px 0}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th{text-align:left;font-weight:600;color:var(--muted);border-bottom:1.5px solid var(--rule);padding:7px 9px;white-space:nowrap}
+td{border-bottom:1px solid var(--rule);padding:7px 9px;vertical-align:top}
+td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
+.pick{background:color-mix(in srgb, var(--ok) 10%, transparent)}
+.callout{border-left:3px solid var(--accent);padding:10px 14px;margin:14px 0;background:color-mix(in srgb, var(--accent) 7%, transparent);font-size:14px}
+.callout.w{border-color:var(--warn);background:color-mix(in srgb, var(--warn) 9%, transparent)}
+ul.tight{margin:8px 0;padding-left:20px}
+ul.tight li{margin-bottom:5px}
+.meta{font:12.5px "IBM Plex Mono",monospace;color:var(--muted);margin:0}
+.q{border:1px dashed var(--open);border-radius:8px;padding:12px 14px;margin:10px 0}
+.q b{color:var(--open)}
+footer{font-size:12.5px;color:var(--muted);border-top:1px solid var(--rule);padding-top:12px}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-size:14px}
+.kv dt{color:var(--muted)} .kv dd{margin:0}
+
+/* --- esquematico --- */
+figure{margin:16px 0}
+.sx{overflow-x:auto;border:1px solid var(--rule);border-radius:8px;background:var(--bg);padding:8px}
+.sx svg{display:block;max-width:none;height:auto}
+figcaption{font-size:13px;color:var(--muted);margin-top:6px}
+svg text{font-family:"IBM Plex Mono",ui-monospace,monospace}
+.w{fill:none;stroke:var(--ink);stroke-width:1.5;stroke-linejoin:round}
+.sym{fill:none;stroke:var(--ink);stroke-width:1.6;stroke-linejoin:round}
+.fillsym{fill:var(--ink);stroke:var(--ink);stroke-width:1}
+.dot{fill:var(--ink)}
+.op{fill:var(--paper);stroke:var(--ink);stroke-width:1.7}
+.ic{fill:var(--paper);stroke:var(--ink);stroke-width:1.5}
+.hdr{fill:none;stroke:var(--open);stroke-width:1.5;stroke-dasharray:3 2}
+.grp{fill:none;stroke:var(--muted);stroke-width:1.1;stroke-dasharray:5 4}
+.grp-t{font-size:10.5px;fill:var(--muted)}
+.blade{stroke:var(--ink);stroke-width:2}
+.ct{fill:var(--paper);stroke:var(--ink);stroke-width:1.3}
+.gnd line{stroke:var(--ink);stroke-width:1.5}
+.railbar{stroke:var(--crit);stroke-width:2.2}
+.rail{font-size:10.5px;fill:var(--crit);font-weight:500}
+.railsm{font-size:9px;fill:var(--crit)}
+.port{fill:color-mix(in srgb, var(--accent) 14%, transparent);stroke:var(--accent);stroke-width:1.3}
+.portt{font-size:10.5px;fill:var(--ink)}
+.tp{fill:none;stroke:var(--ok);stroke-width:1.6}
+.tpt{font-size:9.5px;fill:var(--ok)}
+.ref{font-size:11px;font-weight:500;fill:var(--ink)}
+.val{font-size:10px;fill:var(--muted)}
+.net{font-size:10px;fill:var(--accent2)}
+.pin{font-size:9.5px;fill:var(--muted)}
+.pm{font-size:15px;fill:var(--ink)}
+.note{font-size:10.5px;fill:var(--muted);font-style:italic}
+.src{color:var(--muted);font-size:12.5px}
+
+.lesson td:first-child{font-weight:600}
+pre.mermaid{background:var(--paper);border:1px solid var(--rule);border-radius:8px;padding:12px;overflow-x:auto}
+.meta{color:var(--muted);font-size:13px}
+.toc{columns:2 260px;column-gap:28px;margin:6px 0 0;padding-left:20px;font-size:14px}
+.toc li{break-inside:avoid;margin:2px 0}
+.toc a{color:var(--accent);text-decoration:none} .toc a:hover{text-decoration:underline}
+.eq{font-family:"IBM Plex Mono",monospace;font-size:13.5px;background:var(--paper);border:1px solid var(--rule);border-radius:6px;padding:8px 12px;margin:10px 0;overflow-x:auto;white-space:pre}
+code{overflow-wrap:anywhere}
+</style>
+<div class="wrap">
+<header class="hero">
+  <p class="eyebrow">S3G4 LAB · referencia para el DMM de la rev 2.1 · 5 de 9</p>
+  <h1>Anatomía del Micro-DMM</h1>
+  <p class="lede">Un DMM casero con un ADS1115 cuyo voltímetro sabe si las puntas están al aire. Es la idea de nuestro RD-09: aquí se ve cómo funciona de verdad, de qué depende y cómo hacerla con resistencias conocidas.</p>
+  <ul class="toc"><li><a href="#resumen">Lo que nos llevamos</a></li><li><a href="#metodo">1 · Qué se analizó</a></li><li><a href="#especificacion">2 · Especificación y medidas</a></li><li><a href="#arquitectura">3 · Arquitectura</a></li><li><a href="#voltimetro">4 · Voltímetro: puente de Mann</a></li><li><a href="#cable-abierto">5 · Cable abierto</a></li><li><a href="#ohmios">6 · Ohmios</a></li><li><a href="#corriente">7 · Corriente</a></li><li><a href="#firmware">8 · Firmware</a></li><li><a href="#alimentacion">9 · Alimentación</a></li><li><a href="#seguridad">10 · Seguridad</a></li><li><a href="#no-copiar">11 · Lo que no conviene copiar</a></li><li><a href="#modulos">12 · Módulos</a></li><li><a href="#comparacion">13 · Comparación</a></li><li><a href="#propuestas">14 · Propuestas P33–P34</a></li><li><a href="#correcciones">15 · Correcciones</a></li></ul>
+</header>
+<section id="resumen">
+  <div class="shead"><span class="num">★</span><h2>Lo que nos llevamos</h2></div>
+
+  <p>El Micro-DMM es un multímetro de 4½ dígitos hecho por un técnico (Nicholas Mann, OIH Designs) sobre placas Arduino, con un ADC ADS1115 de 16 bits. Su aporte es el <b>puente de Mann</b>: el voltímetro distingue «0 V porque las puntas tocan el mismo nodo» de «0 V porque no hay circuito entre ellas». Es exactamente nuestro RD-09 (cable abierto). Lo estudiamos a fondo, y de paso entendemos por qué su ohmímetro pierde exactitud por encima de 100 kΩ.</p>
+  <div class="tw"><table class="lesson">
+    <thead><tr><th>Hallazgo</th><th>En el Micro-DMM</th><th>Para la rev 2.1</th><th>Veredicto</th></tr></thead>
+    <tbody>
+      <tr><td>Cable abierto en tensión</td><td>Un MOSFET en serie con el brazo bajo del puente; al abrirlo, el lado que varía solo sigue unido a la referencia a través de las puntas (§4, §5)</td><td>Es la idea que pide RD-09. En nuestra arquitectura cabe sin piezas nuevas: una lectura breve en el rango de 20 MΩ (P33)</td><td><span class="tag t-ok">Adoptar la idea</span></td></tr>
+      <tr><td>La prueba depende de una fuga</td><td>Lo que baja el nodo durante la prueba no está en el esquema: ≈ 490 kΩ deducidos de los umbrales (fuga del Schottky y entrada del ADC). Por eso los umbrales se ajustan por placa (§5)</td><td>Con resistencias definidas y un buffer de pA, los umbrales salen de la cuenta (P33)</td><td><span class="tag t-warn">Corregir</span></td></tr>
+      <tr><td>Espera en alterna</td><td>Solo prueba si la lectura lleva un cuarto de periodo bajo el umbral (4 ms a 60 Hz), para no confundir un paso por cero con un cable abierto (§5)</td><td>Igual en P33, con 5 ms a 50 Hz</td><td><span class="tag t-ok">Adoptar</span></td></tr>
+      <tr><td>Ohmios por divisor con la referencia supuesta</td><td>5.0 V a través de 22 kΩ; el firmware da la tensión por buena. Sin calibrar, las 3 placas del autor leen 4.7 MΩ con errores de −18 % a +44 % (§6)</td><td>Confirma la sección H: razón medida con el mismo ADC y R_ref ≈ 1.5 × fondo (S = 1.67 frente a 215)</td><td><span class="tag t-ok">Confirma H</span></td></tr>
+      <tr><td>La impedancia del ADC cambia con la ganancia</td><td>La Z diferencial del ADS1115 pasa de 710 kΩ a 22 MΩ; con una sola constante, la escala se mueve ≈ 1.5–2 % al pasar de ±0.512 V (§4)</td><td>Nuestro ADC5 va detrás de un buffer. La lección vale para cualquier ADC sin buffer</td><td><span class="tag t-ok">Confirma H</span></td></tr>
+      <tr><td>Calibración por tramos en memoria</td><td>15 factores por tramo de resistencia; el detector BlinkyHawk guarda su configuración con número mágico, versión, CRC y migración (§8)</td><td>Es el formato que deben tener P26 y P29</td><td><span class="tag t-ok">Refuerza P26/P29</span></td></tr>
+      <tr><td>Selección automática V/Ω</td><td>Mide tensión y ohmios a la vez y pasa a tensión por encima de 1 V (§8)</td><td>En ohmios, si aparece tensión externa, desconectar la fuente y avisar (P34)</td><td><span class="tag t-ok">Adoptar</span></td></tr>
+      <tr><td>Aislamiento con módulos, Arduino y sensor Hall</td><td>DC-DC aislado, ISO1540, optoacopladores; ACS712 o AMC0330R para corriente (§9, §12)</td><td>Nuestro DMM es de masa común (RD-05) y con derivador propio</td><td><span class="tag t-crit">No adoptar</span></td></tr>
+    </tbody>
+  </table></div>
+
+</section>
+<section id="metodo">
+  <div class="shead"><span class="num">1</span><h2>Qué se analizó y cómo</h2></div>
+
+  <ul class="tight">
+    <li><b>Repositorio</b> <code>research_and_tests/Micro-DMM/</code> (último commit, 12 ago 2026), con unas 35 placas KiCad. Elegí tres:
+      <ul class="tight">
+        <li><code>PCBDesigns/DMM_KiCAD_V4_next</code> (cambiado por última vez el 11 dic 2025): la arquitectura y el ohmímetro;</li>
+        <li><code>SimplifiedOpenLeadVoltmeter</code> y <code>DMM Feather Redux</code> (mayo–junio 2026): el puente. En la V4_next está dibujado de forma que no puede romperse (§4);</li>
+        <li><code>OpenLead_Headless_V3</code> (ago 2026): el detector de bolsillo «BlinkyHawk».</li>
+      </ul></li>
+    <li>Netlists exportadas con <code>kicad-cli</code> 10 y leídas pieza a pieza con <code>herramientas/kinet.py</code>. El esquema de la V4_next se renderizó y se leyó por zonas.</li>
+    <li><b>White paper</b> «An Open-Lead Detection Voltmeter Circuit» (N. Mann, 17 jul 2025, 6 p, borrador), manual de uso (texto) y README.</li>
+    <li><b>Firmware</b>:
+      <ul class="tight">
+        <li><code>microDMM_RA4M1_XIAO_SMD_V5</code>: ohmios y calibración;</li>
+        <li><code>OpenLeadDetect_Feather_Voltmeter</code>: puente, ago 2026;</li>
+        <li><code>BlinkyHawk_RA4M1</code>: detector, ago 2026.</li>
+      </ul></li>
+    <li><b>Datos medidos</b>: hoja «Calibrations» de <code>DMM Collected Spreadsheets.xlsx</code> (lecturas de 3 placas frente a resistencias medidas). ADS1115: hoja SBAS444E de la carpeta del autor.</li>
+    <li>Cálculos en <code>herramientas/calc_dmm_microdmm.py</code>; redibujos en <code>draw_dmm_microdmm.py</code> (0 solapes, revisados a la vista).</li>
+  </ul>
+
+</section>
+<section id="especificacion">
+  <div class="shead"><span class="num">2</span><h2>Lo que dice el autor y lo que midió</h2></div>
+
+  <div class="tw"><table>
+    <thead><tr><th>Función</th><th>Alcance</th><th>Notas</th></tr></thead>
+    <tbody>
+      <tr><td>Tensión DC</td><td>±50 V probados; el white paper lo prueba hasta 120 VAC</td><td>Entrada ≈ 1 MΩ diferencial. «No está pensado para tensiones peligrosas»</td></tr>
+      <tr><td>Tensión AC</td><td>Aviso por encima de 1 Vrms</td><td>El propio autor la llama «comprobación de cordura», no medida</td></tr>
+      <tr><td>Resistencia</td><td>De menos de 10 mΩ a ≈ 1 MΩ; por encima, solo orientativo</td><td>Rango bajo de 20 mA y alto de ≈ 4–5 V; 80 mW como máximo</td></tr>
+      <tr><td>Diodo / impedancia</td><td>Tensión entre puntas en mV</td><td>Con la fuente del rango alto (≈ 0.2 mA)</td></tr>
+      <tr><td>Corriente</td><td>No incluida</td><td>Módulo Hall externo</td></tr>
+      <tr><td>General</td><td>4½ dígitos, 4–6 h de batería, 90 mA por USB</td><td>Cable abierto en tensión en las placas recientes</td></tr>
+    </tbody>
+  </table></div>
+  <p>Lo medido por el autor (hoja «Calibrations»): error de lectura <b>antes</b> de aplicar los factores de calibración, en tres placas.</p>
+  <div class="tw"><table>
+    <thead><tr><th>Tramo</th><th>Resistencia</th><th>Placa 1</th><th>Placa 2</th><th>Placa 3</th></tr></thead>
+    <tbody><tr><td>A</td><td>0.5 Ω</td><td>+1.8 %</td><td>−3.3 %</td><td>+1.3 %</td></tr><tr><td>B</td><td>1 Ω</td><td>+2.0 %</td><td>−1.0 %</td><td>−0.1 %</td></tr><tr><td>C</td><td>4.7 Ω</td><td>+1.8 %</td><td>+0.4 %</td><td>+0.1 %</td></tr><tr><td>D</td><td>10 Ω</td><td>+2.5 %</td><td>+1.3 %</td><td>+0.3 %</td></tr><tr><td>E</td><td>33 Ω</td><td>−6.6 %</td><td>+3.4 %</td><td>+0.5 %</td></tr><tr><td>F</td><td>100 Ω</td><td>−1.3 %</td><td>−1.3 %</td><td>+0.4 %</td></tr><tr><td>G</td><td>330 Ω</td><td>−0.6 %</td><td>−0.4 %</td><td>+0.3 %</td></tr><tr><td>H</td><td>1 kΩ</td><td>≈ 0 %</td><td>≈ 0 %</td><td>−0.4 %</td></tr><tr><td>I</td><td>3 kΩ</td><td>+0.1 %</td><td>+0.1 %</td><td>−0.3 %</td></tr><tr><td>J</td><td>10 kΩ</td><td>+0.2 %</td><td>+0.2 %</td><td>−0.2 %</td></tr><tr><td>K</td><td>33 kΩ</td><td>+0.3 %</td><td>+0.1 %</td><td>−0.4 %</td></tr><tr><td>L</td><td>100 kΩ</td><td>+0.9 %</td><td>+0.3 %</td><td>−0.9 %</td></tr><tr><td>M</td><td>333 kΩ</td><td>+3.2 %</td><td>+0.4 %</td><td>−2.1 %</td></tr><tr><td>N</td><td>1 MΩ</td><td>+10.2 %</td><td>+3.9 %</td><td>−6.8 %</td></tr><tr><td>O</td><td>4.7 MΩ</td><td>+36.9 %</td><td>+44.3 %</td><td>−18.5 %</td></tr></tbody>
+  </table></div>
+  <p class="meta">Entre 330 Ω y 100 kΩ las placas leen dentro de ±1 %; por debajo de 33 Ω pesan el nulo y la fuente; por encima de 330 kΩ el error crece con la resistencia, que es lo que explica §6. El −6.6 % de la placa 1 en 33 Ω no tiene explicación en el circuito: NO VERIFICADO.</p>
+
+</section>
+<section id="arquitectura">
+  <div class="shead"><span class="num">3</span><h2>Arquitectura</h2></div>
+
+  <ul class="tight">
+    <li><b>Dos entradas</b>, cada una con su conector (dos jacks de barril en la V4_next): el voltímetro diferencial (J15) y el ohmímetro (J14).</li>
+    <li><b>Lado de medida flotante (Gnd-iso)</b>:
+      <ul class="tight">
+        <li>un ADS1115 con cuatro entradas: AIN0 y AIN1 para el voltímetro, AIN2 para ohmios y AIN3 para el módulo de corriente;</li>
+        <li>dos referencias: LM4040-2.5 para el puente y LM4040-5 para ohmios;</li>
+        <li>alimentación por un DC-DC aislado RFM-0505S (5 V → 5 V, 1 kVDC durante 1 s) y un doblador MAX1683 (+9 V) para los drivers IX4426;</li>
+        <li>el I²C cruza por un ISO1540 y las órdenes por optoacopladores LTV-824.</li>
+      </ul></li>
+    <li><b>MCU</b>: una placa Arduino Uno R4 o XIAO RA4M1 (módulo); pantalla OLED o TFT por conector.</li>
+    <li><b>Por qué flota</b>: el autor quiere evitar los lazos de masa cuando el medidor va por USB y el circuito medido está enchufado a la red.</li>
+  </ul>
+
+</section>
+<section id="voltimetro">
+  <div class="shead"><span class="num">4</span><h2>Voltímetro: el puente de Mann</h2></div>
+
+  <figure><div class="sx"><svg class="sch" viewBox="0 0 1320 580" width="1320" role="img" aria-label="Micro-DMM: puente de Mann del voltimetro (valores del SimplifiedOpenLeadVoltmeter)" xmlns="http://www.w3.org/2000/svg"><circle class="ban" cx="100" cy="120" r="9" style="stroke:#b3261e"/><circle class="fillsym" cx="100" cy="120" r="3.5"/><text class="ref" x="84" y="124" text-anchor="end">Float</text><polyline class="w" points="109,120 130,120"/><polyline class="w" points="130,120 190.0,120.0"/><polyline class="w" points="230.0,120.0 290,120"/><polyline class="sym" points="-20,0 -15,-6 -10,6 -5,-6 0,6 5,-6 10,6 15,-6 20,0" transform="translate(210.0,120.0) rotate(0.0)"/><text class="ref" x="210.0" y="108.0" text-anchor="middle">R17</text><text class="val" x="210.0" y="142.0" text-anchor="middle">499 kΩ</text><polyline class="w" points="290,120 1060,120"/><circle class="ban" cx="100" cy="360" r="9" style="stroke:#1b2a2e"/><circle class="fillsym" cx="100" cy="360" r="3.5"/><text class="ref" x="84" y="364" text-anchor="end">REF</text><polyline class="w" points="109,360 130,360"/><polyline class="w" points="130,360 190.0,360.0"/><polyline class="w" points="230.0,360.0 290,360"/><polyline class="sym" points="-20,0 -15,-6 -10,6 -5,-6 0,6 5,-6 10,6 15,-6 20,0" transform="translate(210.0,360.0) rotate(0.0)"/><text class="ref" x="210.0" y="348.0" text-anchor="middle">R18</text><text class="val" x="210.0" y="382.0" text-anchor="middle">499 kΩ</text><polyline class="w" points="290,360 1060,360"/><text class="net" x="304" y="112" text-anchor="start">AIN1 (lado que varía)</text><text class="net" x="304" y="352" text-anchor="start">AIN0 (lado fijo, 2.5 V)</text><circle class="dot" cx="520" cy="120" r="3.2"/><circle class="dot" cx="520" cy="360" r="3.2"/><polyline class="w" points="520,120 520.0,220.0"/><polyline class="w" points="520.0,260.0 520,360"/><polyline class="sym" points="-20,0 -15,-6 -10,6 -5,-6 0,6 5,-6 10,6 15,-6 20,0" transform="translate(520.0,240.0) rotate(90.0)"/><text class="ref" x="506.0" y="237.0" text-anchor="end">R14</text><text class="val" x="506.0" y="251.0" text-anchor="end">1 MΩ fijo</text><circle class="dot" cx="660" cy="120" r="3.2"/><circle class="dot" cx="660" cy="360" r="3.2"/><polyline class="w" points="660,120 660.0,155.0"/><polyline class="w" points="660.0,185.0 660,220"/><g transform="translate(660.0,170.0) rotate(90.0)"><circle class="ct" cx="-15" cy="0" r="2.6"/><circle class="ct" cx="15" cy="0" r="2.6"/><line class="blade" x1="-15" y1="0" x2="13" y2="-9"/></g><text class="ref" x="674.0" y="167.0" text-anchor="start">Q8 · AO3400A</text><text class="val" x="674.0" y="181.0" text-anchor="start">lo abre la prueba</text><polyline class="w" points="660,220 660.0,270.0"/><polyline class="w" points="660.0,310.0 660,360"/><polyline class="sym" points="-20,0 -15,-6 -10,6 -5,-6 0,6 5,-6 10,6 15,-6 20,0" transform="translate(660.0,290.0) rotate(90.0)"/><text class="ref" x="674.0" y="287.0" text-anchor="start">R24</text><text class="val" x="674.0" y="301.0" text-anchor="start">15 kΩ</text><circle class="dot" cx="800" cy="120" r="3.2"/><polyline class="w" points="800,120 800.0,106.0"/><polyline class="w" points="800.0,84.0 800,70"/><g transform="translate(800.0,95.0) rotate(-90.0)"><polygon class="fillsym" points="-7,-9 -7,9 6,0"/><polyline class="sym" points="9,-6 9,-9 6,-9 6,9 3,9 3,6"/></g><text class="ref" x="786.0" y="92.0" text-anchor="end">D4</text><polyline class="w" points="800,70 800,60"/><line class="railbar" x1="788" y1="60" x2="812" y2="60"/><text class="rail" x="800" y="54" text-anchor="middle">5V-iso</text><circle class="dot" cx="880" cy="120" r="3.2"/><polyline class="w" points="880,230 880.0,186.0"/><polyline class="w" points="880.0,164.0 880,120"/><g transform="translate(880.0,175.0) rotate(-90.0)"><polygon class="fillsym" points="-7,-9 -7,9 6,0"/><polyline class="sym" points="9,-6 9,-9 6,-9 6,9 3,9 3,6"/></g><text class="ref" x="894.0" y="172.0" text-anchor="start">D5</text><text class="val" x="894.0" y="186.0" text-anchor="start">Schottky</text><polyline class="w" points="880,230 880,238"/><g class="gnd"><line x1="870" y1="238" x2="890" y2="238"/><line x1="874" y1="242" x2="886" y2="242"/><line x1="878" y1="246" x2="882" y2="246"/></g><text class="rail" x="880" y="258" text-anchor="middle">Gnd-iso</text><circle class="dot" cx="820" cy="360" r="3.2"/><polyline class="w" points="820,450 820.0,416.0"/><polyline class="w" points="820.0,394.0 820,360"/><g transform="translate(820.0,405.0) rotate(-90.0)"><polygon class="fillsym" points="-7,-9 -7,9 6,0"/><polyline class="sym" points="3,-11 6,-9 6,9 9,11"/></g><text class="ref" x="806.0" y="402.0" text-anchor="end">U10</text><text class="val" x="806.0" y="416.0" text-anchor="end">LM4040-2.5</text><polyline class="w" points="820,450 820,458"/><g class="gnd"><line x1="810" y1="458" x2="830" y2="458"/><line x1="814" y1="462" x2="826" y2="462"/><line x1="818" y1="466" x2="822" y2="466"/></g><circle class="dot" cx="940" cy="360" r="3.2"/><polyline class="w" points="940,360 940.0,340.0"/><polyline class="w" points="940.0,300.0 940,280"/><polyline class="sym" points="-20,0 -15,-6 -10,6 -5,-6 0,6 5,-6 10,6 15,-6 20,0" transform="translate(940.0,320.0) rotate(-90.0)"/><text class="ref" x="954.0" y="317.0" text-anchor="start">R27</text><text class="val" x="954.0" y="331.0" text-anchor="start">4.7 kΩ</text><polyline class="w" points="940,280 940,270"/><line class="railbar" x1="928" y1="270" x2="952" y2="270"/><text class="rail" x="940" y="264" text-anchor="middle">5V-iso</text><circle class="dot" cx="1010" cy="360" r="3.2"/><polyline class="w" points="1010,360 1010.0,396.0"/><polyline class="w" points="1010.0,404.0 1010,440"/><g transform="translate(1010.0,400.0) rotate(90.0)"><line class="sym" x1="-4" y1="-11" x2="-4" y2="11"/><line class="sym" x1="4" y1="-11" x2="4" y2="11"/></g><text class="ref" x="1024.0" y="397.0" text-anchor="start">C17</text><text class="val" x="1024.0" y="411.0" text-anchor="start">0.1 µF</text><polyline class="w" points="1010,440 1010,448"/><g class="gnd"><line x1="1000" y1="448" x2="1020" y2="448"/><line x1="1004" y1="452" x2="1016" y2="452"/><line x1="1008" y1="456" x2="1012" y2="456"/></g><rect class="ic" x="1072" y="90" width="150" height="300" rx="3"/><text class="ref" x="1147.0" y="82" text-anchor="middle">U3 · ADS1115</text><text class="val" x="1147.0" y="405" text-anchor="middle">16 bits · AIN0 − AIN1</text><polyline class="w" points="1072,120 1060,120"/><text class="pin" x="1077" y="124" text-anchor="start">AIN1</text><polyline class="w" points="1072,360 1060,360"/><text class="pin" x="1077" y="364" text-anchor="start">AIN0</text><text class="pin" x="1147" y="246" text-anchor="middle">diferencial</text><text class="note" x="40" y="500" text-anchor="start">Medida: Q8 conduce y el puente vale 15 kΩ ∥ 1 MΩ → escala ÷68.5; el firmware usa 69.95, que es lo que sale con la Z diferencial del ADS a ±0.256/0.512 V (710 kΩ).</text><text class="note" x="40" y="518" text-anchor="start">Prueba (lectura ≈ 0 V): Q8 se abre y AIN1 solo queda unido a AIN0 por R14 y por las puntas (998 kΩ + lo que haya entre ellas).</text><text class="note" x="40" y="536" text-anchor="start">Lo que tira de AIN1 hacia abajo no está en el esquema: según los umbrales del firmware, ≈ 490 kΩ (fuga de D5 y entrada del ADS; NO VERIFICADO).</text><text class="note" x="40" y="554" text-anchor="start">En la DMM_KiCAD_V4_next los valores están al revés (R14 = 15 kΩ fijo, R24 = 1 MΩ conmutado): al abrir Q8 el puente no se rompe.</text></svg></div><figcaption>Redibujo del voltímetro del SimplifiedOpenLeadVoltmeter (la DMM Feather Redux es igual, con 2 × 240 kΩ por lado). El MOSFET se dibuja como un interruptor.</figcaption></figure>
+
+  <p>Mide la diferencia entre un lado fijo (AIN0, sujeto a 2.5 V por un LM4040) y un lado que varía (AIN1). Cada punta entra por ≈ 0.5 MΩ, así que la tensión de entrada se reparte entre ≈ 1 MΩ y el puente, y el ADS1115 lee la caída en el puente. Las resistencias de entrada limitan la corriente, y dos Schottky sujetan AIN1 a 0 V y 5 V.</p>
+  <div class="tw"><table>
+    <thead><tr><th>Placa</th><th>Entrada por lado</th><th>Brazo fijo</th><th>Brazo con MOSFET</th><th>Escala (MOSFET conduce / abierto)</th><th>¿Se rompe el puente?</th></tr></thead>
+    <tbody><tr><td><code>DMM_KiCAD_V4_next</code></td><td>499 kΩ</td><td>15 kΩ</td><td>1 MΩ</td><td>÷68.5 / ÷67.5</td><td><span class="tag t-crit">No</span></td></tr><tr><td><code>DMM Feather Redux</code></td><td>480 kΩ</td><td>1 MΩ</td><td>15 kΩ</td><td>÷66.0 / ÷2.0</td><td><span class="tag t-ok">Sí</span></td></tr><tr><td><code>SimplifiedOpenLeadVoltmeter</code></td><td>499 kΩ</td><td>1 MΩ</td><td>15 kΩ</td><td>÷68.5 / ÷2.0</td><td><span class="tag t-ok">Sí</span></td></tr><tr><td><code>OpenLead_Headless_V3</code></td><td>500 kΩ</td><td>1 MΩ</td><td>100 kΩ</td><td>÷12.0 / ÷2.0</td><td><span class="tag t-ok">Sí</span></td></tr></tbody>
+  </table></div>
+  <p>En la <b>V4_next</b>, el brazo fijo es de 15 kΩ y el MOSFET solo conecta 1 MΩ en paralelo. Al abrirlo, la escala pasa de ÷68.5 a ÷67.5, y AIN1 sigue unido a la referencia por 15 kΩ: la prueba de cable abierto no puede funcionar así. En las placas posteriores los valores están al revés (1 MΩ fijo y 15 kΩ conmutado), como en la figura 2 del white paper. Es un error de la V4_next o una versión anterior a la idea; para nosotros no cambia nada.</p>
+  <h3>La impedancia del ADC según la ganancia</h3>
+  <p>El ADS1115 no tiene buffer: su impedancia diferencial (SBAS444E, p. 5) queda en paralelo con el puente de 14.8 kΩ y depende del fondo de escala. El firmware usa una sola constante, 69.95, que es justo la escala con 710 kΩ (fondos de ±0.256 y ±0.512 V). Al subir de rango cambia la escala, y la lectura se desvía:</p>
+  <div class="tw"><table>
+    <thead><tr><th>Fondo del PGA</th><th>Z diferencial</th><th>Escala real</th><th>Desvío de la lectura con 69.95</th><th>Entrada a fondo</th></tr></thead>
+    <tbody><tr><td>±6.144 V</td><td>22 MΩ</td><td>÷68.58</td><td>+2.00 %</td><td>421 V</td></tr><tr><td>±4.096 V</td><td>15 MΩ</td><td>÷68.60</td><td>+1.97 %</td><td>281 V</td></tr><tr><td>±2.048 V</td><td>4.9 MΩ</td><td>÷68.74</td><td>+1.77 %</td><td>141 V</td></tr><tr><td>±1.024 V</td><td>2.4 MΩ</td><td>÷68.95</td><td>+1.45 %</td><td>71 V</td></tr><tr><td>±0.512 V</td><td>710 kΩ</td><td>÷69.94</td><td>+0.02 %</td><td>36 V</td></tr><tr><td>±0.256 V</td><td>710 kΩ</td><td>÷69.94</td><td>+0.02 %</td><td>18 V</td></tr></tbody>
+  </table></div>
+  <p>Por encima de unos 36 V la lectura sale entre un 1.5 % y un 2 % alta. Es una deducción de las hojas, no una medida: <b>NO VERIFICADO</b>. Para nosotros: confirma que el ADC debe ir detrás de un buffer (sección H §4), o que hace falta una constante por ganancia.</p>
+
+</section>
+<section id="cable-abierto">
+  <div class="shead"><span class="num">5</span><h2>Cable abierto: cómo funciona de verdad</h2></div>
+
+  <h3>La secuencia (firmware de ago 2026)</h3>
+  <ol class="tight">
+    <li>El voltímetro mide con el puente cerrado y filtra con una media exponencial.</li>
+    <li>Si la lectura filtrada baja de 0.3 V, el firmware abre el MOSFET, pone el ADC a ±2.048 V y a la mayor velocidad, hace <b>una</b> lectura diferencial y vuelve a cerrar el MOSFET.</li>
+    <li>Si la diferencia queda por debajo de 1.42 V, las puntas están cerradas; si no, están al aire. Hacen falta dos resultados seguidos para cambiar de estado.</li>
+    <li>Con una tabla medida en el banco, el firmware también estima la resistencia entre puntas por escalones (&lt; 33 kΩ, 100 kΩ, 330 kΩ, 1 MΩ, &gt; 10 MΩ).</li>
+  </ol>
+  <h3>Lo que no dice el esquema</h3>
+  <p>Con el puente abierto, AIN1 solo está unido a AIN0 por R14 (1 MΩ) y, si las puntas tocan un circuito, también por las puntas (998 kΩ más lo que haya entre ellas). Algo tiene que tirar de AIN1 hacia abajo para que haya diferencia, y en el esquema no hay ninguna resistencia que lo haga. Los valores del firmware lo delatan:</p>
+  <ul class="tight">
+    <li>cerrado (&lt; 10 kΩ): 1.262 V, es decir, AIN1 = 1.24 V;</li>
+    <li>abierto (&gt; 10 MΩ): 1.706 V, es decir, AIN1 = 0.79 V.</li>
+  </ul>
+  <p>Para eso hace falta una bajada de ≈ 490 kΩ en los dos casos. La entrada del ADS a ±2.048 V es de 6 MΩ en modo común, así que la mayor parte debe ser la <b>fuga del Schottky D5</b>, que crece mucho con la temperatura (NO VERIFICADO). Las consecuencias se ven en el código:</p>
+  <ul class="tight">
+    <li>los umbrales cambian de una placa a otra (1.34 V en la «roja», 1.42 V en otra, 0.25 V en la versión de placas separadas);</li>
+    <li>el detector BlinkyHawk elige el umbral con dos interruptores DIP y lo guarda en memoria;</li>
+    <li>y además prueba dos métodos dinámicos: el tiempo que tarda en volver (0.7–0.95 ms) y el área de la vuelta, porque la diferencia estática es pequeña.</li>
+  </ul>
+  <h3>Corriente y tiempos</h3>
+  <ul class="tight">
+    <li>Corriente por las puntas durante la prueba: ≈ 1.3 µA con las puntas en cortocircuito. El white paper habla de 227 nA (y 114 nA con el 1 MΩ fijo), porque simula el ADC con 10 MΩ.</li>
+    <li>En alterna, la prueba solo se hace si la lectura lleva <b>4 ms</b> por debajo del umbral (un cuarto de periodo a 60 Hz). Un paso por cero de la red dura microsegundos y no la dispara.</li>
+    <li>El BlinkyHawk (OpenLead_Headless_V3):
+      <ul class="tight">
+        <li>usa el ADC de 14 bits del RA4M1 en seudodiferencial (dos lecturas unipolares restadas), un TL431 de 2.5 V y 5 × 100 kΩ por lado;</li>
+        <li>su puente es de 100 kΩ conmutado más 1 MΩ fijo;</li>
+        <li>espera 300 µs tras abrir el MOSFET y duerme a 1 mA.</li>
+      </ul></li>
+  </ul>
+  <p><b>Lo que vale</b> es la idea: probar la continuidad desde detrás de la protección del voltímetro, sin pasar a ohmios, con menos de un µA. <b>Lo que hay que corregir</b>: la bajada debe ser una resistencia conocida y el nodo debe leerse con un buffer, para que los umbrales se calculen y no dependan de la temperatura.</p>
+
+</section>
+<section id="ohmios">
+  <div class="shead"><span class="num">6</span><h2>Ohmios: fuente de 20 mA y divisor de 22 kΩ</h2></div>
+
+  <figure><div class="sx"><svg class="sch" viewBox="0 0 1320 480" width="1320" role="img" aria-label="Micro-DMM V4_next: fuente de ohmios de 20 mA y divisor de 22 kOhm" xmlns="http://www.w3.org/2000/svg"><polygon class="port" points="40,112 253.6,112 261.6,120 253.6,128 40,128"/><text class="portt" x="45" y="124" text-anchor="start">IX4426 · OUT_B (9 V conmutados)</text><rect class="ic" x="300" y="96" width="100" height="48" rx="3"/><text class="ref" x="350.0" y="88" text-anchor="middle">U1 · LM317</text><polyline class="w" points="300,120 288,120"/><text class="pin" x="305" y="124" text-anchor="start">VI</text><polyline class="w" points="400,120 412,120"/><text class="pin" x="395" y="124" text-anchor="end">VO</text><polyline class="w" points="350,144 350,156"/><text class="pin" x="350" y="139" text-anchor="middle">ADJ</text><polyline class="w" points="262,120 288,120"/><polyline class="w" points="412,120 466.0,120.0"/><polyline class="w" points="506.0,120.0 560,120"/><polyline class="sym" points="-20,0 -15,-6 -10,6 -5,-6 0,6 5,-6 10,6 15,-6 20,0" transform="translate(486.0,120.0) rotate(0.0)"/><text class="ref" x="486.0" y="108.0" text-anchor="middle">R5</text><text class="val" x="486.0" y="142.0" text-anchor="middle">62 Ω</text><polyline class="w" points="560,120 640,120"/><circle class="dot" cx="600" cy="120" r="3.2"/><polyline class="w" points="350,156 350,230 900,230"/><polyline class="w" points="600,120 600,230"/><circle class="dot" cx="600" cy="230" r="3.2"/><text class="net" x="364" y="224" text-anchor="start">R Circuit I Output</text><circle class="dot" cx="700" cy="230" r="3.2"/><polyline class="w" points="700,230 700.0,260.0"/><polyline class="w" points="700.0,300.0 700,330"/><polyline class="sym" points="-20,0 -15,-6 -10,6 -5,-6 0,6 5,-6 10,6 15,-6 20,0" transform="translate(700.0,280.0) rotate(90.0)"/><text class="ref" x="714.0" y="277.0" text-anchor="start">R6</text><text class="val" x="714.0" y="291.0" text-anchor="start">330 Ω purga</text><polyline class="w" points="700,330 700,338"/><g class="gnd"><line x1="690" y1="338" x2="710" y2="338"/><line x1="694" y1="342" x2="706" y2="342"/><line x1="698" y1="346" x2="702" y2="346"/></g><circle class="dot" cx="800" cy="230" r="3.2"/><polyline class="w" points="800,330 800.0,291.0"/><polyline class="w" points="800.0,269.0 800,230"/><g transform="translate(800.0,280.0) rotate(-90.0)"><polygon class="fillsym" points="-7,-9 -7,9 6,0"/><polyline class="sym" points="3,-11 6,-9 6,9 9,11"/></g><text class="ref" x="814.0" y="277.0" text-anchor="start">U11</text><text class="val" x="814.0" y="291.0" text-anchor="start">LM4040-5</text><polyline class="w" points="800,330 800,338"/><g class="gnd"><line x1="790" y1="338" x2="810" y2="338"/><line x1="794" y1="342" x2="806" y2="342"/><line x1="798" y1="346" x2="802" y2="346"/></g><polyline class="w" points="900,230 900.0,276.0"/><polyline class="w" points="900.0,284.0 900,330"/><g transform="translate(900.0,280.0) rotate(90.0)"><line class="sym" x1="-4" y1="-11" x2="-4" y2="11"/><line class="sym" x1="4" y1="-11" x2="4" y2="11"/></g><text class="ref" x="914.0" y="277.0" text-anchor="start">C18</text><text class="val" x="914.0" y="291.0" text-anchor="start">1 µF</text><polyline class="w" points="900,330 900,338"/><g class="gnd"><line x1="890" y1="338" x2="910" y2="338"/><line x1="894" y1="342" x2="906" y2="342"/><line x1="898" y1="346" x2="902" y2="346"/></g><polyline class="w" points="640,120 700.0,120.0"/><polyline class="w" points="740.0,120.0 800,120"/><polyline class="sym" points="-20,0 -15,-6 -10,6 -5,-6 0,6 5,-6 10,6 15,-6 20,0" transform="translate(720.0,120.0) rotate(0.0)"/><text class="ref" x="720.0" y="108.0" text-anchor="middle">R9</text><text class="val" x="720.0" y="142.0" text-anchor="middle">22 kΩ</text><circle class="dot" cx="620" cy="120" r="3.2"/><polyline class="w" points="620,120 620,60 660,60"/><polyline class="w" points="660,60 705.0,60.0"/><polyline class="w" points="735.0,60.0 780,60"/><g transform="translate(720.0,60.0) rotate(0.0)"><circle class="ct" cx="-15" cy="0" r="2.6"/><circle class="ct" cx="15" cy="0" r="2.6"/><line class="blade" x1="-15" y1="0" x2="13" y2="-9"/></g><text class="ref" x="720.0" y="48.0" text-anchor="middle">Q2 · AO3400A</text><text class="val" x="720.0" y="82.0" text-anchor="middle">rango bajo: puentea R9</text><polyline class="w" points="780,60 820,60 820,120"/><circle class="dot" cx="820" cy="120" r="3.2"/><polyline class="w" points="800,120 1080,120"/><circle class="dot" cx="950" cy="120" r="3.2"/><circle class="dot" cx="1000" cy="120" r="3.2"/><polyline class="w" points="950,120 950.0,156.0"/><polyline class="w" points="950.0,164.0 950,200"/><g transform="translate(950.0,160.0) rotate(90.0)"><line class="sym" x1="-4" y1="-11" x2="-4" y2="11"/><line class="sym" x1="4" y1="-11" x2="4" y2="11"/></g><text class="ref" x="964.0" y="157.0" text-anchor="start">C3</text><text class="val" x="964.0" y="171.0" text-anchor="start">2.2 µF</text><polyline class="w" points="950,200 950,208"/><g class="gnd"><line x1="940" y1="208" x2="960" y2="208"/><line x1="944" y1="212" x2="956" y2="212"/><line x1="948" y1="216" x2="952" y2="216"/></g><polyline class="w" points="1000,120 1000,180 1040,180"/><polygon class="port" points="1040,172 1227.2,172 1235.2,180 1227.2,188 1040,188"/><text class="portt" x="1045" y="184" text-anchor="start">AIN2 del ADS1115 (R21, 0 Ω)</text><polygon class="port" points="1080,112 1214.4,112 1222.4,120 1214.4,128 1080,128"/><text class="portt" x="1085" y="124" text-anchor="start">J14 centro: punta Ω</text><text class="net" x="834" y="112" text-anchor="start">Resistor_Input</text><polyline class="w" points="1010,300 1030,300"/><polyline class="w" points="1030,300 1052.0,300.0"/><polyline class="w" points="1088.0,300.0 1110,300"/><g transform="translate(1070.0,300.0) rotate(0.0)"><rect class="sym" x="-18" y="-6" width="36" height="12"/><line class="sym" x1="-18" y1="0" x2="18" y2="0"/></g><text class="ref" x="1070.0" y="326.0" text-anchor="middle">F1</text><text class="val" x="1070.0" y="338.0" text-anchor="middle">1206</text><polyline class="w" points="1110,300 1130,300"/><polygon class="port" points="1130,292 1271.0,292 1279.0,300 1271.0,308 1130,308"/><text class="portt" x="1135" y="304" text-anchor="start">J14 funda: punta COM</text><polyline class="w" points="1010,300 1010,308"/><g class="gnd"><line x1="1000" y1="308" x2="1020" y2="308"/><line x1="1004" y1="312" x2="1016" y2="312"/><line x1="1008" y1="316" x2="1012" y2="316"/></g><text class="note" x="40" y="392" text-anchor="start">Rango bajo (Q2 conduce): el LM317 fija 1.25 V / 62 Ω = 20.2 mA y la purga R6 se lleva su parte → R = V / (I − V/330).</text><text class="note" x="40" y="410" text-anchor="start">Rango alto (Q2 abierto): el nodo queda sujeto a 5.0 V por U11 y la medida es un divisor con R9 → R = 22 kΩ · V / (5.0 − V).</text><text class="note" x="40" y="428" text-anchor="start">Cambio de rango en 400 Ω ± 5 %. La tensión se lee en el borne respecto a Gnd-iso: puntas, fusible y contactos se restan con el nulo.</text><text class="note" x="40" y="446" text-anchor="start">Sin protección ante tensión externa: Q2 y U11 conducen (el manual avisa de que el MOSFET se quema).</text></svg></div><figcaption>Redibujo del ohmímetro de la DMM_KiCAD_V4_next. El driver IX4426 da los 9 V que alimentan al LM317 y mueve la puerta de Q2.</figcaption></figure>
+
+  <ul class="tight">
+    <li><b>Rango bajo</b> (Q2 conduce): fuente de 20.16 mA (el firmware la calibra por placa; en la placa 3, 20.087 mA). La purga de 330 Ω se lleva parte de la corriente, de ahí la fórmula R = V / (I − V/330). En el cambio de rango (400 Ω) el borne está a 3.65 V y pasan 9.1 mA por la resistencia.</li>
+    <li><b>Resolución</b>: a ±0.256 V cada LSB del ADS vale 0.39 mΩ, así que 10 mΩ son 26 LSB. Lo de «mejor que 0.01 Ω» es cierto en resolución, pero depende del nulo: las puntas, el fusible y los contactos están dentro de la medida.</li>
+    <li><b>Rango alto</b> (Q2 abierto): 5.0 V a través de 22 kΩ, con la tensión de U11 supuesta en el firmware. En un divisor así, cualquier error relativo en V/V_ref se multiplica por S = (R + 22 kΩ) / 22 kΩ:</li>
+  </ul>
+  <div class="tw"><table>
+    <thead><tr><th>R medida</th><th>S</th><th>1 LSB a ±6.144 V</th><th>0.15 % de error de ganancia</th><th>Carga del ADS (≈ 6.9 MΩ)</th><th>Referencia 6 mV baja</th></tr></thead>
+    <tbody><tr><td>1 kΩ</td><td>1.0</td><td>0.09 %</td><td>0.2 %</td><td>≈ 0 %</td><td>−0.1 %</td></tr><tr><td>10 kΩ</td><td>1.5</td><td>0.02 %</td><td>0.2 %</td><td>−0.1 %</td><td>−0.2 %</td></tr><tr><td>100 kΩ</td><td>5.5</td><td>0.03 %</td><td>0.8 %</td><td>−1.4 %</td><td>−0.7 %</td></tr><tr><td>330 kΩ</td><td>16.0</td><td>0.06 %</td><td>2.4 %</td><td>−4.6 %</td><td>−1.9 %</td></tr><tr><td>1 MΩ</td><td>46.5</td><td>0.18 %</td><td>7.0 %</td><td>−12.7 %</td><td>−5.3 %</td></tr><tr><td>4.7 MΩ</td><td>214.6</td><td>0.81 %</td><td>32.2 %</td><td>−40.6 %</td><td>−20.5 %</td></tr></tbody>
+  </table></div>
+  <p>Las tres causas son del mismo orden que lo medido en §2 (en 4.7 MΩ, de −18 % a +44 % según la placa): <b>el límite es el método, no las piezas</b>. Y el método falla porque la referencia no se mide, el ADC carga el nodo y R9 está muy lejos del valor medido.</p>
+  <p>Nuestra sección H §6 ya evita las tres cosas:</p>
+  <ul class="tight">
+    <li>razón con el mismo ADC (la ganancia se cancela);</li>
+    <li>R_ref por rango, ≈ 1.5 × fondo (S = 1.67 a fondo);</li>
+    <li>buffer de pA delante del ADC. El divisor de 10 MΩ en paralelo es una carga conocida y estable, y se corrige.</li>
+  </ul>
+  <p><b>Purga y ahorro.</b> R6 gasta 76 mW siempre que la fuente está encendida. Por eso hay un modo de ahorro: con las puntas al aire durante 5 s, el firmware baja la fuente y la vuelve a subir al cortocircuitarlas (el manual dice 30 s). Nuestra fuente por R_ref no gasta nada en vacío.</p>
+  <p><b>Sin protección.</b> El manual lo dice claro: medir ohmios en un circuito con tensión puede quemar el MOSFET de rango. Q2 conduce por su diodo interno y U11 sujeta a 5 V sin límite de corriente.</p>
+
+</section>
+<section id="corriente">
+  <div class="shead"><span class="num">7</span><h2>Corriente</h2></div>
+
+  <p>No tiene amperímetro propio. El conector J11 (5V-iso, señal y Gnd-iso) recibe un módulo Hall ACS712 o una placa aislada con AMC0330R, y la señal va a AIN3. El autor también propone, sin más, «una resistencia baja sobre el voltímetro». Nada que aprender para nuestro derivador de 0.1 Ω con el OPA2188 (sección H §5).</p>
+
+</section>
+<section id="firmware">
+  <div class="shead"><span class="num">8</span><h2>Firmware</h2></div>
+
+  <ul class="tight">
+    <li><b>Autorango del PGA</b>: por número de cuentas (sube de ganancia por debajo de 10 000 y la baja por encima de 26 000, de 32 768), con una relectura tras cada cambio.</li>
+    <li><b>Filtros</b>: media exponencial (1/5 en tensión, 1/10 en el puente) y una media de 100 lecturas para ohmios.</li>
+    <li><b>Velocidad del ADS adaptativa</b>: 475 SPS ante un salto, 128 SPS normal y 16 SPS en «modo preciso», cuando la lectura está quieta.</li>
+    <li><b>Ohmios</b>:
+      <ul class="tight">
+        <li>cambio de rango en 400 Ω ± 5 %;</li>
+        <li>«abierto» si la tensión supera el tope menos 7 mV;</li>
+        <li>nulo automático al arrancar si la primera lectura es menor de 10 Ω, y nulo por botón.</li>
+      </ul></li>
+    <li><b>Calibración</b>:
+      <ul class="tight">
+        <li>15 factores multiplicativos por tramo (CF_A … CF_O), más la escala del voltímetro, la corriente de la fuente y el tope de tensión, por placa;</li>
+        <li>la EEPROM guarda el número de placa y las constantes están en el código (<code>CalibrationConstants.ino</code>);</li>
+        <li>una hoja de cálculo sirve de plantilla para obtenerlos.</li>
+      </ul>
+      El BlinkyHawk va más allá: toda su configuración vive en memoria de datos, con número mágico, versión, CRC, migración entre versiones y órdenes <code>!SET</code>/<code>!SAVE</code> por el puerto serie.</li>
+    <li><b>Alterna</b>: valor eficaz de 32 o 100 lecturas a ≤ 860 SPS; solo orientativo.</li>
+    <li><b>Selección de función</b>: mide las dos entradas siempre y muestra tensión si supera ≈ 1 V; vuelve a ohmios al cortocircuitar las puntas.</li>
+    <li><b>Extras</b>:
+      <ul class="tight">
+        <li>teclea el valor por USB (teclado HID) en una hoja de cálculo;</li>
+        <li>mínimo/máximo, registro y un LED que parpadea con tensión de nivel lógico (&gt; 3.2 V);</li>
+        <li>un protocolo de diagnóstico (<code>!CAP</code>) que captura el transitorio del puente para ajustarlo.</li>
+      </ul></li>
+  </ul>
+
+</section>
+<section id="alimentacion">
+  <div class="shead"><span class="num">9</span><h2>Alimentación y aislamiento</h2></div>
+
+  <p>Batería Li-ion con un elevador TPS613222 a 5 V. El DC-DC aislado RFM-0505S alimenta el lado de medida (1 kVDC durante 1 s, 75 pF de acoplo) y un doblador MAX1683 saca +9 V para los drivers. Da de 4 a 6 h y consume 90 mA por USB. El aislamiento es funcional (contra lazos de masa), no de seguridad.</p>
+
+</section>
+<section id="seguridad">
+  <div class="shead"><span class="num">10</span><h2>Seguridad: qué aguanta y qué no</h2></div>
+
+  <ul class="tight">
+    <li><b>Voltímetro</b>: con 230 Vrms pasan 0.23 mA. Cada 499 kΩ 0805 disipa 26 mW, pero ve 113 Vrms (160 V de pico), por encima de los ≈ 150 V habituales de un 0805. Las placas posteriores lo reparten mejor (4 × 240 kΩ o 10 × 100 kΩ). El autor lo probó con un megóhmetro de 1000 V (con corriente limitada) y con 120 VAC.</li>
+    <li><b>Ohmímetro</b>: sin protección (§6).</li>
+    <li><b>Aislamiento</b>: el del módulo, 1 kVDC de prueba; no es una categoría de medida.</li>
+  </ul>
+
+</section>
+<section id="no-copiar">
+  <div class="shead"><span class="num">11</span><h2>Lo que no conviene copiar</h2></div>
+
+  <ul class="tight">
+    <li>Una bajada por fuga en la prueba de cable abierto, con umbrales ajustados a mano por placa.</li>
+    <li>Un ohmímetro de divisor con una sola resistencia de 22 kΩ y la referencia supuesta en el firmware.</li>
+    <li>Una sola constante de escala para todas las ganancias de un ADC sin buffer.</li>
+    <li>Una fuente de 20 mA con purga permanente, que obliga a un modo de ahorro.</li>
+    <li>La fuente de ohmios sin protección.</li>
+    <li>El aislamiento completo con módulos: va contra RD-05 y añade coste.</li>
+  </ul>
+
+</section>
+<section id="modulos">
+  <div class="shead"><span class="num">12</span><h2>Módulos y su equivalente discreto</h2></div>
+
+  <div class="tw"><table>
+    <thead><tr><th>Módulo</th><th>Función</th><th>En la rev 2.1</th></tr></thead>
+    <tbody>
+      <tr><td>Arduino Uno R4, XIAO RA4M1, Feather, Giga</td><td>MCU, USB, pantalla</td><td>STM32G473 + ESP32-S3</td></tr>
+      <tr><td>ACS712 / placa AMC0330R</td><td>Corriente (Hall o amplificador aislado)</td><td>Derivador de 0.1 Ω + OPA2188 (H §5)</td></tr>
+      <tr><td>RFM-0505S + ISO1540 + LTV-824</td><td>Lado de medida flotante</td><td>No hace falta: masa común (RD-05)</td></tr>
+      <tr><td>Placas ADS aisladas (ADS1256, ADS1115)</td><td>ADC externos para experimentar</td><td>ADC5 del G473</td></tr>
+    </tbody>
+  </table></div>
+  <p class="meta">El ADS1115 de la placa principal es un circuito integrado, no un módulo: se estudia como el resto de piezas.</p>
+
+</section>
+<section id="comparacion">
+  <div class="shead"><span class="num">13</span><h2>Comparación con las referencias anteriores y la sección H</h2></div>
+
+  <div class="tw"><table>
+    <thead><tr><th>Aspecto</th><th>Micro-DMM</th><th>TIDA-01012 / 00879</th><th>HydraMeter</th><th>121GW</th><th>Sección H</th></tr></thead>
+    <tbody>
+      <tr><td>ADC</td><td>ΣΔ 16 bits externo (ADS1115)</td><td>SAR 18 bits / ΣΔ 24 bits del MCU</td><td>ΣΔ 16 bits + PGA</td><td>Chip de multímetro</td><td>ADC5 de 12 bits sobremuestreado</td></tr>
+      <tr><td>Entrada de tensión</td><td>2 × 0.5 MΩ diferencial, puente</td><td>10 MΩ + patas</td><td>1 MΩ + patas</td><td>10 MΩ + patas</td><td>Tomas fijas (P17 en estudio)</td></tr>
+      <tr><td>Ohmios</td><td>Corriente de 20 mA / divisor de 22 kΩ, sin razón</td><td>No miden</td><td>Kelvin, corriente medida</td><td>Del chip, con PTC</td><td>Razón con R_ref por rango</td></tr>
+      <tr><td>Cable abierto</td><td>Sí (puente de Mann)</td><td>No</td><td>No</td><td>No</td><td>RD-09, sin circuito todavía</td></tr>
+      <tr><td>Protección</td><td>0.5 MΩ + Schottky; ohmios sin proteger</td><td>Ninguna en tensión; PTC de 0.2 A en corriente</td><td>Escalonada</td><td>Certificada CAT III</td><td>R_PROT + sujeción; PTC por elegir</td></tr>
+      <tr><td>Masa</td><td>Flotante y aislada</td><td>COM a media alimentación</td><td>COM a 1.65 V, aislado</td><td>Flotante (pilas)</td><td>Masa común</td></tr>
+    </tbody>
+  </table></div>
+
+</section>
+<section id="propuestas">
+  <div class="shead"><span class="num">14</span><h2>Propuestas para la rev 2.1</h2></div>
+
+  <p>Siguen a P17–P32. <b>Ninguna está aplicada.</b></p>
+  <h3>P33 · Cable abierto en tensión con resistencias definidas (RD-09) <span class="tag t-ok">Adoptar</span></h3>
+  <p>Funcionamiento:</p>
+  <ul class="tight">
+    <li><b>Cuándo</b>: si la lectura lleva al menos 5 ms (un cuarto de periodo a 50 Hz) por debajo de un umbral, el DMM hace una prueba de unos 10 ms con un sesgo de alta impedancia conocido y vuelve a medir.</li>
+    <li><b>Qué muestra</b>: «cerrado», una resistencia estimada o «abierto», en pantalla y en S3G4-UI.</li>
+  </ul>
+  <p>Dos formas de hacerlo en nuestra arquitectura:</p>
+  <ul class="tight">
+    <li><b>B, sin piezas nuevas</b>: una lectura en el rango de 20 MΩ de ohmios (4.9 V por la R_ref de 10 MΩ, con el divisor de 10.1 MΩ en paralelo en el borne). Como mucho 490 nA. La fuente ya va protegida por la PTC (P30).</li>
+    <li><b>A, como el puente de Mann</b>: un brazo de 10 MΩ de la toma de P17 a VREF, con un conmutador. La prueba se hace desde detrás de R_PROT y de los 10 MΩ, sin conectar la fuente de ohmios al borne. Como mucho 124 nA.</li>
+  </ul>
+  <div class="tw"><table>
+    <thead><tr><th>Entre las puntas</th><th>A: tensión en la toma</th><th>B: tensión en el borne</th></tr></thead>
+    <tbody><tr><td>0 Ω (cortocircuito)</td><td>1.26 V</td><td>0.00 V</td></tr><tr><td>100 kΩ</td><td>1.26 V</td><td>0.05 V</td></tr><tr><td>1 MΩ</td><td>1.32 V</td><td>0.41 V</td></tr><tr><td>10 MΩ</td><td>1.67 V</td><td>1.64 V</td></tr><tr><td>100 MΩ</td><td>2.29 V</td><td>2.34 V</td></tr><tr><td>abiertas</td><td>2.50 V</td><td>2.46 V</td></tr></tbody>
+  </table></div>
+  <p>B distingue mejor las resistencias bajas; A deja la fuente de ohmios fuera del modo de tensión. Tiempos: la constante de la toma es de ≈ 100 µs. Con 100 pF de cable entre puntas abiertas llega a 2 ms, así que basta una ventana de ≈ 10 ms. Los umbrales salen de esta tabla y no del banco. Queda para la síntesis: elegir A o B, el umbral y si avisa con sonido.</p>
+  <h3>P34 · En ohmios, detectar tensión externa y desconectar la fuente <span class="tag t-ok">Adoptar</span></h3>
+  <p>El Micro-DMM mide tensión y ohmios a la vez y enseña la tensión si supera ≈ 1 V. En nuestro DMM las dos funciones comparten el borne V/Ω. En ohmios, el firmware debería reconocer que hay tensión externa: una lectura negativa, una por encima de los 4.9 V de la fuente, o una que no cambia al cambiar de R_ref. Entonces:</p>
+  <ul class="tight">
+    <li>deshabilita la fuente y la R_ref;</li>
+    <li>avisa «tensión en el circuito»;</li>
+    <li>y pasa a medir tensión.</li>
+  </ul>
+  <p>Con la red aplicada (RD-10), la PTC y la sujeción solo tienen que aguantar unos milisegundos, no hasta que la PTC dispare. Hay que comprobar en S11 cuánto tarda la detección.</p>
+  <p class="meta">Además:</p>
+  <ul class="tight meta">
+    <li>P26 y P29 quedan reforzadas: 15 tramos de calibración y configuración en memoria con versión y CRC.</li>
+    <li>P21 suma la media exponencial y la velocidad del ADC adaptativa.</li>
+    <li>La sección H §4 (buffer delante del ADC) y §6 (razón con R_ref por rango) quedan confirmadas por los errores de este diseño.</li>
+  </ul>
+
+</section>
+<section id="correcciones">
+  <div class="shead"><span class="num">15</span><h2>Correcciones a lo dicho antes</h2></div>
+
+  <ul class="tight">
+    <li>RD-09 (requisitos del DMM) dice «una pequeña corriente de prueba en la entrada, como en el Micro-DMM». Matiz: el Micro-DMM no inyecta una corriente definida. Rompe el puente y deja que una fuga baje el nodo. P33 sí la define.</li>
+    <li>En el plan y en el diario de retomada la placa que mandaba era la DMM_KiCAD_V4_next, pero su puente, tal como está dibujado, no puede romperse. El puente válido está en SimplifiedOpenLeadVoltmeter, DMM Feather Redux y OpenLead_Headless_V3.</li>
+    <li>El plan decía «ADS1115/ADS1256». La placa principal solo lleva el ADS1115; el ADS1256 aparece en placas aisladas aparte.</li>
+    <li>La figura 1 del white paper usa un IRFZ44N y un ADR5041; las placas llevan AO3400A (SI2302 según el texto) y LM4040-2.5.</li>
+  </ul>
+
+</section>
+<footer><p class="meta">Análisis de Claude Code, 7 oct 2026, según <code>06_plan/PLAN_REFERENCIAS_DMM.md</code>. Fuentes en <code>research_and_tests/Micro-DMM/</code>; proyecto: <a href="https://github.com/oihdesigns/Micro-DMM">github.com/oihdesigns/Micro-DMM</a>. Cifras: <code>herramientas/calc_dmm_microdmm.py</code>.</p></footer>
+</div>

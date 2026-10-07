@@ -200,13 +200,20 @@ No se ha elegido automáticamente uno de estos frentes como nueva tarea de ingen
   - Protección CAT III: PTC + R + S05K575 en serie; fusibles HRC de 400 mA (10 kA) y 11 A (20 kA); puente DF10S como sujeción; ×10 MAX4238 «Low Burden».
   - Propuestas P30 (PTC en la fuente de ohmios: cierra el pendiente de la sección H), P31 (fusible HRC cerámico + puente) y P32 (aviso de fusible abierto).
   - Siguiente: R3 Micro-DMM.
+- **7 oct, R3 Micro-DMM hecho:** `02_referencias/dmm_microdmm.html` (artefacto VXTHBpRXxs9tDhqPwQFTb6).
+  - El puente de Mann (cable abierto en tensión) funciona en SimplifiedOpenLeadVoltmeter, Feather Redux y OpenLead_Headless_V3. En la DMM_KiCAD_V4_next está dibujado al revés y no puede romperse.
+  - La prueba depende de una bajada de ≈ 0.5 MΩ que no está en el esquema (probablemente la fuga del Schottky): umbrales por placa.
+  - Su ohmímetro de divisor (5 V / 22 kΩ, referencia supuesta) da de −18 % a +44 % en 4.7 MΩ sin calibrar; confirma la razón y las R_ref por rango de la sección H.
+  - Propuestas P33 (cable abierto con resistencias definidas; variante B = lectura breve en el rango de 20 MΩ, sin piezas) y P34 (en ohmios, detectar tensión externa y desconectar la fuente). Ninguna aplicada.
+  - Corrige el matiz de RD-09: el Micro-DMM no inyecta una corriente definida.
+  - Siguiente: R8 Martin + R4 EEWorld 77845. Detalle en `journal/2026-10-07-claude-dmm-microdmm.md`.
 
 ## Punto de retomada — referencias del DMM (7 oct 2026, Claude)
 
 - **Retomar con:** `ai-context/journal/2026-10-07-claude-retomar-referencias-dmm.md`. Contiene:
-  - el estado: 4 de 9 referencias hechas (TIDA-01012, HydraMeter, TIDA-00879 y 121GW);
-  - las propuestas P17–P32 resumidas, sin aplicar;
+  - el estado: 5 de 9 referencias hechas (TIDA-01012, HydraMeter, TIDA-00879, 121GW y Micro-DMM);
+  - las propuestas P17–P34 resumidas, sin aplicar;
   - los riesgos para la síntesis;
-  - el orden siguiente: R3 Micro-DMM → R8 Martin + R4 EEWorld → R5 Analog Devices → R9 34401A → síntesis y revisión de la sección H → encargo S11;
+  - el orden siguiente: R8 Martin + R4 EEWorld → R5 Analog Devices → R9 34401A → síntesis y revisión de la sección H → encargo S11;
   - las herramientas y las trampas conocidas.
 - La sección H del DMM sigue en pausa hasta la síntesis.
