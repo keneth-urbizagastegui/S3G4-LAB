@@ -256,3 +256,10 @@ No se ha elegido automáticamente uno de estos frentes como nueva tarea de ingen
 - La sección H del DMM está revisada y P43 aceptada (7 oct). El encargo S11a está escrito y sin lanzar.
 - **7 oct, DMM por bloques y opción B:** Keneth decidió avanzar por bloques (bornes y protección → tensión → ohmios → corriente → driver/ADC) y poner un relé (TQ2SA, como el osciloscopio) que conecta la fuente de ohmios solo en Ω/diodo/continuidad (DECISIONS). DF08S en el borne A. S11a aparcado sin lanzar. Hojas y modelos de TI ya en el proyecto (los bajó Keneth). Pendiente de Keneth: cómo se protege la fuente en modo ohmios con la red (10 mA + escalera P42, o 1 mA máx. + PTC de 250 V + TVS); después, plan del bloque 1.
 - **7 oct, bloque 1 del DMM:** Keneth eligió B2. La fuente de ohmios da 1 mA como máximo, sin escalera P42. Camino: relé TQ2SA → PTC PTCTL4MR500SBE (35 Ω, 600 V) → TVS SMAJ12CA → R_S → BAV199. Con eso, ≈ 3.7–4.0 V para la prueba de diodo. Encargo `03_simulaciones/DMM/ENCARGO_CODEX_S11_1.md` y plan `PLAN_SIMULACION_S11_1.md` (P0–P7, C1–C7) escritos, **sin lanzar**. Faltan las hojas de la PTC y de la SMAJ12CA. La sección H se actualiza al cerrar el bloque.
+- **7 oct, S11.1 terminado (Codex) — bloque 1 NO aprobado, sin auditar aún por Claude.** `03_simulaciones/DMM/ACTA_S11_1.md`.
+  - **Borne A:** DF08S con 93–386 A de pico e I²t de 33–604 A²s (red de 2–0.5 Ω), frente a 50 A y 10.4 A²s.
+  - **Ohmios con la red:** la PTC dispara a los 34–78 ms; la TVS SMAJ12CA recibe 0.42–0.65 J por semiciclo y hasta ≈ 4.7 J en total, demasiado para una SMA de 400 W.
+  - **Rieles:** con el DMM encendido suben hasta 24 V entre ellos (límite 11 V); apagado, ≤ 9.1 V.
+  - **Relé:** conmutar 230 Vac supera sus 125 Vac.
+  - **Fuga del modelo de la TVS en N1:** inaceptable para 2–20 MΩ (falta un dato garantizado a 4 V).
+  - Diodo: ≥ 4.1 V, pasa.

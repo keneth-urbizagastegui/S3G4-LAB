@@ -2,7 +2,7 @@
 
 Pegar este texto como encargo. Codex arranca en la raíz `S3G4 LAB`.
 
-**Lanzamiento (lo hace Claude):** `C:\Users\Keneth\AppData\Local\OpenAI\Codex\bin\5ea220ae823df3d7\codex.exe`, `-m gpt-6.1-sol`, esfuerzo `medium`. Como proceso independiente (`Start-Process`), con el prompt por stdin desde un fichero y `-o` para la respuesta final.
+**Lanzamiento (lo hace Claude):** `C:\Users\Keneth\AppData\Local\OpenAI\Codex\bin\9691020b546a15b2\codex.exe` (0.162.0-alpha.2), `-m gpt-6.1-sol`, esfuerzo `low` (Keneth, 7 oct). Como proceso independiente (`Start-Process`), con el prompt por stdin desde un fichero y `-o` para la respuesta final.
 
 ---
 

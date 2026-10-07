@@ -67,6 +67,37 @@ No descargues nada.
 | P6 | ESD | Modelo IEC 61000-4-2 (150 pF / 330 Ω) a ±4 kV en V/Ω (modo tensión y modo ohmios) y en A. A ±8 kV, solo informar (aire). Tensiones en los pines de los circuitos integrados y corrientes por las sujeciones frente a sus hojas |
 | P7 | Recuperación | Tras P2 y tras P3 (cuando la PTC se enfría según su hoja), ¿vuelven X0 y N2 a menos de 1 cuenta del régimen? Tiempo |
 
+## 3b. Cambios del relanzamiento (Keneth, 7 oct, tras parar la primera campaña)
+
+La primera campaña agotó el tiempo límite en casi todos los transitorios de 10 s (P2, P3, P4, P6, P7). Cambios:
+
+1. **Red a 230 Vrms y 60 Hz** (Perú) en todas las pruebas, no a 50 Hz.
+2. **PTC según su hoja (`ptctl.pdf`):** 50 Ω ±20 %. Casos de 40 Ω (peor corriente en la TVS) y de 60 Ω (peor caída para el diodo). Los 35 Ω del §1 eran de la ficha de LCSC. El modelo térmico sigue el ajuste de tu diario. C4 queda como orientativo, y el acta lo dice.
+3. **Transitorios largos partidos en dos tramos:**
+   - **LTspice** simula la red **hasta que la PTC dispara, o 1 s como máximo**, lo que llegue antes, con paso máximo ≤ 50 µs.
+   - **Python** extrapola el resto hasta los 10 s:
+     - con la PTC disparada, con su resistencia caliente y la potencia periódica de los últimos ciclos simulados;
+     - sin PTC en el camino (P2, el borne A tras el fusible), con el régimen periódico de los últimos 5 ciclos.
+   - Informa de la energía de cada pieza en los dos tramos por separado y en total. Di qué parte es simulada y cuál extrapolada.
+4. **P6 (ESD):** paso máximo ≤ 1 ns durante los primeros 2 µs y 10 µs de simulación en total.
+5. **Se conservan** P0 y los casos `ok` de la primera campaña (P1 y P5): `--resume`. Repite solo lo que falló, o lo que cambia con 60 Hz o con la PTC de 40/60 Ω.
+
+## 3c. Segundo relanzamiento (Keneth, 7 oct)
+
+Con el §3b, P3 seguía sin converger en el punto de operación inicial (226 de 226 casos), y P4 daba fallos numéricos. Causa probable, del plan: los macromodelos completos de TI y del 4051 junto con la PTC térmica. Cambios:
+
+1. **Modelo reducido de los integrados en P2–P7.** Cada pin de entrada de OPA2188, TLV2372, 74HC4051 y del BSS84 se sustituye por su protección según la hoja:
+   - diodos a sus rieles, con la corriente máxima de la hoja;
+   - su capacidad de entrada;
+   - su consumo como resistencia equivalente entre rieles.
+
+   Cita la página de cada dato. Los modelos completos se quedan **solo en P1**, para el error añadido.
+2. **Tiempo límite de 300 s por caso** (no 30 s). Si un caso no converge en 300 s, se informa y no se reintenta con otros ajustes del simulador.
+3. **Antes de la campaña,** comprueba que un caso de P3 converge con el modelo reducido y anótalo en el diario. Si no converge, para, escribe el acta con lo que haya y explica qué lo impide.
+4. **Se mantiene el §3b:** 60 Hz, PTC de 40/60 Ω, hasta el disparo o 1 s y extrapolación hasta los 10 s.
+5. **P5:** el DF08S recibe ≈ 386 A de pico frente a los 50 A de su hoja. Repítelo con impedancias de red de 0.5, 1 y 2 Ω e informa de la I²t frente a los 10.4 A²s de la hoja. No cambies piezas: la protección del borne A la revisa Claude aparte.
+6. `--resume` conserva solo los casos `ok` con su firma actual.
+
 ## 4. Criterios (con los valores nominales y en los extremos de los rieles, ±2 %)
 
 | # | Criterio | Prueba |
