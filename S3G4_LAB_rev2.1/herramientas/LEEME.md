@@ -14,6 +14,7 @@
 - `calc_dmm_hydrameter.py` + `draw_dmm_hydrameter.py` + `build_dmm_hydrameter.py`: lo mismo para `02_referencias/dmm_hydrameter.html` (7 oct). La netlist se exporta con `kicad-cli` de las fuentes KiCad del proyecto; el generador reutiliza la plantilla de `build_dmm_tida01012.py` (al importarla, regenera también esa página, igual).
 - `calc_dmm_tida00879.py` + `draw_dmm_tida00879.py` + `build_dmm_tida00879.py`: lo mismo para `02_referencias/dmm_tida00879.html` (7 oct).
 - `calc_dmm_121gw.py` + `draw_dmm_121gw.py` + `build_dmm_121gw.py`: lo mismo para `02_referencias/dmm_121gw.html` (7 oct).
+- `kinet.py <netlist.net> <salida.txt>`: lista las piezas de una netlist de KiCad por hoja, con la red de cada pin (usado para el HydraMeter).
 - `fix_ruido.py`: parche que corrigió el modelo de ruido (kT/C) en los documentos; se conserva como registro de las cifras.
 - **El texto del documento vivo se mantiene editándolo directamente**; los scripts sólo generan los dibujos y las páginas de análisis.
 - `chk_c.py`, `chk_d.py`, `chk_w.py`, `chk_o.py`, `chk_b.py`: comprobador geométrico de textos solapados o cruzando cables.

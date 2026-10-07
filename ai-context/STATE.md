@@ -200,3 +200,13 @@ No se ha elegido automáticamente uno de estos frentes como nueva tarea de ingen
   - Protección CAT III: PTC + R + S05K575 en serie; fusibles HRC de 400 mA (10 kA) y 11 A (20 kA); puente DF10S como sujeción; ×10 MAX4238 «Low Burden».
   - Propuestas P30 (PTC en la fuente de ohmios: cierra el pendiente de la sección H), P31 (fusible HRC cerámico + puente) y P32 (aviso de fusible abierto).
   - Siguiente: R3 Micro-DMM.
+
+## Punto de retomada — referencias del DMM (7 oct 2026, Claude)
+
+- **Retomar con:** `ai-context/journal/2026-10-07-claude-retomar-referencias-dmm.md`. Contiene:
+  - el estado: 4 de 9 referencias hechas (TIDA-01012, HydraMeter, TIDA-00879 y 121GW);
+  - las propuestas P17–P32 resumidas, sin aplicar;
+  - los riesgos para la síntesis;
+  - el orden siguiente: R3 Micro-DMM → R8 Martin + R4 EEWorld → R5 Analog Devices → R9 34401A → síntesis y revisión de la sección H → encargo S11;
+  - las herramientas y las trampas conocidas.
+- La sección H del DMM sigue en pausa hasta la síntesis.
