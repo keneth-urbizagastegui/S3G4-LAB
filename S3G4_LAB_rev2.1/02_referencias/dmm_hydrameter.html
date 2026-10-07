@@ -1,0 +1,331 @@
+<title>Anatomía del HydraMeter</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@500;600&display=swap">
+<style>
+:root{
+  --bg:#f4f6f5; --paper:#fff; --ink:#1b2a2e; --muted:#5d6d72; --rule:#dde3e1;
+  --accent:#12667f; --accent2:#a9541c; --ok:#2f7d54; --warn:#9a6100; --crit:#b22d22; --open:#6a4fa3;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#11181a; --paper:#182125; --ink:#dce6e7; --muted:#93a3a8; --rule:#2a3639;
+  --accent:#5fb9d2; --accent2:#f0a06a; --ok:#63c891; --warn:#f0b75a; --crit:#ff8d80; --open:#b79ae8;}}
+:root[data-theme="dark"]{
+  --bg:#11181a; --paper:#182125; --ink:#dce6e7; --muted:#93a3a8; --rule:#2a3639;
+  --accent:#5fb9d2; --accent2:#f0a06a; --ok:#63c891; --warn:#f0b75a; --crit:#ff8d80; --open:#b79ae8;}
+body{background:var(--bg);color:var(--ink);font:15px/1.6 "IBM Plex Sans",system-ui,sans-serif}
+.wrap{max-width:1000px;margin:0 auto;padding-inline:20px;padding-block:28px 64px}
+h1,h2,h3,h4{font-family:"IBM Plex Sans Condensed","IBM Plex Sans",sans-serif;margin:0;text-wrap:balance}
+h1{font-size:clamp(26px,4vw,36px);font-weight:600}
+h2{font-size:24px;font-weight:600;margin-top:8px}
+h3{font-size:18px;font-weight:600;margin-bottom:4px}
+code{font:0.88em "IBM Plex Mono",ui-monospace,monospace;color:var(--accent)}
+.eyebrow{font:500 12px "IBM Plex Mono",monospace;letter-spacing:.09em;text-transform:uppercase;color:var(--accent);margin:0 0 6px}
+.lede{color:var(--muted);max-width:74ch}
+header.hero{border-bottom:1px solid var(--rule);padding-bottom:18px;margin-bottom:26px}
+section{background:var(--paper);border:1px solid var(--rule);border-radius:10px;padding:20px 22px;margin-bottom:18px}
+section>p,li{max-width:80ch}
+.tag{display:inline-block;font:500 11px "IBM Plex Mono",monospace;text-transform:uppercase;letter-spacing:.06em;padding:2px 9px;border-radius:999px;border:1px solid currentColor}
+.t-ok{color:var(--ok)} .t-open{color:var(--open)} .t-warn{color:var(--warn)} .t-crit{color:var(--crit)}
+.shead{display:flex;align-items:center;gap:12px;margin-bottom:10px;flex-wrap:wrap}
+.num{font:500 14px "IBM Plex Mono",monospace;background:var(--accent);color:var(--paper);width:28px;height:28px;border-radius:50%;display:grid;place-items:center}
+.tw{overflow-x:auto;margin:12px 0}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th{text-align:left;font-weight:600;color:var(--muted);border-bottom:1.5px solid var(--rule);padding:7px 9px;white-space:nowrap}
+td{border-bottom:1px solid var(--rule);padding:7px 9px;vertical-align:top}
+td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
+.pick{background:color-mix(in srgb, var(--ok) 10%, transparent)}
+.callout{border-left:3px solid var(--accent);padding:10px 14px;margin:14px 0;background:color-mix(in srgb, var(--accent) 7%, transparent);font-size:14px}
+.callout.w{border-color:var(--warn);background:color-mix(in srgb, var(--warn) 9%, transparent)}
+ul.tight{margin:8px 0;padding-left:20px}
+ul.tight li{margin-bottom:5px}
+.meta{font:12.5px "IBM Plex Mono",monospace;color:var(--muted);margin:0}
+.q{border:1px dashed var(--open);border-radius:8px;padding:12px 14px;margin:10px 0}
+.q b{color:var(--open)}
+footer{font-size:12.5px;color:var(--muted);border-top:1px solid var(--rule);padding-top:12px}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-size:14px}
+.kv dt{color:var(--muted)} .kv dd{margin:0}
+
+/* --- esquematico --- */
+figure{margin:16px 0}
+.sx{overflow-x:auto;border:1px solid var(--rule);border-radius:8px;background:var(--bg);padding:8px}
+.sx svg{display:block;max-width:none;height:auto}
+figcaption{font-size:13px;color:var(--muted);margin-top:6px}
+svg text{font-family:"IBM Plex Mono",ui-monospace,monospace}
+.w{fill:none;stroke:var(--ink);stroke-width:1.5;stroke-linejoin:round}
+.sym{fill:none;stroke:var(--ink);stroke-width:1.6;stroke-linejoin:round}
+.fillsym{fill:var(--ink);stroke:var(--ink);stroke-width:1}
+.dot{fill:var(--ink)}
+.op{fill:var(--paper);stroke:var(--ink);stroke-width:1.7}
+.ic{fill:var(--paper);stroke:var(--ink);stroke-width:1.5}
+.hdr{fill:none;stroke:var(--open);stroke-width:1.5;stroke-dasharray:3 2}
+.grp{fill:none;stroke:var(--muted);stroke-width:1.1;stroke-dasharray:5 4}
+.grp-t{font-size:10.5px;fill:var(--muted)}
+.blade{stroke:var(--ink);stroke-width:2}
+.ct{fill:var(--paper);stroke:var(--ink);stroke-width:1.3}
+.gnd line{stroke:var(--ink);stroke-width:1.5}
+.railbar{stroke:var(--crit);stroke-width:2.2}
+.rail{font-size:10.5px;fill:var(--crit);font-weight:500}
+.railsm{font-size:9px;fill:var(--crit)}
+.port{fill:color-mix(in srgb, var(--accent) 14%, transparent);stroke:var(--accent);stroke-width:1.3}
+.portt{font-size:10.5px;fill:var(--ink)}
+.tp{fill:none;stroke:var(--ok);stroke-width:1.6}
+.tpt{font-size:9.5px;fill:var(--ok)}
+.ref{font-size:11px;font-weight:500;fill:var(--ink)}
+.val{font-size:10px;fill:var(--muted)}
+.net{font-size:10px;fill:var(--accent2)}
+.pin{font-size:9.5px;fill:var(--muted)}
+.pm{font-size:15px;fill:var(--ink)}
+.note{font-size:10.5px;fill:var(--muted);font-style:italic}
+.src{color:var(--muted);font-size:12.5px}
+
+.lesson td:first-child{font-weight:600}
+pre.mermaid{background:var(--paper);border:1px solid var(--rule);border-radius:8px;padding:12px;overflow-x:auto}
+.meta{color:var(--muted);font-size:13px}
+.toc{columns:2 260px;column-gap:28px;margin:6px 0 0;padding-left:20px;font-size:14px}
+.toc li{break-inside:avoid;margin:2px 0}
+.toc a{color:var(--accent);text-decoration:none} .toc a:hover{text-decoration:underline}
+.eq{font-family:"IBM Plex Mono",monospace;font-size:13.5px;background:var(--paper);border:1px solid var(--rule);border-radius:6px;padding:8px 12px;margin:10px 0;overflow-x:auto;white-space:pre}
+</style>
+<div class="wrap">
+<header class="hero">
+  <p class="eyebrow">S3G4 LAB · referencia para el DMM de la rev 2.1 · 2 de 9</p>
+  <h1>Anatomía del HydraMeter</h1>
+  <p class="lede">Un multímetro abierto con todo el front-end discreto: entrada de tensión con protección escalonada, ohmios con medida Kelvin en el borne y derivadores de cuatro terminales, alrededor de un PGA y un ADC ΣΔ de 16 bits.</p>
+  <ul class="toc"><li><a href="#resumen">Lo que nos llevamos</a></li><li><a href="#metodo">1 · Qué se analizó</a></li><li><a href="#arquitectura">2 · Arquitectura</a></li><li><a href="#tension">3 · Tensión y protección</a></li><li><a href="#corriente">4 · Corriente</a></li><li><a href="#ohmios">5 · Ohmios y diodo</a></li><li><a href="#adc">6 · PGA y ADC</a></li><li><a href="#firmware">7 · Firmware</a></li><li><a href="#alimentacion">8 · Alimentación</a></li><li><a href="#seguridad">9 · Seguridad</a></li><li><a href="#no-copiar">10 · Lo que no conviene copiar</a></li><li><a href="#modulos">11 · Módulos</a></li><li><a href="#comparacion">12 · Comparación</a></li><li><a href="#propuestas">13 · Propuestas P23–P27</a></li><li><a href="#correcciones">14 · Correcciones</a></li></ul>
+</header>
+<section id="resumen">
+  <div class="shead"><span class="num">★</span><h2>Lo que nos llevamos</h2></div>
+
+  <p>El HydraMeter es un multímetro abierto de John Duffy, diseñado en KiCad y documentado en hackaday. Todo su front-end es discreto: secciones separadas de tensión, corriente y ohmios, un PGA con multiplexor y un ADC ΣΔ de 16 bits. Su autor dice que <b>no está pensado para medir la red</b> y que es una prueba de concepto. Aun así enseña tres cosas que el TIDA-01012 no tenía: <b>protección escalonada de verdad</b>, <b>ohmios con medida Kelvin en el borne</b> y <b>derivadores de cuatro terminales</b>.</p>
+  <div class="tw"><table class="lesson">
+    <thead><tr><th>Hallazgo</th><th>En el HydraMeter</th><th>Para la rev 2.1</th><th>Veredicto</th></tr></thead>
+    <tbody>
+      <tr><td>Protección escalonada en V/Ω</td><td>Resistencias de inserción en serie, MOV de 230 Vrms y GDT de 75 V hacia el borne COM, y un MOV de 3.3 V en la toma (§3)</td><td>Cada etapa baja la falla un escalón; la corriente de falla vuelve por el borne, no por pistas finas. Base para RD-10 (P23)</td><td><span class="tag t-ok">Adoptar la idea</span></td></tr>
+      <tr><td>Patas bajas conmutadas con 1 MΩ arriba</td><td>Como el TIDA, pero la resistencia de arriba es 1 MΩ: la entrada es 10 MΩ solo en el rango bajo y 1.1 MΩ en los demás (§3)</td><td>Mantener 10 MΩ arriba, como el TIDA</td><td><span class="tag t-crit">Evitar</span></td></tr>
+      <tr><td>Compensación que no cuadra</td><td>Con los valores nominales, el rango ÷1.11 perdería ≈ 9 % por encima de ≈ 530 Hz, sin contar la capacidad del MOV de la toma (§3)</td><td>Las capacidades de MOV, TVS y GDT entran en el divisor y hay que contarlas. En la toma, mejor diodos de baja capacidad</td><td><span class="tag t-warn">Tener en cuenta</span></td></tr>
+      <tr><td>Ohmios con medida Kelvin en el borne</td><td>La corriente sale por su propio camino protegido (diodo, fusible, 1 kΩ de 1 W) y la tensión se mide en el borne con la entrada de tensión (§5)</td><td>La protección no entra en la medida. Confirma la idea de nuestra sección H (P24)</td><td><span class="tag t-ok">Adoptar</span></td></tr>
+      <tr><td>Medir la corriente de la fuente sin cargar el nodo</td><td>Amplificador y P-MOS que convierten la caída en la R de rango en una corriente hacia 1 kΩ referido a COM (§5)</td><td>Sustituye a los divisores ÷4 de nuestra sección H, que roban corriente al nodo de medida (P25)</td><td><span class="tag t-ok">Adoptar</span></td></tr>
+      <tr><td>Limitar la tensión del DUT</td><td>Un N-MOS en seguidor de fuente mantiene el DUT por debajo de ≈ 1.5 V en los rangos altos, para seguir en el rango de 10 MΩ (§5)</td><td>Útil si nuestra entrada en ohmios tiene un tope de tensión (P24)</td><td><span class="tag t-open">Estudiar</span></td></tr>
+      <tr><td>Derivador de 4 terminales y punto estrella</td><td>10 mΩ en 2512 de 4 pines; COM sale del pin de sentido del lado del borne; diodos en antiparalelo en cada derivador (§4)</td><td>Directo a nuestro derivador de 0.1 Ω (P27)</td><td><span class="tag t-ok">Adoptar</span></td></tr>
+      <tr><td>Calibración por tablas de varios puntos</td><td>Pares (código, valor real) por rango, de 3 a 15 puntos, con interpolación lineal (§7)</td><td>Corrige también la no linealidad del ADC, nuestro punto débil (P26)</td><td><span class="tag t-ok">Adoptar</span></td></tr>
+      <tr><td>COM a 1.65 V y comunicación aislada</td><td>Instrumento flotante con batería; el enlace sale por un aislador digital y un DC-DC aislado (§8)</td><td>No aplicable: nuestro COM es la masa común (RD-05)</td><td><span class="tag t-crit">No aplicable</span></td></tr>
+      <tr><td>Módulos</td><td>Raspberry Pi Pico, radios, dos DC-DC aislados en módulo, y el PGA y el ADC en placas «breakout» (§11)</td><td>Nada de esto entra: tenemos el G473 y ±4.9 V referidos a masa</td><td><span class="tag t-crit">No adoptar</span></td></tr>
+    </tbody>
+  </table></div>
+
+</section>
+<section id="metodo">
+  <div class="shead"><span class="num">1</span><h2>Qué se analizó y cómo</h2></div>
+
+  <ul class="tight">
+    <li><b>Proyecto KiCad 8</b> <code>research_and_tests/HydraMeter_0.4/MMTR_AFE_00_04_TORELEASE/</code> (7 hojas, versión 0.4 de diciembre de 2024). Exporté la netlist con <code>kicad-cli</code> 10 y la leí pieza a pieza: valor, número de pieza y red de cada pin. El PDF que trae el proyecto son imágenes sin texto.</li>
+    <li><b>Bitácora del autor</b> «Schematic and Operation» (hackaday, log 223270, sep. 2023). Explica la intención de cada bloque, pero es <b>anterior</b> a la v0.4: allí la entrada tenía diez resistencias y un relé de estado sólido en ohmios; en la v0.4 son cuatro y el relé ya no está. <b>Manda la netlist.</b></li>
+    <li><b>Firmware</b> de la placa analógica <code>Code/HackBoard_V02_10_shbrd_cal/</code>: configuración del ADC, autorango, cálculo de ohmios, alterna y tablas de calibración.</li>
+    <li><b>README</b>: la placa fabricada es la v0.3 y necesitó muchos retoques a mano; los cambios de la v0.4 están <b>sin probar</b>.</li>
+    <li>Cálculos en <code>herramientas/calc_dmm_hydrameter.py</code>; tres redibujos en <code>draw_dmm_hydrameter.py</code> (0 solapes con <code>chk_dmm.py</code>, revisados a la vista).</li>
+  </ul>
+
+</section>
+<section id="arquitectura">
+  <div class="shead"><span class="num">2</span><h2>Arquitectura</h2></div>
+
+  <pre class="mermaid">flowchart LR
+  VP["Borne V/Ω"] --> VAFE["Entrada de tensión<br/>1 MΩ + MOV + GDT + patas (NL7WB66)"]
+  VP -. "interruptor del panel" .- OHM["Fuente de ohmios<br/>9.5 V aislados, 4 R de rango"]
+  OHM --> ISENSE["LMC7101 + P-MOS<br/>corriente de la fuente"]
+  AJ["Borne A"] --> AAFE["F1 16 A + 10 mΩ (4 terminales)"]
+  MJ["Borne mA/µA"] --> MAFE["F2 500 mA + 100 Ω / 0.33 Ω"]
+  VAFE --> PGA["MCP6S28<br/>mux 8 + PGA ×1…×32"]
+  AAFE --> PGA
+  MAFE --> PGA
+  ISENSE --> PGA
+  PGA --> ADC["MCP3461R · ΣΔ 16 bits<br/>diferencial frente a COM"]
+  ADC -->|SPI| MCU["Raspberry Pi Pico"]
+  MCU -->|"74HC595 ×3, 74HCS165 ×2"| VAFE
+  MCU -->|"aislador + RS-422"| DISP["Pantalla aparte"]</pre>
+  <p>Hay tres secciones de entrada separadas, cada una con su protección, y todas terminan en el mismo PGA. Las referencias de tensión son COM (1.65 V), A0V/A3V3 (analógico) y D0V/D3V3 (digital). El borne COM no se une directamente a la red COM: pasa por el derivador de 10 A (§4).</p>
+
+</section>
+<section id="tension">
+  <div class="shead"><span class="num">3</span><h2>Entrada de tensión: protección escalonada</h2></div>
+
+  <figure><div class="sx"><svg class="sch" viewBox="0 0 1300 520" width="1300" role="img" aria-label="HydraMeter: entrada de tension con proteccion escalonada" xmlns="http://www.w3.org/2000/svg"><circle class="ban" cx="70" cy="120" r="9" style="stroke:#b3261e"/><circle class="fillsym" cx="70" cy="120" r="3.5"/><text class="ref" x="54" y="124" text-anchor="end">Vpin</text><polyline class="w" points="79,120 100,120"/><polyline class="w" points="100,120 140.0,120.0"/><polyline class="w" points="180.0,120.0 220,120"/><polyline class="sym" points="-20,0 -15,-6 -10,6 -5,-6 0,6 5,-6 10,6 15,-6 20,0" transform="translate(160.0,120.0) rotate(0.0)"/><text class="ref" x="160.0" y="108.0" text-anchor="middle">R1+R2</text><text class="val" x="160.0" y="142.0" text-anchor="middle">2 × 100 kΩ THT</text><polyline class="w" points="220,120 260,120"/><circle class="dot" cx="240" cy="120" r="3.2"/><polyline class="w" points="110,120 110,70 140,70"/><circle class="dot" cx="110" cy="120" r="3.2"/><polyline class="w" points="140,70 156.0,70.0"/><polyline class="w" points="164.0,70.0 180,70"/><g transform="translate(160.0,70.0) rotate(0.0)"><line class="sym" x1="-4" y1="-11" x2="-4" y2="11"/><line class="sym" x1="4" y1="-11" x2="4" y2="11"/></g><text class="ref" x="160.0" y="58.0" text-anchor="middle">C54 · 1.5 nF</text><polyline class="w" points="180,70 240,70 240,120"/><polyline class="w" points="240,70 240,30 330,30"/><polyline class="w" points="330,30 346.0,30.0"/><polyline class="w" points="354.0,30.0 370,30"/><g transform="translate(350.0,30.0) rotate(0.0)"><line class="sym" x1="-4" y1="-11" x2="-4" y2="11"/><line class="sym" x1="4" y1="-11" x2="4" y2="11"/></g><text class="ref" x="350.0" y="18.0" text-anchor="middle">C55 · 220 pF</text><polyline class="w" points="370,30 560,30 560,120"/><polyline class="w" points="260,120 290.0,120.0"/><polyline class="w" points="330.0,120.0 360,120"/><polyline class="sym" points="-20,0 -15,-6 -10,6 -5,-6 0,6 5,-6 10,6 15,-6 20,0" transform="translate(310.0,120.0) rotate(0.0)"/><text class="ref" x="310.0" y="108.0" text-anchor="middle">R3</text><text class="val" x="310.0" y="142.0" text-anchor="middle">400 kΩ THT</text><polyline class="w" points="360,120 400,120"/><circle class="dot" cx="380" cy="120" r="3.2"/><polyline class="w" points="400,120 430.0,120.0"/><polyline class="w" points="470.0,120.0 500,120"/><polyline class="sym" points="-20,0 -15,-6 -10,6 -5,-6 0,6 5,-6 10,6 15,-6 20,0" transform="translate(450.0,120.0) rotate(0.0)"/><text class="ref" x="450.0" y="108.0" text-anchor="middle">R4</text><text class="val" x="450.0" y="142.0" text-anchor="middle">400 kΩ THT</text><polyline class="w" points="500,120 1100,120"/><text class="net" x="254" y="136" text-anchor="start">N1</text><text class="net" x="394" y="136" text-anchor="start">N2</text><text class="net" x="570" y="136" text-anchor="start">Vout</text><polyline class="w" points="240,120 240.0,199.0"/><polyline class="w" points="240.0,221.0 240,300"/><g transform="translate(240.0,210.0) rotate(90.0)"><polygon class="fillsym" points="-11,-9 -11,9 0,0"/><polygon class="fillsym" points="11,-9 11,9 0,0"/><polyline class="sym" points="-3,-11 0,-9 0,9 3,11"/></g><text class="ref" x="226.0" y="207.0" text-anchor="end">RT1</text><text class="val" x="226.0" y="221.0" text-anchor="end">MOV 230 Vrms</text><polyline class="w" points="380,120 380.0,199.0"/><polyline class="w" points="380.0,221.0 380,300"/><g transform="translate(380.0,210.0) rotate(90.0)"><polygon class="fillsym" points="-11,-9 -11,9 0,0"/><polygon class="fillsym" points="11,-9 11,9 0,0"/><polyline class="sym" points="-3,-11 0,-9 0,9 3,11"/></g><text class="ref" x="394.0" y="207.0" text-anchor="start">RT2</text><text class="val" x="394.0" y="221.0" text-anchor="start">GDT 75 V</text><polyline class="w" points="220,300 380,300"/><circle class="dot" cx="240" cy="300" r="3.2"/><polygon class="port" points="220,292 138.4,292 130.4,300 138.4,308 220,308"/><text class="portt" x="215" y="304" text-anchor="end">Common_Jack</text><circle class="dot" cx="560" cy="120" r="3.2"/><polyline class="w" points="560,120 560.0,199.0"/><polyline class="w" points="560.0,221.0 560,300"/><g transform="translate(560.0,210.0) rotate(90.0)"><polygon class="fillsym" points="-11,-9 -11,9 0,0"/><polygon class="fillsym" points="11,-9 11,9 0,0"/><polyline class="sym" points="-3,-11 0,-9 0,9 3,11"/></g><text class="ref" x="546.0" y="207.0" text-anchor="end">RT3</text><text class="val" x="546.0" y="221.0" text-anchor="end">MOV 3.3 V</text><circle class="dot" cx="640" cy="120" r="3.2"/><polyline class="w" points="640,120 640.0,190.0"/><polyline class="w" points="640.0,230.0 640,300"/><polyline class="sym" points="-20,0 -15,-6 -10,6 -5,-6 0,6 5,-6 10,6 15,-6 20,0" transform="translate(640.0,210.0) rotate(90.0)"/><text class="ref" x="654.0" y="207.0" text-anchor="start">R12</text><text class="val" x="654.0" y="221.0" text-anchor="start">9.1 MΩ</text><circle class="dot" cx="720" cy="120" r="3.2"/><polyline class="w" points="720,120 720.0,206.0"/><polyline class="w" points="720.0,214.0 720,300"/><g transform="translate(720.0,210.0) rotate(90.0)"><line class="sym" x1="-4" y1="-11" x2="-4" y2="11"/><line class="sym" x1="4" y1="-11" x2="4" y2="11"/></g><text class="ref" x="734.0" y="207.0" text-anchor="start">C73</text><text class="val" x="734.0" y="221.0" text-anchor="start">33 pF</text><circle class="dot" cx="850" cy="120" r="3.2"/><polyline class="w" points="850,120 850.0,160.0"/><polyline class="w" points="850.0,200.0 850,240"/><polyline class="sym" points="-20,0 -15,-6 -10,6 -5,-6 0,6 5,-6 10,6 15,-6 20,0" transform="translate(850.0,180.0) rotate(90.0)"/><text class="ref" x="836.0" y="177.0" text-anchor="end">R13</text><text class="val" x="836.0" y="191.0" text-anchor="end">100 kΩ</text><polyline class="w" points="850,130 890,130"/><circle class="dot" cx="850" cy="130" r="3.2"/><polyline class="w" points="890,130 890.0,181.0"/><polyline class="w" points="890.0,189.0 890,240"/><g transform="translate(890.0,185.0) rotate(90.0)"><line class="sym" x1="-4" y1="-11" x2="-4" y2="11"/><line class="sym" x1="4" y1="-11" x2="4" y2="11"/></g><text class="ref" x="904.0" y="182.0" text-anchor="start">C59</text><text class="val" x="904.0" y="196.0" text-anchor="start">1.8 nF</text><polyline class="w" points="850,240 890,240"/><circle class="dot" cx="850" cy="240" r="3.2"/><polyline class="w" points="850,240 850,330"/><circle class="dot" cx="1010" cy="120" r="3.2"/><polyline class="w" points="1010,120 1010.0,160.0"/><polyline class="w" points="1010.0,200.0 1010,240"/><polyline class="sym" points="-20,0 -15,-6 -10,6 -5,-6 0,6 5,-6 10,6 15,-6 20,0" transform="translate(1010.0,180.0) rotate(90.0)"/><text class="ref" x="996.0" y="177.0" text-anchor="end">R14</text><text class="val" x="996.0" y="191.0" text-anchor="end">6.8 kΩ</text><polyline class="w" points="1010,130 1050,130"/><circle class="dot" cx="1010" cy="130" r="3.2"/><polyline class="w" points="1050,130 1050.0,181.0"/><polyline class="w" points="1050.0,189.0 1050,240"/><g transform="translate(1050.0,185.0) rotate(90.0)"><line class="sym" x1="-4" y1="-11" x2="-4" y2="11"/><line class="sym" x1="4" y1="-11" x2="4" y2="11"/></g><text class="ref" x="1064.0" y="182.0" text-anchor="start">C61</text><text class="val" x="1064.0" y="196.0" text-anchor="start">27 nF</text><polyline class="w" points="1010,240 1050,240"/><circle class="dot" cx="1010" cy="240" r="3.2"/><polyline class="w" points="1010,240 1010,330"/><rect class="ic" x="800" y="342" width="300" height="50" rx="3"/><text class="ref" x="950.0" y="334" text-anchor="middle"></text><polyline class="w" points="850,342 850,330"/><text class="pin" x="850" y="355" text-anchor="middle">NO1</text><polyline class="w" points="1010,342 1010,330"/><text class="pin" x="1010" y="355" text-anchor="middle">NO2</text><polyline class="w" points="950,392 950,404"/><text class="pin" x="950" y="387" text-anchor="middle">COM</text><text class="ref" x="950" y="374" text-anchor="middle">U1 · NL7WB66 (2 × SPST, 3.3 V)</text><polyline class="w" points="950,404 950,440"/><polyline class="w" points="560,300 560,440"/><polyline class="w" points="640,300 640,440"/><polyline class="w" points="720,300 720,440"/><polyline class="w" points="520,440 950,440"/><circle class="dot" cx="640" cy="440" r="3.2"/><circle class="dot" cx="720" cy="440" r="3.2"/><polygon class="port" points="520,432 431.8,432 423.8,440 431.8,448 520,448"/><text class="portt" x="515" y="444" text-anchor="end">COM = 1.65 V</text><polyline class="w" points="1100,120 1120.0,120.0"/><polyline class="w" points="1160.0,120.0 1180,120"/><polyline class="sym" points="-20,0 -15,-6 -10,6 -5,-6 0,6 5,-6 10,6 15,-6 20,0" transform="translate(1140.0,120.0) rotate(0.0)"/><text class="ref" x="1140.0" y="108.0" text-anchor="middle">R11</text><text class="val" x="1140.0" y="142.0" text-anchor="middle">1 kΩ</text><polyline class="w" points="1180,120 1200,120"/><polygon class="port" points="1200,112 1268.4,112 1276.4,120 1268.4,128 1200,128"/><text class="portt" x="1205" y="124" text-anchor="start">CH0 → PGA</text><text class="note" x="20" y="480" text-anchor="start">Divisiones: ÷1.11 (10.1 MΩ), ÷11.1 (1.10 MΩ), ÷148 (1.01 MΩ). Fondos ±1.7, ±16.7 y ±222 V con ±1.5 V en la toma.</text><text class="note" x="20" y="500" text-anchor="start">RT1 y RT2 devuelven la corriente de falla al borne COM, no a la red COM interna; RT3 sujeta la toma a pocos voltios.</text></svg></div><figcaption>Redibujo de la hoja Volt_AFE (v0.4). Los descargadores se dibujan con el símbolo de un diodo bidireccional.</figcaption></figure>
+
+  <h3>Cuatro escalones de protección</h3>
+  <p>La resistencia de entrada no es una pieza, sino cuatro de inserción (THT verticales, para tener más distancia de aislamiento), con un descargador después de cada tramo. El autor lo explica con una falla de 10 kV de ejemplo:</p>
+  <ol class="tight">
+    <li><b>R1 + R2 (200 kΩ) y RT1</b>, un MOV de 230 Vrms (TDK B72205S0231K311) hacia el <b>borne COM</b>. Sujeta N1 a unos 400 V; por R1 + R2 pasan ≈ 48 mA durante el pulso.</li>
+    <li><b>R3 (400 kΩ) y RT2</b>, un GDT de 75 V (Bourns 2045-07-BLF), también al borne COM: unos 0.8 mA.</li>
+    <li><b>R4 (400 kΩ) y RT3</b>, un MOV de 3.3 V en 0603 hacia COM: unos 175 µA.</li>
+    <li><b>R11 (1 kΩ)</b> y los diodos internos del PGA.</li>
+  </ol>
+  <p>Con la red (230 Vrms) el MOV de 230 V apenas conduce y la cadena de 1 MΩ deja pasar 0.33 mA de pico, que RT3 absorbe. Cada resistencia disipa milivatios (5 mW en las de 100 kΩ, 21 mW en las de 400 kΩ): la entrada aguantaría la red de forma continua. El detalle importante es <b>adónde vuelve la corriente de falla</b>: RT1 y RT2 van al borne COM, no a la red COM, para que los picos no recorran pistas finas.</p>
+  <h3>Rangos: patas bajas conmutadas, como el TIDA</h3>
+  <p>Debajo de la toma, R12 (9.1 MΩ) está siempre, y un NL7WB66 (dos conmutadores de 3.3 V) añade R13 (100 kΩ) o R14 (6.8 kΩ) hacia COM. La toma va al PGA por R11 y se limita a ±1.5 V respecto a COM.</p>
+  <div class="tw"><table>
+    <thead><tr><th>División</th><th>Z de entrada</th><th>Fondo</th><th>τ de la pata</th><th>Error de la división capacitiva</th></tr></thead>
+    <tbody><tr><td>÷1.11</td><td class='n'>10.10 MΩ</td><td class='n'>±1.7 V</td><td class='n'>300 µs</td><td class='n'>-9.4 % desde ≈ 530 Hz</td></tr><tr><td>÷11.1</td><td class='n'>1.10 MΩ</td><td class='n'>±16.7 V</td><td class='n'>181 µs</td><td class='n'>+1.1 % desde ≈ 878 Hz</td></tr><tr><td>÷148</td><td class='n'>1.01 MΩ</td><td class='n'>±222.3 V</td><td class='n'>184 µs</td><td class='n'>+0.3 % desde ≈ 866 Hz</td></tr></tbody>
+  </table></div>
+  <p class="meta">Cálculo propio con los valores de la netlist. El firmware calibra las impedancias reales en 1.104 MΩ y 1.011 MΩ, que cuadran con 1.10 y 1.01 MΩ.</p>
+  <p>Como arriba hay solo 1 MΩ, <b>la impedancia de entrada cae a ≈ 1.1 MΩ</b> en cuanto se pasa de ±1.7 V. El autor lo sabe y dejó escrita una versión con 10 MΩ constantes que no llegó a probar. Para nosotros, RF/RD piden 10 MΩ: aquí el TIDA hace mejor el trabajo.</p>
+  <h3>La compensación no cuadra con los valores nominales</h3>
+  <p>Arriba hay dos tramos con constantes de tiempo distintas: R1 + R2 con C54 dan 300 µs y R3 + R4 con C55 dan 176 µs. Debajo, R12 con C73 dan 300 µs y las patas de 100 kΩ y 6.8 kΩ, 181 y 184 µs. Además, el MOV RT1 añade unos 70 pF en N1 (cifra del autor). Calculando la división capacitiva con todo eso, <b>los rangos ÷11.1 y ÷148 quedan bien</b> (+1.1 % y +0.3 %), pero <b>el ÷1.11 perdería ≈ 9 % por encima de ≈ 530 Hz</b>. Y eso sin contar el MOV de 3.3 V de la toma, cuya capacidad (en un 0603, de cientos de pF; <b>NO VERIFICADO</b>) lo empeoraría. O hay algo que no aparece en el esquema, o ese rango no mide bien la alterna por encima de unos cientos de hercios. La lección para nosotros: <b>las capacidades de los descargadores son parte del divisor</b>.</p>
+
+</section>
+<section id="corriente">
+  <div class="shead"><span class="num">4</span><h2>Corriente: tres derivadores, cuatro terminales</h2></div>
+
+  <figure><div class="sx"><svg class="sch" viewBox="0 0 1300 460" width="1300" role="img" aria-label="HydraMeter: derivadores de A, mA y µA" xmlns="http://www.w3.org/2000/svg"><circle class="ban" cx="70" cy="80" r="9" style="stroke:#b3261e"/><circle class="fillsym" cx="70" cy="80" r="3.5"/><text class="ref" x="54" y="84" text-anchor="end">A</text><polyline class="w" points="79,80 110,80"/><polyline class="w" points="110,80 142.0,80.0"/><polyline class="w" points="178.0,80.0 210,80"/><g transform="translate(160.0,80.0) rotate(0.0)"><rect class="sym" x="-18" y="-6" width="36" height="12"/><line class="sym" x1="-18" y1="0" x2="18" y2="0"/></g><text class="ref" x="160.0" y="68.0" text-anchor="middle">F1</text><text class="val" x="160.0" y="102.0" text-anchor="middle">16 A</text><polyline class="w" points="210,80 600,80"/><circle class="dot" cx="600" cy="80" r="3.2"/><circle class="ban" cx="70" cy="240" r="9" style="stroke:#b3261e"/><circle class="fillsym" cx="70" cy="240" r="3.5"/><text class="ref" x="54" y="244" text-anchor="end">mA/µA</text><polyline class="w" points="79,240 110,240"/><polyline class="w" points="110,240 142.0,240.0"/><polyline class="w" points="178.0,240.0 210,240"/><g transform="translate(160.0,240.0) rotate(0.0)"><rect class="sym" x="-18" y="-6" width="36" height="12"/><line class="sym" x1="-18" y1="0" x2="18" y2="0"/></g><text class="ref" x="160.0" y="228.0" text-anchor="middle">F2</text><text class="val" x="160.0" y="262.0" text-anchor="middle">500 mA</text><polyline class="w" points="210,240 260,240"/><circle class="dot" cx="250" cy="240" r="3.2"/><polyline class="w" points="260,240 300.0,240.0"/><polyline class="w" points="340.0,240.0 380,240"/><polyline class="sym" points="-20,0 -15,-6 -10,6 -5,-6 0,6 5,-6 10,6 15,-6 20,0" transform="translate(320.0,240.0) rotate(0.0)"/><text class="ref" x="320.0" y="228.0" text-anchor="middle">R17</text><text class="val" x="320.0" y="262.0" text-anchor="middle">100 Ω</text><polyline class="w" points="380,240 420,240"/><circle class="dot" cx="400" cy="240" r="3.2"/><polyline class="w" points="420,240 460.0,240.0"/><polyline class="w" points="500.0,240.0 540,240"/><polyline class="sym" points="-20,0 -15,-6 -10,6 -5,-6 0,6 5,-6 10,6 15,-6 20,0" transform="translate(480.0,240.0) rotate(0.0)"/><text class="ref" x="480.0" y="228.0" text-anchor="middle">R16</text><text class="val" x="480.0" y="262.0" text-anchor="middle">0.33 Ω</text><polyline class="w" points="540,240 600,240 600,80"/><polyline class="w" points="250,240 250,190 290,190"/><circle class="ct" cx="320" cy="190" r="2.6"/><circle class="ct" cx="360" cy="178" r="2.6"/><circle class="ct" cx="360" cy="202" r="2.6"/><line class="blade" x1="320" y1="190" x2="356" y2="183"/><text class="pin" x="366" y="174" text-anchor="start"></text><text class="pin" x="366" y="214" text-anchor="start"></text><polyline class="w" points="360,178 400,178 400,240"/><text class="note" x="262" y="172" text-anchor="start">J5–J6: interruptor del panel, puentea R17 en mA</text><polyline class="w" points="260,290 309.0,290.0"/><polyline class="w" points="331.0,290.0 380,290"/><g transform="translate(320.0,290.0) rotate(0.0)"><polygon class="fillsym" points="-11,-9 -11,9 0,0"/><polygon class="fillsym" points="11,-9 11,9 0,0"/><polyline class="sym" points="-3,-11 0,-9 0,9 3,11"/></g><text class="ref" x="320.0" y="316.0" text-anchor="middle">D7/D8</text><text class="val" x="320.0" y="328.0" text-anchor="middle">2 × 1N4007 antiparalelo</text><polyline class="w" points="250,240 250,290 260,290"/><polyline class="w" points="380,290 400,290 400,240"/><polyline class="w" points="420,290 469.0,290.0"/><polyline class="w" points="491.0,290.0 540,290"/><g transform="translate(480.0,290.0) rotate(0.0)"><polygon class="fillsym" points="-11,-9 -11,9 0,0"/><polygon class="fillsym" points="11,-9 11,9 0,0"/><polyline class="sym" points="-3,-11 0,-9 0,9 3,11"/></g><text class="ref" x="480.0" y="316.0" text-anchor="middle">D9/D10</text><polyline class="w" points="410,240 410,290 420,290"/><polyline class="w" points="540,290 560,290 560,240"/><circle class="dot" cx="560" cy="240" r="3.2"/><circle class="dot" cx="410" cy="240" r="3.2"/><polyline class="w" points="600,80 660.0,80.0"/><polyline class="w" points="700.0,80.0 760,80"/><polyline class="sym" points="-20,0 -15,-6 -10,6 -5,-6 0,6 5,-6 10,6 15,-6 20,0" transform="translate(680.0,80.0) rotate(0.0)"/><text class="ref" x="680.0" y="68.0" text-anchor="middle">R15</text><text class="val" x="680.0" y="102.0" text-anchor="middle">10 mΩ · 4 terminales</text><polyline class="w" points="760,80 900,80"/><polygon class="port" points="900,72 981.6,72 989.6,80 981.6,88 900,88"/><text class="portt" x="905" y="84" text-anchor="start">Common_Jack</text><polyline class="w" points="620,80 620,130"/><circle class="dot" cx="620" cy="80" r="3.2"/><polyline class="w" points="740,80 740,160"/><circle class="dot" cx="740" cy="80" r="3.2"/><text class="net" x="630" y="141" text-anchor="start">sentido (pin 4)</text><text class="net" x="750" y="171" text-anchor="start">pin 3 = COM (punto estrella)</text><polyline class="w" points="600,30 669.0,30.0"/><polyline class="w" points="691.0,30.0 760,30"/><g transform="translate(680.0,30.0) rotate(0.0)"><polygon class="fillsym" points="-11,-9 -11,9 0,0"/><polygon class="fillsym" points="11,-9 11,9 0,0"/><polyline class="sym" points="-3,-11 0,-9 0,9 3,11"/></g><text class="ref" x="680.0" y="18.0" text-anchor="middle">D11/D12</text><polyline class="w" points="600,80 600,30"/><polyline class="w" points="760,30 780,30 780,80"/><circle class="dot" cx="780" cy="80" r="3.2"/><polyline class="w" points="250,240 250,340 900,340"/><polygon class="port" points="900,332 1133.4,332 1141.4,340 1133.4,348 900,348"/><text class="portt" x="905" y="344" text-anchor="start">CH2 (µA): R20+R23 2 kΩ + MOV 3.3 V</text><polyline class="w" points="410,240 410,380 900,380"/><polygon class="port" points="900,372 1133.4,372 1141.4,380 1133.4,388 900,388"/><text class="portt" x="905" y="384" text-anchor="start">CH1 (mA): R19+R22 2 kΩ + MOV 3.3 V</text><polyline class="w" points="620,130 620,420 900,420"/><polygon class="port" points="900,412 1126.8,412 1134.8,420 1126.8,428 900,428"/><text class="portt" x="905" y="424" text-anchor="start">CH3 (A): R18+R21 2 kΩ + MOV 3.3 V</text><circle class="dot" cx="250" cy="290" r="3.2"/><circle class="dot" cx="410" cy="290" r="3.2"/></svg></div><figcaption>Redibujo de la hoja Amp_AFE. El hilo grueso J30–J34 (README: 18 AWG) une el fusible F1 con el derivador R15.</figcaption></figure>
+
+  <div class="tw"><table>
+    <thead><tr><th>Rango</th><th>Resistencia medida</th><th>Fondo (tabla de calibración)</th><th>Caída</th><th>Tras el PGA</th><th>Fusible</th></tr></thead>
+    <tbody>
+      <tr><td>A</td><td>R15 = 10 mΩ</td><td class="n">±3 A calibrados (≈ 10 A previstos)</td><td class="n">30 mV</td><td class="n">0.24 V (×8)</td><td>F1, 16 A</td></tr>
+      <tr><td>mA</td><td>R16 + R15 = 0.34 Ω</td><td class="n">±0.5 A</td><td class="n">170 mV</td><td class="n">0.85 V (×5)</td><td>F2, 500 mA</td></tr>
+      <tr><td>µA</td><td>R17 + R16 + R15 = 100.3 Ω</td><td class="n">±1.4 mA</td><td class="n">142 mV</td><td class="n">1.14 V (×8)</td><td>F2, 500 mA</td></tr>
+    </tbody>
+  </table></div>
+  <ul class="tight">
+    <li><b>Cuatro terminales.</b> R15 es una 2512 de 4 pines: dos llevan la corriente y dos miden. <b>COM nace en el pin de sentido del lado del borne</b>, de modo que es un punto estrella: en uso normal casi no circula corriente entre COM y el borne, y una corriente de falla de la entrada de tensión vuelve directa al borne.</li>
+    <li><b>Diodos en antiparalelo</b> (1N4007) sobre cada derivador: si se aplica tensión, sujetan la caída hasta que abre el fusible.</li>
+    <li><b>Un interruptor del panel</b> (J5–J6) puentea R17 en el rango de mA. El firmware se entera leyendo los interruptores por los 74HCS165.</li>
+    <li>Las tres medidas llegan al PGA por 2 kΩ y un MOV de 3.3 V, igual que la tensión.</li>
+    <li>Con 16 A, R15 disiparía 2.6 W; la potencia de esa 2512 está <b>NO VERIFICADA</b>. El fusible parece grande para el derivador.</li>
+  </ul>
+
+</section>
+<section id="ohmios">
+  <div class="shead"><span class="num">5</span><h2>Ohmios y diodo: Kelvin en el borne</h2></div>
+
+  <figure><div class="sx"><svg class="sch" viewBox="0 0 1300 520" width="1300" role="img" aria-label="HydraMeter: fuente de ohmios con medida Kelvin en el borne" xmlns="http://www.w3.org/2000/svg"><polygon class="port" points="20,62 260.0,62 268.0,70 260.0,78 20,78"/><text class="portt" x="25" y="74" text-anchor="start">9V5_Ohms (B0309S aislado, ref. COM)</text><polyline class="w" points="262,70 290.0,70.0"/><polyline class="w" points="312.0,70.0 340,70"/><g transform="translate(301.0,70.0) rotate(0.0)"><polygon class="fillsym" points="-7,-9 -7,9 6,0"/><line class="sym" x1="6" y1="-9" x2="6" y2="9"/></g><text class="ref" x="301.0" y="58.0" text-anchor="middle">D2</text><text class="val" x="301.0" y="92.0" text-anchor="middle">1N4007</text><polyline class="w" points="340,70 480,70"/><circle class="dot" cx="400" cy="70" r="3.2"/><text class="net" x="410" y="65" text-anchor="start">≈8.9 V</text><rect class="ic" x="360" y="120" width="240" height="70" rx="3"/><text class="ref" x="480.0" y="112" text-anchor="middle"></text><polyline class="w" points="400,120 400,108"/><text class="pin" x="400" y="133" text-anchor="middle"></text><polyline class="w" points="400,190 400,202"/><text class="pin" x="400" y="185" text-anchor="middle"></text><text class="ref" x="480" y="146" text-anchor="middle">Q2–Q5 (P-MOS) + R26–R29</text><text class="pin" x="480" y="166" text-anchor="middle">510 Ω · 10 kΩ · 100 kΩ · 1 MΩ, uno a la vez</text><polyline class="w" points="400,70 400,108"/><polyline class="w" points="400,202 400,260"/><circle class="dot" cx="400" cy="230" r="3.2"/><rect class="ic" x="700" y="120" width="260" height="70" rx="3"/><text class="ref" x="830.0" y="112" text-anchor="middle"></text><polyline class="w" points="700,140 688,140"/><text class="pin" x="705" y="144" text-anchor="start"></text><polyline class="w" points="700,170 688,170"/><text class="pin" x="705" y="174" text-anchor="start"></text><polyline class="w" points="960,155 972,155"/><text class="pin" x="955" y="159" text-anchor="end"></text><text class="ref" x="830" y="146" text-anchor="middle">U4 LMC7101 + Q6 + R30/R31</text><text class="pin" x="830" y="166" text-anchor="middle">I(R) → V(CH4) = caída / 3.3</text><polyline class="w" points="480,70 660,70 660,140 688,140"/><polyline class="w" points="400,230 660,230 660,170 688,170"/><polyline class="w" points="972,155 1040,155"/><polygon class="port" points="1040,147 1148.0,147 1156.0,155 1148.0,163 1040,163"/><text class="portt" x="1045" y="159" text-anchor="start">CH4 (corriente)</text><rect class="ic" x="340" y="270" width="120" height="54" rx="3"/><text class="ref" x="400.0" y="262" text-anchor="middle"></text><polyline class="w" points="400,270 400,258"/><text class="pin" x="400" y="283" text-anchor="middle"></text><polyline class="w" points="400,324 400,336"/><text class="pin" x="400" y="319" text-anchor="middle"></text><text class="ref" x="400" y="292" text-anchor="middle">Q1 · N-MOS</text><text class="pin" x="400" y="310" text-anchor="middle">seguidor de fuente</text><text class="note" x="470" y="300" text-anchor="start">puerta a la tensión del riel, o a 2.9 V con LowV_EN (rangos altos):</text><text class="note" x="470" y="318" text-anchor="start">limita la tensión del DUT para seguir en ÷1.11 (10 MΩ)</text><polyline class="w" points="400,336 400,380"/><circle class="dot" cx="400" cy="380" r="3.2"/><polyline class="w" points="400,380 440,380"/><polyline class="w" points="440,380 489.0,380.0"/><polyline class="w" points="511.0,380.0 560,380"/><g transform="translate(500.0,380.0) rotate(0.0)"><polygon class="fillsym" points="-7,-9 -7,9 6,0"/><line class="sym" x1="6" y1="-9" x2="6" y2="9"/></g><text class="ref" x="500.0" y="368.0" text-anchor="middle">D1 · 1N4007 en serie</text><polyline class="w" points="580,380 607.0,380.0"/><polyline class="w" points="643.0,380.0 670,380"/><g transform="translate(625.0,380.0) rotate(0.0)"><rect class="sym" x="-18" y="-6" width="36" height="12"/><line class="sym" x1="-18" y1="0" x2="18" y2="0"/></g><text class="ref" x="625.0" y="368.0" text-anchor="middle">F3</text><text class="val" x="625.0" y="402.0" text-anchor="middle">63 mA</text><polyline class="w" points="560,380 580,380"/><polyline class="w" points="690,380 725.0,380.0"/><polyline class="w" points="765.0,380.0 800,380"/><polyline class="sym" points="-20,0 -15,-6 -10,6 -5,-6 0,6 5,-6 10,6 15,-6 20,0" transform="translate(745.0,380.0) rotate(0.0)"/><text class="ref" x="745.0" y="368.0" text-anchor="middle">R25</text><text class="val" x="745.0" y="402.0" text-anchor="middle">1 kΩ · 1 W THT</text><polyline class="w" points="670,380 690,380"/><polyline class="w" points="800,380 860,380"/><circle class="ct" cx="860" cy="380" r="2.6"/><circle class="ct" cx="900" cy="368" r="2.6"/><circle class="ct" cx="900" cy="392" r="2.6"/><line class="blade" x1="860" y1="380" x2="896" y2="373"/><text class="pin" x="906" y="364" text-anchor="start"></text><text class="pin" x="906" y="404" text-anchor="start"></text><polyline class="w" points="900,368 1000,368"/><polygon class="port" points="1000,360 1114.6,360 1122.6,368 1114.6,376 1000,376"/><text class="portt" x="1005" y="372" text-anchor="start">Vpin (borne V/Ω)</text><text class="note" x="820" y="410" text-anchor="start">interruptor del panel (J7–J8)</text><circle class="dot" cx="400" cy="380" r="3.2"/><polyline class="w" points="400,470 400.0,446.0"/><polyline class="w" points="400.0,424.0 400,400"/><g transform="translate(400.0,435.0) rotate(-90.0)"><polygon class="fillsym" points="-7,-9 -7,9 6,0"/><line class="sym" x1="6" y1="-9" x2="6" y2="9"/></g><text class="ref" x="386.0" y="432.0" text-anchor="end">D6</text><text class="val" x="386.0" y="446.0" text-anchor="end">1N4007</text><polyline class="w" points="400,380 400,400"/><polyline class="w" points="400,380 400,380"/><circle class="dot" cx="440" cy="380" r="3.2"/><polyline class="w" points="440,380 440,400"/><polyline class="w" points="440,470 440.0,446.0"/><polyline class="w" points="440.0,424.0 440,400"/><g transform="translate(440.0,435.0) rotate(-90.0)"><polygon class="fillsym" points="-11,-9 -11,9 0,0"/><polygon class="fillsym" points="11,-9 11,9 0,0"/><polyline class="sym" points="-3,-11 0,-9 0,9 3,11"/></g><text class="ref" x="454.0" y="432.0" text-anchor="start">RT7</text><text class="val" x="454.0" y="446.0" text-anchor="start">MOV 18 V</text><polyline class="w" points="300,470 440,470"/><circle class="dot" cx="400" cy="470" r="3.2"/><polygon class="port" points="300,462 271.2,462 263.2,470 271.2,478 300,478"/><text class="portt" x="295" y="474" text-anchor="end">COM</text><text class="note" x="20" y="505" text-anchor="start">La tensión se mide en el borne con la entrada de tensión; la corriente, en la R de rango. D1, F3 y R25 no entran en la medida.</text></svg></div><figcaption>Redibujo simplificado de la hoja Ohm_AFE (v0.4). En la v0.4 ya no está el relé de estado sólido de la bitácora; Q20, Q21 y su red quedan sin montar según el README.</figcaption></figure>
+
+  <p>El autor quería pocas piezas, una prueba de diodo de al menos 3.6 V (para LED blancos y azules), un solo borne para V y Ω, algo de protección y más de seis décadas de resistencia. Lo resolvió así:</p>
+  <ul class="tight">
+    <li><b>Riel propio de ≈ 9.5 V referido a COM</b>, hecho con un DC-DC aislado (B0309S-1WR3) que se enciende solo en ohmios. Así la corriente de prueba vuelve a COM sin pasar por el amplificador que genera COM.</li>
+    <li><b>Cuatro resistencias de rango</b> (510 Ω, 10 kΩ, 100 kΩ, 1 MΩ), cada una con un P-MOS que la conecta al riel. Corriente en cortocircuito: 5.5 mA, 0.755 mA, 0.0822 mA, 0.00829 mA. Rangos del firmware: 0–330 Ω, 330 Ω–15 kΩ, 15–150 kΩ, > 150 kΩ.</li>
+    <li><b>Medida de la corriente sin cargar el nodo.</b> U4 (LMC7101) fija en R30 (3.3 kΩ) la misma caída que hay en la R de rango; esa corriente pasa por un P-MOS (Q6) y cae en R31 (1 kΩ) referida a COM. La salida es la caída dividida por 3.3: hasta 4.9 V de caída caben en ±1.5 V. Ningún divisor toca el nodo de la R de rango, así que toda la corriente va al DUT.</li>
+    <li><b>Seguidor de fuente (Q1).</b> En los rangos altos su puerta se fija a ≈ 2.9 V (LowV_EN) y el DUT queda por debajo de ≈ 1.5 V: la entrada de tensión sigue en ÷1.11, con 10 MΩ. Además consume la tensión sobrante para que el amplificador de corriente no se sature cuando el DUT es mucho menor que la R de rango.</li>
+    <li><b>Protección propia</b> del camino de corriente: D1 en serie (bloquea tensiones positivas), F3 de 63 mA, R25 de 1 kΩ y 1 W, D6 y un MOV de 18 V a COM. La conexión al borne la cierra <b>un interruptor del panel</b> (J7–J8).</li>
+    <li><b>Kelvin en el borne.</b> La tensión del DUT se mide en el borne V/Ω con la entrada de tensión. D1, F3 y R25 llevan la misma corriente que el DUT pero quedan fuera de la medida: su caída no importa.</li>
+  </ul>
+  <p>Límites: la fuga de D1, D6 y del MOV de 18 V pasa por la R de rango pero no por el DUT, y en el rango de 1 MΩ la corriente de prueba es de solo 8 µA (la fuga está <b>NO VERIFICADA</b>). La corrección por la entrada de tensión en paralelo está escrita en el firmware pero comentada («TODO: cal's off!»). No hay modo de continuidad con zumbador.</p>
+  <p><b>Diodo:</b> modo con el rango ÷11.1 y la puerta de Q1 al riel; la tensión en vacío llega a unos 8 V, de sobra para un LED azul.</p>
+
+</section>
+<section id="adc">
+  <div class="shead"><span class="num">6</span><h2>PGA y ADC</h2></div>
+
+  <ul class="tight">
+    <li><b>MCP6S28</b>: multiplexor de 8 entradas y PGA de ×1 a ×32, con su referencia en COM. Entradas: tensión, mA, µA, A, corriente de ohmios y tres para módulos.</li>
+    <li><b>MCP3461R</b>: ΣΔ de 16 bits con referencia interna de 2.4 V, entrada diferencial. Mide la salida del PGA contra COM (CH0 − CH1); también puede leer directamente cuatro entradas sin pasar por el PGA. Un LSB son 73 µV.</li>
+    <li>El reloj del ADC sale de un pin PWM de la Pico y el firmware elige el sobremuestreo (de 32 a 98 304) según la velocidad pedida. El autor quiere usarlo también como «modo osciloscopio» lento (12 bits a 1 MSa/s).</li>
+    <li>El PGA y el ADC van en placas pequeñas enchufables para poder cambiarlos: es parte de la idea de modularidad del autor.</li>
+  </ul>
+
+</section>
+<section id="firmware">
+  <div class="shead"><span class="num">7</span><h2>Firmware</h2></div>
+
+  <ul class="tight">
+    <li><b>Calibración por tablas</b> (<code>calibration.h</code>): pares (código del ADC, valor real) medidos con un instrumento de referencia. Son 15 puntos en µA, 7 en mA, 6 en A, de 3 a 5 por rango de tensión y 3–4 por rango de ohmios. Entre puntos se interpola: así se corrige también la no linealidad.</li>
+    <li><b>Continua:</b> filtro exponencial con α = 0.05.</li>
+    <li><b>Alterna:</b> resta una media muy lenta (α = 0.0007), eleva al cuadrado, suma bloques de 16 muestras y promedia en ventana; la salida es √(media) × 2. Ese factor 2 no está explicado en el código.</li>
+    <li><b>Autorango de tensión:</b> sobre un valor eficaz filtrado de los códigos; baja de rango por debajo de 800 y sube por encima de 20 000, con al menos 200 ms entre cambios.</li>
+    <li><b>Ohmios:</b> R = V / I, con V de la entrada de tensión e I de la tabla de calibración de la fuente. Autorango: sube si la lectura de corriente pasa de 12 500 o si la tensión supera 1.55 V; baja por debajo de 500.</li>
+  </ul>
+
+</section>
+<section id="alimentacion">
+  <div class="shead"><span class="num">8</span><h2>Alimentación y aislamiento</h2></div>
+
+  <ul class="tight">
+    <li><b>Batería</b> con un P-MOS de encendido suave: el botón lo enciende y el MCU tiene medio segundo para sostener Battery_EN; si no, se apaga. Sirve también de autoapagado real.</li>
+    <li>LDO de 5 V (AP2210) a VSYS para la Pico, que hace el 3.3 V digital. El 3.3 V analógico sale de otro LDO (AP7375) tras un choque de modo común entre las masas digital y analógica.</li>
+    <li><b>COM</b> = A3V3/2 con un divisor de 100 kΩ y un LMR321 con 50 Ω de salida.</li>
+    <li><b>Comunicación aislada</b> hacia la pantalla o el PC: DC-DC aislado de 5 V (RFM-0505S), aislador digital STISO621 y RS-422 (SP491E), con opción de LVDS. Tres 74HC595 y dos 74HCS165 manejan conmutadores e interruptores del panel.</li>
+  </ul>
+
+</section>
+<section id="seguridad">
+  <div class="shead"><span class="num">9</span><h2>Seguridad: qué aguanta y qué no</h2></div>
+
+  <ul class="tight">
+    <li><b>Tensión:</b> la entrada aguantaría la red de forma continua (1 MΩ, mW por resistencia, descargadores). Es lo más sólido del diseño.</li>
+    <li><b>Ohmios:</b> R25 de 1 kΩ limita, pero con la red pasarían ≈ 0.3 A de pico hasta que abra F3 (63 mA); el autor lo reconoce.</li>
+    <li><b>Corriente:</b> fusibles de 16 A y 500 mA sin poder de corte declarado en el esquema, y diodos 1N4007 como sujeción.</li>
+    <li>El autor avisa: «no está pensado para medir nada fuera de baja tensión DC».</li>
+  </ul>
+
+</section>
+<section id="no-copiar">
+  <div class="shead"><span class="num">10</span><h2>Lo que no conviene copiar</h2></div>
+
+  <ul class="tight">
+    <li>1 MΩ arriba: la entrada baja a ≈ 1.1 MΩ en los rangos altos.</li>
+    <li>Un MOV de 3.3 V en la toma: su capacidad y su fuga entran en el divisor. Mejor diodos de baja fuga y baja capacidad (BAV199) con resistencia serie.</li>
+    <li>Rangos e interruptores mecánicos: mA/µA y la conexión de ohmios dependen del usuario.</li>
+    <li>COM a media alimentación y comunicación aislada: no encajan con nuestra masa común.</li>
+    <li>1N4007 como diodos de sujeción y de protección de señal: lentos y con mucha capacidad.</li>
+    <li>El factor ×2 sin explicar en la alterna y la corrección de ohmios desactivada.</li>
+  </ul>
+
+</section>
+<section id="modulos">
+  <div class="shead"><span class="num">11</span><h2>Módulos y su equivalente discreto</h2></div>
+
+  <div class="tw"><table>
+    <thead><tr><th>Módulo</th><th>Función</th><th>En la rev 2.1</th></tr></thead>
+    <tbody>
+      <tr><td>Raspberry Pi Pico</td><td>MCU</td><td>STM32G473 en nuestra placa</td></tr>
+      <tr><td>RFM69HCW, NRF24L01</td><td>Radio hacia la pantalla</td><td>No hace falta: ESP32-S3 y TFT en la misma placa</td></tr>
+      <tr><td>B0309S-1WR3</td><td>9.5 V aislados para ohmios</td><td>No hace falta aislar: COM = masa. La fuente sale de +4.9 V (prueba de diodo hasta ≈ 3.5 V, RD-08)</td></tr>
+      <tr><td>RFM-0505S + STISO621 + SP491E</td><td>Comunicación aislada</td><td>No aplicable (RD-05)</td></tr>
+      <tr><td>MCP6S28 y MCP3461R en placa enchufable</td><td>PGA y ADC</td><td>ADC5 del G473 y nuestro amplificador</td></tr>
+    </tbody>
+  </table></div>
+
+</section>
+<section id="comparacion">
+  <div class="shead"><span class="num">12</span><h2>Comparación con el TIDA-01012 y con la sección H</h2></div>
+
+  <div class="tw"><table>
+    <thead><tr><th>Aspecto</th><th>HydraMeter</th><th>TIDA-01012</th><th>Sección H</th></tr></thead>
+    <tbody>
+      <tr><td>Entrada de tensión</td><td>1 MΩ + patas conmutadas</td><td>10 MΩ + patas conmutadas</td><td>Tomas fijas de una cadena de 10 MΩ</td></tr>
+      <tr><td>Protección</td><td>Escalonada: THT, MOV, GDT, MOV</td><td>Ninguna</td><td>R_PROT de 3 × 33 kΩ y BAV199</td></tr>
+      <tr><td>Ohmios</td><td>4 R de rango, Kelvin en el borne, corriente medida con V→I</td><td>No tiene</td><td>Razón con R_ref, «fuerza y sentido» con divisores ÷4</td></tr>
+      <tr><td>Corriente</td><td>3 derivadores y 3 bornes, 4 terminales</td><td>2 derivadores, fuerza y sentido</td><td>1 derivador de 0.1 Ω</td></tr>
+      <tr><td>ADC</td><td>ΣΔ 16 bits + PGA</td><td>SAR 18 bits</td><td>ADC5 de 12 bits con sobremuestreo</td></tr>
+      <tr><td>Calibración</td><td>Tablas de 3 a 15 puntos</td><td>3 puntos y regresión</td><td>Ganancia y offset por rango</td></tr>
+      <tr><td>COM</td><td>1.65 V, flotante, aislado</td><td>1.35 V, flotante</td><td>Masa común</td></tr>
+    </tbody>
+  </table></div>
+
+</section>
+<section id="propuestas">
+  <div class="shead"><span class="num">13</span><h2>Propuestas para la rev 2.1</h2></div>
+
+  <p>Siguen a P17–P22 (TIDA-01012). <b>Ninguna está aplicada</b>; se deciden en la síntesis.</p>
+  <h3>P23 · Protección escalonada en V/Ω <span class="tag t-ok">Adoptar la idea</span></h3>
+  <p>Varias resistencias de alta tensión en serie (THT o 1206 de alta tensión) con un descargador tras el primer tramo (MOV de 230–275 Vrms o GDT) que devuelva la corriente al borne COM, y diodos de baja fuga en la toma. Con P17 la toma ya está a µA; esta propuesta cubre los picos (ESD y transitorios) y el caso de la red durante 10 s (RD-10). Hay que contar la capacidad de cada descargador en la compensación.</p>
+  <h3>P24 · Ohmios con camino de corriente protegido aparte y medida en el borne <span class="tag t-ok">Adoptar</span></h3>
+  <p>Confirma la sección H: la fuente sale por su propio camino (PTC o resistencia de potencia, diodo y fusible) y la tensión se mide en el borne con la entrada de tensión. Se estudia además limitar la tensión del DUT (seguidor de fuente) para no salir del rango de 10 MΩ.</p>
+  <h3>P25 · Medir la corriente de la fuente sin divisores <span class="tag t-ok">Adoptar</span></h3>
+  <p>Un amplificador y un transistor que convierten la caída en la R de rango en una corriente hacia una resistencia referida a masa. Sustituye a las entradas X5/X6 (÷4) de la sección H, que roban corriente al nodo de la fuente: en el rango de 20 MΩ, con 0.3 µA de prueba, cualquier divisor de cientos de kΩ en ese nodo arruina la medida.</p>
+  <h3>P26 · Calibración por tabla de varios puntos <span class="tag t-ok">Adoptar</span></h3>
+  <p>Por rango, 3–7 puntos medidos con un multímetro de referencia e interpolación lineal. Complementa la calibración de tres puntos del TIDA (P21) y ataca la no linealidad del ADC5.</p>
+  <h3>P27 · Derivador de 4 terminales con punto estrella y diodos en antiparalelo <span class="tag t-ok">Adoptar</span></h3>
+  <p>El 0.1 Ω en 2512 con huella Kelvin (o un derivador de 4 pines), la red de medida del DMM tomada del pin de sentido del lado del borne COM, y dos diodos de potencia en antiparalelo sobre el derivador hasta que abra el fusible.</p>
+
+</section>
+<section id="correcciones">
+  <div class="shead"><span class="num">14</span><h2>Correcciones a lo dicho antes</h2></div>
+
+  <ul class="tight">
+    <li>En el plan dije que el único módulo era la Pico. Hay más: dos radios, dos DC-DC aislados en módulo, y el PGA y el ADC en placas enchufables.</li>
+    <li>En nuestra sección H, las entradas X5/X6 miden lo alto y lo bajo de R_ref con divisores ÷4. El del lado del borne (X6) <b>roba corriente al DUT</b>: es un error de diseño que el HydraMeter evita con el convertidor V→I. Queda como P25.</li>
+  </ul>
+
+</section>
+<footer><p class="meta">Análisis de Claude Code, 7 oct 2026, según <code>06_plan/PLAN_REFERENCIAS_DMM.md</code>. Fuentes locales en <code>research_and_tests/HydraMeter_0.4/</code>. Proyecto: <a href="https://hackaday.io/project/176607-hydrameter">hackaday.io/project/176607-hydrameter</a>. Cifras: <code>herramientas/calc_dmm_hydrameter.py</code>.</p></footer>
+</div>

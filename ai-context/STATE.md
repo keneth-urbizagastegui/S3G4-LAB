@@ -185,3 +185,8 @@ No se ha elegido automáticamente uno de estos frentes como nueva tarea de ingen
   - Descargados: TIDA-00879 (guía, esquemático, BOM y layout, de ti.com); esquemático del 121GW (copia de archive.org, porque eevblog da 502) y su manual; repositorio de Martin (STM32F373).
   - **R1 TIDA-01012 hecho:** `02_referencias/dmm_tida01012.html` (artefacto BzuS4XnvR7xVfP3ZutR9No). Propuestas sin aplicar: P17 patas bajas conmutadas, P18 compensación con la misma τ, P19 fuerza y sentido, P20 filtro del ADC5 por carga de muestreo, P21 firmware de medida, P22 riel propio del DMM.
   - Siguiente: R2 HydraMeter.
+- **7 oct, R2 HydraMeter hecho:** `02_referencias/dmm_hydrameter.html` (artefacto 5j4fYKqbpLK8TxGpkFgE7D).
+  - Propuestas P23 protección escalonada, P24 ohmios con medida en el borne, P25 corriente de la fuente con conversión V→I (sin divisores), P26 calibración multipunto, P27 derivador de 4 terminales con punto estrella.
+  - Hallazgo para la síntesis: los divisores ÷4 de X6 en la sección H roban corriente al DUT.
+  - El manual de servicio del 34401A ya está en `research_and_tests/Agilent_34401A/` (167 p, esquemas en pp. 150–165). Ojo: la URL /us/ de Keysight devuelve su web en PDF; vale la /mu/.
+  - Siguiente: R6 TIDA-00879.

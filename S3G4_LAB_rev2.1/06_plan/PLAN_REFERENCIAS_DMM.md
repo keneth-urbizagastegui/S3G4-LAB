@@ -74,7 +74,7 @@ Una referencia por sesión, con calma. Al terminar cada una, Keneth la revisa an
 | Paso | Estudio | Por qué en este orden |
 |---|---|---|
 | 1 | R1 TIDA-01012 — **hecho el 7 oct** (`02_referencias/dmm_tida01012.html`, propuestas P17–P22) | Fija el vocabulario y es la base de la sección H |
-| 2 | R2 HydraMeter | Todo discreto y abierto: el contraste directo con R1 |
+| 2 | R2 HydraMeter — **hecho el 7 oct** (`02_referencias/dmm_hydrameter.html`, P23–P27) | Todo discreto y abierto: el contraste directo con R1 |
 | 3 | R6 TIDA-00879 | ADC del micro con front-end propio, nuestro caso |
 | 4 | R7 121GW | Protección y seguridad, que aún es lo más flojo de nuestro diseño |
 | 5 | R3 Micro-DMM | Cable abierto (RD-09) y ohmios bajos |
