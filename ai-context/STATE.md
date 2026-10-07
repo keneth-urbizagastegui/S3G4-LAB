@@ -195,3 +195,8 @@ No se ha elegido automáticamente uno de estos frentes como nueva tarea de ingen
   - Hallazgos: R19 CRHV1206 de alta tensión; dos trimmers de 4.5–20 pF que el 01012 quitó; DC ±(0.03 % + 5) pero alterna solo hasta 1 kHz; calibración compilada en el código.
   - Propuestas P28 (resistencia de entrada de alta tensión) y P29 (calibración en memoria no volátil).
   - Siguiente: R7 EEVblog 121GW.
+- **7 oct, R7 EEVblog 121GW hecho:** `02_referencias/dmm_121gw.html` (artefacto YcB94Hqks4aYz739W2KLwM). Lo que aporta:
+  - Confirma P17: el HY3131 pone a masa las patas bajas bajo 10 MΩ.
+  - Protección CAT III: PTC + R + S05K575 en serie; fusibles HRC de 400 mA (10 kA) y 11 A (20 kA); puente DF10S como sujeción; ×10 MAX4238 «Low Burden».
+  - Propuestas P30 (PTC en la fuente de ohmios: cierra el pendiente de la sección H), P31 (fusible HRC cerámico + puente) y P32 (aviso de fusible abierto).
+  - Siguiente: R3 Micro-DMM.

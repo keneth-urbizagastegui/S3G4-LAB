@@ -1,0 +1,259 @@
+<title>Anatomía del 121GW</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@500;600&display=swap">
+<style>
+:root{
+  --bg:#f4f6f5; --paper:#fff; --ink:#1b2a2e; --muted:#5d6d72; --rule:#dde3e1;
+  --accent:#12667f; --accent2:#a9541c; --ok:#2f7d54; --warn:#9a6100; --crit:#b22d22; --open:#6a4fa3;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#11181a; --paper:#182125; --ink:#dce6e7; --muted:#93a3a8; --rule:#2a3639;
+  --accent:#5fb9d2; --accent2:#f0a06a; --ok:#63c891; --warn:#f0b75a; --crit:#ff8d80; --open:#b79ae8;}}
+:root[data-theme="dark"]{
+  --bg:#11181a; --paper:#182125; --ink:#dce6e7; --muted:#93a3a8; --rule:#2a3639;
+  --accent:#5fb9d2; --accent2:#f0a06a; --ok:#63c891; --warn:#f0b75a; --crit:#ff8d80; --open:#b79ae8;}
+body{background:var(--bg);color:var(--ink);font:15px/1.6 "IBM Plex Sans",system-ui,sans-serif}
+.wrap{max-width:1000px;margin:0 auto;padding-inline:20px;padding-block:28px 64px}
+h1,h2,h3,h4{font-family:"IBM Plex Sans Condensed","IBM Plex Sans",sans-serif;margin:0;text-wrap:balance}
+h1{font-size:clamp(26px,4vw,36px);font-weight:600}
+h2{font-size:24px;font-weight:600;margin-top:8px}
+h3{font-size:18px;font-weight:600;margin-bottom:4px}
+code{font:0.88em "IBM Plex Mono",ui-monospace,monospace;color:var(--accent)}
+.eyebrow{font:500 12px "IBM Plex Mono",monospace;letter-spacing:.09em;text-transform:uppercase;color:var(--accent);margin:0 0 6px}
+.lede{color:var(--muted);max-width:74ch}
+header.hero{border-bottom:1px solid var(--rule);padding-bottom:18px;margin-bottom:26px}
+section{background:var(--paper);border:1px solid var(--rule);border-radius:10px;padding:20px 22px;margin-bottom:18px}
+section>p,li{max-width:80ch}
+.tag{display:inline-block;font:500 11px "IBM Plex Mono",monospace;text-transform:uppercase;letter-spacing:.06em;padding:2px 9px;border-radius:999px;border:1px solid currentColor}
+.t-ok{color:var(--ok)} .t-open{color:var(--open)} .t-warn{color:var(--warn)} .t-crit{color:var(--crit)}
+.shead{display:flex;align-items:center;gap:12px;margin-bottom:10px;flex-wrap:wrap}
+.num{font:500 14px "IBM Plex Mono",monospace;background:var(--accent);color:var(--paper);width:28px;height:28px;border-radius:50%;display:grid;place-items:center}
+.tw{overflow-x:auto;margin:12px 0}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th{text-align:left;font-weight:600;color:var(--muted);border-bottom:1.5px solid var(--rule);padding:7px 9px;white-space:nowrap}
+td{border-bottom:1px solid var(--rule);padding:7px 9px;vertical-align:top}
+td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
+.pick{background:color-mix(in srgb, var(--ok) 10%, transparent)}
+.callout{border-left:3px solid var(--accent);padding:10px 14px;margin:14px 0;background:color-mix(in srgb, var(--accent) 7%, transparent);font-size:14px}
+.callout.w{border-color:var(--warn);background:color-mix(in srgb, var(--warn) 9%, transparent)}
+ul.tight{margin:8px 0;padding-left:20px}
+ul.tight li{margin-bottom:5px}
+.meta{font:12.5px "IBM Plex Mono",monospace;color:var(--muted);margin:0}
+.q{border:1px dashed var(--open);border-radius:8px;padding:12px 14px;margin:10px 0}
+.q b{color:var(--open)}
+footer{font-size:12.5px;color:var(--muted);border-top:1px solid var(--rule);padding-top:12px}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-size:14px}
+.kv dt{color:var(--muted)} .kv dd{margin:0}
+
+/* --- esquematico --- */
+figure{margin:16px 0}
+.sx{overflow-x:auto;border:1px solid var(--rule);border-radius:8px;background:var(--bg);padding:8px}
+.sx svg{display:block;max-width:none;height:auto}
+figcaption{font-size:13px;color:var(--muted);margin-top:6px}
+svg text{font-family:"IBM Plex Mono",ui-monospace,monospace}
+.w{fill:none;stroke:var(--ink);stroke-width:1.5;stroke-linejoin:round}
+.sym{fill:none;stroke:var(--ink);stroke-width:1.6;stroke-linejoin:round}
+.fillsym{fill:var(--ink);stroke:var(--ink);stroke-width:1}
+.dot{fill:var(--ink)}
+.op{fill:var(--paper);stroke:var(--ink);stroke-width:1.7}
+.ic{fill:var(--paper);stroke:var(--ink);stroke-width:1.5}
+.hdr{fill:none;stroke:var(--open);stroke-width:1.5;stroke-dasharray:3 2}
+.grp{fill:none;stroke:var(--muted);stroke-width:1.1;stroke-dasharray:5 4}
+.grp-t{font-size:10.5px;fill:var(--muted)}
+.blade{stroke:var(--ink);stroke-width:2}
+.ct{fill:var(--paper);stroke:var(--ink);stroke-width:1.3}
+.gnd line{stroke:var(--ink);stroke-width:1.5}
+.railbar{stroke:var(--crit);stroke-width:2.2}
+.rail{font-size:10.5px;fill:var(--crit);font-weight:500}
+.railsm{font-size:9px;fill:var(--crit)}
+.port{fill:color-mix(in srgb, var(--accent) 14%, transparent);stroke:var(--accent);stroke-width:1.3}
+.portt{font-size:10.5px;fill:var(--ink)}
+.tp{fill:none;stroke:var(--ok);stroke-width:1.6}
+.tpt{font-size:9.5px;fill:var(--ok)}
+.ref{font-size:11px;font-weight:500;fill:var(--ink)}
+.val{font-size:10px;fill:var(--muted)}
+.net{font-size:10px;fill:var(--accent2)}
+.pin{font-size:9.5px;fill:var(--muted)}
+.pm{font-size:15px;fill:var(--ink)}
+.note{font-size:10.5px;fill:var(--muted);font-style:italic}
+.src{color:var(--muted);font-size:12.5px}
+
+.lesson td:first-child{font-weight:600}
+pre.mermaid{background:var(--paper);border:1px solid var(--rule);border-radius:8px;padding:12px;overflow-x:auto}
+.meta{color:var(--muted);font-size:13px}
+.toc{columns:2 260px;column-gap:28px;margin:6px 0 0;padding-left:20px;font-size:14px}
+.toc li{break-inside:avoid;margin:2px 0}
+.toc a{color:var(--accent);text-decoration:none} .toc a:hover{text-decoration:underline}
+.eq{font-family:"IBM Plex Mono",monospace;font-size:13.5px;background:var(--paper);border:1px solid var(--rule);border-radius:6px;padding:8px 12px;margin:10px 0;overflow-x:auto;white-space:pre}
+</style>
+<div class="wrap">
+<header class="hero">
+  <p class="eyebrow">S3G4 LAB · referencia para el DMM de la rev 2.1 · 4 de 9</p>
+  <h1>Anatomía del 121GW</h1>
+  <p class="lede">Un multímetro comercial CAT III 600 V con el esquema publicado. La medida la hace un chip dedicado, pero su protección certificada (PTC, varistores, fusibles HRC y puente de diodos) es justo lo que nos faltaba estudiar.</p>
+  <ul class="toc"><li><a href="#resumen">Lo que nos llevamos</a></li><li><a href="#metodo">1 · Qué se analizó</a></li><li><a href="#especificacion">2 · Especificación</a></li><li><a href="#divisor">3 · Divisor</a></li><li><a href="#proteccion">4 · Protección V/Ω</a></li><li><a href="#ohmios">5 · Ohmios, diodo y LowZ</a></li><li><a href="#corriente">6 · Corriente</a></li><li><a href="#auxiliares">7 · Auxiliares</a></li><li><a href="#no-copiar">8 · Lo que no conviene copiar</a></li><li><a href="#modulos">9 · Módulos</a></li><li><a href="#comparacion">10 · Comparación</a></li><li><a href="#propuestas">11 · Propuestas P30–P32</a></li><li><a href="#correcciones">12 · Correcciones</a></li></ul>
+</header>
+<section id="resumen">
+  <div class="shead"><span class="num">★</span><h2>Lo que nos llevamos</h2></div>
+
+  <p>El 121GW es un multímetro comercial de 4⅘ dígitos (55 000 cuentas) diseñado por EEVblog con UEI, certificado <b>CAT III 600 V</b> (cETLus, IEC 61010-1 3.ª ed.), con el esquema publicado. La medida la hace un chip de multímetro (Hycon <b>HY3131</b>) y el STM32L152 se ocupa del resto. No vamos a usar un chip así, pero es <b>la única referencia con una protección certificada</b>: de ella sale cómo proteger de verdad los tres bornes.</p>
+  <div class="tw"><table class="lesson">
+    <thead><tr><th>Hallazgo</th><th>En el 121GW</th><th>Para la rev 2.1</th><th>Veredicto</th></tr></thead>
+    <tbody>
+      <tr><td>Patas bajas conmutadas, también aquí</td><td>10 MΩ (±0.5 %) arriba y patas de 1.11 MΩ, 101 kΩ, 10 kΩ y 1 kΩ que el HY3131 pone a masa (§3)</td><td>Un DMM comercial usa la misma idea que los TIDA: refuerza P17</td><td><span class="tag t-ok">Confirma P17</span></td></tr>
+      <tr><td>Cadena de protección en V/Ω</td><td>PTC de 1.2 kΩ + 1 kΩ, varistores S05K575 en serie hacia masa y hacia el camino de ohmios, ferrita y 10 MΩ; 6 kV en pulso (§4)</td><td>La versión certificada de P23. Para RD-10 basta una parte</td><td><span class="tag t-ok">Adoptar</span></td></tr>
+      <tr><td>PTC en la fuente de ohmios y diodo</td><td>2.2 kΩ en total, incluida la PTC: limita la corriente de prueba y absorbe la red si se aplica (§5)</td><td>Cierra el pendiente «PTC de la fuente de ohmios» de la sección H (P30)</td><td><span class="tag t-ok">Adoptar</span></td></tr>
+      <tr><td>Fusibles HRC con poder de corte</td><td>400 mA / 600 V con 10 kA y 11 A / 1000 V con 20 kA; puente de diodos DF10S como sujeción (§6)</td><td>Nuestro fusible de 3.15 A debe ser cerámico, con poder de corte declarado (P31); el puente sirve en lugar de dos diodos sueltos (P27)</td><td><span class="tag t-ok">Adoptar</span></td></tr>
+      <tr><td>Amplificador ×10 de deriva cero en corriente</td><td>MAX4238 con ganancia 10 elegible por un 74HC4053 («Low Burden») (§6)</td><td>Es nuestro amplificador B (OPA2188 ×10): confirma la elección</td><td><span class="tag t-ok">Confirma H</span></td></tr>
+      <tr><td>Compensación con R de amortiguación</td><td>τ ≈ 60 µs; el condensador de arriba (6 pF) va en serie con 30 kΩ (§3)</td><td>Limita la corriente por el condensador en un transitorio: añadir a P18</td><td><span class="tag t-ok">Adoptar</span></td></tr>
+      <tr><td>Aviso de fusible abierto</td><td>Dos comparadores TLC272 miden el borne antes del fusible a través de 9.4 MΩ (señales FUSE_mA y FUSE_A) (§7)</td><td>Barato y útil: el firmware sabría que el fusible saltó (P32)</td><td><span class="tag t-ok">Adoptar</span></td></tr>
+      <tr><td>LowZ y diodo de 15 V</td><td>2.2 kΩ con PTC a masa para drenar tensiones fantasma; prueba de diodo de 15 V con un elevador (§5)</td><td>Fuera de nuestros requisitos (RD-08 pide ≈ 3.5 V)</td><td><span class="tag t-open">Idea</span></td></tr>
+      <tr><td>Chip de multímetro, verdadero RMS analógico y selector rotatorio</td><td>HY3131, AD8436 y un selector mecánico de funciones (§8)</td><td>Nuestra arquitectura es otra: ADC5, RMS por firmware y selección electrónica</td><td><span class="tag t-crit">No adoptar</span></td></tr>
+    </tbody>
+  </table></div>
+
+</section>
+<section id="metodo">
+  <div class="shead"><span class="num">1</span><h2>Qué se analizó y cómo</h2></div>
+
+  <ul class="tight">
+    <li><b>Esquema</b> <code>research_and_tests/EEVblog_121GW/121GW_schematic.pdf</code>: una hoja vectorial de enero de 2018. eevblog.com daba error 502; la copia sale de web.archive.org. Leído por zonas a 330–420 ppp.</li>
+    <li><b>Manual</b> <code>EEVblog-121GW-Manual.pdf</code> (rev. de 3 mar 2025, 73 p): especificaciones (pp. 15–23), descripción de bornes y modos.</li>
+    <li>El esquema es de 2018 y el manual de 2025: donde no coinciden (el fusible de mA), se dice.</li>
+    <li>El selector rotatorio reparte señales entre 37 contactos; su tabla de conexiones no está publicada. Los caminos que dependen de él se describen por su función, no contacto a contacto.</li>
+    <li>Cálculos en <code>herramientas/calc_dmm_121gw.py</code>; redibujos en <code>draw_dmm_121gw.py</code> (0 solapes, revisados a la vista).</li>
+  </ul>
+
+</section>
+<section id="especificacion">
+  <div class="shead"><span class="num">2</span><h2>Lo que especifica el fabricante</h2></div>
+
+  <div class="tw"><table>
+    <thead><tr><th>Función</th><th>Rangos</th><th>Exactitud (± % lectura + cuentas)</th><th>Notas</th></tr></thead>
+    <tbody>
+      <tr><td>Tensión DC</td><td>50 mV · 500 mV · 5 V · 50 V · 500 V · 600 V</td><td>0.05 % + 5 (5–500 V); 0.1 % + 10 (50 mV, 500 mV, 600 V)</td><td>Protección 600 V con PTC y MOV</td></tr>
+      <tr><td>Tensión AC (TRMS)</td><td>50 mV … 600 V</td><td>0.3 % + 10 (5–500 V) en 45–400 Hz; 1.5 % + 10 hasta 5 kHz</td><td>AD8436; factor de cresta &lt; 10</td></tr>
+      <tr><td>Corriente DC</td><td>50 µA … 10 A (7 rangos)</td><td>0.25 % + 5 (mA); 0.75 % + 15 (A); 1.5 % + 15 (µA)</td><td>Caída 100 µV/µA, 2 mV/mA, 0.03 V/A</td></tr>
+      <tr><td>Resistencia</td><td>50 Ω … 50 MΩ</td><td>0.2 % + 5 (5 kΩ–500 kΩ); 1.2 % + 20 (50 MΩ)</td><td>—</td></tr>
+      <tr><td>Diodo</td><td>3 V · 15 V</td><td>sin especificar</td><td>1.4 mA y 7 mA por 2.2 kΩ (con la PTC)</td></tr>
+      <tr><td>General</td><td>55 000 cuentas, 5 lecturas/s</td><td>coef. de temperatura 0.1 × exactitud / °C</td><td>CAT III 600 V; transitorios 6 kV, 2 Ω</td></tr>
+    </tbody>
+  </table></div>
+  <p class="meta">Manual, pp. 15–20. Protección de los bornes de corriente: 400 mA / 600 V HRC (10 kA) y 11 A / 1000 V HRC (20 kA), cada uno con diodos.</p>
+
+</section>
+<section id="divisor">
+  <div class="shead"><span class="num">3</span><h2>Divisor: patas que pone a masa el HY3131</h2></div>
+
+  <figure><div class="sx"><svg class="sch" viewBox="0 0 1420 560" width="1420" role="img" aria-label="121GW: proteccion del borne V/Ω y divisor alrededor del HY3131" xmlns="http://www.w3.org/2000/svg"><circle class="ban" cx="70" cy="120" r="9" style="stroke:#b3261e"/><circle class="fillsym" cx="70" cy="120" r="3.5"/><text class="ref" x="54" y="124" text-anchor="end">V/Ω</text><polyline class="w" points="79,120 110,120"/><circle class="dot" cx="110" cy="120" r="3.2"/><polyline class="w" points="110,120 142.0,120.0"/><polyline class="w" points="178.0,120.0 210,120"/><g transform="translate(160.0,120.0) rotate(0.0)"><rect class="sym" x="-18" y="-6" width="36" height="12"/><polyline class="sym" points="-16,12 -8,12 12,-12"/></g><text class="ref" x="160.0" y="108.0" text-anchor="middle">PTC3</text><text class="val" x="160.0" y="142.0" text-anchor="middle">1.2 kΩ</text><polyline class="w" points="210,120 235.0,120.0"/><polyline class="w" points="275.0,120.0 300,120"/><polyline class="sym" points="-20,0 -15,-6 -10,6 -5,-6 0,6 5,-6 10,6 15,-6 20,0" transform="translate(255.0,120.0) rotate(0.0)"/><text class="ref" x="255.0" y="108.0" text-anchor="middle">R16</text><text class="val" x="255.0" y="142.0" text-anchor="middle">1 kΩ</text><polyline class="w" points="300,120 420,120"/><circle class="dot" cx="340" cy="120" r="3.2"/><text class="net" x="350" y="136" text-anchor="start">V1</text><polyline class="w" points="110,120 110,300 140,300"/><polyline class="w" points="140,300 172.0,300.0"/><polyline class="w" points="208.0,300.0 240,300"/><g transform="translate(190.0,300.0) rotate(0.0)"><rect class="sym" x="-18" y="-6" width="36" height="12"/><polyline class="sym" points="-16,12 -8,12 12,-12"/></g><text class="ref" x="190.0" y="326.0" text-anchor="middle">PTC4</text><text class="val" x="190.0" y="338.0" text-anchor="middle">1.2 kΩ</text><polyline class="w" points="240,300 265.0,300.0"/><polyline class="w" points="305.0,300.0 330,300"/><polyline class="sym" points="-20,0 -15,-6 -10,6 -5,-6 0,6 5,-6 10,6 15,-6 20,0" transform="translate(285.0,300.0) rotate(0.0)"/><text class="ref" x="285.0" y="326.0" text-anchor="middle">R17</text><text class="val" x="285.0" y="338.0" text-anchor="middle">1 kΩ</text><polyline class="w" points="330,300 380,300"/><polygon class="port" points="380,292 593.6,292 601.6,300 593.6,308 380,308"/><text class="portt" x="385" y="304" text-anchor="start">R: diodo, ohmios, LowZ (2.2 kΩ)</text><circle class="dot" cx="360" cy="300" r="3.2"/><polyline class="w" points="340,120 340.0,149.0"/><polyline class="w" points="340.0,171.0 340,200"/><g transform="translate(340.0,160.0) rotate(90.0)"><polygon class="fillsym" points="-11,-9 -11,9 0,0"/><polygon class="fillsym" points="11,-9 11,9 0,0"/><polyline class="sym" points="-3,-11 0,-9 0,9 3,11"/></g><text class="ref" x="326.0" y="157.0" text-anchor="end">MOV1</text><text class="val" x="326.0" y="171.0" text-anchor="end">S05K575</text><circle class="dot" cx="340" cy="200" r="3.2"/><polyline class="w" points="340,200 347.84272251348,239.21361256739988"/><polyline class="w" points="352.15727748652,260.7863874326001 360,300"/><g transform="translate(350.0,250.0) rotate(78.69006752597979)"><polygon class="fillsym" points="-11,-9 -11,9 0,0"/><polygon class="fillsym" points="11,-9 11,9 0,0"/><polyline class="sym" points="-3,-11 0,-9 0,9 3,11"/></g><text class="ref" x="364.0" y="247.0" text-anchor="start"></text><text class="ref" x="372" y="262" text-anchor="start">MOV2</text><polyline class="w" points="340,200 220,200"/><polyline class="w" points="220,200 220.0,214.0"/><polyline class="w" points="220.0,236.0 220,250"/><g transform="translate(220.0,225.0) rotate(90.0)"><polygon class="fillsym" points="-11,-9 -11,9 0,0"/><polygon class="fillsym" points="11,-9 11,9 0,0"/><polyline class="sym" points="-3,-11 0,-9 0,9 3,11"/></g><text class="ref" x="206.0" y="222.0" text-anchor="end">MOV3</text><polyline class="w" points="220,250 220,258"/><g class="gnd"><line x1="210" y1="258" x2="230" y2="258"/><line x1="214" y1="262" x2="226" y2="262"/><line x1="218" y1="266" x2="222" y2="266"/></g><text class="note" x="20" y="380" text-anchor="start">MOV1 + MOV3 a masa: ≈ 1820 V de varistor en serie; 600 Vrms (849 V de pico) no los hacen conducir.</text><text class="note" x="20" y="398" text-anchor="start">PTC1 + PTC2 (2 × 1.5 kΩ) llevan otra rama al selector rotatorio (no dibujada).</text><polyline class="w" points="420,120 440,120"/><polyline class="w" points="440,120 450.0,120.0"/><polyline class="w" points="490.0,120.0 500,120"/><g transform="translate(470.0,120.0) rotate(0.0)"><path class="sym" d="M-20,0 a5,5 0 0 1 10,0"/><path class="sym" d="M-10,0 a5,5 0 0 1 10,0"/><path class="sym" d="M0,0 a5,5 0 0 1 10,0"/><path class="sym" d="M10,0 a5,5 0 0 1 10,0"/></g><text class="ref" x="470.0" y="108.0" text-anchor="middle">FB4</text><text class="val" x="470.0" y="142.0" text-anchor="middle">ferrita</text><polyline class="w" points="500,120 540,120"/><circle class="dot" cx="540" cy="120" r="3.2"/><polyline class="w" points="540,120 610.0,120.0"/><polyline class="w" points="650.0,120.0 720,120"/><polyline class="sym" points="-20,0 -15,-6 -10,6 -5,-6 0,6 5,-6 10,6 15,-6 20,0" transform="translate(630.0,120.0) rotate(0.0)"/><text class="ref" x="630.0" y="108.0" text-anchor="middle">R11</text><text class="val" x="630.0" y="142.0" text-anchor="middle">10 MΩ ±0.5 %</text><polyline class="w" points="540,120 540,60 580,60"/><polyline class="w" points="580,60 595.0,60.0"/><polyline class="w" points="625.0,60.0 640,60"/><polyline class="sym" points="-20,0 -15,-6 -10,6 -5,-6 0,6 5,-6 10,6 15,-6 20,0" transform="translate(610.0,60.0) rotate(0.0)"/><text class="ref" x="610.0" y="48.0" text-anchor="middle">R9 30 kΩ</text><polyline class="w" points="660,60 671.0,60.0"/><polyline class="w" points="679.0,60.0 690,60"/><g transform="translate(675.0,60.0) rotate(0.0)"><line class="sym" x1="-4" y1="-11" x2="-4" y2="11"/><line class="sym" x1="4" y1="-11" x2="4" y2="11"/></g><text class="ref" x="675.0" y="48.0" text-anchor="middle">C13 · 6 pF</text><polyline class="w" points="640,60 660,60"/><polyline class="w" points="690,60 740,60 740,120"/><polyline class="w" points="720,120 1290,120"/><circle class="dot" cx="740" cy="120" r="3.2"/><text class="net" x="764" y="112" text-anchor="start">toma del divisor → HY3131</text><circle class="dot" cx="800" cy="120" r="3.2"/><polyline class="w" points="800,120 800.0,165.0"/><polyline class="w" points="800.0,205.0 800,250"/><polyline class="sym" points="-20,0 -15,-6 -10,6 -5,-6 0,6 5,-6 10,6 15,-6 20,0" transform="translate(800.0,185.0) rotate(90.0)"/><text class="ref" x="786.0" y="182.0" text-anchor="end">R13</text><text class="val" x="786.0" y="196.0" text-anchor="end">1.11 MΩ</text><text class="note" x="808" y="200" text-anchor="start">C16, C17</text><text class="note" x="808" y="216" text-anchor="start">sin montar</text><polyline class="w" points="800,250 800,330"/><text class="note" x="806" y="300" text-anchor="start">÷10</text><circle class="dot" cx="960" cy="120" r="3.2"/><polyline class="w" points="960,120 960.0,165.0"/><polyline class="w" points="960.0,205.0 960,250"/><polyline class="sym" points="-20,0 -15,-6 -10,6 -5,-6 0,6 5,-6 10,6 15,-6 20,0" transform="translate(960.0,185.0) rotate(90.0)"/><text class="ref" x="946.0" y="182.0" text-anchor="end">R15</text><text class="val" x="946.0" y="196.0" text-anchor="end">101 kΩ</text><polyline class="w" points="960,130 1000,130"/><circle class="dot" cx="960" cy="130" r="3.2"/><polyline class="w" points="1000,130 1000.0,186.0"/><polyline class="w" points="1000.0,194.0 1000,250"/><g transform="translate(1000.0,190.0) rotate(90.0)"><line class="sym" x1="-4" y1="-11" x2="-4" y2="11"/><line class="sym" x1="4" y1="-11" x2="4" y2="11"/></g><text class="ref" x="1014.0" y="187.0" text-anchor="start">C19+C20</text><text class="val" x="1014.0" y="201.0" text-anchor="start">596 pF</text><polyline class="w" points="960,250 1000,250"/><circle class="dot" cx="960" cy="250" r="3.2"/><polyline class="w" points="960,250 960,330"/><text class="note" x="966" y="300" text-anchor="start">÷100</text><circle class="dot" cx="1120" cy="120" r="3.2"/><polyline class="w" points="1120,120 1120.0,165.0"/><polyline class="w" points="1120.0,205.0 1120,250"/><polyline class="sym" points="-20,0 -15,-6 -10,6 -5,-6 0,6 5,-6 10,6 15,-6 20,0" transform="translate(1120.0,185.0) rotate(90.0)"/><text class="ref" x="1106.0" y="182.0" text-anchor="end">R21</text><text class="val" x="1106.0" y="196.0" text-anchor="end">10 kΩ</text><polyline class="w" points="1120,130 1160,130"/><circle class="dot" cx="1120" cy="130" r="3.2"/><polyline class="w" points="1160,130 1160.0,186.0"/><polyline class="w" points="1160.0,194.0 1160,250"/><g transform="translate(1160.0,190.0) rotate(90.0)"><line class="sym" x1="-4" y1="-11" x2="-4" y2="11"/><line class="sym" x1="4" y1="-11" x2="4" y2="11"/></g><text class="ref" x="1174.0" y="187.0" text-anchor="start">C22+C23</text><text class="val" x="1174.0" y="201.0" text-anchor="start">6.35 nF</text><polyline class="w" points="1120,250 1160,250"/><circle class="dot" cx="1120" cy="250" r="3.2"/><polyline class="w" points="1120,250 1120,330"/><text class="note" x="1126" y="300" text-anchor="start">÷1000</text><circle class="dot" cx="1280" cy="120" r="3.2"/><polyline class="w" points="1280,120 1280.0,165.0"/><polyline class="w" points="1280.0,205.0 1280,250"/><polyline class="sym" points="-20,0 -15,-6 -10,6 -5,-6 0,6 5,-6 10,6 15,-6 20,0" transform="translate(1280.0,185.0) rotate(90.0)"/><text class="ref" x="1266.0" y="182.0" text-anchor="end">R26</text><text class="val" x="1266.0" y="196.0" text-anchor="end">1 kΩ</text><polyline class="w" points="1280,130 1320,130"/><circle class="dot" cx="1280" cy="130" r="3.2"/><polyline class="w" points="1320,130 1320.0,186.0"/><polyline class="w" points="1320.0,194.0 1320,250"/><g transform="translate(1320.0,190.0) rotate(90.0)"><line class="sym" x1="-4" y1="-11" x2="-4" y2="11"/><line class="sym" x1="4" y1="-11" x2="4" y2="11"/></g><text class="ref" x="1334.0" y="187.0" text-anchor="start">C24+C26</text><text class="val" x="1334.0" y="201.0" text-anchor="start">66 nF</text><polyline class="w" points="1280,250 1320,250"/><circle class="dot" cx="1280" cy="250" r="3.2"/><polyline class="w" points="1280,250 1280,330"/><text class="note" x="1286" y="300" text-anchor="start">÷10000</text><rect class="ic" x="760" y="342" width="600" height="60" rx="3"/><text class="ref" x="1060.0" y="334" text-anchor="middle"></text><polyline class="w" points="800,342 800,330"/><text class="pin" x="800" y="355" text-anchor="middle">PA</text><polyline class="w" points="960,342 960,330"/><text class="pin" x="960" y="355" text-anchor="middle">PA</text><polyline class="w" points="1120,342 1120,330"/><text class="pin" x="1120" y="355" text-anchor="middle">PA</text><polyline class="w" points="1280,342 1280,330"/><text class="pin" x="1280" y="355" text-anchor="middle">PA</text><text class="ref" x="1060" y="380" text-anchor="middle">U3 · HY3131: pone a masa la pata elegida</text><text class="note" x="560" y="460" text-anchor="start">τ arriba = R11 · C13 = 60 µs. Patas: ÷100 60 µs, ÷1000 64 µs, ÷10000 66 µs.</text><text class="note" x="560" y="478" text-anchor="start">R9 amortigua C13: limita el pico de corriente por el condensador en un transitorio.</text><text class="note" x="560" y="496" text-anchor="start">Emparejamiento R–C deducido de la disposición del esquema (NO VERIFICADO).</text></svg></div><figcaption>Redibujo de la entrada V/Ω y del divisor. Los varistores se dibujan con el símbolo de un diodo bidireccional.</figcaption></figure>
+
+  <p>R11 (10 MΩ, ±0.5 %) une la entrada con la toma, y cuatro patas van de la toma a pines del HY3131, que pone a masa la del rango elegido: ÷10 con 1110 kΩ, ÷100 con 101 kΩ, ÷1000 con 10 kΩ, ÷10000 con 1 kΩ. El chip ve siempre unos cientos de mV, igual que en los TIDA.</p>
+  <ul class="tight">
+    <li><b>Compensación</b>: el condensador de arriba (C13, 6 pF) da τ = 60 µs con R11. Las patas de ÷100, ÷1000 y ÷10000 cierran 60, 64 y 66 µs (+0.3, +5.8 y +10 %). La de ÷10 tiene sus condensadores sin montar: necesitaría ≈ 54 pF. O se monta en fabricación, o ese rango confía en la capacidad parásita. El emparejamiento R–C está deducido de la disposición del esquema: <b>NO VERIFICADO</b>.</li>
+    <li><b>R9 (30 kΩ) en serie con C13</b>: en un transitorio rápido el condensador conduce mucho antes que R11; la resistencia limita esa corriente sin cambiar la compensación a las frecuencias de medida.</li>
+    <li>Una ferrita (FB4) antes de R11 y un TVS SM6T22CA (600 W, 22 V) en otro nodo de la entrada completan el filtrado frente a interferencias y picos.</li>
+  </ul>
+
+</section>
+<section id="proteccion">
+  <div class="shead"><span class="num">4</span><h2>Protección del borne V/Ω</h2></div>
+
+  <p>Es el núcleo de esta referencia. La cadena, desde el borne:</p>
+  <ol class="tight">
+    <li><b>PTC3 (1.2 kΩ en frío) + R16 (1 kΩ)</b>: limitan la corriente. Con un pulso de 6 kV y 2 Ω (el ensayo del manual) pasan ≈ 1.9 A durante microsegundos; con una tensión sostenida, la PTC se calienta y sube a muchos kΩ.</li>
+    <li><b>Varistores S05K575</b> (575 Vrms, ≈ 910 V a 1 mA, disco de 5 mm): MOV1 + MOV3 en serie hacia masa (≈ 1820 V) y MOV1 + MOV2 hacia el camino de ohmios. Ponerlos en serie sube la tensión a la que conducen, de modo que 600 Vrms (849 V de pico) no los toca, pero un pulso de kV sí.</li>
+    <li><b>R11 de 10 MΩ</b>: con 600 Vrms solo pasan 85 µA.</li>
+  </ol>
+  <p>Para nosotros, RD-10 pide mucho menos: 230 Vrms durante 10 s, sin categoría de medida. Con 10 MΩ arriba (P17) la toma ya está a salvo; lo que hace falta es que el primer tramo aguante la tensión y los picos (P23, P28). Los varistores en serie y la PTC son el modelo si algún día se quiere certificar una categoría.</p>
+
+</section>
+<section id="ohmios">
+  <div class="shead"><span class="num">5</span><h2>Ohmios, diodo y LowZ</h2></div>
+
+  <ul class="tight">
+    <li><b>Un camino propio con PTC</b> (PTC4 1.2 kΩ + R17 1 kΩ = 2.2 kΩ) lleva la fuente de ohmios y de diodo al borne V/Ω. El manual lo dice: esos 2.2 kΩ, PTC incluida, son los que fijan la corriente de prueba del diodo (1.4 mA a 3 V, 7 mA a 15 V; la fuente de 15 V la da un elevador RT9271).</li>
+    <li>Ese mismo camino a masa es el <b>modo LowZ</b>: la entrada queda cargada con 2.2 kΩ para drenar tensiones fantasma. Si se aplica la red, la PTC disipa ≈ 24 W en el primer instante y sube enseguida: por eso es una PTC y no una resistencia.</li>
+    <li>Otra rama con dos PTC de 1.5 kΩ va al selector (función no confirmada sin la tabla del selector).</li>
+    <li>La medida de ohmios en sí la hace el HY3131 con su fuente y su referencia (ADR3412, 1.2 V).</li>
+  </ul>
+  <p>Para nuestra sección H: la fuente de ohmios necesita exactamente esto, una <b>PTC de alta tensión en serie</b> de unos 1–2 kΩ en frío, que no moleste a la medida por razón (queda fuera de la medida Kelvin, P24) y que se dispare con la red (P30).</p>
+
+</section>
+<section id="corriente">
+  <div class="shead"><span class="num">6</span><h2>Corriente: fusibles HRC, puente de diodos y «Low Burden»</h2></div>
+
+  <figure><div class="sx"><svg class="sch" viewBox="0 0 1300 420" width="1300" role="img" aria-label="121GW: derivadores, puente de diodos y amplificador ×10 de baja caida" xmlns="http://www.w3.org/2000/svg"><circle class="ban" cx="70" cy="80" r="9" style="stroke:#b3261e"/><circle class="fillsym" cx="70" cy="80" r="3.5"/><text class="ref" x="54" y="84" text-anchor="end">mA/µA</text><polyline class="w" points="79,80 110,80"/><polyline class="w" points="110,80 152.0,80.0"/><polyline class="w" points="188.0,80.0 230,80"/><g transform="translate(170.0,80.0) rotate(0.0)"><rect class="sym" x="-18" y="-6" width="36" height="12"/><line class="sym" x1="-18" y1="0" x2="18" y2="0"/></g><text class="ref" x="170.0" y="68.0" text-anchor="middle">F1</text><text class="val" x="170.0" y="102.0" text-anchor="middle">400–440 mA HRC</text><polyline class="w" points="230,80 300,80"/><circle class="dot" cx="270" cy="80" r="3.2"/><polyline class="w" points="270,80 270.0,109.0"/><polyline class="w" points="270.0,131.0 270,160"/><g transform="translate(270.0,120.0) rotate(90.0)"><polygon class="fillsym" points="-11,-9 -11,9 0,0"/><polygon class="fillsym" points="11,-9 11,9 0,0"/><polyline class="sym" points="-3,-11 0,-9 0,9 3,11"/></g><text class="ref" x="256.0" y="117.0" text-anchor="end">BD1</text><text class="val" x="256.0" y="131.0" text-anchor="end">DF10S, +/− unidos</text><polyline class="w" points="270,160 270,168"/><g class="gnd"><line x1="260" y1="168" x2="280" y2="168"/><line x1="264" y1="172" x2="276" y2="172"/><line x1="268" y1="176" x2="272" y2="176"/></g><polyline class="w" points="300,80 330,80"/><text class="pin" x="340" y="72" text-anchor="start">selector</text><polyline class="w" points="380,80 420,80"/><circle class="dot" cx="420" cy="80" r="3.2"/><polyline class="w" points="330,80 380,80"/><polyline class="w" points="420,80 420.0,115.0"/><polyline class="w" points="420.0,155.0 420,190"/><polyline class="sym" points="-20,0 -15,-6 -10,6 -5,-6 0,6 5,-6 10,6 15,-6 20,0" transform="translate(420.0,135.0) rotate(90.0)"/><text class="ref" x="406.0" y="132.0" text-anchor="end">R33</text><text class="val" x="406.0" y="146.0" text-anchor="end">100 Ω</text><circle class="dot" cx="420" cy="190" r="3.2"/><polyline class="w" points="420,190 420.0,220.0"/><polyline class="w" points="420.0,260.0 420,290"/><polyline class="sym" points="-20,0 -15,-6 -10,6 -5,-6 0,6 5,-6 10,6 15,-6 20,0" transform="translate(420.0,240.0) rotate(90.0)"/><text class="ref" x="406.0" y="237.0" text-anchor="end">R43</text><text class="val" x="406.0" y="251.0" text-anchor="end">1 Ω</text><circle class="dot" cx="420" cy="290" r="3.2"/><polyline class="w" points="420,290 420.0,310.0"/><polyline class="w" points="420.0,350.0 420,370"/><polyline class="sym" points="-20,0 -15,-6 -10,6 -5,-6 0,6 5,-6 10,6 15,-6 20,0" transform="translate(420.0,330.0) rotate(90.0)"/><text class="ref" x="406.0" y="327.0" text-anchor="end">SHUNT</text><text class="val" x="406.0" y="341.0" text-anchor="end">0.01 Ω</text><polyline class="w" points="420,370 420,378"/><g class="gnd"><line x1="410" y1="378" x2="430" y2="378"/><line x1="414" y1="382" x2="426" y2="382"/><line x1="418" y1="386" x2="422" y2="386"/></g><text class="net" x="430" y="74" text-anchor="start">A_OUT (µA)</text><text class="net" x="430" y="184" text-anchor="start">mA</text><circle class="ban" cx="170" cy="290" r="9" style="stroke:#b3261e"/><circle class="fillsym" cx="170" cy="290" r="3.5"/><text class="ref" x="154" y="294" text-anchor="end">10 A</text><polyline class="w" points="179,290 200,290"/><polyline class="w" points="200,290 247.0,290.0"/><polyline class="w" points="283.0,290.0 330,290"/><g transform="translate(265.0,290.0) rotate(0.0)"><rect class="sym" x="-18" y="-6" width="36" height="12"/><line class="sym" x1="-18" y1="0" x2="18" y2="0"/></g><text class="ref" x="265.0" y="316.0" text-anchor="middle">F2</text><text class="val" x="265.0" y="328.0" text-anchor="middle">11 A HRC 1000 V</text><polyline class="w" points="330,290 420,290"/><polyline class="w" points="420,80 560,80"/><polyline class="w" points="560,80 565.0,80.0"/><polyline class="w" points="605.0,80.0 610,80"/><g transform="translate(585.0,80.0) rotate(0.0)"><path class="sym" d="M-20,0 a5,5 0 0 1 10,0"/><path class="sym" d="M-10,0 a5,5 0 0 1 10,0"/><path class="sym" d="M0,0 a5,5 0 0 1 10,0"/><path class="sym" d="M10,0 a5,5 0 0 1 10,0"/></g><text class="ref" x="585.0" y="68.0" text-anchor="middle">FB2</text><polyline class="w" points="610,80 635.0,80.0"/><polyline class="w" points="675.0,80.0 700,80"/><polyline class="sym" points="-20,0 -15,-6 -10,6 -5,-6 0,6 5,-6 10,6 15,-6 20,0" transform="translate(655.0,80.0) rotate(0.0)"/><text class="ref" x="655.0" y="68.0" text-anchor="middle">R126</text><text class="val" x="655.0" y="102.0" text-anchor="middle">100 Ω</text><polygon class="op" points="770,64 770,128 832,96"/><text class="pm" x="777" y="85" text-anchor="start">+</text><text class="pm" x="777" y="117" text-anchor="start">−</text><polyline class="w" points="760,80 770,80"/><polyline class="w" points="760,112 770,112"/><polyline class="w" points="832,96 842,96"/><text class="ref" x="780" y="58" text-anchor="start">U8 · MAX4238</text><text class="val" x="780" y="142" text-anchor="start">deriva cero, ×10</text><polyline class="w" points="700,80 760,80"/><polyline class="w" points="760,112 740,112 740,200"/><circle class="dot" cx="740" cy="200" r="3.2"/><polyline class="w" points="740,200 740.0,230.0"/><polyline class="w" points="740.0,270.0 740,300"/><polyline class="sym" points="-20,0 -15,-6 -10,6 -5,-6 0,6 5,-6 10,6 15,-6 20,0" transform="translate(740.0,250.0) rotate(90.0)"/><text class="ref" x="726.0" y="247.0" text-anchor="end">R46</text><text class="val" x="726.0" y="261.0" text-anchor="end">10 kΩ</text><polyline class="w" points="740,300 740,308"/><g class="gnd"><line x1="730" y1="308" x2="750" y2="308"/><line x1="734" y1="312" x2="746" y2="312"/><line x1="738" y1="316" x2="742" y2="316"/></g><polyline class="w" points="740,200 780.0,200.0"/><polyline class="w" points="820.0,200.0 860,200"/><polyline class="sym" points="-20,0 -15,-6 -10,6 -5,-6 0,6 5,-6 10,6 15,-6 20,0" transform="translate(800.0,200.0) rotate(0.0)"/><text class="ref" x="800.0" y="226.0" text-anchor="middle">R106</text><text class="val" x="800.0" y="238.0" text-anchor="middle">90 kΩ</text><polyline class="w" points="860,200 880,200 880,96"/><circle class="dot" cx="880" cy="96" r="3.2"/><polyline class="w" points="842,96 980,96"/><text class="net" x="904" y="90" text-anchor="start">×10</text><polyline class="w" points="560,80 560,40 980,40"/><circle class="dot" cx="560" cy="80" r="3.2"/><text class="net" x="604" y="34" text-anchor="start">×1</text><rect class="ic" x="980" y="24" width="150" height="96" rx="3"/><text class="ref" x="1055.0" y="16" text-anchor="middle"></text><polyline class="w" points="1130,72 1142,72"/><text class="pin" x="1125" y="76" text-anchor="end"></text><text class="ref" x="1055" y="66" text-anchor="middle">U11 · 74HC4053</text><text class="pin" x="1055" y="84" text-anchor="middle">×1 o ×10</text><polyline class="w" points="1142,72 1180,72"/><polygon class="port" points="1180,64 1274.8,64 1282.8,72 1274.8,80 1180,80"/><text class="portt" x="1185" y="76" text-anchor="start">A_IN → HY3131</text><text class="note" x="560" y="360" text-anchor="start">Caída del manual: 100 µV/µA, 2 mV/mA y 0.03 V/A (incluye el fusible). En 50 µA el ×10 lleva 5.1 mV a 51 mV.</text><text class="note" x="560" y="380" text-anchor="start">El puente con los terminales de continua unidos deja dos diodos en serie en cada sentido (≈ 1.4 V).</text></svg></div><figcaption>Redibujo de los derivadores y del amplificador de baja caída. El selector rotatorio reparte el borne mA/µA entre la toma de µA y la de mA.</figcaption></figure>
+
+  <ul class="tight">
+    <li><b>Derivadores en cadena</b>: R33 100 Ω, R43 1 Ω y 10 mΩ. µA mide 101 Ω, mA 1.01 Ω y A 10 mΩ.</li>
+    <li><b>Fusibles HRC</b> (cerámicos de alto poder de corte): 400 mA / 600 V con 10 kA y 11 A / 1000 V con 20 kA según el manual. El esquema de 2018 dice 440 mA / 1000 V; el registro de cambios del manual corrigió el valor a 400 mA / 600 V en enero de 2018, aunque la sección de VA del mismo manual todavía nombra 440 mA / 1000 V.</li>
+    <li><b>Puente DF10S con los terminales de continua unidos</b>: dos diodos en serie en cada sentido entre el borne y masa, de 1000 V y con mucha corriente de pico. Sujeta la caída a ≈ 1.4 V hasta que abre el fusible, en una sola pieza.</li>
+    <li><b>«Low Burden»</b>: la señal del derivador pasa por un MAX4238 (deriva cero) con ganancia 1 + 90 k/10 k = 10, y un 74HC4053 elige ×1 o ×10. En 50 µA, los 5.1 mV del derivador llegan como 51 mV: la misma resolución con diez veces menos caída.</li>
+  </ul>
+
+</section>
+<section id="auxiliares">
+  <div class="shead"><span class="num">7</span><h2>Circuitos auxiliares</h2></div>
+
+  <ul class="tight">
+    <li><b>Aviso de fusible abierto.</b> Desde cada borne de corriente, antes del fusible, 9.4 MΩ llegan a un comparador TLC272 con resistencias de 10 MΩ a la alimentación. Con el fusible sano, el borne está a masa a través del derivador; con el fusible abierto, las resistencias lo suben y el comparador avisa (FUSE_mA, FUSE_A). La «input warning» que describe el manual puede ser esto o algo más: <b>NO VERIFICADO</b>.</li>
+    <li><b>Verdadero RMS analógico</b> con un AD8436 y multiplexores HEF4052/4053; el manual especifica la alterna hasta 5 kHz.</li>
+    <li><b>Alimentación</b>: 4 pilas AAA (6 V), LDO NJU7200 de 3.3 V y un regulador de 4.0 V para el AD8436; reloj de tiempo real, microSD y un módulo BLE marcado «no usado» en el esquema.</li>
+  </ul>
+
+</section>
+<section id="no-copiar">
+  <div class="shead"><span class="num">8</span><h2>Lo que no conviene copiar (para nosotros)</h2></div>
+
+  <ul class="tight">
+    <li>El chip de multímetro (HY3131): fija la arquitectura, los rangos y el firmware; nosotros medimos con el ADC5.</li>
+    <li>El verdadero RMS analógico: el firmware lo hace sin piezas (P21).</li>
+    <li>El selector rotatorio mecánico de 37 contactos: caro, específico y difícil de cambiar.</li>
+    <li>La prueba de diodo de 15 V y el modo LowZ: útiles, pero no los piden nuestros requisitos.</li>
+  </ul>
+
+</section>
+<section id="modulos">
+  <div class="shead"><span class="num">9</span><h2>Módulos</h2></div>
+
+  <p>Solo el módulo Bluetooth BLE112, marcado «no usado» en el esquema (en el producto sí va). Todo lo demás son piezas sueltas.</p>
+
+</section>
+<section id="comparacion">
+  <div class="shead"><span class="num">10</span><h2>Comparación con las referencias anteriores y la sección H</h2></div>
+
+  <div class="tw"><table>
+    <thead><tr><th>Aspecto</th><th>121GW</th><th>TIDA-01012 / 00879</th><th>HydraMeter</th><th>Sección H</th></tr></thead>
+    <tbody>
+      <tr><td>Divisor</td><td>10 MΩ + patas a masa (chip)</td><td>10 MΩ + patas (SP3T)</td><td>1 MΩ + patas</td><td>Tomas fijas</td></tr>
+      <tr><td>Protección V/Ω</td><td>PTC + R + MOV en serie, certificada</td><td>Ninguna</td><td>THT + MOV + GDT + MOV</td><td>R_PROT + BAV199</td></tr>
+      <tr><td>Fuente de ohmios</td><td>2.2 kΩ con PTC</td><td>—</td><td>D + fusible + 1 kΩ 1 W</td><td>PTC por elegir</td></tr>
+      <tr><td>Corriente</td><td>HRC + puente, ×10 de deriva cero</td><td>PTC 0.2 A</td><td>Fusibles + 1N4007</td><td>Fusible 3.15 A, ×10/×100 con OPA2188</td></tr>
+      <tr><td>Cuentas</td><td>55 000</td><td>50 000 / 60 000</td><td>16 bits</td><td>20 000 (objetivo)</td></tr>
+    </tbody>
+  </table></div>
+
+</section>
+<section id="propuestas">
+  <div class="shead"><span class="num">11</span><h2>Propuestas para la rev 2.1</h2></div>
+
+  <p>Siguen a P17–P29. <b>Ninguna está aplicada.</b></p>
+  <h3>P30 · PTC de alta tensión en la fuente de ohmios y diodo <span class="tag t-ok">Adoptar</span></h3>
+  <p>Una PTC de 1–2 kΩ en frío, para tensión de red, en serie con el camino de la fuente (dentro del lazo Kelvin de P24, así que no afecta a la medida). Limita la corriente en cortocircuito y absorbe 230 Vrms durante los 10 s de RD-10. Hay que buscar la pieza en LCSC (tensión máxima, tiempo de disparo y resistencia en frío).</p>
+  <h3>P31 · Fusible HRC cerámico con poder de corte declarado <span class="tag t-ok">Adoptar</span></h3>
+  <p>El 3.15 A rápido de RD-06 en versión cerámica de alto poder de corte, con tensión nominal de al menos 250 V, y un puente de diodos (tipo DF10S) con los terminales de continua unidos como sujeción sobre el derivador. Complementa P27.</p>
+  <h3>P32 · Aviso de fusible abierto <span class="tag t-ok">Adoptar</span></h3>
+  <p>Medir el borne A antes del fusible a través de ≈ 10 MΩ con un comparador o con un canal libre del ADC, y una resistencia alta a la alimentación: si el fusible abre, el nodo sube y el firmware avisa en pantalla y en S3G4-UI.</p>
+  <p class="meta">Además: P17 queda confirmada por un diseño comercial; P18 suma una resistencia de amortiguación en serie con el condensador de arriba; el amplificador B ×10 de deriva cero de la sección H coincide con el «Low Burden» del 121GW.</p>
+
+</section>
+<section id="correcciones">
+  <div class="shead"><span class="num">12</span><h2>Correcciones a lo dicho antes</h2></div>
+
+  <ul class="tight">
+    <li>En el plan escribí que el 121GW lleva «fusible HRC, TVS, PTC, MOV y puente de diodos» en la entrada, citando una búsqueda. Por el esquema: PTC, resistencia, varistores y un TVS en la entrada V/Ω; el puente de diodos está en los bornes de <b>corriente</b>, junto a los fusibles HRC.</li>
+  </ul>
+
+</section>
+<footer><p class="meta">Análisis de Claude Code, 7 oct 2026, según <code>06_plan/PLAN_REFERENCIAS_DMM.md</code>. Fuentes en <code>research_and_tests/EEVblog_121GW/</code>; producto: <a href="https://eevblog.com/product/121gw/">eevblog.com/product/121gw</a>. Cifras: <code>herramientas/calc_dmm_121gw.py</code>.</p></footer>
+</div>
