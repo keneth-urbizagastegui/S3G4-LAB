@@ -109,3 +109,5 @@ Los archivos de EEWorld solo se bajan con una cuenta iniciada. Claude no crea cu
 | [57006](https://en.eeworld.com.cn/Reference_Designs/detail/57006) | Manual de servicio del **Agilent 34401A** (34401-90013), DMM de banco de 6½ dígitos, con los esquemas en el apéndice | Alto como **escuela de front-end profesional**: protección de entrada, divisor de alta tensión, fuente de corriente de ohmios, autocero, conmutación de rangos y convertidor de alterna. Su ADC multipendiente es propio y no se copia | Añadir como **R9**, antes de la síntesis. El manual es público en keysight.com; bajarlo de ahí con permiso de Keneth |
 
 Orden actualizado: … 6 · R8 Martin + R4 EEWorld 77845 · 7 · R5 Analog Devices · **7b · R9 Agilent 34401A** · 8 · Síntesis.
+
+**7b hecho el 7 oct** (`02_referencias/dmm_34401a.html`, P38–P42). Las nueve referencias están estudiadas; lo siguiente es la síntesis (paso 8).

@@ -218,13 +218,18 @@ No se ha elegido automáticamente uno de estos frentes como nueva tarea de ingen
   - **Hallazgo para la sección H:** la INL diferencial del ADC5 (DS12712, T.63: 2.1 típ. / 3.2 máx. LSB) son **26–39 cuentas** de 100 µV, no menos de 10 como dice §8. El 0.1 % de lectura se sostiene (579–630 ppm con 23 ± 5 °C y un patrón del 0.05 %, sin redes apareadas). Además, Ib del OPA2188 es de 850 pA máx. (H citaba 160 pA, la típica).
   - Propuestas P35 (presupuesto con el método de ADI), P36 (medir la INL del ADC5 y elegir: +40 cuentas, linealización o ΣΔ externo) y P37 (los cuatro ensayos de ADI en S11 y en el banco). Ninguna aplicada.
   - Siguiente: R9 Agilent 34401A. Detalle en `journal/2026-10-07-claude-dmm-adi.md`.
+- **7 oct, R9 Agilent 34401A hecho:** `02_referencias/dmm_34401a.html` (artefacto Gd8rGXutjjVU3zHBf2p9LY), a partir del manual de servicio (esquemas pp. 157–160). **Las nueve referencias del DMM están estudiadas.**
+  - Lo que aporta: autocero MC/MZ/PRE con precarga; compensación de alterna con un condensador programable (un DAC multiplicador mueve el pie de 5.6 pF, calibrado a 50 kHz); fuente de ohmios ratiométrica protegida a ±1000 V con un diodo y una escalera de transistores; descargador de gas en serie con varistor ∥ C en HI; dos fusibles (3 A rápido y 7 A de alto poder de corte); autoprueba con recursos internos; integración ligada a la frecuencia de red.
+  - Propuestas P38 (autocero con tiempo de asiento o precarga), P39 (corrección de alterna por firmware), P40 (red de 60 Hz en Perú; 100 ms rechaza 50 y 60 Hz), P41 (autoprueba) y P42 (protección de la fuente de ohmios con semiconductores, alternativa a la PTC). Ninguna aplicada.
+  - **Para la síntesis:** la fuga garantizada del 74HC4051 (±0.1 µA a 25 °C) son ~1000 cuentas en la toma ÷10; hay que medirla o cambiar de conmutador.
+  - Siguiente: la síntesis. Detalle en `journal/2026-10-07-claude-dmm-34401a.md`.
 
 ## Punto de retomada — referencias del DMM (7 oct 2026, Claude)
 
 - **Retomar con:** `ai-context/journal/2026-10-07-claude-retomar-referencias-dmm.md`. Contiene:
-  - el estado: 8 de 9 referencias hechas (TIDA-01012, HydraMeter, TIDA-00879, 121GW, Micro-DMM, Martin, EEWorld 77845 y Analog Devices);
-  - las propuestas P17–P37 resumidas, sin aplicar;
+  - el estado: las 9 referencias hechas (TIDA-01012, HydraMeter, TIDA-00879, 121GW, Micro-DMM, Martin, EEWorld 77845, Analog Devices y 34401A);
+  - las propuestas P17–P42 resumidas, sin aplicar;
   - los riesgos para la síntesis;
-  - el orden siguiente: R9 34401A → síntesis y revisión de la sección H → encargo S11;
+  - el orden siguiente: síntesis y revisión de la sección H → encargo S11;
   - las herramientas y las trampas conocidas.
 - La sección H del DMM sigue en pausa hasta la síntesis.

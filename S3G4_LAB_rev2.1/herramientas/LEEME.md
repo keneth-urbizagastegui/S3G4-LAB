@@ -16,6 +16,7 @@
 - `calc_dmm_121gw.py` + `draw_dmm_121gw.py` + `build_dmm_121gw.py`: lo mismo para `02_referencias/dmm_121gw.html` (7 oct).
 - `calc_dmm_microdmm.py` + `draw_dmm_microdmm.py` + `build_dmm_microdmm.py`: lo mismo para `02_referencias/dmm_microdmm.html` (7 oct). Las netlists de las cuatro placas estudiadas se exportan con `kicad-cli` y se leen con `kinet.py`.
 - `calc_dmm_martin.py` + `draw_dmm_martin.py` + `build_dmm_martin.py`: lo mismo para `02_referencias/dmm_martin.html` (7 oct). El esquema EAGLE (`v15.sch`) se lee como XML.
+- `calc_dmm_34401a.py` + `draw_dmm_34401a.py` + `build_dmm_34401a.py`: R9, Agilent 34401A → `02_referencias/dmm_34401a.html` (7 oct). Los esquemas del manual son vectoriales y se leen renderizando por zonas.
 - `calc_dmm_adi.py` + `build_dmm_adi.py`: R5, método de presupuesto de errores de Analog Devices (reproduce sus cifras) y su aplicación a la sección H → `02_referencias/dmm_adi_errores.html` (7 oct).
 - `build_dmm_eeworld77845.py`: ficha corta `02_referencias/dmm_eeworld77845.html` (7 oct); sin esquema, sus pocas cifras están en el propio generador.
 - `kinet.py <netlist.net> <salida.txt>`: lista las piezas de una netlist de KiCad por hoja, con la red de cada pin (usado para el HydraMeter).

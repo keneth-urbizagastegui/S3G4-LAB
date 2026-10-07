@@ -13,7 +13,7 @@ Lo deja la sesión del 6–7 oct, que se quedó sin contexto. Para empezar el ch
 - **Sección H (borrador, EN PAUSA):** `S3G4_LAB_rev2.1/01_diseno/dmm_rev21.html` y la hoja `00_requisitos/especificaciones_dmm.html`, publicadas. Se escribieron antes de estudiar las referencias: **se revisan en la síntesis** y después se encarga S11 a Codex.
 - **Plan:** `S3G4_LAB_rev2.1/06_plan/PLAN_REFERENCIAS_DMM.md` (método, referencias, orden y la evaluación de los enlaces 95152/57000/57006 de EEWorld).
 
-## Referencias hechas (8 de 9)
+## Referencias hechas (9 de 9)
 
 Todas en `S3G4_LAB_rev2.1/02_referencias/`, publicadas (enlaces en `ARTEFACTOS.md`), con scripts `herramientas/calc_dmm_*.py`, `draw_dmm_*.py` y `build_dmm_*.py`, y diario propio:
 
@@ -27,6 +27,7 @@ Todas en `S3G4_LAB_rev2.1/02_referencias/`, publicadas (enlaces en `ARTEFACTOS.m
 | R8 | Martin (STM32F373) | `dmm_martin.html` | — (refuerza P17, P19, P21, P27, P29) |
 | R4 | EEWorld 77845 (ficha corta) | `dmm_eeworld77845.html` | — (confirma P20, P26) |
 | R5 | Analog Devices, 7½ dígitos (método) | `dmm_adi_errores.html` | P35–P37 |
+| R9 | Agilent 34401A (manual de servicio) | `dmm_34401a.html` | P38–P42 |
 
 ## Propuestas acumuladas (NINGUNA aplicada; se deciden en la síntesis)
 
@@ -51,12 +52,19 @@ Todas en `S3G4_LAB_rev2.1/02_referencias/`, publicadas (enlaces en `ARTEFACTOS.m
 - **P35** Presupuesto de errores con el método de ADI: ganancia en % de lectura y offset en cuentas, coeficiente × ΔT (23 ± 5 °C) más deriva, suma cuadrática y condiciones declaradas. Primera versión en `dmm_adi_errores.html` §5.
 - **P36** Medir la INL del ADC5 en diferencial en el banco y elegir: ±(0.1 % + 40), linealización por placa o un ΣΔ externo para el DMM. **Corrige H §8:** la INL es de 26–39 cuentas, no menos de 10.
 - **P37** Plan de ensayo del DMM con los cuatro ensayos de ADI: ruido, INL, coeficiente de temperatura y estabilidad.
+- **P38** Autocero con tiempo de asiento calculado por rango (≈ 0.8 ms en ÷10 y 0.4 ms en ÷100) y, si hace falta, precarga como el 34401A (MC/MZ/PRE).
+- **P39** Corrección de la respuesta en alterna por firmware: un cero y un polo por rango, calibrados a 1 y 20 kHz (equivalente al condensador programable del 34401A). Con un 2 % de desajuste de τ, el error a 20 kHz es de −1.7 %.
+- **P40** Integración ligada a la red de 60 Hz (Perú), configurable; 100 ms para rechazar 50 y 60 Hz a la vez. Con el ajuste equivocado, solo 14–16 dB.
+- **P41** Autoprueba al encender con X3, X7, la fuente de 20 MΩ contra el divisor y el COMP7; medir el divisor de 10 MΩ para corregir el rango de 20 MΩ.
+- **P42** Fuente de ohmios protegida con semiconductores (1N4007W + 2 MMBTA92, ≈ 0.07 USD) como alternativa a la PTC de P30. Comparar en la síntesis.
 
 ## Riesgos para la síntesis
 
 - **Resolución:** en H, una cuenta vale ≈ 1/12 de LSB del ADC5 de 12 bits (todo depende del sobremuestreo). En el TIDA-01012, una cuenta son 2.3 LSB de un ADC de 18 bits; en el TIDA-00879 es un ΣΔ de 24 bits. Hay que justificar las 20 000 cuentas o rebajarlas. **R5 lo concreta:** el ruido con ×1024 queda en 0.23 cuentas, pero la INL de la hoja (2.1–3.2 LSB diferenciales) son 26–39 cuentas. Lo que limita es la INL, no el ruido (P36).
 - COM a media alimentación (TIDA, HydraMeter): no aplicable, porque nuestro COM es la masa común (RD-05).
 - Lazos de masa (Micro-DMM): con masa común, si el S3G4 está conectado por USB a un PC enchufado y se mide un equipo enchufado a la red, COM queda unido a la tierra del PC. El Micro-DMM aísla todo por eso. Decir en la síntesis cómo se avisa al usuario. Martin aísla solo los datos del USB: al cargar, un conmutador une las masas (mismo compromiso).
+- **Fuga del 74HC4051 (R9):** la hoja garantiza solo ±0.1 µA por canal a 25 °C (±1 µA de −40 a 85 °C). En la toma ÷10 serían ~1000 cuentas; el típico es mucho menor, pero no está garantizado. Medirla (P37) o elegir un conmutador con la fuga especificada. Afecta a P17 y a la sección H.
+- **Red de 60 Hz (Perú):** las cuentas de rechazo de H deben hacerse con 16.67 ms (P40).
 - Límite inferior (EEWorld 77845): ≈ 1 % con el SAR de 12 bits de un F103, sin referencia propia ni autocero. Martin, con un ΣΔ de 16 bits y 25 000 muestras por lectura, aún calibra offsets del 3.5 % del fondo en su rango más bajo.
 
 ## Siguiente, en orden
@@ -64,8 +72,8 @@ Todas en `S3G4_LAB_rev2.1/02_referencias/`, publicadas (enlaces en `ARTEFACTOS.m
 1. ~~R3 Micro-DMM~~: hecho el 7 oct (diario `2026-10-07-claude-dmm-microdmm.md`).
 2. ~~R8 Martin + R4 EEWorld 77845~~: hechos el 7 oct, sin propuestas nuevas (diario `2026-10-07-claude-dmm-martin-eeworld.md`).
 3. ~~R5 Analog Devices~~: hecho el 7 oct, P35–P37 (diario `2026-10-07-claude-dmm-adi.md`).
-4. **R9 Agilent 34401A**: `research_and_tests/Agilent_34401A/34401A_Service_Guide.pdf` (167 p). Teoría de funcionamiento en pp. 99–115 y esquemas en pp. 150–165. Front-end profesional: protección, divisor, fuente de ohmios, autocero y alterna.
-5. **Síntesis:** comparación de todas las referencias, lista P17–P32+ para que decida Keneth, revisión de la sección H y encargo S11.
+4. ~~R9 Agilent 34401A~~: hecho el 7 oct, P38–P42 (diario `2026-10-07-claude-dmm-34401a.md`).
+5. **Síntesis (lo siguiente):** comparación de las nueve referencias, la lista P17–P42 para que decida Keneth, la revisión de la sección H y el encargo S11. La medida de la INL y de la fuga del 4051 en el banco (P36, P37) puede adelantarse si Keneth quiere.
 6. Pendiente de Keneth: si quiere la ficha del 95152 de EEWorld, tiene que bajarlo él (pide cuenta).
 
 ## Método y herramientas (para no redescubrirlas)
