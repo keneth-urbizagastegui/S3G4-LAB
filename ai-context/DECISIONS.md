@@ -257,6 +257,26 @@ Keneth, 7 oct, al pedir la síntesis de las referencias del DMM (en respuesta a 
 - Amplía el criterio de tolerancias del 3 oct (≥ 95 % de placas, criterios funcionales con margen). No sustituye ninguna decisión.
 - Fuente: chat del 7 oct; síntesis en `S3G4_LAB_rev2.1/01_diseno/dmm_sintesis.html`.
 
+### 2026-10-07 — DMM: D1–D7 de la síntesis aceptadas; D1 sin huella de ADC externo
+
+Keneth, 7 oct: «de acuerdo con D1–D7, revisa la sección H, sin huella del ads1115 confiemos en el stm32». Acepta las recomendaciones de la síntesis con un cambio en D1:
+- **D1 · INL del ADC5:** solo el ADC5 del STM32G473, con linealización medida al fabricar (P26). **Sin huella de ADC externo:** se descarta la huella sin montar del ADS1115 que proponía la síntesis. Por eso la especificación tiene dos niveles: garantizada (+40 cuentas) y tras calibrar (+10; +20 en alterna).
+- **D2 · cambio de rango:** divisor con tomas ÷1/÷10/÷100; P17 (patas conmutadas) descartada.
+- **D3 · protección de la fuente de ohmios:** 1N4007W + 2 × MMBTA92 (P42) en lugar de la PTC. Se confirma en S11.
+- **D4 · mux:** 74HC4051 (0.21 USD) con offset calibrado por rango. S11 fija la fuga tolerable; si no tolera ≥ 1 nA, se reabre.
+- **D5 · especificación:** la de la síntesis §6, tal cual:
+  - DCV ±(0.1 % + 40) / ±(0.1 % + 10);
+  - ACV ±(1 % + 40) / ±(1 % + 20);
+  - Ω ±(0.2 % + 40) / ±(0.2 % + 10), y 20 MΩ ±(1 % + 40) / ±(1 % + 10);
+  - DCI ±(0.5 % + 40) / ±(0.5 % + 10);
+  - ACI ±(1.5 % + 40) / ±(1.5 % + 20);
+  - un año, 23 ± 5 °C, red de 60 Hz.
+- **D6 · opcionales:** P32 (aviso de fusible abierto) sí, por X5; P28 no.
+- **D7 · alimentación:** riel propio del DMM, apagable (P22, RF-18).
+- La sección H revisada también aplica las demás propuestas que la síntesis marcó «adoptar» (P18, P20, P21, P26, P27, P29, P31, P33, P34, P38–P41). Son diseño por confirmar en S11, no decisiones aparte de Keneth.
+- **Sin aceptar:** P43, la fuente de corriente ratiométrica para ohmios (H §6). Es una propuesta pendiente de Keneth (D8). Sin ella, los ohmios vuelven a la razón con un buffer (P25), con ≈ 0.6 % sin linealizar.
+- Fuente: chat del 7 oct; `S3G4_LAB_rev2.1/01_diseno/dmm_sintesis.html` (D1–D7) y `01_diseno/dmm_rev21.html` revisada.
+
 ### 2026-10-06 — D-07 aceptada, RE-01 en espera y orden: DMM → AWG → mapa de pines
 
 Keneth, 6 oct, tras cerrar CH1–CH3:

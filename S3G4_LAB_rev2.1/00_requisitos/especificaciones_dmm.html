@@ -64,16 +64,16 @@ code{font:0.9em var(--mono);color:var(--accent)}
       <div class="brand">S3G4 LAB · Instrumento portátil</div>
       <h1>Multímetro de 4½ dígitos<br>Especificaciones</h1>
     </div>
-    <div class="docid">S3G4-DMM · hardware rev 2.1<br>Hoja preliminar · 7 oct 2026<br>UTEC · Ingeniería Electrónica</div>
+    <div class="docid">S3G4-DMM · hardware rev 2.1<br>Hoja preliminar · 7 oct 2026 · revisada con D1–D7<br>UTEC · Ingeniería Electrónica</div>
   </header>
 
-  <p class="warn"><b>Preliminar: objetivos de diseño, no valores medidos.</b> El DMM está en diseño (sección H, <code>01_diseno/dmm_rev21.html</code>) y todavía no se ha simulado: eso es S11. Cada cifra lleva su origen. Las exactitudes son objetivos para un año tras la calibración, a 23 ± 5 °C, y se confirman en S11 y en el banco.</p>
+  <p class="warn"><b>Preliminar: objetivos de diseño, no valores medidos.</b> El DMM está en diseño (sección H, <code>01_diseno/dmm_rev21.html</code>) y todavía no se ha simulado: eso es S11. Cada exactitud tiene <b>dos niveles</b>. El <b>garantizado por diseño</b> se cumple aunque la linealización del ADC5 no dé resultado. El <b>calibrado</b> es lo esperado tras la calibración al fabricar. Ambos valen un año, a 23 ± 5 °C y con al menos un ciclo de red de 60 Hz. Fuera de 18–28 °C se añade 0.1 × la exactitud por °C.</p>
 
   <div class="keys">
     <div><div class="v">±19 999</div><div class="l">cuentas, 4½ dígitos</div></div>
     <div><div class="v">50 V</div><div class="l">DC y 50 Vrms AC como máximo</div></div>
     <div><div class="v">10 MΩ</div><div class="l">de impedancia de entrada en tensión</div></div>
-    <div><div class="v">2 A</div><div class="l">DC y AC, con fusible</div></div>
+    <div><div class="v">2 A</div><div class="l">DC y AC, con fusible cerámico</div></div>
     <div><div class="v">TRMS</div><div class="l">de 40 Hz a 20 kHz</div></div>
     <div><div class="v">3</div><div class="l">bornes: V/Ω, COM y A</div></div>
   </div>
@@ -82,7 +82,7 @@ code{font:0.9em var(--mono);color:var(--accent)}
     <span><span class="t r">R</span> requisito acordado (RD-xx)</span>
     <span><span class="t c">C</span> calculado en el diseño</span>
     <span><span class="t s">S</span> simulado (LTspice)</span>
-    <span><span class="t p">!</span> objetivo o por definir</span>
+    <span><span class="t p">!</span> objetivo, propuesta o por definir</span>
   </div>
 
   <div class="cols">
@@ -91,10 +91,13 @@ code{font:0.9em var(--mono);color:var(--accent)}
       <dl>
         <div class="row hd"><dt>Rangos</dt><span class="dots"></span><dd>200 mV, 2 V, 20 V, 50 V<span class="t r">R</span></dd></div>
         <div class="row hd"><dt>Resolución</dt><span class="dots"></span><dd>10 µV, 100 µV, 1 mV, 10 mV<span class="t c">C</span></dd></div>
-        <div class="row hd"><dt>Exactitud</dt><span class="dots"></span><dd>±(0.1 % + 10 cuentas)<span class="t p">!</span><sup>1</sup></dd></div>
+        <div class="row hd"><dt>Exactitud</dt><span class="dots"></span><dd><sup>1</sup></dd></div>
+        <div class="row sub"><dt>garantizada por diseño</dt><span class="dots"></span><dd>±(0.1 % + 40 cuentas)<span class="t c">C</span></dd></div>
+        <div class="row sub"><dt>tras calibrar al fabricar</dt><span class="dots"></span><dd>±(0.1 % + 10 cuentas)<span class="t p">!</span></dd></div>
         <div class="row hd"><dt>Impedancia de entrada</dt><span class="dots"></span><dd>10 MΩ, todos los rangos<span class="t c">C</span></dd></div>
-        <div class="row hd"><dt>Rechazo en modo normal (50/60 Hz)</dt><span class="dots"></span><dd>≥ 60 dB con NPLC ≥ 1<span class="t p">!</span></dd></div>
-        <div class="row hd"><dt>Autocero</dt><span class="dots"></span><dd>en cada lectura<span class="t c">C</span></dd></div>
+        <div class="row hd"><dt>Rechazo de la red</dt><span class="dots"></span><dd>≥ 40 dB<span class="t p">!</span></dd></div>
+        <div class="row sub"><dt>Integración</dt><span class="dots"></span><dd>ciclos de 60 Hz (configurable) o 100 ms<span class="t c">C</span></dd></div>
+        <div class="row hd"><dt>Autocero</dt><span class="dots"></span><dd>en cada lectura, asiento ≈ 1 ms<span class="t c">C</span></dd></div>
       </dl>
     </section>
 
@@ -104,7 +107,9 @@ code{font:0.9em var(--mono);color:var(--accent)}
         <div class="row hd"><dt>Medida</dt><span class="dots"></span><dd>verdadero valor eficaz, acoplo AC<span class="t r">R</span></dd></div>
         <div class="row hd"><dt>Rangos</dt><span class="dots"></span><dd>200 mV, 2 V, 20 V, 50 Vrms<span class="t r">R</span></dd></div>
         <div class="row hd"><dt>Frecuencia</dt><span class="dots"></span><dd>40 Hz – 20 kHz<span class="t r">R</span></dd></div>
-        <div class="row hd"><dt>Exactitud (5 % a 100 % del rango)</dt><span class="dots"></span><dd>±(1 % + 20 cuentas)<span class="t p">!</span><sup>2</sup></dd></div>
+        <div class="row hd"><dt>Exactitud (5 % a 100 % del rango)</dt><span class="dots"></span><dd><sup>2</sup></dd></div>
+        <div class="row sub"><dt>garantizada por diseño</dt><span class="dots"></span><dd>±(1 % + 40 cuentas)<span class="t c">C</span></dd></div>
+        <div class="row sub"><dt>tras calibrar al fabricar</dt><span class="dots"></span><dd>±(1 % + 20 cuentas)<span class="t p">!</span></dd></div>
         <div class="row hd"><dt>Factor de cresta</dt><span class="dots"></span><dd>≤ 3 a fondo de escala<span class="t c">C</span></dd></div>
         <div class="row hd"><dt>Impedancia de entrada</dt><span class="dots"></span><dd>10 MΩ ∥ &lt; 100 pF<span class="t c">C</span></dd></div>
       </dl>
@@ -115,10 +120,12 @@ code{font:0.9em var(--mono);color:var(--accent)}
       <dl>
         <div class="row hd"><dt>Rangos</dt><span class="dots"></span><dd>200 Ω … 20 MΩ, 6 rangos<span class="t r">R</span></dd></div>
         <div class="row hd"><dt>Resolución</dt><span class="dots"></span><dd>10 mΩ … 1 kΩ<span class="t c">C</span></dd></div>
-        <div class="row hd"><dt>Exactitud, 200 Ω … 2 MΩ</dt><span class="dots"></span><dd>±(0.2 % + 10 cuentas)<span class="t p">!</span><sup>3</sup></dd></div>
-        <div class="row hd"><dt>Exactitud, 20 MΩ</dt><span class="dots"></span><dd>±(1 % + 10 cuentas)<span class="t p">!</span></dd></div>
-        <div class="row hd"><dt>Corriente de prueba</dt><span class="dots"></span><dd>9.8 mA (200 Ω) … 0.3 µA (20 MΩ)<span class="t c">C</span></dd></div>
-        <div class="row hd"><dt>Tensión en vacío</dt><span class="dots"></span><dd>≈ 4.9 V<span class="t c">C</span></dd></div>
+        <div class="row hd"><dt>Exactitud, 200 Ω … 2 MΩ</dt><span class="dots"></span><dd><sup>3</sup></dd></div>
+        <div class="row sub"><dt>garantizada por diseño</dt><span class="dots"></span><dd>±(0.2 % + 40 cuentas)<span class="t p">!</span></dd></div>
+        <div class="row sub"><dt>tras calibrar al fabricar</dt><span class="dots"></span><dd>±(0.2 % + 10 cuentas)<span class="t p">!</span></dd></div>
+        <div class="row hd"><dt>Exactitud, 20 MΩ</dt><span class="dots"></span><dd>±(1 % + 40) · ±(1 % + 10)<span class="t p">!</span></dd></div>
+        <div class="row hd"><dt>Corriente de prueba</dt><span class="dots"></span><dd>10 mA (200 Ω) … 0.2 µA (20 MΩ)<span class="t p">!</span></dd></div>
+        <div class="row hd"><dt>Tensión en vacío</dt><span class="dots"></span><dd>≈ 3.4 V máx. (2.0 V en 20 MΩ)<span class="t c">C</span></dd></div>
         <div class="row hd"><dt>Relativo (resta de puntas)</dt><span class="dots"></span><dd>sí<span class="t r">R</span></dd></div>
       </dl>
     </section>
@@ -126,8 +133,8 @@ code{font:0.9em var(--mono);color:var(--accent)}
     <section class="grp">
       <h2>Diodo y continuidad</h2>
       <dl>
-        <div class="row hd"><dt>Prueba de diodo</dt><span class="dots"></span><dd>0 – 3.5 V, 1 mV<span class="t r">R</span></dd></div>
-        <div class="row sub"><dt>Corriente</dt><span class="dots"></span><dd>≈ 0.6–1.6 mA<span class="t c">C</span></dd></div>
+        <div class="row hd"><dt>Prueba de diodo</dt><span class="dots"></span><dd>0 – ≈ 3.3 V, 1 mV<span class="t r">R</span><span class="t p">!</span><sup>6</sup></dd></div>
+        <div class="row sub"><dt>Corriente</dt><span class="dots"></span><dd>1 mA constante<span class="t c">C</span></dd></div>
         <div class="row hd"><dt>Continuidad</dt><span class="dots"></span><dd>zumbador por debajo de ≈ 50 Ω<span class="t r">R</span><span class="t c">C</span></dd></div>
         <div class="row sub"><dt>Respuesta</dt><span class="dots"></span><dd>&lt; 1 ms (COMP7, sin CPU)<span class="t c">C</span></dd></div>
       </dl>
@@ -138,11 +145,14 @@ code{font:0.9em var(--mono);color:var(--accent)}
       <dl>
         <div class="row hd"><dt>Rangos DC y AC</dt><span class="dots"></span><dd>200 mA, 2 A<span class="t r">R</span></dd></div>
         <div class="row hd"><dt>Resolución</dt><span class="dots"></span><dd>10 µA, 100 µA<span class="t c">C</span></dd></div>
-        <div class="row hd"><dt>Exactitud DC</dt><span class="dots"></span><dd>±(0.5 % + 10 cuentas)<span class="t p">!</span><sup>4</sup></dd></div>
-        <div class="row hd"><dt>Exactitud AC (40 Hz – 20 kHz)</dt><span class="dots"></span><dd>±(1.5 % + 20 cuentas)<span class="t p">!</span></dd></div>
-        <div class="row hd"><dt>Derivador</dt><span class="dots"></span><dd>0.1 Ω, único<span class="t r">R</span></dd></div>
+        <div class="row hd"><dt>Exactitud DC</dt><span class="dots"></span><dd><sup>4</sup></dd></div>
+        <div class="row sub"><dt>garantizada por diseño</dt><span class="dots"></span><dd>±(0.5 % + 40 cuentas)<span class="t c">C</span></dd></div>
+        <div class="row sub"><dt>tras calibrar al fabricar</dt><span class="dots"></span><dd>±(0.5 % + 10 cuentas)<span class="t p">!</span></dd></div>
+        <div class="row hd"><dt>Exactitud AC (40 Hz – 20 kHz)</dt><span class="dots"></span><dd>±(1.5 % + 40) · ±(1.5 % + 20)<span class="t p">!</span></dd></div>
+        <div class="row hd"><dt>Derivador</dt><span class="dots"></span><dd>0.1 Ω, único, Kelvin<span class="t r">R</span></dd></div>
         <div class="row hd"><dt>Caída a fondo de escala</dt><span class="dots"></span><dd>&lt; 0.3 V a 2 A<span class="t c">C</span></dd></div>
-        <div class="row hd"><dt>Fusible</dt><span class="dots"></span><dd>3.15 A rápido, accesible<span class="t r">R</span></dd></div>
+        <div class="row hd"><dt>Fusible</dt><span class="dots"></span><dd>3.15 A cerámico, ≥ 35 A a 250 V<span class="t r">R</span><span class="t p">!</span></dd></div>
+        <div class="row sub"><dt>Fusible abierto</dt><span class="dots"></span><dd>aviso en pantalla y S3G4-UI<span class="t c">C</span></dd></div>
       </dl>
     </section>
 
@@ -151,7 +161,8 @@ code{font:0.9em var(--mono);color:var(--accent)}
       <dl>
         <div class="row hd"><dt>Máximo de medida V/Ω</dt><span class="dots"></span><dd>50 V DC · 50 Vrms (71 Vpk)<span class="t r">R</span></dd></div>
         <div class="row hd"><dt>Conexión a la red por error</dt><span class="dots"></span><dd>230 Vrms durante 10 s sin daño<span class="t r">R</span><span class="t p">!</span><sup>5</sup></dd></div>
-        <div class="row hd"><dt>Borne A</dt><span class="dots"></span><dd>fusible + diodos de potencia<span class="t c">C</span></dd></div>
+        <div class="row sub"><dt>en ohmios</dt><span class="dots"></span><dd>bloqueo con semiconductores<span class="t c">C</span></dd></div>
+        <div class="row hd"><dt>Borne A</dt><span class="dots"></span><dd>fusible + puente DF10S<span class="t c">C</span></dd></div>
         <div class="row hd"><dt>Descargas electrostáticas</dt><span class="dots"></span><dd>±4 kV contacto, ±8 kV aire<span class="t p">!</span></dd></div>
         <div class="row hd"><dt>Aislamiento</dt><span class="dots"></span><dd>ninguno: COM = masa del equipo<span class="t r">R</span></dd></div>
         <div class="row hd"><dt>Categoría de medida</dt><span class="dots"></span><dd>ninguna; no mide la red<span class="t r">R</span></dd></div>
@@ -163,8 +174,9 @@ code{font:0.9em var(--mono);color:var(--accent)}
       <dl>
         <div class="row hd"><dt>Ayudas</dt><span class="dots"></span><dd>autorango, relativo, mín/máx, retención<span class="t r">R</span></dd></div>
         <div class="row hd"><dt>Registro</dt><span class="dots"></span><dd>en el tiempo, con exportación<span class="t r">R</span></dd></div>
-        <div class="row hd"><dt>Cable abierto</dt><span class="dots"></span><dd>detección<span class="t r">R</span><span class="t p">!</span></dd></div>
-        <div class="row hd"><dt>Lecturas por segundo</dt><span class="dots"></span><dd>≈ 2–5 (NPLC 1 con autocero)<span class="t p">!</span></dd></div>
+        <div class="row hd"><dt>Cable abierto</dt><span class="dots"></span><dd>detección con la fuente de 0.2 µA<span class="t r">R</span><span class="t p">!</span></dd></div>
+        <div class="row hd"><dt>Autoprueba</dt><span class="dots"></span><dd>al encender: cero, ganancia, fuente, COMP7<span class="t c">C</span></dd></div>
+        <div class="row hd"><dt>Lecturas por segundo</dt><span class="dots"></span><dd>≈ 2–5 (con autocero)<span class="t p">!</span></dd></div>
       </dl>
     </section>
 
@@ -172,10 +184,12 @@ code{font:0.9em var(--mono);color:var(--accent)}
       <h2>General</h2>
       <dl>
         <div class="row hd"><dt>Convertidor</dt><span class="dots"></span><dd>ADC5 del STM32G473, diferencial<span class="t r">R</span></dd></div>
+        <div class="row sub"><dt>ADC externo</dt><span class="dots"></span><dd>ninguno, ni huella (D1)<span class="t r">R</span></dd></div>
         <div class="row hd"><dt>Sobremuestreo</dt><span class="dots"></span><dd>×256 hardware · ×4 firmware<span class="t r">R</span></dd></div>
         <div class="row hd"><dt>Referencia</dt><span class="dots"></span><dd>REF3325, 2.5 V, 30 ppm/°C<span class="t c">C</span></dd></div>
         <div class="row hd"><dt>Consumo</dt><span class="dots"></span><dd>≈ 30 mW (+ fuente de ohmios)<span class="t c">C</span></dd></div>
-        <div class="row hd"><dt>Calibración</dt><span class="dots"></span><dd>ganancia y offset por rango (P10)<span class="t c">C</span></dd></div>
+        <div class="row sub"><dt>Alimentación</dt><span class="dots"></span><dd>interruptor propio, apagable<span class="t r">R</span></dd></div>
+        <div class="row hd"><dt>Calibración</dt><span class="dots"></span><dd>al fabricar, por software<span class="t c">C</span><sup>7</sup></dd></div>
       </dl>
     </section>
   </div>
@@ -191,21 +205,23 @@ code{font:0.9em var(--mono);color:var(--accent)}
         <tr><td>DCV / ACV · 50 V</td><td class="n">50.00 V</td><td class="n">10 mV</td><td>÷100 · ×1</td><td class="n">±0.5 V</td></tr>
         <tr><td>DCI / ACI · 200 mA</td><td class="n">199.99 mA</td><td class="n">10 µA</td><td>0.1 Ω · ×100</td><td class="n">±2 V</td></tr>
         <tr><td>DCI / ACI · 2 A</td><td class="n">1.9999 A</td><td class="n">100 µA</td><td>0.1 Ω · ×10</td><td class="n">±2 V</td></tr>
-        <tr><td>Ω · 200 Ω / 2 k / 20 k / 200 k / 2 M / 20 MΩ</td><td class="n">199.99 Ω … 19.999 MΩ</td><td class="n">10 mΩ … 1 kΩ</td><td>razón con R_ref 301 Ω … 10 MΩ</td><td class="n">≤ 2 V</td></tr>
-        <tr><td>Diodo</td><td class="n">3.500 V</td><td class="n">1 mV</td><td>÷10 · ×1</td><td class="n">0.35 V</td></tr>
+        <tr><td>Ω · 200 Ω / 2 k / 20 k / 200 k / 2 M / 20 MΩ</td><td class="n">199.99 Ω … 19.999 MΩ</td><td class="n">10 mΩ … 1 kΩ</td><td>fuente de 10 mA … 0.2 µA · ÷1 · ×1</td><td class="n">≤ 2 V</td></tr>
+        <tr><td>Diodo</td><td class="n">≈ 3.3 V</td><td class="n">1 mV</td><td>1 mA · ÷10 · ×1</td><td class="n">0.33 V</td></tr>
       </tbody>
     </table></div>
 
     <h3>Notas</h3>
     <ol>
-      <li>Presupuesto de la sección H §8: tras calibrar, la referencia y las resistencias suman ≈ 0.05 %; la no linealidad del ADC5 (≈ ±2–3 códigos de 12 bits) da las 10 cuentas. En el rango de 200 mV, el autocero deja el offset por debajo de una cuenta (OPA2188 de deriva cero).</li>
-      <li>Muestreo a ≈ 200 kSa/s y verdadero valor eficaz en firmware (etapa J1 del banco). El divisor se compensa como una sonda; el condensador de la toma ÷10 se elige en prueba.</li>
-      <li>Medida por razón, sin fuente de corriente exacta: la corriente sale de la caída en R_ref, medida en sus dos extremos con un segundo 74HC4051 de sentido. En 200 kΩ, 2 MΩ y 20 MΩ se corrige el divisor de 10 MΩ en paralelo.</li>
-      <li>Derivador de 0.1 Ω 1 % calibrado; en 2 A se calienta (0.4 W), lo que limita la exactitud si se mide mucho tiempo seguido. En 200 mA, una cuenta son 1 µV en el derivador.</li>
-      <li>V/Ω en tensión: R_PROT de 3 × 33 kΩ y divisor de 3 × 3 MΩ en 1206 (≈ 108 V por pieza). En ohmios: PTC por elegir. A: el fusible abre. No es una categoría de medida. Se simula en S11.</li>
+      <li>Presupuesto de la sección H §8, con el método de Analog Devices. En % de lectura, tras calibrar, quedan 579–630 ppm según el rango (referencia, relaciones de resistencias y patrón del 0.05 %). En cuentas manda la no linealidad del ADC5: 26–39 cuentas según la hoja del G473. El garantizado cubre ese caso; el calibrado supone que una tabla de linealización medida al fabricar la baja a ≈ 10. No hay ADC externo de respaldo (D1). Las fugas del 74HC4051 y la corriente de entrada del OPA2188 se restan con el offset calibrado de cada rango.</li>
+      <li>Muestreo a ≈ 200 kSa/s y verdadero valor eficaz en firmware (etapa J1 del banco). El divisor se compensa con condensadores C0G fijos, sin trimmer. El desajuste que queda (≈ −1.7 % a 20 kHz con un 2 % entre tramos) lo corrige un filtro de firmware calibrado a 1 y 20 kHz.</li>
+      <li><b>Depende de la propuesta P43</b>, pendiente de aprobación (D8): una fuente de corriente ratiométrica a VREF, calibrada al fabricar, como la del Agilent 34401A. Si no se aprueba, la medida vuelve a ser por razón y la exactitud baja a ≈ 0.6 % sin linealizar. En 200 kΩ, 2 MΩ y 20 MΩ se corrige el divisor de 10 MΩ en paralelo.</li>
+      <li>Derivador de 0.1 Ω 1 % calibrado, con toma Kelvin y punto estrella en COM. En 2 A se calienta (0.4 W), lo que limita la exactitud si se mide mucho tiempo seguido. En 200 mA, una cuenta son 1 µV en el derivador.</li>
+      <li>V/Ω en tensión: R_PROT de 3 × 33 kΩ y divisor de 3 × 3 MΩ en 1206 (≈ 108 V por pieza). En ohmios: un 1N4007W y dos MMBTA92 en serie bloquean la tensión externa sin pasar corriente, y el firmware apaga la fuente y avisa. A: el fusible abre. Sin descargadores ni varistores: no es una categoría de medida. Se simula en S11.</li>
+      <li>RD-08 pide ~3.5 V. Con 1 mA quedan ≈ 3.3 V disponibles: se encienden los LED rojos, verdes y la mayoría de los azules; los azules y blancos más altos quedan en el límite. Se comprueba en S11.</li>
+      <li>Calibración multipunto por rango, linealización del ADC5, corriente de cada rango de ohmios y corrección de alterna. Las constantes se guardan con versión y CRC y se editan desde S3G4-UI sin cambiar el firmware.</li>
     </ol>
     <h3>Fuentes</h3>
-    <p>Requisitos RD-01…RD-10 (<code>00_requisitos/requisitos_dmm_awg.html</code>), decisiones del 7 oct en <code>ai-context/DECISIONS.md</code> y guía de diseño <code>01_diseno/dmm_rev21.html</code> (sección H). Referencias: TI TIDA-01012, NI ELVIS II y Micro-DMM. Pieza clave: OPA2188AIDR (TI, LCSC C17271).</p>
+    <p>Requisitos RD-01…RD-10 (<code>00_requisitos/requisitos_dmm_awg.html</code>), decisiones del 7 oct en <code>ai-context/DECISIONS.md</code> y guía de diseño <code>01_diseno/dmm_rev21.html</code> (sección H, revisada con D1–D7). Síntesis de las nueve referencias: <code>01_diseno/dmm_sintesis.html</code>. Piezas clave: OPA2188AIDR (LCSC C17271), 74HC4051D (C9386), TLV2372 (C27204, P43), 1N4007W (C18199088) y MMBTA92 (C20069146).</p>
   </section>
 </div>
 

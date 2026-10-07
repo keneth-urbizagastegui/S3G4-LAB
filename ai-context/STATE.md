@@ -229,6 +229,11 @@ No se ha elegido automáticamente uno de estos frentes como nueva tarea de ingen
   - **Veredicto P17–P42:** 7 de hardware (céntimos), 11 de firmware, 2 ya en H, 3 opcionales, P17 descartada, P30 sustituida por P42 y P36 por decidir.
   - **Especificación en dos niveles:** sin linealizar, ±(0.1 % + 40) en continua; tras calibrar al fabricar, ±(0.1 % + 10). Huella sin montar de un ADS1115 (C37593, 1.22 USD) como respaldo.
   - **Pendiente de Keneth:** D1–D7 (INL, divisor con tomas, P42, 74HC4051, especificación, opcionales y riel propio). Después, revisión de H y encargo S11. Detalle en `journal/2026-10-07-claude-dmm-sintesis.md`.
+- **7 oct, D1–D7 aceptadas y sección H revisada:** Keneth aceptó D1–D7 con un cambio: **sin huella del ADS1115**, solo el ADC5 y la linealización al fabricar (DECISIONS, 7 oct). Revisados y republicados `01_diseno/dmm_rev21.html` (versión 3, 4iveEdvtCBTvhQj9jHjsvY) y `00_requisitos/especificaciones_dmm.html` (versión 3, 9wuyJcNBxPcee2dNuThttm).
+  - H aplica P42 (en lugar de la PTC), el fusible cerámico con DF10S y el aviso por X5, C0G fijos con corrección por firmware, el autocero con asiento, 60 Hz/100 ms y la especificación en dos niveles. Añade §10 (firmware y calibración) y §11 (S11 y lo abierto).
+  - **Hallazgo nuevo** (`herramientas/calc_dmm_h.py`): en la razón de ohmios, la corriente también se mide con el ADC5, así que la INL entra en % de lectura: 0.62 % típ., 0.94 % máx. y 0.24 % aun linealizada. No cabe en ±(0.2 % + 10).
+  - **Propuesta P43 (pendiente, D8):** fuente de corriente ratiométrica a VREF, como el 34401A. TLV2372 (C27204) + NPN + PNP, R_rango de 50 Ω a 2.49 MΩ, 10 mA … 0.2 µA, ≈ 3.4 V en vacío y diodo a 1 mA hasta ≈ 3.3 V. Ganancia de ohmios ≈ 630 ppm. En 20 MΩ se usa 0.2 µA y no 0.1 µA: con 0.1 µA, la curva aplanada por el divisor de 10 MΩ daba 1.5 veces la tolerancia garantizada. Sin ella, la razón con buffer (P25) da ≈ 0.6 %.
+  - **Siguiente:** respuesta de Keneth a D8 y después el encargo S11. Detalle en `journal/2026-10-07-claude-revision-seccion-h.md`.
 
 ## Punto de retomada — referencias del DMM (7 oct 2026, Claude)
 
@@ -236,6 +241,6 @@ No se ha elegido automáticamente uno de estos frentes como nueva tarea de ingen
   - el estado: las 9 referencias hechas (TIDA-01012, HydraMeter, TIDA-00879, 121GW, Micro-DMM, Martin, EEWorld 77845, Analog Devices y 34401A);
   - las propuestas P17–P42 resumidas, sin aplicar;
   - los riesgos para la síntesis;
-  - el orden siguiente: respuestas de Keneth a D1–D7 de la síntesis (`01_diseno/dmm_sintesis.html`) → revisión de la sección H → encargo S11;
+  - el orden siguiente: ~~respuestas a D1–D7~~ y ~~revisión de la sección H~~ (hechas el 7 oct) → respuesta de Keneth a D8 (P43) → encargo S11;
   - las herramientas y las trampas conocidas.
-- La sección H del DMM sigue en pausa hasta la síntesis.
+- La sección H del DMM está revisada (7 oct). Solo falta D8 antes de encargar S11.

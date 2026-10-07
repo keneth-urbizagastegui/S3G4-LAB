@@ -10,7 +10,7 @@ Lo deja la sesión del 6–7 oct, que se quedó sin contexto. Para empezar el ch
   - amplificador de deriva cero externo;
   - aguantar la red 10 s (RD-10);
   - rangos DC/AC de 200 mV, 2 V, 20 V y 50 V; Ω de 200 Ω a 20 MΩ; 200 mA y 2 A.
-- **Sección H (borrador, EN PAUSA):** `S3G4_LAB_rev2.1/01_diseno/dmm_rev21.html` y la hoja `00_requisitos/especificaciones_dmm.html`, publicadas. Se escribieron antes de estudiar las referencias: **se revisan en la síntesis** y después se encarga S11 a Codex.
+- **Sección H (revisada el 7 oct con D1–D7):** `S3G4_LAB_rev2.1/01_diseno/dmm_rev21.html` y la hoja `00_requisitos/especificaciones_dmm.html`, republicadas (versión 3 de cada una). Falta D8 (P43, fuente de corriente de ohmios) y después se encarga S11 a Codex. Diario `2026-10-07-claude-revision-seccion-h.md`.
 - **Plan:** `S3G4_LAB_rev2.1/06_plan/PLAN_REFERENCIAS_DMM.md` (método, referencias, orden y la evaluación de los enlaces 95152/57000/57006 de EEWorld).
 
 ## Referencias hechas (9 de 9)
@@ -74,7 +74,8 @@ Todas en `S3G4_LAB_rev2.1/02_referencias/`, publicadas (enlaces en `ARTEFACTOS.m
 3. ~~R5 Analog Devices~~: hecho el 7 oct, P35–P37 (diario `2026-10-07-claude-dmm-adi.md`).
 4. ~~R9 Agilent 34401A~~: hecho el 7 oct, P38–P42 (diario `2026-10-07-claude-dmm-34401a.md`).
 5. ~~Síntesis~~: publicada el 7 oct, `01_diseno/dmm_sintesis.html` (diario `2026-10-07-claude-dmm-sintesis.md`).
-   - **Lo siguiente:** las respuestas de Keneth a D1–D7; después, revisar la sección H y su hoja de especificaciones, y escribir el encargo S11.
+   - ~~Respuestas a D1–D7 y revisión de la sección H y su hoja~~: hechas el 7 oct. D1 quedó sin huella del ADS1115 (DECISIONS; diario `2026-10-07-claude-revision-seccion-h.md`).
+   - **Lo siguiente:** la respuesta de Keneth a D8 (P43) y después el encargo S11.
    - Las medidas en banco (P36, P37) **no** se adelantan: la placa WeAct no sirve para lo analógico (DECISIONS, 7 oct).
 6. Pendiente de Keneth: si quiere la ficha del 95152 de EEWorld, tiene que bajarlo él (pide cuenta).
 

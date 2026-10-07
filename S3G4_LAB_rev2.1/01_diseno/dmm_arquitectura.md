@@ -1,6 +1,6 @@
 # DMM de la rev 2.1 — arquitectura (borrador)
 
-> **Superado el 7 oct por la sección H:** `01_diseno/dmm_rev21.html` (guía con valores) y `00_requisitos/especificaciones_dmm.html`. Se conserva como registro del primer paso.
+> **Superado el 7 oct por la sección H:** `01_diseno/dmm_rev21.html` (guía con valores) y `00_requisitos/especificaciones_dmm.html`. Se conserva como registro del primer paso. La sección H se revisó el mismo día con D1–D7 (`ai-context/DECISIONS.md`). Ya no valen la PTC de la fuente de ohmios, sustituida por P42, ni la medida de ohmios por razón, ahora P43 (propuesta).
 
 - Autor: Claude Code, 7 oct 2026. Primer paso del DMM (PLAN, paso 1).
 - Decisiones de Keneth del 7 oct: `ai-context/DECISIONS.md`, entrada «DMM: arquitectura».
