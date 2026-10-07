@@ -139,3 +139,12 @@ No se ha elegido automáticamente uno de estos frentes como nueva tarea de ingen
 
 - **S9-B auditado** (sin repetir campañas). Signo del offset correcto: los parámetros corregidos son los originales +2.986 mV exactos, y con `VOS IP IPR` eso da un offset efectivo uniforme de ±3 mV. Recalculé el C9 desde `s9b_op_corregido.csv`: 483/477/483/477 por escala y 471/500 (94.2 %) conjunto, coincide. **El conjunto de A, que no estaba calculado, es 481/500 (96.2 %).** B no cumple el ≥ 95 % conjunto; sus fallos ahora son de recorrido negativo (mínimo 4.33 div), y en A de recorrido positivo. B consume 109 mW por canal frente a 63 mW de A, con más ruido (0.286 frente a 0.234 %div). **Decidido el 6 oct: AD8039 en CH2/CH3** (DECISIONS). Tabla G.3/G.4 rehecha el 6 oct: M1 = 2.52 W y 6.6 h (antes 2.76 W y 6.0 h); los relés cuestan ≈ 0.28 W de batería, no 0.16 W.
 - **S8b auditado:** netlist reexportada idéntica; `verificar_s8.py` da código 0 (89 piezas, 56 redes); ERC 15 = 7 `power_pin_not_driven` (uno por riel, sobre `power:`) + 3 `pin_not_driven` + 5 `isolated_pin_label`. El detector da 0 solapes, pero no mira etiquetas contra textos: en la etapa final, CH1_VMID_LO y CH1_ROFF_MID se cruzan con textos de R131/R147/R128, y VREF_2V5 toca a R130. Es cosmético. Rama unida en `main` el 6 oct (db94b62, sin push). Pendiente: cajetín y ERC 15 (Keneth en KiCad). El STEP de 49 MB del display salió del historial sin subir y queda ignorado, en disco. Detalle: `ai-context/journal/2026-10-06-claude-auditoria-s9b-s8b.md`.
+
+## S10 preparado: esquema de CH2/CH3 — 6 oct 2026, Claude
+
+- Rama `ai/s10-ch23-esquema`. En `S3G4_LAB_rev2.1/04_esquematicos/S10_CH23/`:
+  - `CH23_PIEZAS_Y_REDES.md`: reglas de copia desde CH1 y cambios del filtro;
+  - `verificar_ch23.py`: deriva lo esperado de `s8_ch1.net`; probado con CH1 (0 diferencias) y con una copia sintética de CH2 (detecta los 8 cambios);
+  - `ENCARGO_KONNECT_S10.md`.
+- Decisiones de Keneth del 6 oct en DECISIONS: una hoja por canal, referencias 2xx/3xx y RFILT1 = 2.2 kΩ + 150 Ω.
+- **Siguiente:** Keneth cierra KiCad, abre una sesión de Claude en `04_esquematicos/kicad` y pega «Lee y cumple ../S10_CH23/ENCARGO_KONNECT_S10.md». Después, auditoría de Claude.
