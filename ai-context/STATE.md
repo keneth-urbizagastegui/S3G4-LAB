@@ -254,3 +254,4 @@ No se ha elegido automáticamente uno de estos frentes como nueva tarea de ingen
   - el orden siguiente: ~~respuestas a D1–D7~~, ~~revisión de la sección H~~, ~~D8~~ y ~~encargo S11a~~ (hechos el 7 oct) → modelos y hojas de TI → lanzar S11a → circuito de P42 y S11b;
   - las herramientas y las trampas conocidas.
 - La sección H del DMM está revisada y P43 aceptada (7 oct). El encargo S11a está escrito y sin lanzar.
+- **7 oct, DMM por bloques y opción B:** Keneth decidió avanzar por bloques (bornes y protección → tensión → ohmios → corriente → driver/ADC) y poner un relé (TQ2SA, como el osciloscopio) que conecta la fuente de ohmios solo en Ω/diodo/continuidad (DECISIONS). DF08S en el borne A. S11a aparcado sin lanzar. Hojas y modelos de TI ya en el proyecto (los bajó Keneth). Pendiente de Keneth: cómo se protege la fuente en modo ohmios con la red (10 mA + escalera P42, o 1 mA máx. + PTC de 250 V + TVS); después, plan del bloque 1.

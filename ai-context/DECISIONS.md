@@ -289,6 +289,16 @@ Keneth, 7 oct: «de acuerdo con P43, escribe el encargo S11».
   - el circuito concreto de la escalera P42 (S11b).
 - Fuente: chat del 7 oct; `S3G4_LAB_rev2.1/01_diseno/dmm_rev21.html` §6 y `03_simulaciones/DMM/PLAN_SIMULACION_S11a.md`.
 
+### 2026-10-07 — DMM: se avanza por bloques; relé en la fuente de ohmios (opción B)
+
+Keneth, 7 oct:
+- **Método:** el DMM se diseña y simula **por bloques**, como el osciloscopio. El orden es bornes y protección → frontal de tensión → ohmios → corriente → driver y ADC5. El encargo S11a de golpe queda aparcado, sin lanzar.
+- **Bloque 1, opción B:** un relé de señal conecta la fuente de ohmios a V/Ω solo en ohmios, diodo y continuidad (como los K101–K104 del 34401A). Se descartan la fuente siempre conectada (A) y el conmutador manual del TIDA-01012 (C).
+- **Relé propuesto por Claude:** el mismo TQ2SA-5V-Z del osciloscopio (C22686, hoja `C46047.pdf`). Aguanta 750 Vrms entre contactos abiertos y suelta en ≤ 3 ms.
+- **Puente del borne A:** DF08S (800 V; 325 Vpk = 41 %).
+- **Se mantiene:** 50 V DC / 50 Vrms de medida y 230 Vrms durante 10 s sin daño (RD-04, RD-10). La ganancia la pone el OPA2188 y el driver pasa a diferencial con escala ×1, no ×44 como el TIDA.
+- Fuente: chat del 7 oct; `S3G4_LAB_rev2.1/02_referencias/dmm_tida01012.html` §3–§5.
+
 ### 2026-10-06 — D-07 aceptada, RE-01 en espera y orden: DMM → AWG → mapa de pines
 
 Keneth, 6 oct, tras cerrar CH1–CH3:
