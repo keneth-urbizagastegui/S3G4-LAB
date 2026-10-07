@@ -1,0 +1,430 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Multímetro DMM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Source+Sans+3:wght@400;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: guía de estudio; una columna, cada sección = idea + esquema + cuenta con un ejemplo que se arrastra de principio a fin */
+:root{
+  --paper:#fbfcfc; --ink:#16232a; --muted:#5a6b72; --rule:#d5dee1; --lead:#a9b7bc;
+  --accent:#0b5c78; --band:#e8f0f2;
+  --afe:#0b5c78; --mcu:#a3470f; --sig:#2f6f4f; --ctl:#6a4fa3; --bad:#b3261e;
+  --display:"Barlow Condensed","Arial Narrow",sans-serif;
+  --body:"Source Sans 3","Segoe UI",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#10181b; --ink:#dfe8ea; --muted:#93a4aa; --rule:#29373c; --lead:#4a5b61;
+  --accent:#6cc0dc; --band:#16242a; --afe:#6cc0dc; --mcu:#f2a36b; --sig:#6fcf9b; --ctl:#b9a0ec; --bad:#f2827a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#10181b; --ink:#dfe8ea; --muted:#93a4aa; --rule:#29373c; --lead:#4a5b61;
+  --accent:#6cc0dc; --band:#16242a; --afe:#6cc0dc; --mcu:#f2a36b; --sig:#6fcf9b; --ctl:#b9a0ec; --bad:#f2827a; color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.6 var(--body)}
+.wrap{max-width:960px;margin:0 auto;padding:28px 16px 64px}
+h1,h2,h3{font-family:var(--display);margin:0;text-wrap:balance;line-height:1.1}
+.top{border-bottom:3px solid var(--accent);padding-bottom:12px;display:flex;justify-content:space-between;align-items:flex-end;gap:10px 24px;flex-wrap:wrap}
+.brand{font:600 13px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+h1{font-size:clamp(30px,5vw,44px);font-weight:700}
+.docid{font:12.5px/1.6 var(--mono);color:var(--muted);text-align:right}
+h2{font-size:26px;font-weight:600;margin:44px 0 8px;padding-left:10px;border-left:4px solid var(--accent)}
+h2 .n{font-family:var(--mono);font-size:15px;color:var(--accent);margin-right:8px;vertical-align:3px}
+h3{font-size:19px;font-weight:600;margin:24px 0 4px;text-transform:uppercase;letter-spacing:.04em}
+p,li{max-width:78ch}
+.lead{font-size:17.5px}
+.keys{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1px;background:var(--rule);border:1px solid var(--rule);margin:20px 0}
+.keys div{background:var(--paper);padding:10px 12px}
+.keys .v{font:600 26px/1.1 var(--display);color:var(--accent)}
+.keys .l{font-size:13px;color:var(--muted)}
+.fig{margin:16px 0 6px;overflow-x:auto}
+.fig svg{display:block;width:100%;height:auto}
+.fig.wide svg{min-width:760px}
+.cap{font-size:13.5px;color:var(--muted);margin:2px 0 14px}
+.math{font:14.5px/1.9 var(--mono);background:var(--band);padding:10px 14px;margin:10px 0;overflow-x:auto;white-space:pre}
+.box{border:1px solid var(--rule);border-left:4px solid var(--accent);padding:10px 14px;margin:16px 0;background:color-mix(in srgb,var(--accent) 5%,transparent)}
+.box.warn{border-left-color:var(--bad);background:color-mix(in srgb,var(--bad) 6%,transparent)}
+.box b:first-child{font-family:var(--display);font-size:17px;letter-spacing:.03em}
+.tw{overflow-x:auto;margin:10px 0}
+table{border-collapse:collapse;width:100%;font-size:14.5px;min-width:620px}
+th,td{padding:6px 10px;border-bottom:1px solid var(--rule);text-align:left;vertical-align:top}
+th{font:600 12.5px var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.05em;border-bottom:2px solid var(--accent)}
+td.n{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+.tag{display:inline-block;font:600 11px/1 var(--mono);padding:3px 5px;border-radius:3px;border:1px solid currentColor;white-space:nowrap}
+.tag.afe{color:var(--afe)} .tag.mcu{color:var(--mcu)} .tag.both{color:var(--ctl)}
+.st{font:600 11px var(--mono);white-space:nowrap}
+.st.ok{color:var(--sig)} .st.prop{color:var(--ctl)} .st.open{color:var(--bad)}
+code{font:.9em var(--mono);color:var(--accent)}
+ol.steps>li{margin-bottom:10px}
+.foot{margin-top:40px;border-top:1px solid var(--rule);padding-top:12px;font-size:13.5px;color:var(--muted)}
+/* SVG */
+svg text{font-family:var(--body);fill:var(--ink)}
+svg .mono{font-family:var(--mono)}
+svg .mut{fill:var(--muted)}
+svg .afe{fill:var(--afe)} svg .mcu{fill:var(--mcu)} svg .sig{fill:var(--sig)} svg .ctl{fill:var(--ctl)} svg .bad{fill:var(--bad)}
+svg .blk{fill:var(--paper);stroke:var(--afe);stroke-width:1.6}
+svg .blk.m{stroke:var(--mcu)}
+svg .wire{stroke:var(--ink);stroke-width:1.6;fill:none}
+svg .bus{stroke:var(--ctl);stroke-width:1.4;fill:none;stroke-dasharray:5 4}
+svg .grid{stroke:var(--rule);stroke-width:1}
+svg .gridc{stroke:var(--lead);stroke-width:1.2}
+svg .trace{stroke:var(--sig);stroke-width:2.4;fill:none}
+svg .band{fill:var(--band)}
+svg .lineA{stroke:var(--afe);stroke-width:2;fill:none}
+svg .lineM{stroke:var(--mcu);stroke-width:2;fill:none}
+svg .lineB{stroke:var(--bad);stroke-width:2;fill:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top">
+  <div>
+    <div class="brand">S3G4 LAB · rev 2.1 · guía de estudio · sección H</div>
+    <h1>Multímetro (DMM)<br>cómo viaja la señal hasta el ADC5</h1>
+  </div>
+  <div class="docid">7 oct 2026 · Claude Code · borrador para simular (S11)<br>Fuentes: RD-01…RD-10, DECISIONS 7 oct,<br>TIDA-01012, g473_analogico.html, MAPA_PINES_FIRMADO</div>
+</header>
+
+<p class="lead">Esta página explica <b>qué hace cada bloque del DMM y por qué</b>, con números. Igual que en la guía de CH1, usa ejemplos de principio a fin: una pila de <b>12 V</b> en continua, una corriente de <b>150 mA</b> y una resistencia de <b>4.7 kΩ</b>. Las cifras son el diseño propuesto; las que dependen de la placa se comprueban en la simulación S11 antes del esquema.</p>
+
+<div class="keys">
+  <div><div class="v">±19 999</div><div class="l">cuentas (4½ dígitos), RD-03</div></div>
+  <div><div class="v">50 V</div><div class="l">DC y 50 Vrms AC como máximo, RD-04</div></div>
+  <div><div class="v">10 MΩ</div><div class="l">de entrada en todos los rangos de tensión</div></div>
+  <div><div class="v">2 A</div><div class="l">con un derivador de 0.1 Ω, RD-06</div></div>
+  <div><div class="v">40 Hz–20 kHz</div><div class="l">en verdadero valor eficaz, RD-07</div></div>
+  <div><div class="v">230 Vrms · 10 s</div><div class="l">sin daño si se conecta a la red por error, RD-10</div></div>
+</div>
+
+<!-- ============================================================ -->
+<h2><span class="n">1</span>La idea: todo termina en la misma ventana de ±2 V</h2>
+
+<p>El osciloscopio adapta cada escala a la ventana del ADC. El DMM hace lo mismo, pero con otra prioridad: <b>exactitud en continua</b> en lugar de velocidad. Por eso usa el <b>ADC5 en modo diferencial</b>. Mide la diferencia entre dos pines, PD13 (+) y PD14 (−), y acepta de −2.5 V a +2.5 V. Con sobremuestreo ×256 por hardware y ×4 por firmware, el ADC de 12 bits da unos 61 000 niveles en esos 5 V, unos 82 µV por nivel (RD-03).</p>
+
+<p>El diseño fija que <b>±19 999 cuentas valgan siempre ±2 V diferenciales</b> en el ADC: 100 µV por cuenta, con un margen de 1.2× sobre los 82 µV. Cada función y cada rango solo tiene que convertir su fondo de escala en ±2 V.</p>
+
+<div class="fig">
+<svg viewBox="0 0 900 260" role="img" aria-label="Ventana diferencial del ADC5: PD13 sube y PD14 baja alrededor de 1.25 V">
+  <rect x="80" y="20" width="560" height="200" class="band"/>
+  <g class="grid"><path d="M80 70H640M80 120H640M80 170H640"/></g>
+  <path class="gridc" d="M80 120H640"/>
+  <text x="70" y="24" text-anchor="end" class="mono mut" font-size="12">2.5 V</text>
+  <text x="70" y="124" text-anchor="end" class="mono mut" font-size="12">1.25 V</text>
+  <text x="70" y="224" text-anchor="end" class="mono mut" font-size="12">0 V</text>
+  <polyline class="lineA" points="80,120 140,95 200,70 260,45 320,45 380,70 440,95 500,120 560,145 640,170"/>
+  <polyline class="lineM" points="80,120 140,145 200,170 260,195 320,195 380,170 440,145 500,120 560,95 640,70"/>
+  <text x="300" y="38" font-size="13" class="afe" font-weight="600">PD13 = VCM + v/2</text>
+  <text x="300" y="214" font-size="13" class="mcu" font-weight="600">PD14 = VCM − v/2</text>
+  <path d="M270 45V195" stroke="var(--sig)" stroke-width="2" stroke-dasharray="4 3"/>
+  <text x="276" y="128" font-size="13" class="sig" font-weight="600">v = 2 V</text>
+  <text x="660" y="60" font-size="14" font-weight="600">Por qué diferencial</text>
+  <text x="660" y="84" font-size="13" class="mut">Cada pin se mueve solo ±1 V</text>
+  <text x="660" y="102" font-size="13" class="mut">alrededor de 1.25 V (VREF/2):</text>
+  <text x="660" y="120" font-size="13" class="mut">la señal usa 4 V de los 5 V</text>
+  <text x="660" y="138" font-size="13" class="mut">del ADC y el ruido común</text>
+  <text x="660" y="156" font-size="13" class="mut">(rizado, masa) se resta.</text>
+  <text x="660" y="186" font-size="13" class="mut">Con un solo pin, la señal</text>
+  <text x="660" y="204" font-size="13" class="mut">usaría ±1.25 V: no llega.</text>
+</svg>
+</div>
+<p class="cap">La etapa final del DMM (el «driver diferencial») convierte la señal v en dos tensiones complementarias centradas en VCM = 1.25 V. En el ejemplo, v = 2 V es el fondo de escala de cualquier rango.</p>
+
+<!-- ============================================================ -->
+<h2><span class="n">2</span>Quién fija cada especificación</h2>
+
+<p>Como en el osciloscopio: <span class="tag afe">AFE</span> sale de las piezas del DMM, <span class="tag mcu">G473</span> lo impone el microcontrolador y <span class="tag both">AMBOS</span> depende de los dos.</p>
+
+<div class="tw"><table>
+<tr><th>Especificación</th><th>Quién</th><th>Valor</th><th>De dónde sale</th></tr>
+<tr><td>Impedancia de entrada en tensión</td><td><span class="tag afe">AFE</span></td><td class="n">10 MΩ</td><td>Divisor de 10 MΩ siempre conectado; el amplificador (OPA2188, 160 pA) no carga la toma</td></tr>
+<tr><td>Rangos y resolución</td><td><span class="tag afe">AFE</span></td><td class="n">200 mV … 50 V</td><td>Tomas ÷1 / ÷10 / ÷100 del divisor y ganancia ×1 / ×10 (§4)</td></tr>
+<tr><td>Cuentas</td><td><span class="tag both">AMBOS</span></td><td class="n">±19 999</td><td>±2 V en el ADC5 diferencial con sobremuestreo ×1024 (RD-03)</td></tr>
+<tr><td>Exactitud en continua</td><td><span class="tag both">AMBOS</span></td><td class="n">objetivo ±(0.1 % + 10)</td><td>Divisor del 0.1 %, REF3325, autocero por el mux y calibración por rango (P10). La no linealidad del ADC manda (§8)</td></tr>
+<tr><td>Rechazo de 50/60 Hz en continua</td><td><span class="tag mcu">G473</span></td><td class="n">≥ 60 dB</td><td>Promedio sobre un número entero de ciclos de red (NPLC) en firmware</td></tr>
+<tr><td>Ancho de banda en alterna</td><td><span class="tag afe">AFE</span></td><td class="n">40 Hz–20 kHz</td><td>Divisor compensado y filtro anti-alias de ≈ 50 kHz en el driver (RD-07)</td></tr>
+<tr><td>Verdadero valor eficaz</td><td><span class="tag mcu">G473</span></td><td class="n">TRMS</td><td>Muestreo a ≈ 200 kSa/s y cálculo en firmware (etapa J1 del banco)</td></tr>
+<tr><td>Caída en corriente</td><td><span class="tag afe">AFE</span></td><td class="n">0.2 V a 2 A</td><td>Derivador de 0.1 Ω más el fusible (RD-06)</td></tr>
+<tr><td>Corriente de prueba en ohmios</td><td><span class="tag afe">AFE</span></td><td class="n">≤ 10 mA</td><td>+4.9 V a través de R_ref; en vacío, 4.9 V (§6)</td></tr>
+<tr><td>Continuidad sin retardo</td><td><span class="tag mcu">G473</span></td><td class="n">&lt; 1 ms</td><td>COMP7 en PB14 contra el DAC2_CH1, sin pasar por la CPU</td></tr>
+<tr><td>Rango de entrada del pin</td><td><span class="tag mcu">G473</span></td><td class="n">0 … 2.5 V por pin</td><td>VREF+ = 2.5 V; en diferencial, ±2.5 V entre PD13 y PD14</td></tr>
+<tr><td>Supervivencia a la red</td><td><span class="tag afe">AFE</span></td><td class="n">230 Vrms · 10 s</td><td>R_PROT y divisor de alta tensión, PTC en la fuente de ohmios y fusible en A (RD-10, §7)</td></tr>
+</table></div>
+
+<!-- ============================================================ -->
+<h2><span class="n">3</span>El viaje de la señal, bloque a bloque</h2>
+
+<div class="fig wide">
+<svg viewBox="0 0 960 470" role="img" aria-label="Cadena del DMM: bornes V/Ω, A y COM; divisor, fuente de ohmios y derivador; multiplexor; OPA2188; driver diferencial; ADC5 del STM32">
+  <rect x="4" y="8" width="780" height="22" class="band"/>
+  <text x="394" y="24" text-anchor="middle" font-size="13" font-weight="600" class="afe">DMM · lo que diseñamos</text>
+  <rect x="792" y="8" width="164" height="22" fill="color-mix(in srgb,var(--mcu) 16%,transparent)"/>
+  <text x="874" y="24" text-anchor="middle" font-size="13" font-weight="600" class="mcu">STM32G473</text>
+
+  <!-- bornes -->
+  <g font-size="13" font-weight="600">
+    <circle cx="26" cy="90" r="11" fill="none" stroke="var(--bad)" stroke-width="2"/><text x="26" y="72" text-anchor="middle" class="bad">V/Ω</text>
+    <circle cx="26" cy="390" r="11" fill="none" stroke="var(--bad)" stroke-width="2"/><text x="26" y="372" text-anchor="middle" class="bad">A</text>
+    <circle cx="26" cy="450" r="11" fill="none" stroke="var(--ink)" stroke-width="2"/><text x="26" y="432" text-anchor="middle">COM</text>
+  </g>
+
+  <!-- R_PROT + sujeción -->
+  <path class="wire" d="M37 90H70"/>
+  <rect x="70" y="72" width="92" height="36" class="blk"/><text x="116" y="88" text-anchor="middle" font-size="12" font-weight="600">① R_PROT</text><text x="116" y="102" text-anchor="middle" font-size="11" class="mut">3 × 33 kΩ + BAV199</text>
+  <!-- divisor -->
+  <path class="wire" d="M48 90V130H70"/>
+  <rect x="70" y="118" width="92" height="104" class="blk"/>
+  <text x="116" y="136" text-anchor="middle" font-size="12" font-weight="600">② Divisor 10 MΩ</text>
+  <text x="116" y="156" text-anchor="middle" font-size="11" class="mono">9 MΩ</text>
+  <text x="116" y="182" text-anchor="middle" font-size="11" class="mono">900 kΩ</text>
+  <text x="116" y="208" text-anchor="middle" font-size="11" class="mono">100 kΩ → COM</text>
+  <path class="wire" d="M162 90H230"/><text x="196" y="84" text-anchor="middle" font-size="11" class="mono">÷1</text>
+  <path class="wire" d="M162 168H230"/><text x="196" y="162" text-anchor="middle" font-size="11" class="mono">÷10</text>
+  <path class="wire" d="M162 194H230"/><text x="196" y="188" text-anchor="middle" font-size="11" class="mono">÷100</text>
+
+  <!-- fuente de ohmios -->
+  <rect x="70" y="258" width="150" height="62" class="blk"/>
+  <text x="145" y="276" text-anchor="middle" font-size="12" font-weight="600">⑥ Fuente de ohmios</text>
+  <text x="145" y="292" text-anchor="middle" font-size="11" class="mut">+4.9 V → R_ref (2 × 4051)</text>
+  <text x="145" y="308" text-anchor="middle" font-size="11" class="mut">→ PTC → V/Ω</text>
+  <path class="wire" d="M70 289H48V90"/>
+  <path class="wire" d="M220 280H230"/><text x="160" y="252" text-anchor="middle" font-size="11" class="mono">V_ref/4</text>
+
+  <!-- corriente -->
+  <path class="wire" d="M37 390H70"/>
+  <rect x="70" y="372" width="70" height="36" class="blk"/><text x="105" y="388" text-anchor="middle" font-size="12" font-weight="600">⑦ Fusible</text><text x="105" y="402" text-anchor="middle" font-size="11" class="mut">3.15 A rápido</text>
+  <path class="wire" d="M140 390H160"/>
+  <rect x="160" y="372" width="80" height="36" class="blk"/><text x="200" y="388" text-anchor="middle" font-size="12" font-weight="600">Derivador</text><text x="200" y="402" text-anchor="middle" font-size="11" class="mut">0.1 Ω, 2512</text>
+  <path class="wire" d="M240 390H256V450H37"/>
+  <rect x="270" y="346" width="110" height="40" class="blk"/><text x="325" y="363" text-anchor="middle" font-size="12" font-weight="600">⑦ OPA2188 B</text><text x="325" y="378" text-anchor="middle" font-size="11" class="mut">×10, Kelvin</text>
+  <path class="wire" d="M240 380H270"/>
+  <path class="wire" d="M380 366H392V250"/>
+
+  <!-- mux -->
+  <rect x="230" y="70" width="70" height="230" class="blk"/>
+  <text x="265" y="88" text-anchor="middle" font-size="12" font-weight="600">③ Mux</text>
+  <text x="265" y="104" text-anchor="middle" font-size="11" class="mut">74HC4051</text>
+  <g font-size="10.5" class="mono mut"><text x="236" y="94">X0</text><text x="236" y="172">X1</text><text x="236" y="198">X2</text><text x="236" y="284">X5</text></g>
+  <text x="265" y="226" text-anchor="middle" font-size="10.5" class="mono mut">X3 = COM</text>
+  <text x="265" y="240" text-anchor="middle" font-size="10.5" class="mono mut">X4 = I</text>
+  <path class="wire" d="M392 250H330V236H300"/>
+
+  <!-- amp A -->
+  <path class="wire" d="M300 150H420"/>
+  <rect x="420" y="124" width="110" height="52" class="blk"/>
+  <text x="475" y="144" text-anchor="middle" font-size="12" font-weight="600">④ OPA2188 A</text>
+  <text x="475" y="162" text-anchor="middle" font-size="11" class="mut">×1 o ×10, ±4.9 V</text>
+  <!-- driver -->
+  <path class="wire" d="M530 150H570"/>
+  <rect x="570" y="114" width="130" height="72" class="blk"/>
+  <text x="635" y="134" text-anchor="middle" font-size="12" font-weight="600">⑤ Driver diferencial</text>
+  <text x="635" y="152" text-anchor="middle" font-size="11" class="mut">doble RRIO a 3.3 V</text>
+  <text x="635" y="168" text-anchor="middle" font-size="11" class="mut">VCM 1.25 V · filtro 50 kHz</text>
+  <path class="wire" d="M700 138H820"/><path class="wire" d="M700 162H820"/>
+  <text x="760" y="132" text-anchor="middle" font-size="11" class="mono">PD13</text>
+  <text x="760" y="178" text-anchor="middle" font-size="11" class="mono">PD14</text>
+  <rect x="820" y="116" width="120" height="68" class="blk m"/>
+  <text x="880" y="140" text-anchor="middle" font-size="12" font-weight="600" class="mcu">ADC5</text>
+  <text x="880" y="156" text-anchor="middle" font-size="11" class="mut">diferencial, IN10</text>
+  <text x="880" y="172" text-anchor="middle" font-size="11" class="mut">×1024 · REF3325</text>
+
+  <!-- continuidad -->
+  <path class="wire" d="M530 166H550V250H580"/>
+  <rect x="580" y="232" width="120" height="40" class="blk"/>
+  <text x="640" y="250" text-anchor="middle" font-size="12" font-weight="600">÷2 + sujeción</text>
+  <text x="640" y="264" text-anchor="middle" font-size="11" class="mut">a 0 / 3.3 V</text>
+  <path class="wire" d="M700 252H820"/><text x="760" y="246" text-anchor="middle" font-size="11" class="mono">PB14</text>
+  <rect x="820" y="230" width="120" height="44" class="blk m"/>
+  <text x="880" y="248" text-anchor="middle" font-size="12" font-weight="600" class="mcu">COMP7</text>
+  <text x="880" y="264" text-anchor="middle" font-size="11" class="mut">vs DAC2 → zumbador</text>
+
+  <!-- control -->
+  <path class="bus" d="M880 300V330H265V300"/>
+  <path class="bus" d="M475 330V176"/>
+  <path class="bus" d="M220 330H180V320"/>
+  <text x="600" y="346" text-anchor="middle" font-size="12" class="ctl">control: selección del mux, rango de R_ref, ganancia ×1/×10 (74HCT595 o GPIO)</text>
+</svg>
+</div>
+<p class="cap">Los números ①…⑦ son los apartados de esta sección. Las líneas moradas discontinuas son el control desde el STM32. El borne A y el COM están unidos a través del derivador: el DMM no está aislado (RD-05).</p>
+
+<h3>① R_PROT y sujeción</h3>
+<p>Entre V/Ω y la entrada ÷1 del mux van <b>tres resistencias de 33 kΩ en serie</b> (1206). Detrás, un BAV199 a ±4.9 V sujeta el nodo, como en el osciloscopio. Con 71 Vpk continuos pasan 0.7 mA hacia la sujeción. Con la red, 325 Vpk durante 10 s, cada resistencia ve unos 108 V y disipa 0.18 W: está dentro de lo que aguanta una 1206 durante un pulso así. Como el amplificador no consume corriente, R_PROT <b>no añade error</b>: solo limita.</p>
+
+<h3>② Divisor de 10 MΩ</h3>
+<p>Va siempre conectado entre V/Ω y COM. Por eso la impedancia de entrada es 10 MΩ en todos los rangos de tensión.</p>
+<div class="math">9 MΩ (3 × 3 MΩ, 1206) ─ toma ÷10 ─ 900 kΩ ─ toma ÷100 ─ 100 kΩ ─ COM
+
+toma ÷10  = 1 MΩ / 10 MΩ   = 1/10
+toma ÷100 = 100 kΩ / 10 MΩ = 1/100      resistencias del 0.1 %, 25 ppm/°C</div>
+<p>El tramo de 9 MΩ se reparte en tres piezas para que ninguna vea más de unos 110 V con la red. La toma ÷10 lleva su propia sujeción: con 50 V en el rango de 20 V tendría 5 V, y con la red, 32 V. La toma ÷100 nunca pasa de 3.3 V. Para alterna, el divisor se <b>compensa</b> como una sonda: un condensador en paralelo con cada tramo, con la misma constante de tiempo, para que sea plano hasta 20 kHz. El de la toma ÷10 se elige al probar el prototipo, como C_EQ en CH1.</p>
+
+<h3>③ Mux 74HC4051</h3>
+<p>Es la misma pieza que la escalera del osciloscopio, alimentada a ±4.9 V. Sus ocho entradas cubren todas las funciones:</p>
+<div class="tw"><table>
+<tr><th>Entrada</th><th>Qué lleva</th><th>Se usa en</th></tr>
+<tr><td class="n">X0</td><td>V/Ω tras R_PROT (÷1)</td><td>200 mV, 2 V, ohmios, continuidad</td></tr>
+<tr><td class="n">X1</td><td>Toma ÷10</td><td>20 V, diodo (hasta 3.5 V → 0.35 V)</td></tr>
+<tr><td class="n">X2</td><td>Toma ÷100</td><td>50 V</td></tr>
+<tr><td class="n">X3</td><td>COM</td><td><b>Autocero</b>: en cada lectura se mide el cero de toda la cadena y se resta</td></tr>
+<tr><td class="n">X4</td><td>Salida del OPA2188 B (derivador ×10)</td><td>200 mA y 2 A</td></tr>
+<tr><td class="n">X5</td><td>Tensión en lo alto de R_ref ÷4</td><td>Ohmios (para la razón, §6)</td></tr>
+<tr><td class="n">X6</td><td>Nodo de la fuente tras R_ref ÷4</td><td>Ohmios</td></tr>
+<tr><td class="n">X7</td><td>VREF ÷2 (1.25 V exactos)</td><td>Comprobación de ganancia y autocalibración</td></tr>
+</table></div>
+<p>Las fugas del 4051 (unos nA a temperatura ambiente) en una toma de 0.9 MΩ dan como mucho 1 mV en el rango de 20 V, que son 0.05 % del fondo. Se comprueba en S11.</p>
+
+<h3>④ Amplificador A: OPA2188 a ±4.9 V</h3>
+<p>Es un amplificador de <b>deriva cero</b>: 6 µV de offset como máximo, 0.03 µV/°C y 8.8 nV/√Hz sin ruido 1/f. Se alimenta de ±4.9 V (admite de 4 a 36 V; LCSC C17271, SOIC-8, ≈ 1.18 USD). Funciona como buffer de <b>×1</b> o con ganancia <b>×10</b>, según el rango. La ganancia la cambia un interruptor analógico en la rama de masa de la realimentación, colocado de forma que su resistencia no entre en la ganancia. Su entrada llega hasta +3.4 V y −5 V. En los rangos normales hay ±2 V, así que sobra margen. Su gemelo, el amplificador B, está en el mismo encapsulado y amplifica el derivador.</p>
+
+<h3>⑤ Driver diferencial a 3.3 V</h3>
+<p>Es un doble <i>rail-to-rail</i> barato alimentado de 3.3 V analógico (la pieza se elige en LCSC). Convierte la salida de A en <code>PD13 = 1.25 V + v/2</code> y <code>PD14 = 1.25 V − v/2</code>. VCM sale de VREF con un divisor ÷2. Con sus condensadores forma el <b>filtro anti-alias de ≈ 50 kHz</b> para la alterna. Su offset no necesita ser pequeño: el autocero lo resta.</p>
+
+<!-- ============================================================ -->
+<h2><span class="n">4</span>Cómo cada rango llena la ventana</h2>
+
+<div class="tw"><table>
+<tr><th>Función · rango</th><th>Entrada a fondo</th><th>Camino</th><th>En el ADC (v)</th><th>Una cuenta vale</th></tr>
+<tr><td>V · 200 mV</td><td class="n">±199.99 mV</td><td>X0 · ×10</td><td class="n">±2 V</td><td class="n">10 µV</td></tr>
+<tr><td>V · 2 V</td><td class="n">±1.9999 V</td><td>X0 · ×1</td><td class="n">±2 V</td><td class="n">100 µV</td></tr>
+<tr><td>V · 20 V</td><td class="n">±19.999 V</td><td>X1 (÷10) · ×1</td><td class="n">±2 V</td><td class="n">1 mV</td></tr>
+<tr><td>V · 50 V</td><td class="n">±50.00 V</td><td>X2 (÷100) · ×1</td><td class="n">±0.5 V</td><td class="n">10 mV</td></tr>
+<tr><td>I · 200 mA</td><td class="n">±199.99 mA</td><td>0.1 Ω · B ×10 · X4 · A ×10</td><td class="n">±2 V</td><td class="n">10 µA</td></tr>
+<tr><td>I · 2 A</td><td class="n">±1.9999 A</td><td>0.1 Ω · B ×10 · X4 · A ×1</td><td class="n">±2 V</td><td class="n">100 µA</td></tr>
+<tr><td>Ω · 6 rangos</td><td class="n">200 Ω … 20 MΩ</td><td>X0 · ×1 (más X5/X6)</td><td class="n">≤ 2 V</td><td class="n">10 mΩ … 1 kΩ</td></tr>
+<tr><td>Diodo</td><td class="n">0 … 3.5 V</td><td>X1 (÷10) · ×1</td><td class="n">0 … 0.35 V</td><td class="n">1 mV</td></tr>
+</table></div>
+<p>El rango de 50 V usa la escala de 200 V (10 mV por cuenta) recortada a 50 V, como dice RD-04. Así el ADC trabaja con margen y no hace falta una cuarta toma.</p>
+
+<div class="box"><b>Ejemplo 1 · pila de 12 V, autorango</b><br>
+El autorango elige 20 V: toma ÷10 por X1, así que 12 V → <b>1.2 V</b>. A es ×1, de modo que v = 1.2 V. El driver da PD13 = 1.25 + 0.6 = <b>1.85 V</b> y PD14 = 1.25 − 0.6 = <b>0.65 V</b>. El ADC5 lee 1.2 V diferenciales: unos 983 códigos de 12 bits, y tras el sobremuestreo, 12 000 cuentas de 1 mV. En la misma lectura, el autocero (X3) mide el cero de la cadena y lo resta. La pantalla muestra <code>12.000 V</code>.</div>
+
+<!-- ============================================================ -->
+<h2><span class="n">5</span>Corriente: derivador de 0.1 Ω</h2>
+
+<div class="fig">
+<svg viewBox="0 0 900 200" role="img" aria-label="Camino de la corriente: A, fusible, derivador de 0.1 ohmios con diodos en paralelo, COM; medida Kelvin al OPA2188 B">
+  <circle cx="40" cy="80" r="11" fill="none" stroke="var(--bad)" stroke-width="2"/><text x="40" y="60" text-anchor="middle" font-size="13" font-weight="600" class="bad">A</text>
+  <path class="wire" d="M51 80H110"/>
+  <rect x="110" y="66" width="110" height="28" class="blk"/><text x="165" y="85" text-anchor="middle" font-size="12">fusible 3.15 A F</text>
+  <path class="wire" d="M220 80H330"/>
+  <rect x="330" y="66" width="120" height="28" class="blk"/><text x="390" y="85" text-anchor="middle" font-size="12">0.1 Ω · 1 % · 2 W</text>
+  <path class="wire" d="M450 80H600"/>
+  <circle cx="612" cy="80" r="11" fill="none" stroke="var(--ink)" stroke-width="2"/><text x="612" y="60" text-anchor="middle" font-size="13" font-weight="600">COM</text>
+  <path class="wire" d="M300 80V140H480V80"/>
+  <text x="390" y="134" text-anchor="middle" font-size="12" class="mut">diodos de potencia en antiparalelo: sujetan a ≈ 1 V hasta que abre el fusible</text>
+  <path class="lineA" d="M342 94V170H660M438 94V160H660"/>
+  <text x="550" y="186" text-anchor="middle" font-size="12" class="afe">Kelvin: dos hilos sin corriente desde el cuerpo del derivador</text>
+  <rect x="660" y="140" width="130" height="40" class="blk"/><text x="725" y="158" text-anchor="middle" font-size="12" font-weight="600">OPA2188 B · ×10</text><text x="725" y="172" text-anchor="middle" font-size="11" class="mut">→ X4 del mux</text>
+</svg>
+</div>
+<p>Con 2 A el derivador cae <b>0.2 V</b> y disipa 0.4 W: una pieza 2512 de 2 W va al 20 %. La caída total, con el fusible (≈ 30–50 mΩ), queda por debajo de 0.3 V, la mitad de la del ELVIS II. Para 200 mA, el derivador solo da 20 mV y cada cuenta vale <b>1 µV</b>. Por eso B y A se encadenan (×100) y por eso se eligió la deriva cero (DECISIONS 7 oct): el OPA2188 tiene 6 µV como máximo, el autocero se lleva el resto y su ruido de 0.1–10 Hz (≈ 0.25 µVpp) queda por debajo de una cuenta.</p>
+<div class="box"><b>Ejemplo 2 · 150 mA en el rango de 200 mA</b><br>
+0.15 A × 0.1 Ω = <b>15 mV</b> → B ×10 = 150 mV → X4 → A ×10 = <b>1.5 V</b> → PD13 = 2.0 V, PD14 = 0.5 V → 15 000 cuentas de 10 µA → <code>150.00 mA</code>.</div>
+<div class="box warn"><b>Error típico: medir tensión en el borne A</b><br>
+Si alguien pone 12 V entre A y COM, por el derivador pasarían 120 A. Los diodos en antiparalelo sujetan la caída a ≈ 1 V y el fusible abre en milisegundos. Con la red pasa lo mismo: <b>el fusible es la protección</b>. Su poder de corte (≥ 35 A a 250 V en un 5 × 20 mm de cerámica) se comprueba al elegirlo.</div>
+
+<!-- ============================================================ -->
+<h2><span class="n">6</span>Ohmios, diodo y continuidad</h2>
+
+<div class="fig">
+<svg viewBox="0 0 900 220" role="img" aria-label="Medida de resistencia por razón: +4.9 V, R_ref elegida por 74HC4051, PTC, resistencia bajo prueba entre V/Ω y COM">
+  <text x="40" y="44" font-size="13" font-weight="600">+4.9 V</text><path class="wire" d="M60 50V80"/>
+  <rect x="30" y="80" width="100" height="40" class="blk"/><text x="80" y="98" text-anchor="middle" font-size="12" font-weight="600">4051 «fuerza»</text><text x="80" y="112" text-anchor="middle" font-size="11" class="mut">elige R_ref</text>
+  <path class="wire" d="M130 100H190"/>
+  <rect x="190" y="86" width="90" height="28" class="blk"/><text x="235" y="105" text-anchor="middle" font-size="12">R_ref</text>
+  <path class="wire" d="M280 100H350"/>
+  <rect x="350" y="86" width="70" height="28" class="blk"/><text x="385" y="105" text-anchor="middle" font-size="12">PTC</text>
+  <path class="wire" d="M420 100H520"/>
+  <circle cx="530" cy="100" r="10" fill="none" stroke="var(--bad)" stroke-width="2"/><text x="530" y="80" text-anchor="middle" font-size="13" font-weight="600" class="bad">V/Ω</text>
+  <path class="wire" d="M540 100H600V120"/>
+  <rect x="580" y="120" width="40" height="50" class="blk"/><text x="600" y="150" text-anchor="middle" font-size="12" font-weight="600">Rx</text>
+  <path class="wire" d="M600 170V196H660"/><text x="664" y="200" font-size="13" font-weight="600">COM</text>
+  <path class="lineA" d="M190 114V150H170M300 100V160"/>
+  <text x="100" y="166" font-size="11" class="afe">4051 «sentido» → ÷4 → X5</text>
+  <text x="306" y="176" font-size="11" class="afe">÷4 → X6</text>
+  <path class="lineM" d="M560 100V60H700"/>
+  <text x="706" y="64" font-size="11" class="mcu">V_x por R_PROT → X0</text>
+  <text x="706" y="110" font-size="12" class="mono">I  = (V_alto − V_bajo) / R_ref</text>
+  <text x="706" y="132" font-size="12" class="mono">Rx = V_x / I  (∥ 10 MΩ corregido)</text>
+</svg>
+</div>
+<p>La medida es <b>por razón</b>: la corriente sale de la caída en R_ref y la tensión se mide en el borne. No hace falta una fuente de corriente exacta, y ni el +4.9 V ni la PTC entran en el resultado. Un segundo 4051 (<b>sentido</b>) mide lo alto de cada R_ref sin pasar corriente, así que la resistencia interna del mux (≈ 100 Ω) no entra en el rango de 200 Ω. Cada R_ref vale ≈ 1.5 veces el fondo de su rango, de modo que V_x llega a ≈ 2 V a fondo:</p>
+<div class="tw"><table>
+<tr><th>Rango</th><th>R_ref</th><th>V_x a fondo</th><th>Corriente de prueba</th><th>Nota</th></tr>
+<tr><td class="n">200 Ω</td><td class="n">301 Ω</td><td class="n">1.96 V</td><td class="n">9.8 mA</td><td>16 mA en cortocircuito</td></tr>
+<tr><td class="n">2 kΩ</td><td class="n">3.01 kΩ</td><td class="n">1.96 V</td><td class="n">0.98 mA</td><td></td></tr>
+<tr><td class="n">20 kΩ</td><td class="n">30.1 kΩ</td><td class="n">1.96 V</td><td class="n">98 µA</td><td></td></tr>
+<tr><td class="n">200 kΩ</td><td class="n">301 kΩ</td><td class="n">1.93 V</td><td class="n">9.8 µA</td><td>el divisor de 10 MΩ en paralelo se corrige</td></tr>
+<tr><td class="n">2 MΩ</td><td class="n">3.01 MΩ</td><td class="n">1.75 V</td><td class="n">1 µA</td><td>ídem</td></tr>
+<tr><td class="n">20 MΩ</td><td class="n">10 MΩ</td><td class="n">1.96 V</td><td class="n">0.3 µA</td><td>20 MΩ ∥ 10 MΩ = 6.7 MΩ; exactitud menor</td></tr>
+</table></div>
+<div class="box"><b>Ejemplo 3 · 4.7 kΩ en el rango de 20 kΩ</b><br>
+R_ref = 30.1 kΩ: V_x = 4.9 × 4.7 / 34.8 = <b>0.66 V</b>, I = 140 µA. Rx = 0.66 V / 140 µA = 4.700 kΩ → <code>4.700 kΩ</code> (1 Ω por cuenta).</div>
+<p><b>Diodo:</b> con la R_ref de 3.01 kΩ pasan ≈ 0.6 mA por un LED azul (3 V) y ≈ 1 mA por uno rojo, con 4.9 V en vacío: basta para que se encienda (RD-08). La tensión del diodo, hasta 3.5 V, se lee por la toma ÷10 (X1). <b>Continuidad:</b> la salida de A pasa por un divisor ÷2 y una sujeción a 0/3.3 V hasta <b>PB14</b>. Allí el COMP7 la compara con un umbral del DAC2_CH1 (≈ 50 Ω) y hace sonar el zumbador en menos de 1 ms, sin la CPU. Así se cumple «un divisor antes de PB14» de RD-08, y el ADC5 sigue libre para mostrar el valor.</p>
+<div class="box warn"><b>La red en el modo de ohmios</b><br>
+Es el modo más expuesto: la fuente está conectada al borne. La <b>PTC</b> sube su resistencia en segundos y, mientras tanto, una sujeción tras la PTC (TVS o diodos a ±4.9 V) limita lo que llega a R_ref y a los 4051. Falta elegir la PTC: debe aguantar 250 Vrms y tener una resistencia en frío de pocos kΩ que no moleste a la razón.</div>
+
+<!-- ============================================================ -->
+<h2><span class="n">7</span>Protección: 71 Vpk de diseño y la red durante 10 s</h2>
+<div class="tw"><table>
+<tr><th>Borne · caso</th><th>Qué lo frena</th><th>Lo que queda</th></tr>
+<tr><td>V/Ω · 50 Vrms (71 Vpk) continuos</td><td>R_PROT 99 kΩ + BAV199; divisor de 10 MΩ</td><td>0.7 mA a la sujeción; 0.5 mW en el divisor</td></tr>
+<tr><td>V/Ω · 230 Vrms, 10 s, en tensión</td><td>R_PROT de 3 piezas, divisor de 3 piezas, sujeción en ÷1 y ÷10</td><td>≈ 108 V y 0.18 W por 1206 de R_PROT; 2.3 mA a la sujeción</td></tr>
+<tr><td>V/Ω · 230 Vrms, 10 s, en ohmios</td><td>PTC + sujeción tras ella</td><td>A elegir: corriente de disparo y resistencia en frío</td></tr>
+<tr><td>A · cualquier tensión</td><td>Fusible 3.15 A rápido + diodos de potencia</td><td>El fusible abre; se cambia (portafusibles accesible)</td></tr>
+<tr><td>Descargas (ESD) en los tres bornes</td><td>Las mismas resistencias y sujeciones</td><td>Se simula como en CH1 (±4 kV contacto)</td></tr>
+</table></div>
+<p>Con el DMM apagado (riel de ±4.9 V sin carga), la corriente de sujeción no puede alimentar el riel: es la misma condición de seguridad que G.6 pide al osciloscopio. Con R_PROT = 99 kΩ, 71 Vpk dan 0.7 mA, que la carga del riel absorbe cuando está encendido. El caso apagado se simula en S11.</p>
+
+<!-- ============================================================ -->
+<h2><span class="n">8</span>Presupuesto de errores en continua (rango de 2 V)</h2>
+<div class="tw"><table>
+<tr><th>Fuente de error</th><th>Sin calibrar</th><th>Tras calibrar (P10)</th></tr>
+<tr><td>REF3325 (inicial / deriva)</td><td class="n">0.15 % / 30 ppm/°C</td><td class="n">≈ 0.03 % en ±10 °C</td></tr>
+<tr><td>Divisor (0.1 %, 25 ppm/°C)</td><td class="n">0.1 %</td><td class="n">≈ 0.03 % (relación)</td></tr>
+<tr><td>Ganancia ×10 de A (resistencias del 0.1 %)</td><td class="n">0.2 %</td><td class="n">≈ 0.02 %</td></tr>
+<tr><td>Offsets (OPA2188, driver, ADC)</td><td class="n">mV</td><td class="n">&lt; 1 cuenta con autocero</td></tr>
+<tr><td>No linealidad del ADC5 (INL ≈ ±2–3 códigos de 12 bits)</td><td class="n">≈ 0.06 % del fondo</td><td class="n">igual: <b>es lo que manda</b></td></tr>
+<tr><td>Ruido (ADC y amplificador) con ×1024 y NPLC 1</td><td class="n">—</td><td class="n">≈ 1–3 cuentas</td></tr>
+</table></div>
+<p>Por eso el objetivo es <b>±(0.1 % + 10 cuentas)</b> en continua: el 0.1 % cubre la referencia y las resistencias tras calibrar, y las 10 cuentas cubren la no linealidad del ADC. Es menos que un DMM de banco de 4½ dígitos (0.03–0.05 %), pero sobra para el laboratorio de docencia y no pide un ADC externo. Si en S11 la no linealidad del ADC5 resulta mayor, la salida es una tabla de linealización calibrada.</p>
+
+<!-- ============================================================ -->
+<h2><span class="n">9</span>Recursos del STM32G473 que reserva el DMM</h2>
+<div class="tw"><table>
+<tr><th>Recurso</th><th>Uso</th><th>Tipo</th></tr>
+<tr><td><code>PD13</code> / <code>PD14</code> · ADC5_IN10 diferencial</td><td>Todas las medidas</td><td>analógico</td></tr>
+<tr><td><code>PB14</code> · COMP7_INP</td><td>Continuidad (y OPAMP5 si hiciera falta)</td><td>analógico</td></tr>
+<tr><td>DAC2_CH1 (interno)</td><td>Umbral de continuidad</td><td>analógico</td></tr>
+<tr><td>VREF+ (REF3325)</td><td>Referencia; VCM y X7 salen de ella</td><td>analógico</td></tr>
+<tr><td>≈ 8 líneas</td><td>2 × 3 de selección de los 4051 de señal y de R_ref, la habilitación de la fuente y la ganancia de A</td><td>digital (un tercer 74HCT595 o GPIO)</td></tr>
+<tr><td>1 salida PWM</td><td>Zumbador</td><td>digital</td></tr>
+</table></div>
+<p>Las 13 líneas del 74HCT595 del AFE ya están casi todas usadas, así que el DMM necesitará un tercer registro (unos céntimos) o GPIO directos. Se decide en el mapa de pines (PLAN, paso 3).</p>
+
+<!-- ============================================================ -->
+<h2><span class="n">10</span>Qué se simula en S11 y qué decides tú</h2>
+<ol class="steps">
+<li><b>S11 (Codex, auditoría de Claude):</b>
+  <ul>
+    <li>exactitud en continua por rango con Monte Carlo (resistencias, OPA2188, fugas del 4051);</li>
+    <li>planitud en alterna de 40 Hz a 20 kHz con el divisor compensado;</li>
+    <li>la razón de ohmios en los 6 rangos;</li>
+    <li>el camino de 200 mA (ruido y offset);</li>
+    <li>la continuidad con COMP7;</li>
+    <li>la red durante 10 s en tensión, en ohmios y con el equipo apagado;</li>
+    <li>ESD.</li>
+  </ul></li>
+<li><span class="st open">ABIERTO</span> <b>PTC de la fuente de ohmios</b> (250 Vrms, pocos kΩ en frío) y la sujeción tras ella.</li>
+<li><span class="st open">ABIERTO</span> <b>Fusible y portafusibles</b>: 3.15 A rápido, con el poder de corte suficiente para un error con la red.</li>
+<li><span class="st open">ABIERTO</span> <b>Driver diferencial</b>: qué doble RRIO de 3.3 V barato.</li>
+<li><span class="st open">ABIERTO</span> <b>Interruptor de carga propio del DMM</b> (RF-18). El DMM gasta poco (≈ 3 mA de los ±4.9 V más hasta 10 mA de la fuente de ohmios), y con su propio interruptor se apaga aparte del osciloscopio.</li>
+<li><span class="st prop">PROPUESTA</span> Exactitud objetivo ±(0.1 % + 10) en continua, ±(1 % + 20) en alterna y ±(0.5 % + 10) en corriente continua (hoja de especificaciones del DMM).</li>
+</ol>
+
+<div class="foot">Página hermana: <code>00_requisitos/especificaciones_dmm.html</code> (hoja de especificaciones). Decisiones: <code>ai-context/DECISIONS.md</code>, 7 oct. Borrador de bloques: <code>01_diseno/dmm_arquitectura.md</code>. Todas las cifras de esta página son de diseño y se confirman en S11.</div>
+
+</div>
+</body>
+</html>

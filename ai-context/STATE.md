@@ -165,3 +165,12 @@ No se ha elegido automáticamente uno de estos frentes como nueva tarea de ingen
 - Decisiones de Keneth (DECISIONS, 7 oct): divisor de 10 MΩ con tomas y 74HC4051 (sin relés); amplificador doble de deriva cero externo; aguantar la red unos segundos (RD-10); rangos aceptados.
 - Borrador de arquitectura: `S3G4_LAB_rev2.1/01_diseno/dmm_arquitectura.md`, con bloques, rangos, la lista de reserva de recursos del G473 (ADC5 diferencial PD13/PD14, OPAMP5/COMP7 en PB14, DAC2_CH1) y lo abierto. Lo principal abierto: el riel de la pieza de deriva cero, porque las habituales son de 5.5 V como máximo.
 - Siguiente: sección H del documento vivo con valores y la pieza elegida; luego la simulación S11 con Codex.
+- **7 oct, sección H del DMM:** guía `01_diseno/dmm_rev21.html` y hoja `00_requisitos/especificaciones_dmm.html`, las dos publicadas (ARTEFACTOS). Propuesta de diseño:
+  - divisor 9 M / 900 k / 100 k (0.1 %) con R_PROT de 3 × 33 kΩ;
+  - un 74HC4051 de señal con 8 entradas (incluido el autocero);
+  - OPA2188AIDR (C17271) a ±4.9 V: A con ×1/×10 y B con el derivador ×10;
+  - driver diferencial RRIO a 3.3 V con VCM de 1.25 V hacia PD13/PD14 (±2 V = ±19 999 cuentas);
+  - ohmios por razón con 4051 de fuerza y de sentido, R_ref de 301 Ω a 10 MΩ;
+  - continuidad por PB14 y COMP7.
+
+  Abiertos: la PTC, el fusible, la pieza del driver y el interruptor de carga. Siguiente: el encargo S11 para Codex.

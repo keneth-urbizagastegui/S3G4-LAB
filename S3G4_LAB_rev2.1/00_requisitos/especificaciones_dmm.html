@@ -1,0 +1,213 @@
+<title>Especificaciones del DMM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Source+Sans+3:wght@400;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: hoja de datos de fabricante; una columna de grupos con puntos guía, tabla por canal y notas al pie */
+:root{
+  --paper:#fbfcfc; --ink:#16232a; --muted:#5a6b72; --rule:#d5dee1; --lead:#a9b7bc;
+  --accent:#0b5c78; --band:#e8f0f2;
+  --r:#2f6f4f; --c:#0b5c78; --s:#6a4fa3; --p:#a3470f;
+  --display:"Barlow Condensed","Arial Narrow",sans-serif;
+  --body:"Source Sans 3","Segoe UI",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#10181b; --ink:#dfe8ea; --muted:#93a4aa; --rule:#29373c; --lead:#4a5b61;
+  --accent:#6cc0dc; --band:#16242a; --r:#6fcf9b; --c:#6cc0dc; --s:#b9a0ec; --p:#f2a36b; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#10181b; --ink:#dfe8ea; --muted:#93a4aa; --rule:#29373c; --lead:#4a5b61;
+  --accent:#6cc0dc; --band:#16242a; --r:#6fcf9b; --c:#6cc0dc; --s:#b9a0ec; --p:#f2a36b; color-scheme:dark}
+body{background:var(--paper);color:var(--ink);font:15px/1.5 var(--body)}
+.wrap{max-width:980px;margin:0 auto;padding-inline:20px;padding-block:28px 56px}
+h1,h2,h3{font-family:var(--display);margin:0;text-wrap:balance}
+.top{display:flex;justify-content:space-between;align-items:flex-end;gap:12px 24px;flex-wrap:wrap;border-bottom:3px solid var(--accent);padding-bottom:12px}
+.brand{font:600 13px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+h1{font-size:clamp(30px,5vw,44px);font-weight:700;line-height:1.05;letter-spacing:.01em}
+.docid{font:12.5px/1.6 var(--mono);color:var(--muted);text-align:right}
+.warn{border:1px solid var(--p);color:var(--ink);padding:10px 14px;margin:18px 0;font-size:14px;background:color-mix(in srgb,var(--p) 7%,transparent)}
+.warn b{color:var(--p)}
+.keys{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1px;background:var(--rule);border:1px solid var(--rule);margin:18px 0 8px}
+.keys div{background:var(--paper);padding:10px 12px}
+.keys .v{font:600 26px/1.1 var(--display);color:var(--accent)}
+.keys .l{font-size:12.5px;color:var(--muted)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12.5px;color:var(--muted);margin:14px 0 4px}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:8px 40px;margin-top:10px}
+@media (max-width:760px){.cols{grid-template-columns:1fr}}
+.grp{min-width:0;margin-top:18px}
+.grp>h2{font-size:21px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;background:var(--band);padding:4px 10px;margin-bottom:6px;border-left:4px solid var(--accent)}
+dl{margin:0}
+.row{display:flex;align-items:baseline;gap:6px;padding:3px 0}
+.row dt{flex:0 1 auto;min-width:0}
+.row .dots{flex:1 1 20px;border-bottom:1.5px dotted var(--lead);transform:translateY(-4px);min-width:16px}
+.row dd{margin:0;flex:0 1 auto;text-align:right;font-family:var(--mono);font-size:13.5px;font-variant-numeric:tabular-nums;min-width:0}
+.sub dt{padding-left:16px;color:var(--muted)}
+.hd dt{font-weight:600}
+.cond{font-size:12.5px;color:var(--muted);padding:0 0 4px 16px;margin:0}
+.t{display:inline-block;font:600 10px/1 var(--mono);padding:3px 4px;border-radius:3px;border:1px solid currentColor;margin-left:5px;vertical-align:2px}
+.t.r{color:var(--r)} .t.c{color:var(--c)} .t.s{color:var(--s)} .t.p{color:var(--p)}
+sup{font:500 10px var(--mono);color:var(--accent)}
+.tw{overflow-x:auto;margin-top:8px}
+table{border-collapse:collapse;width:100%;font-size:14px;min-width:560px}
+th,td{padding:6px 10px;border-bottom:1px solid var(--rule);text-align:left;vertical-align:top}
+th{font:600 13px var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.05em;border-bottom:2px solid var(--accent)}
+td.n{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+.notes{margin-top:26px;border-top:1px solid var(--rule);padding-top:12px;font-size:13.5px;color:var(--muted)}
+.notes ol{padding-left:22px;margin:6px 0}
+.notes li{margin-bottom:5px;max-width:95ch}
+.notes h3{font-size:17px;color:var(--ink);text-transform:uppercase;letter-spacing:.05em;margin-top:14px}
+code{font:0.9em var(--mono);color:var(--accent)}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div>
+      <div class="brand">S3G4 LAB · Instrumento portátil</div>
+      <h1>Multímetro de 4½ dígitos<br>Especificaciones</h1>
+    </div>
+    <div class="docid">S3G4-DMM · hardware rev 2.1<br>Hoja preliminar · 7 oct 2026<br>UTEC · Ingeniería Electrónica</div>
+  </header>
+
+  <p class="warn"><b>Preliminar: objetivos de diseño, no valores medidos.</b> El DMM está en diseño (sección H, <code>01_diseno/dmm_rev21.html</code>) y todavía no se ha simulado: eso es S11. Cada cifra lleva su origen. Las exactitudes son objetivos para un año tras la calibración, a 23 ± 5 °C, y se confirman en S11 y en el banco.</p>
+
+  <div class="keys">
+    <div><div class="v">±19 999</div><div class="l">cuentas, 4½ dígitos</div></div>
+    <div><div class="v">50 V</div><div class="l">DC y 50 Vrms AC como máximo</div></div>
+    <div><div class="v">10 MΩ</div><div class="l">de impedancia de entrada en tensión</div></div>
+    <div><div class="v">2 A</div><div class="l">DC y AC, con fusible</div></div>
+    <div><div class="v">TRMS</div><div class="l">de 40 Hz a 20 kHz</div></div>
+    <div><div class="v">3</div><div class="l">bornes: V/Ω, COM y A</div></div>
+  </div>
+
+  <div class="legend">
+    <span><span class="t r">R</span> requisito acordado (RD-xx)</span>
+    <span><span class="t c">C</span> calculado en el diseño</span>
+    <span><span class="t s">S</span> simulado (LTspice)</span>
+    <span><span class="t p">!</span> objetivo o por definir</span>
+  </div>
+
+  <div class="cols">
+    <section class="grp">
+      <h2>Tensión continua</h2>
+      <dl>
+        <div class="row hd"><dt>Rangos</dt><span class="dots"></span><dd>200 mV, 2 V, 20 V, 50 V<span class="t r">R</span></dd></div>
+        <div class="row hd"><dt>Resolución</dt><span class="dots"></span><dd>10 µV, 100 µV, 1 mV, 10 mV<span class="t c">C</span></dd></div>
+        <div class="row hd"><dt>Exactitud</dt><span class="dots"></span><dd>±(0.1 % + 10 cuentas)<span class="t p">!</span><sup>1</sup></dd></div>
+        <div class="row hd"><dt>Impedancia de entrada</dt><span class="dots"></span><dd>10 MΩ, todos los rangos<span class="t c">C</span></dd></div>
+        <div class="row hd"><dt>Rechazo en modo normal (50/60 Hz)</dt><span class="dots"></span><dd>≥ 60 dB con NPLC ≥ 1<span class="t p">!</span></dd></div>
+        <div class="row hd"><dt>Autocero</dt><span class="dots"></span><dd>en cada lectura<span class="t c">C</span></dd></div>
+      </dl>
+    </section>
+
+    <section class="grp">
+      <h2>Tensión alterna</h2>
+      <dl>
+        <div class="row hd"><dt>Medida</dt><span class="dots"></span><dd>verdadero valor eficaz, acoplo AC<span class="t r">R</span></dd></div>
+        <div class="row hd"><dt>Rangos</dt><span class="dots"></span><dd>200 mV, 2 V, 20 V, 50 Vrms<span class="t r">R</span></dd></div>
+        <div class="row hd"><dt>Frecuencia</dt><span class="dots"></span><dd>40 Hz – 20 kHz<span class="t r">R</span></dd></div>
+        <div class="row hd"><dt>Exactitud (5 % a 100 % del rango)</dt><span class="dots"></span><dd>±(1 % + 20 cuentas)<span class="t p">!</span><sup>2</sup></dd></div>
+        <div class="row hd"><dt>Factor de cresta</dt><span class="dots"></span><dd>≤ 3 a fondo de escala<span class="t c">C</span></dd></div>
+        <div class="row hd"><dt>Impedancia de entrada</dt><span class="dots"></span><dd>10 MΩ ∥ &lt; 100 pF<span class="t c">C</span></dd></div>
+      </dl>
+    </section>
+
+    <section class="grp">
+      <h2>Resistencia</h2>
+      <dl>
+        <div class="row hd"><dt>Rangos</dt><span class="dots"></span><dd>200 Ω … 20 MΩ, 6 rangos<span class="t r">R</span></dd></div>
+        <div class="row hd"><dt>Resolución</dt><span class="dots"></span><dd>10 mΩ … 1 kΩ<span class="t c">C</span></dd></div>
+        <div class="row hd"><dt>Exactitud, 200 Ω … 2 MΩ</dt><span class="dots"></span><dd>±(0.2 % + 10 cuentas)<span class="t p">!</span><sup>3</sup></dd></div>
+        <div class="row hd"><dt>Exactitud, 20 MΩ</dt><span class="dots"></span><dd>±(1 % + 10 cuentas)<span class="t p">!</span></dd></div>
+        <div class="row hd"><dt>Corriente de prueba</dt><span class="dots"></span><dd>9.8 mA (200 Ω) … 0.3 µA (20 MΩ)<span class="t c">C</span></dd></div>
+        <div class="row hd"><dt>Tensión en vacío</dt><span class="dots"></span><dd>≈ 4.9 V<span class="t c">C</span></dd></div>
+        <div class="row hd"><dt>Relativo (resta de puntas)</dt><span class="dots"></span><dd>sí<span class="t r">R</span></dd></div>
+      </dl>
+    </section>
+
+    <section class="grp">
+      <h2>Diodo y continuidad</h2>
+      <dl>
+        <div class="row hd"><dt>Prueba de diodo</dt><span class="dots"></span><dd>0 – 3.5 V, 1 mV<span class="t r">R</span></dd></div>
+        <div class="row sub"><dt>Corriente</dt><span class="dots"></span><dd>≈ 0.6–1.6 mA<span class="t c">C</span></dd></div>
+        <div class="row hd"><dt>Continuidad</dt><span class="dots"></span><dd>zumbador por debajo de ≈ 50 Ω<span class="t r">R</span><span class="t c">C</span></dd></div>
+        <div class="row sub"><dt>Respuesta</dt><span class="dots"></span><dd>&lt; 1 ms (COMP7, sin CPU)<span class="t c">C</span></dd></div>
+      </dl>
+    </section>
+
+    <section class="grp">
+      <h2>Corriente</h2>
+      <dl>
+        <div class="row hd"><dt>Rangos DC y AC</dt><span class="dots"></span><dd>200 mA, 2 A<span class="t r">R</span></dd></div>
+        <div class="row hd"><dt>Resolución</dt><span class="dots"></span><dd>10 µA, 100 µA<span class="t c">C</span></dd></div>
+        <div class="row hd"><dt>Exactitud DC</dt><span class="dots"></span><dd>±(0.5 % + 10 cuentas)<span class="t p">!</span><sup>4</sup></dd></div>
+        <div class="row hd"><dt>Exactitud AC (40 Hz – 20 kHz)</dt><span class="dots"></span><dd>±(1.5 % + 20 cuentas)<span class="t p">!</span></dd></div>
+        <div class="row hd"><dt>Derivador</dt><span class="dots"></span><dd>0.1 Ω, único<span class="t r">R</span></dd></div>
+        <div class="row hd"><dt>Caída a fondo de escala</dt><span class="dots"></span><dd>&lt; 0.3 V a 2 A<span class="t c">C</span></dd></div>
+        <div class="row hd"><dt>Fusible</dt><span class="dots"></span><dd>3.15 A rápido, accesible<span class="t r">R</span></dd></div>
+      </dl>
+    </section>
+
+    <section class="grp">
+      <h2>Protección</h2>
+      <dl>
+        <div class="row hd"><dt>Máximo de medida V/Ω</dt><span class="dots"></span><dd>50 V DC · 50 Vrms (71 Vpk)<span class="t r">R</span></dd></div>
+        <div class="row hd"><dt>Conexión a la red por error</dt><span class="dots"></span><dd>230 Vrms durante 10 s sin daño<span class="t r">R</span><span class="t p">!</span><sup>5</sup></dd></div>
+        <div class="row hd"><dt>Borne A</dt><span class="dots"></span><dd>fusible + diodos de potencia<span class="t c">C</span></dd></div>
+        <div class="row hd"><dt>Descargas electrostáticas</dt><span class="dots"></span><dd>±4 kV contacto, ±8 kV aire<span class="t p">!</span></dd></div>
+        <div class="row hd"><dt>Aislamiento</dt><span class="dots"></span><dd>ninguno: COM = masa del equipo<span class="t r">R</span></dd></div>
+        <div class="row hd"><dt>Categoría de medida</dt><span class="dots"></span><dd>ninguna; no mide la red<span class="t r">R</span></dd></div>
+      </dl>
+    </section>
+
+    <section class="grp">
+      <h2>Funciones y registro</h2>
+      <dl>
+        <div class="row hd"><dt>Ayudas</dt><span class="dots"></span><dd>autorango, relativo, mín/máx, retención<span class="t r">R</span></dd></div>
+        <div class="row hd"><dt>Registro</dt><span class="dots"></span><dd>en el tiempo, con exportación<span class="t r">R</span></dd></div>
+        <div class="row hd"><dt>Cable abierto</dt><span class="dots"></span><dd>detección<span class="t r">R</span><span class="t p">!</span></dd></div>
+        <div class="row hd"><dt>Lecturas por segundo</dt><span class="dots"></span><dd>≈ 2–5 (NPLC 1 con autocero)<span class="t p">!</span></dd></div>
+      </dl>
+    </section>
+
+    <section class="grp">
+      <h2>General</h2>
+      <dl>
+        <div class="row hd"><dt>Convertidor</dt><span class="dots"></span><dd>ADC5 del STM32G473, diferencial<span class="t r">R</span></dd></div>
+        <div class="row hd"><dt>Sobremuestreo</dt><span class="dots"></span><dd>×256 hardware · ×4 firmware<span class="t r">R</span></dd></div>
+        <div class="row hd"><dt>Referencia</dt><span class="dots"></span><dd>REF3325, 2.5 V, 30 ppm/°C<span class="t c">C</span></dd></div>
+        <div class="row hd"><dt>Consumo</dt><span class="dots"></span><dd>≈ 30 mW (+ fuente de ohmios)<span class="t c">C</span></dd></div>
+        <div class="row hd"><dt>Calibración</dt><span class="dots"></span><dd>ganancia y offset por rango (P10)<span class="t c">C</span></dd></div>
+      </dl>
+    </section>
+  </div>
+
+  <section class="grp">
+    <h2>Rangos y camino de la señal</h2>
+    <div class="tw"><table>
+      <thead><tr><th>Función · rango</th><th>Fondo de escala</th><th>Resolución</th><th>Camino</th><th>En el ADC</th></tr></thead>
+      <tbody>
+        <tr><td>DCV / ACV · 200 mV</td><td class="n">199.99 mV</td><td class="n">10 µV</td><td>÷1 · ×10</td><td class="n">±2 V</td></tr>
+        <tr><td>DCV / ACV · 2 V</td><td class="n">1.9999 V</td><td class="n">100 µV</td><td>÷1 · ×1</td><td class="n">±2 V</td></tr>
+        <tr><td>DCV / ACV · 20 V</td><td class="n">19.999 V</td><td class="n">1 mV</td><td>÷10 · ×1</td><td class="n">±2 V</td></tr>
+        <tr><td>DCV / ACV · 50 V</td><td class="n">50.00 V</td><td class="n">10 mV</td><td>÷100 · ×1</td><td class="n">±0.5 V</td></tr>
+        <tr><td>DCI / ACI · 200 mA</td><td class="n">199.99 mA</td><td class="n">10 µA</td><td>0.1 Ω · ×100</td><td class="n">±2 V</td></tr>
+        <tr><td>DCI / ACI · 2 A</td><td class="n">1.9999 A</td><td class="n">100 µA</td><td>0.1 Ω · ×10</td><td class="n">±2 V</td></tr>
+        <tr><td>Ω · 200 Ω / 2 k / 20 k / 200 k / 2 M / 20 MΩ</td><td class="n">199.99 Ω … 19.999 MΩ</td><td class="n">10 mΩ … 1 kΩ</td><td>razón con R_ref 301 Ω … 10 MΩ</td><td class="n">≤ 2 V</td></tr>
+        <tr><td>Diodo</td><td class="n">3.500 V</td><td class="n">1 mV</td><td>÷10 · ×1</td><td class="n">0.35 V</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>Notas</h3>
+    <ol>
+      <li>Presupuesto de la sección H §8: tras calibrar, la referencia y las resistencias suman ≈ 0.05 %; la no linealidad del ADC5 (≈ ±2–3 códigos de 12 bits) da las 10 cuentas. En el rango de 200 mV, el autocero deja el offset por debajo de una cuenta (OPA2188 de deriva cero).</li>
+      <li>Muestreo a ≈ 200 kSa/s y verdadero valor eficaz en firmware (etapa J1 del banco). El divisor se compensa como una sonda; el condensador de la toma ÷10 se elige en prueba.</li>
+      <li>Medida por razón, sin fuente de corriente exacta: la corriente sale de la caída en R_ref, medida en sus dos extremos con un segundo 74HC4051 de sentido. En 200 kΩ, 2 MΩ y 20 MΩ se corrige el divisor de 10 MΩ en paralelo.</li>
+      <li>Derivador de 0.1 Ω 1 % calibrado; en 2 A se calienta (0.4 W), lo que limita la exactitud si se mide mucho tiempo seguido. En 200 mA, una cuenta son 1 µV en el derivador.</li>
+      <li>V/Ω en tensión: R_PROT de 3 × 33 kΩ y divisor de 3 × 3 MΩ en 1206 (≈ 108 V por pieza). En ohmios: PTC por elegir. A: el fusible abre. No es una categoría de medida. Se simula en S11.</li>
+    </ol>
+    <h3>Fuentes</h3>
+    <p>Requisitos RD-01…RD-10 (<code>00_requisitos/requisitos_dmm_awg.html</code>), decisiones del 7 oct en <code>ai-context/DECISIONS.md</code> y guía de diseño <code>01_diseno/dmm_rev21.html</code> (sección H). Referencias: TI TIDA-01012, NI ELVIS II y Micro-DMM. Pieza clave: OPA2188AIDR (TI, LCSC C17271).</p>
+  </section>
+</div>
+
+</body>
+</html>

@@ -25,7 +25,7 @@ Estado a 6 oct 2026. El estado compartido y oficial está en `ai-context/STATE.m
 
 ## Siguiente, en este orden (Keneth, 6 oct)
 
-1. **DMM** (RD-01…RD-10):
+1. **DMM** (RD-01…RD-10). *7 oct: arquitectura decidida y sección H escrita (`01_diseno/dmm_rev21.html`, hoja `00_requisitos/especificaciones_dmm.html`); siguiente, la simulación S11 con Codex.*
    - 50 V en continua, 50 Vrms en alterna y 2 A, 4½ dígitos, tres bornes (V/Ω, COM y A);
    - entrada V/Ω y su protección para 71 Vpk continuos, con aviso en el panel y el manual;
    - prueba de diodo de 3.5 V con divisor antes de PB14;

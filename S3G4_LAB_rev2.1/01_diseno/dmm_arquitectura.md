@@ -1,5 +1,7 @@
 # DMM de la rev 2.1 — arquitectura (borrador)
 
+> **Superado el 7 oct por la sección H:** `01_diseno/dmm_rev21.html` (guía con valores) y `00_requisitos/especificaciones_dmm.html`. Se conserva como registro del primer paso.
+
 - Autor: Claude Code, 7 oct 2026. Primer paso del DMM (PLAN, paso 1).
 - Decisiones de Keneth del 7 oct: `ai-context/DECISIONS.md`, entrada «DMM: arquitectura».
 - Requisitos: RD-01…RD-10 en `00_requisitos/requisitos_dmm_awg.html`.
