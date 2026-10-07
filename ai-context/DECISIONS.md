@@ -234,6 +234,14 @@ Keneth, 6 oct, tras la auditoría de S9 hecha por Claude: «Elijo AD8039 para CH
 - Se renuncia al ahorro estimado de ≈ 8 USD por placa.
 - Siguiente paso: rehacer la tabla de consumo G.3/G.4 con las cifras de A.
 
+### 2026-10-06 — S10: esquema de CH2/CH3, una hoja por canal y referencias por centenas
+
+Keneth eligió las tres opciones recomendadas por Claude:
+- **Una hoja jerárquica por canal:** `ch2.kicad_sch` y `ch3.kicad_sch`, colgadas de la raíz y sin pines jerárquicos (todo por etiquetas globales y `power:`). Adelanta para CH2/CH3 la jerarquía que S8 dejaba para el final; CH1 sigue en la raíz por ahora.
+- **Referencias por centenas:** CH2 = 2xx y CH3 = 3xx. Los relés pasan a K101, K201 y K301 (antes K101…K103).
+- **RFILT1 de 2.37 kΩ con pareja de piezas *basic*:** 2.2 kΩ + 150 Ω = 2.35 kΩ (−0.84 %). No hay 2.37 kΩ ni 180 Ω *basic* en 0603. El −3 dB sube ≈ 0.8 %, dentro de S9-C1, así que no se vuelve a simular. RFILT2 = 1.1 kΩ, una sola pieza.
+- Fuente: `S3G4_LAB_rev2.1/04_esquematicos/S10_CH23/CH23_PIEZAS_Y_REDES.md`.
+
 ### 2026-10-04 — S8: esquema de CH1, cuerpo del BNC, desacoplo y pull-ups
 
 Keneth, al preparar S8: hoja plana sin jerarquía (la jerarquía, al estilo de OpenScope, se hará al final), dibujada con Konnect en una sesión abierta en `04_esquematicos/kicad/`, y solo la cadena de CH1. Después: «BNC a AGND, y acepto el desacoplo y los pull-ups».
