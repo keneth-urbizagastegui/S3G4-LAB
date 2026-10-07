@@ -174,3 +174,10 @@ No se ha elegido automáticamente uno de estos frentes como nueva tarea de ingen
   - continuidad por PB14 y COMP7.
 
   Abiertos: la PTC, el fusible, la pieza del driver y el interruptor de carga. Siguiente: el encargo S11 para Codex.
+- **7 oct, plan de referencias del DMM:** `S3G4_LAB_rev2.1/06_plan/PLAN_REFERENCIAS_DMM.md`.
+  - Un estudio a fondo por referencia, con el método de las anatomías del osciloscopio.
+  - Locales: TIDA-01012, HydraMeter 0.4, Micro-DMM, STM32 DMM de EEWorld 77845 (sin esquemático) y los artículos de Analog Devices de 7.5 dígitos.
+  - Propuestas de internet: TIDA-00879, EEVblog 121GW y el multímetro STM32 de Martin.
+  - Sin adoptar módulos. Propuestas numeradas desde P17.
+  - **La sección H queda en pausa** hasta la síntesis; luego S11.
+  - Pendiente de Keneth: permiso de descarga, incluir R6–R8 y el orden.
