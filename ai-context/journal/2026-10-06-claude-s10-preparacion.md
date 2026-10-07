@@ -5,3 +5,10 @@
 - `verificar_ch23.py`: CH1 contra s8_ch1.net da 0 diferencias. En una copia sintética de CH2 (refs y redes renombradas, sin cambiar el filtro) salen exactamente las 8 diferencias del filtro.
 - Corrección a una respuesta anterior de esta sesión: la huella del TQ2SA **sí** se comprobó contra la p. 11 de C46047. Lo dice la cabecera de `lib/gen/gen_ch1_parts.py`, que añade que coincide con la huella SamacSys 16574131. La nota «[VERIFICAR]» de CH1_PIEZAS_Y_REDES §5 se quedó sin actualizar.
 - Pendiente: la sesión de Konnect (encargo S10) y luego la auditoría.
+
+## Auditoría de S10 (Claude, 6 oct)
+- Netlist del proyecto reexportada por mi cuenta. `verificar_ch23.py` da código 0: CH1 89, CH2 87 y CH3 87 piezas, sin diferencias.
+- ERC reejecutado: 31 = raíz (7 power_pin_not_driven + 3 pin_not_driven + 15 isolated_pin_label) + 3 pin_not_driven en /CH2/ + 3 en /CH3/. No hay tipos nuevos.
+- Raíz: el reacomodo de CH1 (286 símbolos movidos, 296 → 274 cables) llegó con 88151ab (guardado de Keneth en KiCad). De 88151ab al final de S10 solo se añaden los 2 símbolos de hoja: 0 símbolos movidos y 0 cables cambiados. La netlist de CH1 sigue igual.
+- ch2_completa.png: legible. Textos apretados heredados de CH1 en el bloque 1 (VC201 con C203) y en el filtro (CH2_F1_B junto a R224/R249). Son cosméticos.
+- Pendiente de Keneth: abrir y guardar ch2/ch3 (ruta de instancia obsoleta en ch2), el cajetín de las tres hojas y la unión con main.
