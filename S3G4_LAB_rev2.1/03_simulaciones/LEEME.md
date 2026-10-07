@@ -6,7 +6,7 @@ Carpeta **separada a propósito** de `Simulation_LTSpice/`, que contiene las sim
 |---|---|---|
 | `P4_P7_grueso/` | Atenuador grueso: con relé (P4) o sin relé (P7) | Construida por Codex, auditada por Claude (`AUDITORIA_CLAUDE_P4_P7.md`). Por RF-07 queda P4; la corrección (P4b) se simuló en `CH1_entrada/` |
 | `CH1_entrada/` | Canal rápido CH1 completo, de la BNC a PA0: S1–S2b entrada y protección, S3–S3b ganancia, S4 etapa final, S5 filtro, S6 muestreo, S7–S7c canal completo con Monte Carlo | Cerrado y auditado el 3–4 oct (`AUDITORIA_CLAUDE_S*.md`, `ACTA_S7c.md`, `REVISION_CLAUDE_CH1.md`). Base de CH2/CH3: `comun/ch1_comun_s7b.inc` |
-| `CH23_entrada/` | S9: CH2/CH3 a 1 MHz y un ADC a 3.47 MSa/s, con la AD8039 y el LM6172 como variante | Cerrada (Codex, 6 oct; auditada por Claude en `ai-context/journal/2026-10-06-claude-auditoria-s9b-s8b.md`). Elegida la AD8039 (DECISIONS, 6 oct) |
+| `CH23_entrada/` | S9: CH2/CH3 a 1 MHz y un ADC a 3.47 MSa/s, con la AD8039 y el LM6172 como variante (queda la AD8039) | Cerrada (Codex, 6 oct; auditada por Claude en `ai-context/journal/2026-10-06-claude-auditoria-s9b-s8b.md`). Elegida la AD8039 (DECISIONS, 6 oct) |
 
 Documentos de diseño que gobiernan estas simulaciones:
 

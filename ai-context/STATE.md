@@ -153,3 +153,9 @@ No se ha elegido automáticamente uno de estos frentes como nueva tarea de ingen
 
 - Hojas `ch2.kicad_sch` y `ch3.kicad_sch` (87 piezas cada una) en la rama `ai/s10-ch23-esquema`, sin push. `verificar_ch23.py` código 0; ERC 31 (7 rieles + 9 pin_not_driven + 15 isolated_pin_label, sin otros tipos); 0 solapes de texto.
 - **Pendiente de Keneth:** abrir y guardar ch2/ch3 en KiCad (ch2 trae una ruta de instancia obsoleta) y rellenar el cajetín; después auditoría de Claude. Detalle: `S10_CH23/INFORME_S10.md` y `ai-context/journal/2026-10-06-claude-s10-esquema-ch23.md`.
+
+## Orden nuevo y documentos al día — 6 oct 2026 (noche), Claude
+
+- Keneth: D-07 aceptada; RE-01 en espera (criterio: componentes baratos y circuitos mínimos); **siguiente, el DMM, después el AWG y luego el mapa de pines**, separando los recursos analógicos de los digitales del STM32. Los esquemas de CH1–CH3 se dejan como están. Todo en DECISIONS (6 oct).
+- Actualizados: `06_plan/PLAN.md` (reescrito), el documento vivo (D-07 cerrada, S9 cerrado con la AD8039, K4), `LEEME.md` de la rev 2.1, `05_informes/LEEME.md` y `03_simulaciones/LEEME.md`.
+- Corregido en S10: el −3 dB nominal de CH2/CH3 con la AD8039 es 1.001 MHz; en la tabla había puesto la cifra del LM6172.

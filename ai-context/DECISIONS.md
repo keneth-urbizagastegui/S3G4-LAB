@@ -234,6 +234,14 @@ Keneth, 6 oct, tras la auditoría de S9 hecha por Claude: «Elijo AD8039 para CH
 - Se renuncia al ahorro estimado de ≈ 8 USD por placa.
 - Siguiente paso: rehacer la tabla de consumo G.3/G.4 con las cifras de A.
 
+### 2026-10-06 — D-07 aceptada, RE-01 en espera y orden: DMM → AWG → mapa de pines
+
+Keneth, 6 oct, tras cerrar CH1–CH3:
+- **D-07 (orden de la cadena) aceptada:** «D-07 queda con lo que hicimos». Pasa de propuesta a cerrada en el documento vivo.
+- **RE-01 (tope de 120 USD) en espera.** Criterio: que funcione con componentes baratos y con los circuitos reducidos al mínimo (la rev 2.1 ya recorta piezas frente a la rev 2.0). Se revisa con todos los bloques.
+- **Orden de trabajo:** primero el DMM y el AWG, y después el mapa de pines. Con sus esquemas se reparte la conexión con el STM32, separando los recursos analógicos de los digitales. Sustituye al orden de PLAN del 4 oct (rieles primero, mapa de pines antes que los esquemas). Para no diseñar contra un recurso ocupado, durante el DMM y el AWG se lleva una lista de reserva de pines y periféricos del G473 (propuesta de Claude, 6 oct).
+- Los esquemas de CH1–CH3 se dejan como están hasta tener más hojas.
+
 ### 2026-10-06 — S10: esquema de CH2/CH3, una hoja por canal y referencias por centenas
 
 Keneth eligió las tres opciones recomendadas por Claude:

@@ -36,7 +36,7 @@ Mismos condensadores que CH1 (C109 56 pF, C110 47 pF, C111 220 pF, C112 56 pF). 
 | R126 ∥ R139 | 1 kΩ ∥ 1 kΩ | R226 / R326 | **1.1 kΩ**, una sola pieza | C22764 | `F2_MID` – `F2_INP` |
 | R138, R139 | — | **no existen** (R238, R239, R338 y R339 no se dibujan) | | | |
 
-- **RFILT1 = 2.35 kΩ frente a 2.37 kΩ simulado (−0.84 %).** El 2.37 kΩ y el 180 Ω no son *basic* (pcbparts, 6 oct). El error es mayor que el ≤ 0.35 % de las parejas de CH1, pero el −3 dB solo sube ≈ 0.8 % (de 1.026 a ≈ 1.03 MHz), dentro del 1 MHz ± 10 % de S9-C1 y del ±1 % del Monte Carlo. **No se vuelve a simular.**
+- **RFILT1 = 2.35 kΩ frente a 2.37 kΩ simulado (−0.84 %).** El 2.37 kΩ y el 180 Ω no son *basic* (pcbparts, 6 oct). El error es mayor que el ≤ 0.35 % de las parejas de CH1, pero el −3 dB solo sube ≈ 0.8 % (de 1.001 a ≈ 1.01 MHz con la AD8039, K1 de S9), dentro del 1 MHz ± 10 % de S9-C1 y del ±1 % del Monte Carlo. **No se vuelve a simular.**
 - RFILT2 = 1.1 kΩ es exacto: no hace falta pareja.
 - **Cuenta por canal: 87 piezas** (89 de CH1 menos R_38 y R_39).
 
