@@ -22126,7 +22126,7 @@
     (fields_autoplaced yes)
     (stroke (width 0.1524) (type solid))
     (fill (color 0 0 0 0.0))
-    (uuid "5888b09f-b461-4d43-98f8-7fe9cbeb058d")
+    (uuid "5e187e68-818d-43a9-afdc-63610a361d71")
     (property "Sheetname" "CH2"
       (at 500 49.365 0)
       (show_name no)
@@ -22155,7 +22155,7 @@
     (fields_autoplaced yes)
     (stroke (width 0.1524) (type solid))
     (fill (color 0 0 0 0.0))
-    (uuid "99bd9b2c-60eb-42b9-ac18-d1a4498773e0")
+    (uuid "858ffe77-d4b9-49a9-8a73-be943cd15991")
     (property "Sheetname" "CH3"
       (at 500 89.365 0)
       (show_name no)
