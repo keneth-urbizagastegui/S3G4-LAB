@@ -272,3 +272,8 @@ No se ha elegido automáticamente uno de estos frentes como nueva tarea de ingen
   - **Fuga de la TVS:** el 74 % era exagerado, pero C5 sigue sin poder cumplirse.
   - BSS84 a 24 V: no es fallo.
   - Siguiente: rediseño del bloque 1, opción (b).
+- **7 oct, S11.2 auditada y opción B:**
+  - O2 no validado (ESD, R_LIM y diodo).
+  - Keneth relajó RD-10 en ohmios a 60 V, como el ELVIS (DECISIONS). En tensión y en el borne A sigue aguantando la red.
+  - Borne A resuelto en simulación: GBU808 + Littelfuse 0216, al 6.6 % de su I²t.
+  - **Siguiente:** S11.3, la simulación de cierre del bloque 1 con O4, la R de 100 Ω en el mux y ESD. Después, actualizar la sección H.

@@ -319,6 +319,21 @@ Keneth, 7 oct, tras la auditoría de S11.1 y `03_simulaciones/DMM/REDISENO_BLOQU
 - **Queda por confirmar en S11.2 (Codex):** el BSS126 con su hoja (IDSS, V_p, temperatura), la red durante 10 s sin abrir el relé, la ESD y el borne A con las piezas reales.
 - Fuente: chat del 7 oct.
 
+### 2026-10-07 — DMM: RD-10 relajado en modo ohmios (opción B, como el ELVIS II)
+
+Keneth, 7 oct, tras la auditoría de S11.2, que no validó O2 (ESD de ≈ 1600 V en la puerta del BSS126; sin R_LIM garantizable; diodo a 100 µA de 3.37 V):
+- **En ohmios, diodo y continuidad** el DMM aguanta sin daño **hasta 60 V DC / 60 Vrms**, como el ELVIS II (60 VDC / 20 Vrms). Ya **no** sobrevive a la red en ese modo.
+- **En tensión y en el borne A se mantiene RD-10:** 230 Vrms durante 10 s sin daño.
+- **Protección de ohmios (O4 de `REDISENO_BLOQUE1.md`):** relé TQ2SA → R fija de 2.2 kΩ → TVS → R_S de 3.3 kΩ → sujeción a COM y diodo de bloqueo del BSS84. Sustituye a O2 (BSS126) y a la PTC.
+- **Se mantienen:**
+  - GBU808 + Littelfuse 0216 de 3.15 A en el borne A (la auditoría de S11.2 lo da por bueno: 6.6 % de su I²t);
+  - R_B ≥ 10 kΩ en la entrada de B;
+  - prueba de diodo como el ELVIS.
+- **Se añade:** ≈ 100 Ω en serie con la entrada del mux de la toma ÷10 (la ESD metía 432 mA por la compensación del divisor).
+- **El firmware y S3G4-UI** avisan de que en ohmios no se mide sobre circuitos con tensión (P34).
+- Sustituye en parte a la entrada «rediseño tras S11.1» (O2) y modifica RD-10 solo en ohmios.
+- Fuente: chat del 7 oct; `03_simulaciones/DMM/AUDITORIA_CLAUDE_S11_2.md`.
+
 ### 2026-10-06 — D-07 aceptada, RE-01 en espera y orden: DMM → AWG → mapa de pines
 
 Keneth, 6 oct, tras cerrar CH1–CH3:
