@@ -1,0 +1,153 @@
+<title>DMM bloque 1: bornes y protección</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Source+Sans+3:wght@400;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: hoja de esbozo de esquema; una columna, dibujo de los tres caminos, lista de piezas y bornes */
+:root{
+  --paper:#fbfcfc; --ink:#16232a; --muted:#5a6b72; --rule:#d5dee1; --band:#e8f0f2;
+  --accent:#0b5c78; --v:#0b5c78; --o:#6a4fa3; --a:#a3470f; --ok:#2f6f4f; --bad:#b3261e;
+  --display:"Barlow Condensed","Arial Narrow",sans-serif;
+  --body:"Source Sans 3","Segoe UI",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#10181b; --ink:#dfe8ea; --muted:#93a4aa; --rule:#29373c; --band:#16242a;
+  --accent:#6cc0dc; --v:#6cc0dc; --o:#b9a0ec; --a:#f2a36b; --ok:#6fcf9b; --bad:#f2827a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#10181b; --ink:#dfe8ea; --muted:#93a4aa; --rule:#29373c; --band:#16242a;
+  --accent:#6cc0dc; --v:#6cc0dc; --o:#b9a0ec; --a:#f2a36b; --ok:#6fcf9b; --bad:#f2827a; color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.55 var(--body)}
+.wrap{max-width:980px;margin:0 auto;padding-inline:16px;padding-block:28px 56px}
+h1,h2{font-family:var(--display);margin:0;line-height:1.1;text-wrap:balance}
+h1{font-size:clamp(28px,5vw,40px)}
+h2{font-size:24px;margin:36px 0 8px;padding-left:10px;border-left:4px solid var(--accent)}
+.brand{font:600 13px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+.top{border-bottom:3px solid var(--accent);padding-bottom:12px;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:8px 24px}
+.docid{font:12.5px/1.6 var(--mono);color:var(--muted)}
+p,li{max-width:80ch}
+.warn{border:1px solid var(--a);padding:10px 14px;margin:16px 0;font-size:15px;background:color-mix(in srgb,var(--a) 8%,transparent)}
+.fig{overflow-x:auto;margin:12px 0}
+.fig svg{display:block;width:100%;min-width:760px;height:auto}
+svg text{font-family:var(--body);fill:var(--ink)}
+svg .m{font-family:var(--mono)} svg .mut{fill:var(--muted)}
+svg .w{stroke:var(--ink);stroke-width:1.5;fill:none}
+svg .bv{fill:var(--paper);stroke:var(--v);stroke-width:1.6}
+svg .bo{fill:var(--paper);stroke:var(--o);stroke-width:1.6}
+svg .ba{fill:var(--paper);stroke:var(--a);stroke-width:1.6}
+svg .tv{fill:var(--v)} svg .to{fill:var(--o)} svg .ta{fill:var(--a)}
+.tw{overflow-x:auto;margin:10px 0}
+table{border-collapse:collapse;width:100%;font-size:14.5px;min-width:640px}
+th,td{padding:6px 9px;border-bottom:1px solid var(--rule);text-align:left;vertical-align:top}
+th{font:600 12px var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.05em;border-bottom:2px solid var(--accent)}
+td.n{font-family:var(--mono);white-space:nowrap}
+.tag{font:600 11px var(--mono);padding:2px 5px;border:1px solid currentColor;border-radius:3px;white-space:nowrap}
+.tag.v{color:var(--v)} .tag.o{color:var(--o)} .tag.a{color:var(--a)} .tag.ok{color:var(--ok)} .tag.p{color:var(--bad)}
+.foot{margin-top:36px;border-top:1px solid var(--rule);padding-top:10px;font-size:13.5px;color:var(--muted)}
+code{font:.9em var(--mono);color:var(--accent)}
+</style>
+
+<div class="wrap">
+<header class="top">
+  <div><div class="brand">S3G4 LAB · rev 2.1 · DMM · bloque 1</div>
+  <h1>Bornes y protección</h1></div>
+  <div class="docid">Esbozo · 7 oct 2026 · Claude Code<br>Decisiones del 7 oct (O4, GBU808, Littelfuse 0216)<br>Simulación de cierre S11.3: en curso</div>
+</header>
+
+<p class="warn"><b>Esbozo, no esquema final.</b> Resume las decisiones tomadas tras S11.1 y S11.2. Las piezas se confirman con la simulación de cierre S11.3, que está corriendo; si cambia algo, esta página se actualiza. Luego se dibuja en KiCad.</p>
+
+<h2>Qué aguanta cada borne</h2>
+<div class="tw"><table>
+<tr><th>Borne · modo</th><th>Mide hasta</th><th>Aguanta sin daño</th><th>Cómo</th></tr>
+<tr><td><span class="tag v">V/Ω · tensión</span></td><td class="n">50 V DC / 50 Vrms</td><td class="n">230 Vrms · 10 s</td><td>R_PROT de 99 kΩ con sujeción, y el divisor de 10 MΩ en 3 piezas. El relé de ohmios queda abierto</td></tr>
+<tr><td><span class="tag o">V/Ω · ohmios, diodo, continuidad</span></td><td class="n">—</td><td class="n">60 V DC / 60 Vrms</td><td>Relé cerrado, 2.2 kΩ, TVS y 3.3 kΩ. Como el ELVIS II: no aguanta la red; la pantalla y S3G4-UI avisan</td></tr>
+<tr><td><span class="tag a">A · corriente</span></td><td class="n">2 A</td><td class="n">230 Vrms hasta que abre el fusible</td><td>Fusible rápido de 3.15 A y puente GBU808 en paralelo con el derivador</td></tr>
+</table></div>
+
+<h2>Los tres caminos</h2>
+<div class="fig">
+<svg viewBox="0 0 960 520" role="img" aria-label="Esbozo del bloque 1: camino de tensión, camino de ohmios con relé y camino de corriente con fusible y puente">
+  <!-- bornes -->
+  <g font-size="13" font-weight="600">
+    <circle cx="30" cy="70" r="11" fill="none" stroke="var(--bad)" stroke-width="2"/><text x="30" y="50" text-anchor="middle" fill="var(--bad)">V/Ω</text>
+    <circle cx="30" cy="420" r="11" fill="none" stroke="var(--bad)" stroke-width="2"/><text x="30" y="400" text-anchor="middle" fill="var(--bad)">A</text>
+    <circle cx="30" cy="495" r="11" fill="none" stroke="var(--ink)" stroke-width="2"/><text x="56" y="500">COM · punto estrella</text>
+  </g>
+  <!-- tensión -->
+  <text x="80" y="30" font-size="12" font-weight="600" class="tv">TENSIÓN</text>
+  <path class="w" d="M41 70H90"/>
+  <rect x="90" y="54" width="150" height="32" class="bv"/><text x="165" y="68" text-anchor="middle" font-size="12" font-weight="600">R_PROT 3 × 33 kΩ</text><text x="165" y="81" text-anchor="middle" font-size="10.5" class="mut m">1206</text>
+  <path class="w" d="M240 70H330"/>
+  <text x="285" y="62" text-anchor="middle" font-size="10.5" class="mut">BAV199 a ±4.9 V</text>
+  <rect x="330" y="54" width="110" height="32" class="bv"/><text x="385" y="74" text-anchor="middle" font-size="12" font-weight="600">→ X0 del mux</text>
+  <path class="w" d="M60 70V120H90"/>
+  <rect x="90" y="104" width="240" height="96" class="bv"/>
+  <text x="210" y="122" text-anchor="middle" font-size="12" font-weight="600">Divisor 10 MΩ, 0.1 %</text>
+  <text x="104" y="142" font-size="11" class="m">3 × 3.00 MΩ ∥ (100 pF C0G 630 V + 3.3 kΩ)</text>
+  <text x="104" y="162" font-size="11" class="m">900 kΩ ∥ 330 pF C0G</text>
+  <text x="104" y="182" font-size="11" class="m">100 kΩ ∥ 3.0 nF C0G → COM</text>
+  <path class="w" d="M330 152H420"/><text x="372" y="146" text-anchor="middle" font-size="10.5" class="mut">÷10 · BAV199</text>
+  <rect x="420" y="138" width="130" height="28" class="bv"/><text x="485" y="157" text-anchor="middle" font-size="11.5">100 Ω → X1 (nuevo)</text>
+  <path class="w" d="M330 186H420"/><text x="372" y="180" text-anchor="middle" font-size="10.5" class="mut">÷100</text>
+  <rect x="420" y="172" width="130" height="28" class="bv"/><text x="485" y="191" text-anchor="middle" font-size="11.5">→ X2</text>
+  <!-- ohmios -->
+  <text x="80" y="238" font-size="12" font-weight="600" class="to">OHMIOS, DIODO Y CONTINUIDAD</text>
+  <path class="w" d="M48 70V270H90"/>
+  <rect x="90" y="254" width="120" height="32" class="bo"/><text x="150" y="268" text-anchor="middle" font-size="12" font-weight="600">Relé TQ2SA</text><text x="150" y="281" text-anchor="middle" font-size="10.5" class="mut">abierto salvo en Ω</text>
+  <path class="w" d="M210 270H240"/>
+  <rect x="240" y="254" width="130" height="32" class="bo"/><text x="305" y="268" text-anchor="middle" font-size="12" font-weight="600">2 × 1.1 kΩ</text><text x="305" y="281" text-anchor="middle" font-size="10.5" class="mut m">2512</text>
+  <path class="w" d="M370 270H470"/>
+  <path class="w" d="M420 270V305"/><rect x="380" y="305" width="80" height="26" class="bo"/><text x="420" y="322" text-anchor="middle" font-size="11">SMAJ12CA</text><path class="w" d="M420 331V350"/><text x="420" y="364" text-anchor="middle" font-size="10.5" class="mut">COM</text>
+  <rect x="470" y="254" width="100" height="32" class="bo"/><text x="520" y="274" text-anchor="middle" font-size="12" font-weight="600">R_S 3.3 kΩ</text>
+  <path class="w" d="M570 270H600"/>
+  <rect x="600" y="248" width="170" height="44" class="bo"/><text x="685" y="265" text-anchor="middle" font-size="11.5" font-weight="600">BAV199 a ±4.9 V</text><text x="685" y="280" text-anchor="middle" font-size="10.5" class="mut">+ zéner 5.6 V de sumidero</text>
+  <path class="w" d="M770 270H800"/>
+  <rect x="800" y="248" width="150" height="44" class="bo"/><text x="875" y="265" text-anchor="middle" font-size="11.5" font-weight="600">Diodo de bloqueo</text><text x="875" y="280" text-anchor="middle" font-size="10.5" class="mut">→ fuente P43 (bloque 3)</text>
+  <!-- corriente -->
+  <text x="80" y="398" font-size="12" font-weight="600" class="ta">CORRIENTE</text>
+  <path class="w" d="M41 420H90"/>
+  <rect x="90" y="404" width="150" height="32" class="ba"/><text x="165" y="418" text-anchor="middle" font-size="12" font-weight="600">Littelfuse 0216</text><text x="165" y="431" text-anchor="middle" font-size="10.5" class="mut">3.15 A rápido · 5×20</text>
+  <path class="w" d="M240 420H330"/>
+  <rect x="330" y="404" width="130" height="32" class="ba"/><text x="395" y="418" text-anchor="middle" font-size="12" font-weight="600">Derivador 0.1 Ω</text><text x="395" y="431" text-anchor="middle" font-size="10.5" class="mut">1 % · 2512 · Kelvin</text>
+  <path class="w" d="M460 420H520V495H41"/>
+  <path class="w" d="M300 420V470H480V420"/>
+  <rect x="340" y="456" width="100" height="26" class="ba"/><text x="390" y="473" text-anchor="middle" font-size="11">GBU808</text>
+  <path class="w" d="M440 404V380H600"/><rect x="600" y="366" width="170" height="28" class="ba"/><text x="685" y="385" text-anchor="middle" font-size="11.5">R_B 10 kΩ → amplificador B</text>
+  <path class="w" d="M70 420V355H600"/><rect x="600" y="340" width="170" height="26" class="ba"/><text x="685" y="358" text-anchor="middle" font-size="11.5">10 MΩ → X5 (aviso de fusible)</text>
+</svg>
+</div>
+<p style="font-size:14px;color:var(--muted)">Colores: azul, camino de tensión; morado, ohmios; naranja, corriente. Todo lo que va a COM sale del mismo punto estrella, en el borne. El amplificador B y los mux son de los bloques 2 a 4.</p>
+
+<h2>Lista de piezas del bloque 1</h2>
+<div class="tw"><table>
+<tr><th>Camino</th><th>Pieza</th><th>Valor</th><th>LCSC</th><th>Estado</th></tr>
+<tr><td><span class="tag v">V</span></td><td>R_PROT</td><td class="n">3 × 33 kΩ 1206</td><td class="n">—</td><td><span class="tag ok">S11.1</span></td></tr>
+<tr><td><span class="tag v">V</span></td><td>Divisor</td><td class="n">3 × 3.00 MΩ, 900 kΩ, 100 kΩ · 0.1 %</td><td class="n">—</td><td><span class="tag ok">S11.1</span></td></tr>
+<tr><td><span class="tag v">V</span></td><td>Compensación C0G</td><td class="n">3 × 100 pF 630 V (+3.3 kΩ), 330 pF, 3.0 nF</td><td class="n">—</td><td><span class="tag ok">S11.1</span></td></tr>
+<tr><td><span class="tag v">V</span></td><td>Sujeciones X0 y ÷10</td><td class="n">BAV199</td><td class="n">—</td><td><span class="tag ok">S11.1</span></td></tr>
+<tr><td><span class="tag v">V</span></td><td>R en X1 (y X0/X2 si hace falta)</td><td class="n">100 Ω</td><td class="n">—</td><td><span class="tag p">S11.3</span></td></tr>
+<tr><td><span class="tag o">Ω</span></td><td>Relé</td><td class="n">TQ2SA-5V-Z</td><td class="n">C22686</td><td><span class="tag p">S11.3</span></td></tr>
+<tr><td><span class="tag o">Ω</span></td><td>Resistencia serie</td><td class="n">2 × 1.1 kΩ 2512</td><td class="n">—</td><td><span class="tag p">S11.3</span></td></tr>
+<tr><td><span class="tag o">Ω</span></td><td>TVS</td><td class="n">SMAJ12CA</td><td class="n">C78399</td><td><span class="tag p">S11.3</span></td></tr>
+<tr><td><span class="tag o">Ω</span></td><td>R_S</td><td class="n">3.3 kΩ</td><td class="n">—</td><td><span class="tag p">S11.3</span></td></tr>
+<tr><td><span class="tag o">Ω</span></td><td>Sujeción, sumidero y bloqueo</td><td class="n">2 × BAV199, 2 × BZT52C5V6, diodo de bloqueo</td><td class="n">—</td><td><span class="tag p">S11.3</span></td></tr>
+<tr><td><span class="tag a">A</span></td><td>Fusible y portafusibles</td><td class="n">Littelfuse 0216 3.15 A</td><td class="n">C95689</td><td><span class="tag ok">S11.2</span></td></tr>
+<tr><td><span class="tag a">A</span></td><td>Puente</td><td class="n">GBU808</td><td class="n">C42406072</td><td><span class="tag ok">S11.2</span></td></tr>
+<tr><td><span class="tag a">A</span></td><td>Derivador</td><td class="n">0.100 Ω 1 % 2512 2 W, 4 terminales</td><td class="n">por elegir</td><td><span class="tag p">abierto</span></td></tr>
+<tr><td><span class="tag a">A</span></td><td>R_B y aviso de fusible</td><td class="n">10 kΩ · 10 MΩ</td><td class="n">—</td><td><span class="tag p">S11.3</span></td></tr>
+</table></div>
+<p style="font-size:14px;color:var(--muted)">«S11.1» y «S11.2»: la simulación auditada lo dio por bueno. «S11.3»: está en la simulación de cierre. Las resistencias y los condensadores genéricos se eligen en LCSC al dibujar el esquema.</p>
+
+<h2>Bornes de 4 mm</h2>
+<p>Hacen falta tres: rojo para V/Ω, negro para COM y otro rojo (o amarillo) para A, como en el ELVIS II. Con la red posible en los bornes, conviene que el aislamiento sea de 1 kV y no de 60 V.</p>
+<div class="tw"><table>
+<tr><th>Borne (Amass)</th><th>LCSC</th><th>Aislamiento · corriente</th><th>Colores</th><th>Precio (1 u.)</th><th>Stock</th><th>Nota</th></tr>
+<tr><td>24.245.1 / 24.245.2 (los tuyos)</td><td class="n">C7437326 / C7437327</td><td class="n">1 kV · 24 A</td><td>rojo / negro</td><td class="n">1.28 / 1.21 USD</td><td class="n">5 021 / 9 685</td><td>Cumplen. Los más caros de la lista</td></tr>
+<tr><td><b>24.302.1 / 24.302.2</b></td><td class="n">C99100 / C106271</td><td class="n">1 kV · 32 A</td><td>rojo / negro</td><td class="n">0.35 / 0.39 USD</td><td class="n">1 387 / 1 572</td><td>Mismo aislamiento, más corriente y un tercio del precio</td></tr>
+<tr><td>24.243.x</td><td class="n">C7437321 …</td><td class="n">60 V · 24 A</td><td>rojo, negro, amarillo…</td><td class="n">0.41 USD</td><td class="n">7 125</td><td>Solo 60 V: no aconsejado si puede llegar la red</td></tr>
+<tr><td>24.247.x</td><td class="n">C106273 …</td><td class="n">60 V · 24 A</td><td>rojo, negro, amarillo</td><td class="n">0.13–0.14 USD</td><td class="n">6 242</td><td>Muy baratos, pero solo 60 V</td></tr>
+</table></div>
+<p><b>Recomendación:</b> la serie <b>24.302</b>, por aislamiento de 1 kV a un tercio del precio. Los datos son de la ficha de LCSC; antes de elegir hay que mirar en sus hojas el montaje (panel o placa), si el contacto va protegido (borne con funda, para puntas de seguridad) y la rosca o la tuerca. No he leído todavía esas hojas.</p>
+
+<div class="foot">Fuentes: <code>03_simulaciones/DMM/</code> (planes, actas y auditorías S11.1–S11.3, <code>REDISENO_BLOQUE1.md</code>) y <code>ai-context/DECISIONS.md</code>, 7 oct. Página hermana: <code>01_diseno/dmm_rev21.html</code> (sección H), que se actualiza al cerrar el bloque.</div>
+</div>

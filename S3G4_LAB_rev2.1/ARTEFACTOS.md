@@ -29,3 +29,4 @@ Cada artefacto es una copia publicada en claude.ai del archivo local indicado. L
 Fuera de esta carpeta, de la rev 2.0: **Esbozo de hardware S3G4**, https://claude.ai/artifact/N2QCUrWegFApQ51QXQWM1u → `docs/esbozo_hardware_s3g4.html`.
 
 Versiones a 24 sep 2026, tras volver a publicar las páginas con las rutas nuevas; el documento vivo (versión 18), los requisitos (5) y las especificaciones (2), a 4 oct. La publicada y la local son idénticas, salvo el envoltorio que añade la publicación. `canal_rapido_ch1.html` y `revision_entrada_ch1.html` no están publicadas.
+| DMM bloque 1: bornes y protección (esbozo, 7 oct) | https://claude.ai/artifact/WuPMtdkmWQVFsjsLy4jSzz | `01_diseno/dmm_bloque1.html` | 1 |
