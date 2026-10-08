@@ -142,12 +142,11 @@ code{font:.9em var(--mono);color:var(--accent)}
 <p>Hacen falta tres: rojo para V/Ω, negro para COM y otro rojo (o amarillo) para A, como en el ELVIS II. Con la red posible en los bornes, conviene que el aislamiento sea de 1 kV y no de 60 V.</p>
 <div class="tw"><table>
 <tr><th>Borne (Amass)</th><th>LCSC</th><th>Aislamiento · corriente</th><th>Colores</th><th>Precio (1 u.)</th><th>Stock</th><th>Nota</th></tr>
-<tr><td>24.245.1 / 24.245.2 (los tuyos)</td><td class="n">C7437326 / C7437327</td><td class="n">1 kV · 24 A</td><td>rojo / negro</td><td class="n">1.28 / 1.21 USD</td><td class="n">5 021 / 9 685</td><td>Cumplen. Los más caros de la lista</td></tr>
-<tr><td><b>24.302.1 / 24.302.2</b></td><td class="n">C99100 / C106271</td><td class="n">1 kV · 32 A</td><td>rojo / negro</td><td class="n">0.35 / 0.39 USD</td><td class="n">1 387 / 1 572</td><td>Mismo aislamiento, más corriente y un tercio del precio</td></tr>
-<tr><td>24.243.x</td><td class="n">C7437321 …</td><td class="n">60 V · 24 A</td><td>rojo, negro, amarillo…</td><td class="n">0.41 USD</td><td class="n">7 125</td><td>Solo 60 V: no aconsejado si puede llegar la red</td></tr>
-<tr><td>24.247.x</td><td class="n">C106273 …</td><td class="n">60 V · 24 A</td><td>rojo, negro, amarillo</td><td class="n">0.13–0.14 USD</td><td class="n">6 242</td><td>Muy baratos, pero solo 60 V</td></tr>
+<tr><td><b>24.245.1 / 24.245.2</b> (los tuyos)</td><td class="n">C7437326 / C7437327</td><td class="n">1 kV · 24 A</td><td>rojo / negro</td><td class="n">1.28 / 1.21 USD</td><td class="n">5 021 / 9 685</td><td><b>A placa, en ángulo recto, con el contacto protegido.</b> La elegida</td></tr>
+<tr><td>24.302.1 / 24.302.2</td><td class="n">C99100 / C106271</td><td class="n">1 kV · 32 A</td><td>rojo / negro</td><td class="n">0.35 / 0.39 USD</td><td class="n">1 387 / 1 572</td><td>De panel, con tuerca y lengüeta para cable: no se suelda a la placa</td></tr>
+<tr><td>24.243.x</td><td class="n">C7437321 …</td><td class="n">60 V · 24 A</td><td>rojo, negro, amarillo…</td><td class="n">0.41 USD</td><td class="n">7 125</td><td>A placa, horizontal, pero solo 60 V</td></tr>
+<tr><td>24.247.x</td><td class="n">C106273 …</td><td class="n">60 V · 24 A</td><td>rojo, negro, amarillo</td><td class="n">0.13–0.14 USD</td><td class="n">6 242</td><td>Solo 60 V</td></tr>
 </table></div>
-<p><b>Recomendación:</b> la serie <b>24.302</b>, por aislamiento de 1 kV a un tercio del precio. Los datos son de la ficha de LCSC; antes de elegir hay que mirar en sus hojas el montaje (panel o placa), si el contacto va protegido (borne con funda, para puntas de seguridad) y la rosca o la tuerca. No he leído todavía esas hojas.</p>
-
-<div class="foot">Fuentes: <code>03_simulaciones/DMM/</code> (planes, actas y auditorías S11.1–S11.3, <code>REDISENO_BLOQUE1.md</code>) y <code>ai-context/DECISIONS.md</code>, 7 oct. Página hermana: <code>01_diseno/dmm_rev21.html</code> (sección H), que se actualiza al cerrar el bloque.</div>
+<p><b>Elegidos: 24.245.1 (rojo) para V/Ω y para A, y 24.245.2 (negro) para COM.</b> Son los únicos de la lista que van soldados a la placa y además aíslan 1 kV, con el contacto protegido para puntas de seguridad. Cuestan ≈ 3.8 USD los tres. Falta leer su hoja: la huella, la separación entre bornes y la altura sobre la placa.</p>
+</div>
 </div>
