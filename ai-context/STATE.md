@@ -283,3 +283,10 @@ No se ha elegido automáticamente uno de estos frentes como nueva tarea de ingen
   - **Prototipo:** ensayo de ESD IEC 61000-4-2 y red a 230/253 Vrms.
   - **Riesgo abierto:** si una sobretensión de red ceba el GDT, el arco cortocircuita la red y la rama V/Ω no tiene fusible.
 - **7 oct, BLOQUE 1 DEL DMM CERRADO en simulación.** Keneth aceptó el GDT + varistor 14D431K. Diseño vigente en `01_diseno/dmm_bloque1.html` (v3); la sección H (v5) avisa de qué queda superado. **Siguiente: bloque 2, el frontal de tensión** (divisor de precisión, mux, OPA2188 ×1/×10 y compensación de alterna).
+- **8 oct, BLOQUE 2 DEL DMM CERRADO en simulación** (S12 → S12d). Frontal de tensión:
+  - un OPA4192 con buffers en X0 y X2;
+  - sin toma ÷10: el rango de 20 V va por ÷100 con ×10;
+  - divisor de 6 × 1.5 MΩ;
+  - 74HCT4051 y TMUX4053.
+  - Decisiones en DECISIONS; condiciones de prototipo en `AUDITORIA_CLAUDE_S12d.md`.
+  - **Siguiente: bloque 3 (ohmios).** Pendiente conocido: con 4.9 kΩ en serie, la fuente no llega a 1 mA en 200 Ω, 2 kΩ y el diodo de silicio.

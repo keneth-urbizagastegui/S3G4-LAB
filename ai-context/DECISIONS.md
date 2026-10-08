@@ -429,6 +429,26 @@ Keneth acepta lo de `03_simulaciones/DMM/AUDITORIA_CLAUDE_S12c.md`:
 - **Pendiente:** S12d, una confirmación corta (E2, E3, E5 y E8) para cerrar el bloque 2.
 - Fuente: chat del 8 oct.
 
+### 2026-10-08 — DMM bloque 2 cerrado en simulación (S12d)
+
+Según `03_simulaciones/DMM/ACTA_S12d.md` y `AUDITORIA_CLAUDE_S12d.md`, y con el criterio de Keneth de no complicar:
+- **Cumplen:** E3 (0.42 cuentas), E5 (43.6°) y E8 (0.46 mA).
+- **E2:** da 3.92 cuentas en SPICE; las 4.44 del presupuesto lineal son un margen de criterio, porque los 0.6 nA supuestos superan lo que dan las hojas (el OPA4192 tiene 20 pA de Ib máxima y el BAV199, 3 pA típicos). Frente a D5 sobra margen: ≈ 25 cuentas en la especificación garantizada y ≈ 11 en la calibrada, por la INL.
+- **Piezas del bloque 2:**
+  - 1 OPA4192 (buffer de X0, buffer de X2 y A);
+  - 74HCT4051 y una sección de TMUX4053;
+  - 6 × 1.5 MΩ, 910 kΩ y 100 kΩ (Yageo RT1206 al 0.1 %);
+  - 91 kΩ / 10 kΩ;
+  - 2 × 10 kΩ delante de los buffers;
+  - 3 × 3.3 kΩ antipulso;
+  - C0G: 3 × 100 pF de 2 kV, 330 pF de ≥ 100 V y 3 nF de ≥ 25 V.
+- **Condiciones para el prototipo:**
+  - deriva del offset de 18 a 28 °C ≤ 4 cuentas en 200 mV y 20 V (fuga ≤ 0.5 nA en X0);
+  - placa limpia o anillo de guarda en X0;
+  - escalón ×1 ↔ ×10 para comprobar la estabilidad;
+  - los MPN de impulso pendientes.
+- Fuente: chat del 8 oct.
+
 ### 2026-10-06 — D-07 aceptada, RE-01 en espera y orden: DMM → AWG → mapa de pines
 
 Keneth, 6 oct, tras cerrar CH1–CH3:
