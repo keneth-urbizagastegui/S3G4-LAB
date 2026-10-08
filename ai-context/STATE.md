@@ -277,3 +277,8 @@ No se ha elegido automáticamente uno de estos frentes como nueva tarea de ingen
   - Keneth relajó RD-10 en ohmios a 60 V, como el ELVIS (DECISIONS). En tensión y en el borne A sigue aguantando la red.
   - Borne A resuelto en simulación: GBU808 + Littelfuse 0216, al 6.6 % de su I²t.
   - **Siguiente:** S11.3, la simulación de cierre del bloque 1 con O4, la R de 100 Ω en el mux y ESD. Después, actualizar la sección H.
+- **7 oct, S11.4 auditada:** el bloque 1 queda **cerrado en simulación**, con condiciones (`03_simulaciones/DMM/AUDITORIA_CLAUDE_S11_4.md`). Lo que no se pudo demostrar:
+  - **El modelo del GDT es optimista:** ceba casi al instante. Si el real fuera lento, Rprot vería 1.26 kV durante 35 µs y el relé, 3.8 kV.
+  - **MPN:** hay que pedir resistencias antipulso (≥ 1.5 kV a 1.2/50 µs en 1206; ≥ 2 kV en 2512) y la hoja del fabricante del GDT.
+  - **Prototipo:** ensayo de ESD IEC 61000-4-2 y red a 230/253 Vrms.
+  - **Riesgo abierto:** si una sobretensión de red ceba el GDT, el arco cortocircuita la red y la rama V/Ω no tiene fusible.
