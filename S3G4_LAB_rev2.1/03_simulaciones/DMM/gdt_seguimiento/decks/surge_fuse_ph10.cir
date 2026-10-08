@@ -1,0 +1,203 @@
+* gdt_seguimiento {"kind": "surge", "chain": "fuse", "ph": 10, "tau": 1e-09}
+* Read-only dependencies sha256 354603dfe6ee88c55026190928a9fe6e3cb690282a8002a07109636fbd3e8115
+* T2_vo_v_rel0_rs2700_rx100_100_none_p0_b0_r0d98_i0_tap0_ph0_gdc420_gimp1000_esd_a4000_t5em05_off10d0_reduced
+* STATE {"amplitude": 4000, "arc": 1, "body": 0, "borne": "vo", "frequency": 60, "gdc": 420, "grid": 0.5, "idss": 0.007, "load": 0, "macro": "reduced", "mode": "v", "phase": 0, "power": 0, "q": "T2", "rail": 0.98, "relay": 0, "remove": 10.0, "ron": 700, "rx0": 100, "rx2": 1e-06, "source": 0, "step": 1e-09, "stimulus": "esd", "stop": 5e-05, "tap": 0, "temp": 25, "vp": 1.6, "zbv": 5.6}
+.param TVRD=0.25871933927061 TVKNEE=14.6997412806607 TVLEAK=5u
+.model BAT54 D(Is=.1u Rs=2.2 N=1 Cjo=12p M=.3 Eg=.69 Xti=2 Iave=300m Vpk=30 mfg=Vishay type=Schottky)
+.param RX0=100 RX2=1e-06
+.param RSER=2700 POWER=0 RAIL=0.98 BODYCASE=0 TAP=0 ISOURCE=0 ARC=1 IDSS=0.007 VP=1.6 RON=700 TC=25 RLIM=700 ZBV=5.6
+* S11.4 final, S11.3 dependencies read-only.
+* Rprot: FOJAN FPS1206J333 33k 0.5W, 200V catalog (no local sheet).
+* Rohm: Milliohm HoCR2512 1.1k 2W, 250V catalog (no local sheet).
+* Cc: CCTC TCC1206COG101J202FT 100p C0G 2kV (no local sheet).
+* GDT SMD4532-600NF: catalog DC600V +/-30%, impulse1000V@100V/us,
+* 0.5pF. All catalog data assumed until a local manufacturer sheet exists.
+* DC corner GDC; GIMP shared by both corners (no impulse tolerance given).
+* Linear slope interpolation capped above100V/us is assumed, NOT guaranteed.
+* Arc20V plus1ohm, holding10mA, turn-on/off1ns are unverified assumptions.
+* State integrates toward1 when threshold crossed or ignition sustained,
+* decays toward0 below GHOLD. No damage, thermal or stochastic delay model.
+* S11.1 contractual topology. Includes manufacturer models in generated decks.
+* O4 has no PTC and no BSS126; no destructive or thermal failure is modeled.
+.model RELAY SW(Ron=.1 Roff=1e12 Vt=.5 Vh=0)
+.model FUSE_SW SW(Ron=.04 Roff=1e12 Vt=0 Vh=.001)
+.model BSS84 VDMOS(pchan Rg=3 Vto=-2.1 Rd=2.4 Rs=1.8 Rb=3 Kp=.2 Cgdmax=.04n Cgdmin=.001n Cgs=.02n Cjo=.01n Is=2p ksubthres=.1)
+* GBU808 fit to 1.0 V at 4 A per diode, local DS21227 p2; Rs15m is assumed.
+.model GBU808 D(Is=4.543761543852662e-08 N=2 Rs=.015 Cjo=130p BV=800 Ibv=5u)
+.model BODY D(Is=1n N=1 Rs=.1)
+.model REGSUP D(Ron=1u Roff=1e18 Vfwd=0)
+.model BAV199 D(IS=805.84E-18 N=1.0246 RS=.05 IKF=362.16E-6 CJO=1.9002E-12 M=.35193 VJ=1.2722 ISR=298.95E-15 BV=113.30 IBV=10 TT=1.0230E-6)
+Rprot1 vin p1 33k
+Rprot2 p1 p2 33k
+Rprot3 p2 x0 33k
+D0p x0 rp BAV199
+D0n rn x0 BAV199
+Rdiv1 vin d1 3Meg
+Rdiv2 d1 d2 3Meg
+Rdiv3 d2 x1 3Meg
+Rc1 vin c1 3.3k
+Cc1 c1 d1 100p
+Rc2 d1 c2 3.3k
+Cc2 c2 d2 100p
+Rc3 d2 c3 3.3k
+Cc3 c3 x1 100p
+Rdiv4 x1 x2 900k
+Cdiv4 x1 x2 330p
+Rdiv5 x2 0 100k
+Cdiv5 x2 0 3n
+D1p x1 rp BAV199
+D1n rn x1 BAV199
+Srelay vin ptin rc 0 RELAY
+Coff vin ptin 1p
+* TVS linear avalanche through VBRmax/IT and VCmax/IPP, p3.
+Rs n1 n2 {RSER}
+D2p n2 rp BAV199
+D2n rn n2 BAV199
+* P43 pass MOS source 0.5 V below rail; feedback forces current only when compliant.
+Bfctl fc 0 V=6.7*ARC-V(qfus)-.001
+Cqfus qfus 0 1 IC=0
+Bqfus 0 qfus I=I(Vfs)**2
+Vfs ain af 0
+Sfuse af shunt fc 0 FUSE_SW
+Rshunt shunt 0 .1
+Dbr1 shunt bridge GBU808
+Dbr2 0 bridge GBU808
+Dbr3 bridge shunt GBU808
+Dbr4 bridge 0 GBU808
+Rwarn ain x5 10Meg
+D5p x5 rp BAV199
+D5n rn x5 BAV199
+* Local rails: one-way source, external typical load plus macro consumption.
+Vregp regp 0 {4.9*RAIL}
+Vregn regn 0 {-4.9*RAIL}
+Rdeliverp regp regpf .5
+Rdelivern regnf regn .5
+Dregp regpf preg REGSUP
+Dregn nreg regnf REGSUP
+Rloadswp preg rp {if(POWER==1,1u,1e18)}
+Rloadswn rn nreg {if(POWER==1,1u,1e18)}
+Crp rp 0 1u
+Crn rn 0 1u
+* Principal rails use the CH1 acta loads 42/39 mA, not ideal sinks.
+Dmainp regp mainp REGSUP
+Dmainn mainn regn REGSUP
+Rmainp mainp 0 {4.9/.042}
+Rmainn mainn 0 {4.9/.039}
+Cmp mainp 0 10u
+Cmn mainn 0 10u
+* BODYCASE=0 uses an open switch in series with each diode.
+Vbody bc 0 {BODYCASE}
+Sbp rp bpp bc 0 RELAY
+Dbp bpp mainp BODY
+Sbn bnn rn bc 0 RELAY
+Dbn mainn bnn BODY
+Rx0 x0 hx0 100
+Rx1 x1 hx1 100
+* RX2 absent: X2 wired directly to the mux.
+Rb shunt bin 10k
+* Channel6 removed from N2; spare grounded.
+* Macro supply voltages buffered: the contractual 3mA load already includes ICs.
+* Manufacturer transfer model has a voltage interface; physical input ESD and
+* capacitances exposed separately. Avoid assigning ALL input displacement
+* current to a supply rail. This wrapper is an approximation, explicitly audited.
+Rohm1 ptin ohmid 1.1k
+Rohm2 ohmid n1 1.1k
+* SMAJ12CA pp2-3; S11.1 linear avalanche and leakage approximation.
+Btvs n1 0 I={V(n1)*TVLEAK/12+sgn(V(n1))*max(abs(V(n1))-TVKNEE,0)/TVRD}
+* BZT52C5V6 approximate sink, no local sheet found: 5.6V at5mA, Rd40ohm.
+.model Z56 D(Is=1n N=1.5 BV={ZBV} Ibv=5m Rs=40 Cjo=100p)
+Dzp 0 rp Z56
+Dzn rn 0 Z56
+* Reduced electrical exposure model, NOT transfer, recovery or failure model.
+* OPA2188 SBOS525C p4: rail +/-0.5V, +/-10mA absolute; p5 9.5p common/6p diff;
+* p6 415uA/channel. Two channels consume 830uA at 9.8V.
+* TLV2372 SLOS270F p8: rail +/-0.2V, +/-10mA; p11 8p common;
+* p13 550uA/channel at 5V (750uA at 15V): 550uA assumption at 9.8V.
+* HC4051 Rev12 p5: +/-20mA clamp, 25mA switch; p9 16uA max at 10V/25C;
+* p10: Yn 5p, Z 25p; p1: Ron 60 ohm typical at 9V.
+* Clamp Ron=1ohm is an unverified IV approximation; current is NOT capped.
+.model ICOPA D(Ron=1 Roff=1T Vfwd=.5)
+.model ICTLV D(Ron=1 Roff=1T Vfwd=.2)
+.model ICHC D(Ron=1 Roff=1T Vfwd=.5)
+.subckt PINOPA a rp rn
+Dhi a rp ICOPA
+Dlo rn a ICOPA
+Cin a 0 9.5p
+.ends
+.subckt PINTLV a rp rn
+Dhi a rp ICTLV
+Dlo rn a ICTLV
+Cin a 0 8p
+.ends
+.subckt PINHC a rp rn
+Dhi a rp ICHC
+Dlo rn a ICHC
+Cin a 0 5p
+.ends
+Xh0 hx0 rp rn PINHC
+Xh1 hx1 rp rn PINHC
+Xh2 x2 rp rn PINHC
+Xh3 0 rp rn PINHC
+Xh4 bin rp rn PINHC
+Xh5 x5 rp rn PINHC
+Xh6 0 rp rn PINHC
+Xh7 0 rp rn PINHC
+Xhz mux rp rn PINHC
+Chz mux 0 20p
+Vamp mux ampin 0
+Xopi ampin rp rn PINOPA
+Xopn out rp rn PINOPA
+Copdiff ampin out 6p
+* No amplifier transfer in reduced model: second follower input tied to first.
+Rfeedback ampin out 1u
+Riqopa rp rn {9.8/(2*415u)}
+Riqtlv rp rn {9.8/(2*550u)}
+Riqhc rp rn {9.8/16u}
+* Residual load preserves total contractual 3mA, without double counting ICs.
+* External residual load disconnected when off.
+* P43 retained as abstract compliant current source (not a feedback macro).
+Vhead rp ms {.5*POWER*if(ISOURCE>0,1,0)}
+Vsense ms msource 0
+Bsource msource bp I={ISOURCE*limit(V(msource,n2)/.1,0,1)*POWER}
+* TLV feedback input at source side; reference is tied here because actual
+* sense resistor/reference topology is outside block 1. Does not certify TLV loop.
+Xtlvi ms rp rn PINTLV
+Xtlvn msource rp rn PINTLV
+* BSS84 DS30149 p2: Vds -50V, Vgs +/-20V, Id -130mA, pulse -1.2A;
+* Ciss 24.6p, Coss 4.7p, Crss 2.8p typical. Gate has NO specified rail diodes:
+* do not invent them. Intrinsic PMOS body diode drains to source, no gate load.
+Cmosgs ms msource 21.8p
+Cmosgd ms bp 2.8p
+Cmosds bp msource 1.9p
+Dmosbody bp msource BODY
+* No fictitious 130mA limit or gate clamp; evaluate stress externally.
+
+Dblk bp n2 BAT54
+
+Rselected hx0 mux 60
+
+.temp 25
+Brc rc 0 V=0
+.param GDC=420 GIMP=1000 GHOLD=.01 GARC=20 GRON=1 GTAU=1e-09
+Cgdt ga 0 .5p
+Cgstate gstate 0 1n IC=0
+Rgstate gstate 0 1T
+Bgthreshold gthreshold 0 V={GDC+(GIMP-GDC)*limit(abs(ddt(V(ga)))/100Meg,0,1)}
+Bgstate 0 gstate I={1n/GTAU*if(abs(V(ga))>=V(gthreshold),1-V(gstate),if(V(gstate)>1u,if(abs(I(Bgdt))>=GHOLD,1-V(gstate),-V(gstate)),-V(gstate)))}
+Bgdt ga 0 I={limit(V(gstate),0,1)*sgn(V(ga))*max(abs(V(ga))-GARC,0)/GRON}
+Rgleak ga 0 1G
+.model FUSE_SW2 SW(Ron=1m Roff=1e12 Vt=0 Vh=.001)
+Vgf vin gf0 0
+Rfuse gf0 gf 6
+Sfz gf ga fc2 0 FUSE_SW2
+Bfc2 fc2 0 V=(0.00064-V(qf2))*10000
+Cqf2 qf2 0 1 IC=0
+Bqf2 0 qf2 I=I(Vgf)**2
+Bstim gen 0 V=325.269*sin(2*pi*60*time)+if(time>0.000462963,978.428*(exp(-(time-0.000462963)/68u)-exp(-(time-0.000462963)/.4u)),0)
+Rsrc gen vin 0.7
+Rother ain 0 1G
+.options plotwinsize=0 numdgt=15 reltol=.003 abstol=1p solver=alt method=gear threads=1
+.ic V(rp)=0.0 V(rn)=-0.0 V(qfus)=0
+.save V(vin) V(ga) V(ptin) V(p1) V(p2) V(x0) V(x1) V(x2) V(gen) V(gstate) V(qf2) I(Rx0) I(Rx1) I(Bgdt) I(Dm1) I(Dm2) I(Rser) I(Vgf) I(Rfuse) I(Rsrc) I(Rprot1)
+.tran 0 0.025 0 1e-7
+.end
