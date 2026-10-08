@@ -1,0 +1,7 @@
+buf2= False H tal cual: X1 -4.58 %  X2 -6.81 %
+  optimo C2=313.4 pF C3=2.772 nF con 270/2.7: [12.44  0.57] con 300/2.7 (E24): [3.68 2.01]
+buf2= True H tal cual: X1 -4.58 %  X2 -5.70 %
+  optimo C2=313.0 pF C3=2.808 nF con 270/2.7: [12.44  1.91] con 300/2.7 (E24): [3.68 3.37]
+X0 con buffer, error %: [-0.   -0.   -0.33 -1.29]
+X1 sin buffer +5 pF en el nodo ÷10: 1.54 % -> 0.01 %
+X1 con buffer +5 pF en el nodo ÷10: 14.23 % -> 12.29 %

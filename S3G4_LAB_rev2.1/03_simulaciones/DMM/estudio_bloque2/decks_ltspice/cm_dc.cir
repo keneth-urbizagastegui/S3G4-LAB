@@ -1,0 +1,23 @@
+* Bloque 2 - OPA2188 en ohmios con las puntas al aire: V(X0) hasta ~4.1 V (compliancia de O4) con rieles +-4.9 V
+.include "C:\Users\Keneth\Desktop\S3G4 LAB\Simulation_LTSpice\models\OPA2188\OPAx188.LIB"
+.param Gain=1
+Vcc vcc 0 4.9
+Vee vee 0 -4.9
+Vin in 0 0
+Rp in inp 99k
+XU1 inp inv vcc vee out OPAx188
+Rf out inv {9k*(Gain>1)+1m*(Gain<=1)}
+Rg inv 0 {1k*(Gain>1)+1G*(Gain<=1)}
+Rl out 0 10k
+.step param Gain list 1 10
+.dc Vin 0 4.6 0.05
+.meas dc o2 find v(out) at 2
+.meas dc o30 find v(out) at 3.0
+.meas dc o34 find v(out) at 3.4
+.meas dc o36 find v(out) at 3.6
+.meas dc o40 find v(out) at 4.0
+.meas dc o42 find v(out) at 4.2
+.meas dc o45 find v(out) at 4.5
+.meas dc ib30 find i(Rp) at 3.0
+.meas dc ib40 find i(Rp) at 4.0
+.end

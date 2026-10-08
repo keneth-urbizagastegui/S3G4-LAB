@@ -1,0 +1,6 @@
+Capacidades: pre = BAV199 4 + Yn 5 + pcb 3 ;  com = Z 25 + pcb 3 + OPA2188 9.5
+A  H: 74HC4051 + OPA2188: Ctot~49.5 pF  20 kHz: -14.88 %  10 kHz: -4.44 %  1 pF extra en el nodo: -0.473 %
+B  TMUX4051 (Con=3 pF de LCSC) + OPA2188 [supuesto: Z=3, Yn=3]: Ctot~25.5 pF  20 kHz: -4.69 %  10 kHz: -1.24 %  1 pF extra en el nodo: -0.347 %
+B2 TMUX4051 con Con=11 pF (variante DYY) [supuesto Z=11]: Ctot~33.5 pF  20 kHz: -7.71 %  10 kHz: -2.11 %  1 pF extra en el nodo: -0.411 %
+C  buffer antes del mux (OPA192, Cin 5 pF [supuesto]) sin BAV199 aparte: C=12.0 pF fp=134 kHz  20 kHz: -1.10 %   sens -0
+     sensibilidad -0.187 %/pF

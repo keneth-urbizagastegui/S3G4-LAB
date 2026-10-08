@@ -1,0 +1,37 @@
+* Bloque 2 - divisor compensado (bloque 1) + cargas del mux + OPA2188 buffer x1. sel=1: X1 (÷10), sel=2: X2 (÷100)
+.include "C:\Users\Keneth\Desktop\S3G4 LAB\Simulation_LTSpice\models\OPA2188\OPAx188.LIB"
+.param sel=1 C2v=330p C3v=3.0n Ctv=100p Cbav=4p Cy=5p Cpcb=3p Ccom=28p
+Vcc vcc 0 4.9
+Vee vee 0 -4.9
+Vin in 0 AC 1
+* tres secciones de 3M con 100p+3k3 en paralelo
+Rt1 in a 3Meg
+Ct1 in ma {Ctv}
+Rd1 ma a 3.3k
+Rt2 a b 3Meg
+Ct2 a mb {Ctv}
+Rd2 mb b 3.3k
+Rt3 b t1 3Meg
+Ct3 b mc {Ctv}
+Rd3 mc t1 3.3k
+R2 t1 t2 900k
+C2 t1 t2 {C2v}
+R3 t2 0 100k
+C3 t2 0 {C3v}
+* cargas
+Cp1 t1 0 {Cbav+Cy+Cpcb}
+Cp2 t2 0 {Cy+Cpcb}
+Rsw1 t1 com {200 + 1G*(sel!=1)}
+Rsw2 t2 com {100 + 1G*(sel!=2)}
+Ccom com 0 {Ccom}
+XU1 com out vcc vee out OPAx188
+.step param sel list 1 2
+.ac dec 40 10 300k
+.meas ac g40 find mag(v(out)) at 40
+.meas ac g100 find mag(v(out)) at 100
+.meas ac g300 find mag(v(out)) at 300
+.meas ac g1k find mag(v(out)) at 1k
+.meas ac g3k find mag(v(out)) at 3k
+.meas ac g10k find mag(v(out)) at 10k
+.meas ac g20k find mag(v(out)) at 20k
+.end

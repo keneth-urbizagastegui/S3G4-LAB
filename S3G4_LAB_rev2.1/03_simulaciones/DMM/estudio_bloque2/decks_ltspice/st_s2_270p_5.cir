@@ -1,0 +1,31 @@
+* asiento del autocero sel=2 C2=270p C3=2.7n Qinj=5e-12 Ccom=37.5p
+.param Vin=50
+Vin in 0 50
+Rp in x0p 99k
+Cx0 x0p 0 12p
+Rt1 in a 3Meg
+Ct1 in ma 100p
+Rd1 ma a 3.3k
+Rt2 a b 3Meg
+Ct2 a mb 100p
+Rd2 mb b 3.3k
+Rt3 b t1 3Meg
+Ct3 b mc 100p
+Rd3 mc t1 3.3k
+R2 t1 t2 900k
+C2 t1 t2 270p
+R3 t2 0 100k
+C3 t2 0 2.7n
+Cp1 t1 0 12p
+Cp2 t2 0 8p
+Vc ctl 0 PULSE(0 1 20u 10n 10n 1 2)
+.model SW SW(Ron=100 Roff=1G Vt=0.5 Vh=0.1)
+S2 t2 com ctl 0 SW
+Ccom com 0 37.5p
+Iq 0 com PULSE(0 0.0005 20u 1n 1n 10n 2)
+.ic V(com)=0
+.tran 0 15m 0 1u
+.meas tran tset WHEN abs(v(com)-0.5)=5e-05 FALL=LAST
+.meas tran vmin0 MIN v(com) from 20u to 40u
+.meas tran dv0 FIND v(com) at 20.5u
+.end

@@ -1,0 +1,17 @@
+* Bloque 2 - OPA2188 solo: respuesta en lazo cerrado x1 y x10 (Rf/Rg 9k/1k), entrada directa
+.include "C:\Users\Keneth\Desktop\S3G4 LAB\Simulation_LTSpice\models\OPA2188\OPAx188.LIB"
+.param Gain=1
+Vcc vcc 0 4.9
+Vee vee 0 -4.9
+Vin in 0 AC 1
+XU1 in inv vcc vee out OPAx188
+Rf out inv {9k*(Gain>1)+1m*(Gain<=1)}
+Rg inv 0 {1k*(Gain>1)+1G*(Gain<=1)}
+.step param Gain list 1 10
+.ac dec 40 10 3Meg
+.meas ac g20k find mag(v(out)) at 20k
+.meas ac g50k find mag(v(out)) at 50k
+.meas ac g100k find mag(v(out)) at 100k
+.meas ac g200k find mag(v(out)) at 200k
+.meas ac g1M find mag(v(out)) at 1Meg
+.end

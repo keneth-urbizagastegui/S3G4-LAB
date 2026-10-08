@@ -1,0 +1,5 @@
+H_x1: Vo(0 V) sin fuga -139.9 uV, con 1 nA +760.1 uV (delta +900.0 uV); ganancia sin fuga 1.00000, con 1 nA 1.00000
+H_x10: Vo(0 V) sin fuga -102.6 uV, con 1 nA -102.6 uV (delta +0.0 uV); ganancia sin fuga 9.99101, con 1 nA 9.99101
+S_x1: Vo(0 V) sin fuga +4.1 uV, con 1 nA +4.1 uV (delta +0.0 uV); ganancia sin fuga 1.00000, con 1 nA 1.00000
+S_x10: Vo(0 V) sin fuga -102.7 uV, con 1 nA +798.3 uV (delta +901.0 uV); ganancia sin fuga 10.00000, con 1 nA 10.00000
+S2_x10: Vo(0 V) sin fuga +26.9 uV, con 1 nA +117.9 uV (delta +91.0 uV); ganancia sin fuga 10.00000, con 1 nA 10.00000

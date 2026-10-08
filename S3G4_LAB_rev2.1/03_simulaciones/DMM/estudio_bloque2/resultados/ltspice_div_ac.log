@@ -1,0 +1,55 @@
+LTspice 26.0.2 for Windows
+Circuit: C:\b2\w\div_ac.cir
+Start Time: Wed Oct  7 23:57:55 2026
+
+.step sel=1
+solver = Normal
+Maximum thread count: 12
+tnom = 27
+temp = 27
+method = trap
+Direct Newton iteration succeeded in finding operating point.
+
+.step sel=2
+Direct Newton iteration succeeded in finding operating point.
+Total elapsed time: 0.253 seconds.
+
+Files loaded:
+C:\b2\w\div_ac.cir
+C:\Users\Keneth\Desktop\S3G4 LAB\Simulation_LTSpice\models\OPA2188\OPAx188.LIB
+
+
+Measurement: g40
+  step	mag(v(out)) 	at
+     1	(-20.0136615349dB,0°)	40
+     2	(-40.0018195686dB,0°)	40
+
+Measurement: g100
+  step	mag(v(out)) 	at
+     1	(-20.0504293857dB,0°)	100
+     2	(-40.0146184207dB,0°)	100
+
+Measurement: g300
+  step	mag(v(out)) 	at
+     1	(-20.3081886358dB,0°)	300
+     2	(-40.1070850167dB,0°)	300
+
+Measurement: g1k
+  step	mag(v(out)) 	at
+     1	(-20.9107105657dB,0°)	1000
+     2	(-40.3429918755dB,0°)	1000
+
+Measurement: g3k
+  step	mag(v(out)) 	at
+     1	(-21.1040392688dB,0°)	3000
+     2	(-40.4250106793dB,0°)	3000
+
+Measurement: g10k
+  step	mag(v(out)) 	at
+     1	(-21.1329056633dB,0°)	10000
+     2	(-40.4383243634dB,0°)	10000
+
+Measurement: g20k
+  step	mag(v(out)) 	at
+     1	(-21.1398510096dB,0°)	20000
+     2	(-40.4439902432dB,0°)	20000

@@ -1,0 +1,13 @@
+* ganancia x1/x10, modo S_x10
+.include "C:/Users/Keneth/Desktop/S3G4 LAB/Simulation_LTSpice/models/OPA2188/OPAx188.LIB"
+Vcc vcc 0 4.9
+Vee vee 0 -4.9
+Vin in 0 0.2
+XU1 in inv vcc vee out OPAx188
+Rf out tap 900k
+Rg tap 0 100k
+RB inv tap 100
+Ilk inv 0 1e-09
+.op
+.meas op vo find v(out) at 0
+.end

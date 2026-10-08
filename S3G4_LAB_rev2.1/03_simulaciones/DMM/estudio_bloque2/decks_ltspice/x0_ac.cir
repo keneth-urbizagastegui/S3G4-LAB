@@ -1,0 +1,23 @@
+* Bloque 2 - camino X0 con OPA2188 (modelo TI): R_PROT 99k + BAV199 + 100R + Ron + COM 4051 + OPA2188 x1 o x10
+.include "C:\Users\Keneth\Desktop\S3G4 LAB\Simulation_LTSpice\models\OPA2188\OPAx188.LIB"
+.param Gain=1 Cpre=12p Ccom=28p
+Vcc vcc 0 4.9
+Vee vee 0 -4.9
+Vin in 0 AC 1
+Rp in x0p 99k
+Cpre x0p 0 {Cpre}
+Rs x0p x0m 100
+Ron x0m com 100
+Ccom com 0 {Ccom}
+XU1 com inv vcc vee out OPAx188
+Rf out inv {9k*(Gain>1)+1m*(Gain<=1)}
+Rg inv 0 {1k*(Gain>1)+1G*(Gain<=1)}
+.step param Gain list 1 10
+.ac dec 40 10 300k
+.meas ac g40 find mag(v(out)) at 40
+.meas ac g1k find mag(v(out)) at 1k
+.meas ac g5k find mag(v(out)) at 5k
+.meas ac g10k find mag(v(out)) at 10k
+.meas ac g20k find mag(v(out)) at 20k
+.meas ac g50k find mag(v(out)) at 50k
+.end
