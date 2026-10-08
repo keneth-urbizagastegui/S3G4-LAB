@@ -389,6 +389,19 @@ Keneth aprueba las recomendaciones de `03_simulaciones/DMM/ESTUDIO_BLOQUE2.md`:
 - **Pendiente para el bloque 3:** con 4.9 kΩ en serie en el camino de ohmios del bloque 1, la fuente no llega a 1 mA en 200 Ω, 2 kΩ y el diodo de silicio.
 - Fuente: chat del 8 oct.
 
+### 2026-10-08 — DMM bloque 2: buffer antes del mux y criterios tras la auditoría de S12
+
+Keneth, tras `03_simulaciones/DMM/AUDITORIA_CLAUDE_S12.md`:
+- **E3 → opción A: un OPA2192 doble como seguidor en X0 y X1, antes del 74HCT4051.** El mux deja de ver tensiones fuera de ±4.9 V (con 20/50 V, X0 llegaba a 5.3–5.6 V y X1 a 5.04 V). También mejora la fuga, la planitud en alterna y el asiento del autocero. Coste: +1.09 USD.
+- **E5:** se acepta un margen de fase ≥ 40° en el peor caso con el TMUX4053 (49° típico); se comprueba con un escalón en el prototipo.
+- **E6:**
+  - criterio de impulso, en lugar de la sobrecarga de 5 s, para las resistencias del divisor en la ESD;
+  - las 3 × 3.3 kΩ de la compensación pasan a ser antipulso (ven ≈ 1115 V);
+  - ESD en el prototipo, midiendo la deriva del divisor.
+- **E2:** fuga en COM y X0 ≤ 0.85 nA a 23 °C, medida en el prototipo.
+- **Pendiente:** S12b, la confirmación del bloque 2 con el buffer.
+- Fuente: chat del 8 oct.
+
 ### 2026-10-06 — D-07 aceptada, RE-01 en espera y orden: DMM → AWG → mapa de pines
 
 Keneth, 6 oct, tras cerrar CH1–CH3:
