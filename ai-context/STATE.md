@@ -282,3 +282,4 @@ No se ha elegido automáticamente uno de estos frentes como nueva tarea de ingen
   - **MPN:** hay que pedir resistencias antipulso (≥ 1.5 kV a 1.2/50 µs en 1206; ≥ 2 kV en 2512) y la hoja del fabricante del GDT.
   - **Prototipo:** ensayo de ESD IEC 61000-4-2 y red a 230/253 Vrms.
   - **Riesgo abierto:** si una sobretensión de red ceba el GDT, el arco cortocircuita la red y la rama V/Ω no tiene fusible.
+- **7 oct, BLOQUE 1 DEL DMM CERRADO en simulación.** Keneth aceptó el GDT + varistor 14D431K. Diseño vigente en `01_diseno/dmm_bloque1.html` (v3); la sección H (v5) avisa de qué queda superado. **Siguiente: bloque 2, el frontal de tensión** (divisor de precisión, mux, OPA2188 ×1/×10 y compensación de alterna).

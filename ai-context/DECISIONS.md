@@ -362,6 +362,20 @@ Keneth eligió A + B para la ESD de ±4 kV en V/Ω (≈ 1.27 kV en las 1206 y �
 - **Pendiente:** la confirmación corta con Codex (ESD con el GDT, RX0 y el BAT54; los nueve R7 con 900 s).
 - Fuente: chat del 7 oct.
 
+### 2026-10-07 — DMM bloque 1 cerrado: GDT + varistor en serie
+
+Keneth, 7 oct, tras `03_simulaciones/DMM/GDT_SEGUIMIENTO.md`:
+- **Rama de ESD entre V/Ω y COM:** GDT hongjiacheng SMD4532-600NF (C47345384) **en serie con el varistor 14D431K** (C49069732, disco de 14 mm, 275 Vac). El varistor corta el arco de seguimiento de la red en 0.05–0.09 ms. Se descarta la R en serie (opción 1), porque no corta el arco.
+- **Se aceptan:**
+  - el GDT al 85 % de su cebado mínimo con 253 Vrms (77 % con 230 Vrms);
+  - que una sobretensión sostenida no tenga fusible en esa rama;
+  - el espacio del disco en la placa.
+- **Con esto el bloque 1 queda cerrado en simulación** (S11.1–S11.4 y el estudio del GDT). Condiciones para los MPN y el prototipo en `AUDITORIA_CLAUDE_S11_4.md`:
+  - resistencias antipulso;
+  - la hoja del fabricante del GDT;
+  - el ensayo IEC 61000-4-2 y la red a 230/253 Vrms.
+- Fuente: chat del 7 oct.
+
 ### 2026-10-06 — D-07 aceptada, RE-01 en espera y orden: DMM → AWG → mapa de pines
 
 Keneth, 6 oct, tras cerrar CH1–CH3:

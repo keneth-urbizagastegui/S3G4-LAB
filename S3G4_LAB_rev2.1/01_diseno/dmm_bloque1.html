@@ -51,10 +51,10 @@ code{font:.9em var(--mono);color:var(--accent)}
 <header class="top">
   <div><div class="brand">S3G4 LAB · rev 2.1 · DMM · bloque 1</div>
   <h1>Bornes y protección</h1></div>
-  <div class="docid">Esbozo · 7 oct 2026 · Claude Code<br>Decisiones del 7 oct (O4, GBU808, Littelfuse 0216)<br>Simulación de cierre S11.3: en curso</div>
+  <div class="docid">Esbozo · 7 oct 2026 · Claude Code<br>Decisiones del 7 oct (O4, GBU808, Littelfuse 0216)<br>Bloque cerrado en simulación (S11.1–S11.4)</div>
 </header>
 
-<p class="warn"><b>Esbozo, no esquema final.</b> Resume las decisiones tomadas tras S11.1 y S11.2. Las piezas se confirman con la simulación de cierre S11.3, que está corriendo; si cambia algo, esta página se actualiza. Luego se dibuja en KiCad.</p>
+<p class="warn"><b>Bloque cerrado en simulación</b> (S11.1–S11.4, auditadas). Antes de fabricar quedan dos cosas: elegir las referencias definitivas de las resistencias antipulso (≥ 1.5 kV a 1.2/50 µs en 1206; ≥ 2 kV en 2512) y la hoja del fabricante del GDT. En el prototipo se ensaya la ESD (IEC 61000-4-2) y la red a 230/253 Vrms. Después se dibuja en KiCad.</p>
 
 <h2>Qué aguanta cada borne</h2>
 <div class="tw"><table>
@@ -79,15 +79,16 @@ code{font:.9em var(--mono);color:var(--accent)}
   <rect x="90" y="54" width="150" height="32" class="bv"/><text x="165" y="68" text-anchor="middle" font-size="12" font-weight="600">R_PROT 3 × 33 kΩ</text><text x="165" y="81" text-anchor="middle" font-size="10.5" class="mut m">1206</text>
   <path class="w" d="M240 70H330"/>
   <text x="285" y="62" text-anchor="middle" font-size="10.5" class="mut">BAV199 a ±4.9 V</text>
-  <rect x="330" y="54" width="110" height="32" class="bv"/><text x="385" y="74" text-anchor="middle" font-size="12" font-weight="600">→ X0 del mux</text>
+  <rect x="330" y="54" width="110" height="32" class="bv"/><text x="385" y="74" text-anchor="middle" font-size="12" font-weight="600">100 Ω → X0</text>
   <path class="w" d="M60 70V120H90"/>
+  <path class="w" d="M75 70V36H600"/><rect x="600" y="22" width="230" height="28" class="bv"/><text x="715" y="41" text-anchor="middle" font-size="11.5">GDT 600 V + varistor 14D431K → COM</text>
   <rect x="90" y="104" width="240" height="96" class="bv"/>
   <text x="210" y="122" text-anchor="middle" font-size="12" font-weight="600">Divisor 10 MΩ, 0.1 %</text>
   <text x="104" y="142" font-size="11" class="m">3 × 3.00 MΩ ∥ (100 pF C0G 630 V + 3.3 kΩ)</text>
   <text x="104" y="162" font-size="11" class="m">900 kΩ ∥ 330 pF C0G</text>
   <text x="104" y="182" font-size="11" class="m">100 kΩ ∥ 3.0 nF C0G → COM</text>
   <path class="w" d="M330 152H420"/><text x="372" y="146" text-anchor="middle" font-size="10.5" class="mut">÷10 · BAV199</text>
-  <rect x="420" y="138" width="130" height="28" class="bv"/><text x="485" y="157" text-anchor="middle" font-size="11.5">100 Ω → X1 (nuevo)</text>
+  <rect x="420" y="138" width="130" height="28" class="bv"/><text x="485" y="157" text-anchor="middle" font-size="11.5">100 Ω → X1</text>
   <path class="w" d="M330 186H420"/><text x="372" y="180" text-anchor="middle" font-size="10.5" class="mut">÷100</text>
   <rect x="420" y="172" width="130" height="28" class="bv"/><text x="485" y="191" text-anchor="middle" font-size="11.5">→ X2</text>
   <!-- ohmios -->
@@ -98,11 +99,11 @@ code{font:.9em var(--mono);color:var(--accent)}
   <rect x="240" y="254" width="130" height="32" class="bo"/><text x="305" y="268" text-anchor="middle" font-size="12" font-weight="600">2 × 1.1 kΩ</text><text x="305" y="281" text-anchor="middle" font-size="10.5" class="mut m">2512</text>
   <path class="w" d="M370 270H470"/>
   <path class="w" d="M420 270V305"/><rect x="380" y="305" width="80" height="26" class="bo"/><text x="420" y="322" text-anchor="middle" font-size="11">SMAJ12CA</text><path class="w" d="M420 331V350"/><text x="420" y="364" text-anchor="middle" font-size="10.5" class="mut">COM</text>
-  <rect x="470" y="254" width="100" height="32" class="bo"/><text x="520" y="274" text-anchor="middle" font-size="12" font-weight="600">R_S 3.3 kΩ</text>
+  <rect x="470" y="254" width="100" height="32" class="bo"/><text x="520" y="274" text-anchor="middle" font-size="12" font-weight="600">R_S 2.7 kΩ</text>
   <path class="w" d="M570 270H600"/>
   <rect x="600" y="248" width="170" height="44" class="bo"/><text x="685" y="265" text-anchor="middle" font-size="11.5" font-weight="600">BAV199 a ±4.9 V</text><text x="685" y="280" text-anchor="middle" font-size="10.5" class="mut">+ zéner 5.6 V de sumidero</text>
   <path class="w" d="M770 270H800"/>
-  <rect x="800" y="248" width="150" height="44" class="bo"/><text x="875" y="265" text-anchor="middle" font-size="11.5" font-weight="600">Diodo de bloqueo</text><text x="875" y="280" text-anchor="middle" font-size="10.5" class="mut">→ fuente P43 (bloque 3)</text>
+  <rect x="800" y="248" width="150" height="44" class="bo"/><text x="875" y="265" text-anchor="middle" font-size="11.5" font-weight="600">BAT54 de bloqueo</text><text x="875" y="280" text-anchor="middle" font-size="10.5" class="mut">→ fuente P43 (bloque 3)</text>
   <!-- corriente -->
   <text x="80" y="398" font-size="12" font-weight="600" class="ta">CORRIENTE</text>
   <path class="w" d="M41 420H90"/>
@@ -121,20 +122,21 @@ code{font:.9em var(--mono);color:var(--accent)}
 <h2>Lista de piezas del bloque 1</h2>
 <div class="tw"><table>
 <tr><th>Camino</th><th>Pieza</th><th>Valor</th><th>LCSC</th><th>Estado</th></tr>
-<tr><td><span class="tag v">V</span></td><td>R_PROT</td><td class="n">3 × 33 kΩ 1206</td><td class="n">—</td><td><span class="tag ok">S11.1</span></td></tr>
+<tr><td><span class="tag v">V</span></td><td>R_PROT</td><td class="n">3 × 33 kΩ 1206 0.5 W antipulso</td><td class="n">C55348469 (provisional)</td><td><span class="tag ok">S11.4</span></td></tr>
 <tr><td><span class="tag v">V</span></td><td>Divisor</td><td class="n">3 × 3.00 MΩ, 900 kΩ, 100 kΩ · 0.1 %</td><td class="n">—</td><td><span class="tag ok">S11.1</span></td></tr>
-<tr><td><span class="tag v">V</span></td><td>Compensación C0G</td><td class="n">3 × 100 pF 630 V (+3.3 kΩ), 330 pF, 3.0 nF</td><td class="n">—</td><td><span class="tag ok">S11.1</span></td></tr>
+<tr><td><span class="tag v">V</span></td><td>Compensación C0G</td><td class="n">3 × 100 pF 2 kV (+3.3 kΩ), 330 pF, 3.0 nF</td><td class="n">C7393967</td><td><span class="tag ok">S11.4</span></td></tr>
 <tr><td><span class="tag v">V</span></td><td>Sujeciones X0 y ÷10</td><td class="n">BAV199</td><td class="n">—</td><td><span class="tag ok">S11.1</span></td></tr>
-<tr><td><span class="tag v">V</span></td><td>R en X1 (y X0/X2 si hace falta)</td><td class="n">100 Ω</td><td class="n">—</td><td><span class="tag p">S11.3</span></td></tr>
-<tr><td><span class="tag o">Ω</span></td><td>Relé</td><td class="n">TQ2SA-5V-Z</td><td class="n">C22686</td><td><span class="tag p">S11.3</span></td></tr>
-<tr><td><span class="tag o">Ω</span></td><td>Resistencia serie</td><td class="n">2 × 1.1 kΩ 2512</td><td class="n">—</td><td><span class="tag p">S11.3</span></td></tr>
-<tr><td><span class="tag o">Ω</span></td><td>TVS</td><td class="n">SMAJ12CA</td><td class="n">C78399</td><td><span class="tag p">S11.3</span></td></tr>
-<tr><td><span class="tag o">Ω</span></td><td>R_S</td><td class="n">3.3 kΩ</td><td class="n">—</td><td><span class="tag p">S11.3</span></td></tr>
-<tr><td><span class="tag o">Ω</span></td><td>Sujeción, sumidero y bloqueo</td><td class="n">2 × BAV199, 2 × BZT52C5V6, diodo de bloqueo</td><td class="n">—</td><td><span class="tag p">S11.3</span></td></tr>
+<tr><td><span class="tag v">V</span></td><td>R en X1 (y X0/X2 si hace falta)</td><td class="n">100 Ω en X0 y X1</td><td class="n">—</td><td><span class="tag ok">S11.4</span></td></tr>
+<tr><td><span class="tag o">Ω</span></td><td>Relé</td><td class="n">TQ2SA-5V-Z</td><td class="n">C22686</td><td><span class="tag ok">S11.4</span></td></tr>
+<tr><td><span class="tag o">Ω</span></td><td>Resistencia serie</td><td class="n">2 × 1.1 kΩ 2512 2 W antipulso</td><td class="n">C5123622 (provisional)</td><td><span class="tag ok">S11.4</span></td></tr>
+<tr><td><span class="tag o">Ω</span></td><td>TVS</td><td class="n">SMAJ12CA</td><td class="n">C78399</td><td><span class="tag ok">S11.4</span></td></tr>
+<tr><td><span class="tag o">Ω</span></td><td>R_S</td><td class="n">2.7 kΩ</td><td class="n">—</td><td><span class="tag ok">S11.4</span></td></tr>
+<tr><td><span class="tag o">Ω</span></td><td>Sujeción, sumidero y bloqueo</td><td class="n">2 × BAV199, 2 × BZT52C5V6, BAT54 de bloqueo</td><td class="n">C85084 (BAT54)</td><td><span class="tag ok">S11.4</span></td></tr>
+<tr><td><span class="tag v">V</span></td><td>Rama de ESD: GDT + varistor en serie, de V/Ω a COM</td><td class="n">SMD4532-600NF + 14D431K (disco de 14 mm)</td><td class="n">C47345384 · C49069732</td><td><span class="tag ok">S11.4 + estudio GDT</span></td></tr>
 <tr><td><span class="tag a">A</span></td><td>Fusible y portafusibles</td><td class="n">Littelfuse 0216 3.15 A</td><td class="n">C95689</td><td><span class="tag ok">S11.2</span></td></tr>
 <tr><td><span class="tag a">A</span></td><td>Puente</td><td class="n">GBU808</td><td class="n">C42406072</td><td><span class="tag ok">S11.2</span></td></tr>
 <tr><td><span class="tag a">A</span></td><td>Derivador</td><td class="n">0.100 Ω 1 % 2512 2 W, 4 terminales</td><td class="n">por elegir</td><td><span class="tag p">abierto</span></td></tr>
-<tr><td><span class="tag a">A</span></td><td>R_B y aviso de fusible</td><td class="n">10 kΩ · 10 MΩ</td><td class="n">—</td><td><span class="tag p">S11.3</span></td></tr>
+<tr><td><span class="tag a">A</span></td><td>R_B y aviso de fusible</td><td class="n">10 kΩ · 10 MΩ</td><td class="n">—</td><td><span class="tag ok">S11.4</span></td></tr>
 </table></div>
 <p style="font-size:14px;color:var(--muted)">«S11.1» y «S11.2»: la simulación auditada lo dio por bueno. «S11.3»: está en la simulación de cierre. Las resistencias y los condensadores genéricos se eligen en LCSC al dibujar el esquema.</p>
 

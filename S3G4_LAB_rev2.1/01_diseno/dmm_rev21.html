@@ -89,6 +89,17 @@ svg .lineB{stroke:var(--bad);stroke-width:2;fill:none}
 
 <p class="lead">Esta página explica <b>qué hace cada bloque del DMM y por qué</b>, con números. Igual que en la guía de CH1, usa ejemplos de principio a fin: una pila de <b>12 V</b> en continua, una corriente de <b>150 mA</b> y una resistencia de <b>4.7 kΩ</b>. Las cifras son el diseño propuesto; las que dependen de la placa se comprueban en la simulación S11 antes del esquema, y el resto se ajusta <b>calibrando por software al fabricar</b>.</p>
 
+<div class="box warn"><b>Bornes y protección: superado por el bloque 1 (7 oct)</b><br>
+El DMM se diseña ahora por bloques. El bloque 1, bornes y protección, está cerrado en simulación (S11.1–S11.4) y su diseño vigente está en <code>01_diseno/dmm_bloque1.html</code>. Lo que esta página dice de esos temas queda superado, en concreto:
+<ul>
+<li>la protección de la fuente de ohmios: P42, la PTC y el BSS126;</li>
+<li>el DF10S y la protección del borne A;</li>
+<li>la supervivencia a la red en ohmios, que ahora es de 60 V, como el ELVIS;</li>
+<li>la rama de ESD, que ahora es un GDT con un varistor;</li>
+<li>la prueba de diodo, que ahora es como la del ELVIS;</li>
+<li>la corriente máxima de la fuente, que ahora es de 1 mA.</li>
+</ul>
+El resto, del frontal de tensión al ADC5, se revisa al cerrar cada bloque.</div>
 <div class="box"><b>Qué cambió en esta revisión</b><br>
 Se aplicaron las decisiones D1–D7 de la <code>01_diseno/dmm_sintesis.html</code> (síntesis de las nueve referencias). D1 queda <b>sin ADC externo</b>: la no linealidad del ADC5 se corrige al fabricar.
 <ul>
