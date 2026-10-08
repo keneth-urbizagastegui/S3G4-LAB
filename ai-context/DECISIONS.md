@@ -417,6 +417,18 @@ Keneth, tras la auditoría de S12b:
 - **Pendiente:** S12c, la confirmación.
 - Fuente: chat del 8 oct; `03_simulaciones/DMM/AUDITORIA_CLAUDE_S12b.md`.
 
+### 2026-10-08 — DMM bloque 2: OPA4192 con buffer en X2, y criterio de no complicar
+
+Keneth acepta lo de `03_simulaciones/DMM/AUDITORIA_CLAUDE_S12c.md`:
+- **Un OPA4192 cuádruple:** buffer de X0, buffer de X2 (÷100) y amplificador A en una sola pieza. Motivo: la hoja del 74HC4051 solo garantiza ±100 nA, así que ninguna señal sensible va directa al mux. Se usa el mismo modelo SPICE de TI que el OPA2192 (familia OPAx192).
+- **10 kΩ** delante de cada buffer (X0 y X2).
+- **Firmware:** 3 ms de espera en X2 (1.5 ms con el buffer).
+- **E3:** criterio de corriente del canal no seleccionado ≤ 50 µA; tolerancia de 50 mV sobre el riel.
+- **Condensadores:** 330 pF C0G de ≥ 100 V y 3 nF de ≥ 25 V.
+- **Criterio general de Keneth (8 oct):** no complicar el diseño; que funcione con margen, porque ninguna pieza real es perfecta, como en el osciloscopio. Los criterios de simulación se fijan con margen realista y no se persiguen fracciones de cuenta.
+- **Pendiente:** S12d, una confirmación corta (E2, E3, E5 y E8) para cerrar el bloque 2.
+- Fuente: chat del 8 oct.
+
 ### 2026-10-06 — D-07 aceptada, RE-01 en espera y orden: DMM → AWG → mapa de pines
 
 Keneth, 6 oct, tras cerrar CH1–CH3:
