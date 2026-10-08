@@ -349,6 +349,19 @@ Keneth aprueba los cambios de `03_simulaciones/DMM/AUDITORIA_CLAUDE_S11_3.md`:
   - la confirmación corta con Codex (ESD con RX0, diodo con el modelo del Schottky y los nueve R7 con 900 s).
 - Fuente: chat del 7 oct.
 
+### 2026-10-07 — DMM bloque 1: ESD con piezas de pulso y descargador de gas (A + B)
+
+Keneth eligió A + B para la ESD de ±4 kV en V/Ω (≈ 1.27 kV en las 1206 y ≈ 3.8 kV en el relé abierto, según la auditoría de S11.3):
+- **A · Piezas que aguantan el pulso** (propuestas de Claude, LCSC):
+  - R_PROT de 33 kΩ en 1206 de 0.5 W, FOJAN FPS1206J333 (C55348469);
+  - ohmios: 2 × 1.1 kΩ en 2512 de 2 W, Milliohm HoCR2512 (C5123622);
+  - compensación: 100 pF C0G de 2 kV en 1206, CCTC TCC1206COG101J202FT (C7393967);
+  - diodo de bloqueo Schottky BAT54 (Nexperia, C85084; modelo en LTspice).
+  - Falta la de 3 MΩ del divisor al 0.1 % con especificación de pulso: no hay en 1206 en LCSC, y se decide en el bloque 2.
+- **B · Descargador de gas (GDT) entre V/Ω y COM:** hongjiacheng SMD4532-600NF (C47345384, 1812). Cebado en continua de 600 V ±30 % (mínimo 420 V; la red de 325 Vpk queda al 77 %) e impulso de 1 kV. Revisa P23 de la síntesis, que descartaba los GDT porque se buscaba una categoría de medida.
+- **Pendiente:** la confirmación corta con Codex (ESD con el GDT, RX0 y el BAT54; los nueve R7 con 900 s).
+- Fuente: chat del 7 oct.
+
 ### 2026-10-06 — D-07 aceptada, RE-01 en espera y orden: DMM → AWG → mapa de pines
 
 Keneth, 6 oct, tras cerrar CH1–CH3:
