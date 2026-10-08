@@ -402,6 +402,21 @@ Keneth, tras `03_simulaciones/DMM/AUDITORIA_CLAUDE_S12.md`:
 - **Pendiente:** S12b, la confirmación del bloque 2 con el buffer.
 - Fuente: chat del 8 oct.
 
+### 2026-10-08 — DMM bloque 2: sin toma ÷10 (opción c) y criterios E2/E8/E6
+
+Keneth, tras la auditoría de S12b:
+- **Opción c: se quita la toma ÷10.**
+  - El rango de 20 V usa la toma ÷100 con la ganancia ×10 de A (20 V ÷ 100 × 10 = 2 V).
+  - La prueba de diodo se lee por X0.
+  - Desaparecen el buffer de X1, su sujeción y los 100 Ω de X1.
+  - Motivo: con 50 Vrms (71 Vpk) la toma ÷10 superaba los rieles, y su sujeción recortaba también la toma ÷100. Con c la toma ÷100 nunca pasa de 0.71 V.
+- **Criterios:**
+  - **E2:** fuga ≤ 0.6 nA en el nodo X0, medida en el prototipo.
+  - **E8:** se evalúa la corriente de la pinza, no la capacitiva de ns.
+  - **E6:** las 3.3 kΩ antipulso con ≥ 1.5 kV de impulso, ≥ 25 µJ por pulso y ΔR ≤ 1 %.
+- **Pendiente:** S12c, la confirmación.
+- Fuente: chat del 8 oct; `03_simulaciones/DMM/AUDITORIA_CLAUDE_S12b.md`.
+
 ### 2026-10-06 — D-07 aceptada, RE-01 en espera y orden: DMM → AWG → mapa de pines
 
 Keneth, 6 oct, tras cerrar CH1–CH3:
