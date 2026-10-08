@@ -376,6 +376,19 @@ Keneth, 7 oct, tras `03_simulaciones/DMM/GDT_SEGUIMIENTO.md`:
   - el ensayo IEC 61000-4-2 y la red a 230/253 Vrms.
 - Fuente: chat del 7 oct.
 
+### 2026-10-08 — DMM bloque 2 (frontal de tensión): cinco recomendaciones aceptadas
+
+Keneth aprueba las recomendaciones de `03_simulaciones/DMM/ESTUDIO_BLOQUE2.md`:
+1. **Divisor:** 6 × 1.5 MΩ de película delgada al 0.1 % y 25 ppm/°C (C728673) + 910 kΩ + 100 kΩ, sustituyendo a las 3 × 3 MΩ de la sección H.
+2. **Alterna:** corrección por firmware (P39) calibrada a 100 Hz, 1 kHz y 20 kHz, sin cambiar el circuito. Exige un patrón plano a ≈ 0.05–0.1 %.
+3. **Amplificador A:** OPA2192 (RRIO, C110074) en lugar del OPA2188, porque en ohmios con las puntas al aire X0 llega a ≈ 4.0 V.
+4. **Ganancia ×1/×10:** divisor fijo de 91 kΩ / 10 kΩ y un SPDT TMUX4053 en la entrada inversora. Corrige la sección H, cuya llave en la rama de masa metía su Ron en la ganancia.
+5. **Mux:** 74HCT4051 (C87239) en lugar del 74HC4051, por el nivel lógico con 3.3 V.
+- **Firmware:** asiento del autocero ≥ 3 ms en X1, ≥ 1.5 ms en X2 y ≥ 0.1 ms en X0.
+- **Fuga tolerable del 4051** (cierra D4): ≈ 0.7 nA en 200 mV y 20 V, y 7 nA en 2 V y 50 V. Se mide en el prototipo; el plan B es un buffer OPA2192 antes del mux.
+- **Pendiente para el bloque 3:** con 4.9 kΩ en serie en el camino de ohmios del bloque 1, la fuente no llega a 1 mA en 200 Ω, 2 kΩ y el diodo de silicio.
+- Fuente: chat del 8 oct.
+
 ### 2026-10-06 — D-07 aceptada, RE-01 en espera y orden: DMM → AWG → mapa de pines
 
 Keneth, 6 oct, tras cerrar CH1–CH3:
