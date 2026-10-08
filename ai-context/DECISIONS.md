@@ -334,6 +334,21 @@ Keneth, 7 oct, tras la auditoría de S11.2, que no validó O2 (ESD de ≈ 1600 V
 - Sustituye en parte a la entrada «rediseño tras S11.1» (O2) y modifica RD-10 solo en ohmios.
 - Fuente: chat del 7 oct; `03_simulaciones/DMM/AUDITORIA_CLAUDE_S11_2.md`.
 
+### 2026-10-07 — DMM bloque 1: cambios tras la auditoría de S11.3 y bornes 24.245
+
+Keneth aprueba los cambios de `03_simulaciones/DMM/AUDITORIA_CLAUDE_S11_3.md`:
+- **Compensación del divisor:** 3 × 100 pF C0G de 2 kV en 1206 (antes 630 V).
+- **Resistencia de ohmios:** 2 × 1.1 kΩ en 2512 de 2 W antipulso.
+- **R_PROT:** 3 × 33 kΩ en 1206 antipulso de ≥ 0.5 W (o en 2512).
+- **Mux:** 100 Ω en serie en X0 y en X1; en X2, nada.
+- **Prueba de diodo:** diodo de bloqueo Schottky en lugar del BAV199, y R_S de 2.7 kΩ.
+- **Bornes:** Amass 24.245.1 (rojo, V/Ω y A, C7437326) y 24.245.2 (negro, COM, C7437327); a placa, 1 kV.
+- **Pendiente:**
+  - el tratamiento de la ESD sobre el relé abierto (≈ 3.8 kV) y las 1206 (≈ 1.27 kV);
+  - las piezas concretas con especificación de pulso;
+  - la confirmación corta con Codex (ESD con RX0, diodo con el modelo del Schottky y los nueve R7 con 900 s).
+- Fuente: chat del 7 oct.
+
 ### 2026-10-06 — D-07 aceptada, RE-01 en espera y orden: DMM → AWG → mapa de pines
 
 Keneth, 6 oct, tras cerrar CH1–CH3:
