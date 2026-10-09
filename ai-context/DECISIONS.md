@@ -449,6 +449,22 @@ Según `03_simulaciones/DMM/ACTA_S12d.md` y `AUDITORIA_CLAUDE_S12d.md`, y con el
   - los MPN de impulso pendientes.
 - Fuente: chat del 8 oct.
 
+### 2026-10-08 — DMM bloque 3: la fuente de ohmios inyecta en N1 (opción c1)
+
+Keneth aprueba la c1 de `03_simulaciones/DMM/ESTUDIO_BLOQUE3.md`:
+- La fuente de ohmios inyecta en N1 (el nodo de la TVS), no detrás de R_S.
+- La resistencia de protección de ohmios pasa de 2 × 1.1 kΩ a **3 × 510 Ω (1.53 kΩ)**; R_S de 2.7 kΩ se queda.
+- Resultado:
+  - 1 mA alcanzable;
+  - D5 completo (91 % / 78 % de la tolerancia);
+  - LED a 3.87 V con 100 µA;
+  - con 60 V, menos esfuerzo en las piezas (R1 0.47 W por pieza, TVS 0.37 W);
+  - sujeciones en 2.6 mA.
+- **Corrige DECISIONS del 8 oct:** con la cadena anterior, ningún rango de 1 mA era alcanzable.
+- **Obliga a repetir** la ESD y los 60 V del bloque 1 (S11.4) con la cadena nueva.
+- **Pendiente de Keneth:** el elemento de paso (BSS84 + BSS138 con compensación de 1 kΩ + 1 nF), la fuga de los mux de la fuente (medir en el prototipo; plan B TMUX1208) y P33 (cable abierto).
+- Fuente: chat del 8 oct.
+
 ### 2026-10-06 — D-07 aceptada, RE-01 en espera y orden: DMM → AWG → mapa de pines
 
 Keneth, 6 oct, tras cerrar CH1–CH3:
