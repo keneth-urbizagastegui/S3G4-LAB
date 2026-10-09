@@ -465,6 +465,25 @@ Keneth aprueba la c1 de `03_simulaciones/DMM/ESTUDIO_BLOQUE3.md`:
 - **Pendiente de Keneth:** el elemento de paso (BSS84 + BSS138 con compensación de 1 kΩ + 1 nF), la fuga de los mux de la fuente (medir en el prototipo; plan B TMUX1208) y P33 (cable abierto).
 - Fuente: chat del 8 oct.
 
+### 2026-10-08 — DMM bloque 3: fuente P43 con MOSFET, fugas y P33
+
+Keneth aprueba «todo» lo que quedaba del estudio del bloque 3:
+- **Elemento de paso:** BSS84 (C82079).
+- **Referencia de la fuente:** TLV2372 + BSS138.
+- **Compensación del lazo:** 1 kΩ en la línea de sentido y 1 nF de la salida a la entrada inversora.
+- **Fuga de los 74HCT4051 de la fuente:** se mide en el prototipo (tolerancia ≈ 0.85–1.1 nA). Plan B: TMUX1208 en fuerza y sentido (+0.55 USD).
+- **P33 (cable abierto): se renuncia.** Obligaba a cerrar el relé de ohmios en modo tensión.
+- **Se adoptan también, como recomendación del estudio (tabla del §0):**
+  - corrientes de 2 MΩ y 20 MΩ de ≈ 1.19 µA y ≈ 0.30 µA, para llenar la ventana;
+  - prueba de diodo leída por X2 con ×10.1 (silicio a 1 mA, LED a 100 µA);
+  - continuidad a 1 mA con un solo Schottky en PB14.
+  - Corrigen la sección H y la entrada del 8 oct, que leía el diodo por X0.
+- **Firmware:**
+  - 50 ms de espera en 20 MΩ;
+  - P34 leyendo X2 con la fuente apagada;
+  - tensión en vacío de ≈ 4.75 V, a corregir en la hoja de especificaciones.
+- Fuente: chat del 8 oct; `03_simulaciones/DMM/ESTUDIO_BLOQUE3.md`.
+
 ### 2026-10-06 — D-07 aceptada, RE-01 en espera y orden: DMM → AWG → mapa de pines
 
 Keneth, 6 oct, tras cerrar CH1–CH3:
