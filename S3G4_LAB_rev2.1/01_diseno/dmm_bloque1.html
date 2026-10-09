@@ -54,7 +54,7 @@ code{font:.9em var(--mono);color:var(--accent)}
   <div class="docid">Esbozo · 7 oct 2026 · Claude Code<br>Decisiones del 7 oct (O4, GBU808, Littelfuse 0216)<br>Bloque cerrado en simulación (S11.1–S11.4)</div>
 </header>
 
-<p class="warn"><b>Bloque cerrado en simulación</b> (S11.1–S11.4, auditadas). Antes de fabricar quedan dos cosas: elegir las referencias definitivas de las resistencias antipulso (≥ 1.5 kV a 1.2/50 µs en 1206; ≥ 2 kV en 2512) y la hoja del fabricante del GDT. En el prototipo se ensaya la ESD (IEC 61000-4-2) y la red a 230/253 Vrms. Después se dibuja en KiCad.</p>
+<p class="warn"><b>Bloque cerrado en simulación</b> (S11.1–S11.4, auditadas). <b>Cambio del bloque 3 (8 oct):</b> la fuente de ohmios inyecta en el nodo de la TVS (antes de R_S) y la resistencia serie pasa a 3 × 510 Ω, confirmado en S13. Antes de fabricar quedan dos cosas: elegir las referencias definitivas de las resistencias antipulso (≥ 1.5 kV a 1.2/50 µs en 1206; ≥ 2 kV en 2512) y la hoja del fabricante del GDT. En el prototipo se ensaya la ESD (IEC 61000-4-2) y la red a 230/253 Vrms. Después se dibuja en KiCad.</p>
 
 <h2>Qué aguanta cada borne</h2>
 <div class="tw"><table>
@@ -96,14 +96,14 @@ code{font:.9em var(--mono);color:var(--accent)}
   <path class="w" d="M48 70V270H90"/>
   <rect x="90" y="254" width="120" height="32" class="bo"/><text x="150" y="268" text-anchor="middle" font-size="12" font-weight="600">Relé TQ2SA</text><text x="150" y="281" text-anchor="middle" font-size="10.5" class="mut">abierto salvo en Ω</text>
   <path class="w" d="M210 270H240"/>
-  <rect x="240" y="254" width="130" height="32" class="bo"/><text x="305" y="268" text-anchor="middle" font-size="12" font-weight="600">2 × 1.1 kΩ</text><text x="305" y="281" text-anchor="middle" font-size="10.5" class="mut m">2512</text>
+  <rect x="240" y="254" width="130" height="32" class="bo"/><text x="305" y="268" text-anchor="middle" font-size="12" font-weight="600">3 × 510 Ω</text><text x="305" y="281" text-anchor="middle" font-size="10.5" class="mut m">2512</text>
   <path class="w" d="M370 270H470"/>
   <path class="w" d="M420 270V305"/><rect x="380" y="305" width="80" height="26" class="bo"/><text x="420" y="322" text-anchor="middle" font-size="11">SMAJ12CA</text><path class="w" d="M420 331V350"/><text x="420" y="364" text-anchor="middle" font-size="10.5" class="mut">COM</text>
   <rect x="470" y="254" width="100" height="32" class="bo"/><text x="520" y="274" text-anchor="middle" font-size="12" font-weight="600">R_S 2.7 kΩ</text>
   <path class="w" d="M570 270H600"/>
   <rect x="600" y="248" width="170" height="44" class="bo"/><text x="685" y="265" text-anchor="middle" font-size="11.5" font-weight="600">BAV199 a ±4.9 V</text><text x="685" y="280" text-anchor="middle" font-size="10.5" class="mut">+ zéner 5.6 V de sumidero</text>
   <path class="w" d="M770 270H800"/>
-  <rect x="800" y="248" width="150" height="44" class="bo"/><text x="875" y="265" text-anchor="middle" font-size="11.5" font-weight="600">BAT54 de bloqueo</text><text x="875" y="280" text-anchor="middle" font-size="10.5" class="mut">→ fuente P43 (bloque 3)</text>
+  <rect x="800" y="248" width="150" height="44" class="bo"/><text x="875" y="265" text-anchor="middle" font-size="11.5" font-weight="600">BAT54 de bloqueo</text><text x="875" y="280" text-anchor="middle" font-size="10.5" class="mut">→ fuente P43 en N1 (bloque 3)</text>
   <!-- corriente -->
   <text x="80" y="398" font-size="12" font-weight="600" class="ta">CORRIENTE</text>
   <path class="w" d="M41 420H90"/>
@@ -128,7 +128,7 @@ code{font:.9em var(--mono);color:var(--accent)}
 <tr><td><span class="tag v">V</span></td><td>Sujeciones X0 y ÷10</td><td class="n">BAV199</td><td class="n">—</td><td><span class="tag ok">S11.1</span></td></tr>
 <tr><td><span class="tag v">V</span></td><td>R en X1 (y X0/X2 si hace falta)</td><td class="n">100 Ω en X0 y X1</td><td class="n">—</td><td><span class="tag ok">S11.4</span></td></tr>
 <tr><td><span class="tag o">Ω</span></td><td>Relé</td><td class="n">TQ2SA-5V-Z</td><td class="n">C22686</td><td><span class="tag ok">S11.4</span></td></tr>
-<tr><td><span class="tag o">Ω</span></td><td>Resistencia serie</td><td class="n">2 × 1.1 kΩ 2512 2 W antipulso</td><td class="n">C5123622 (provisional)</td><td><span class="tag ok">S11.4</span></td></tr>
+<tr><td><span class="tag o">Ω</span></td><td>Resistencia serie</td><td class="n">3 × 510 Ω 2512 antipulso (cambio del bloque 3, S13)</td><td class="n">HoCR2512, por elegir</td><td><span class="tag ok">S11.4</span></td></tr>
 <tr><td><span class="tag o">Ω</span></td><td>TVS</td><td class="n">SMAJ12CA</td><td class="n">C78399</td><td><span class="tag ok">S11.4</span></td></tr>
 <tr><td><span class="tag o">Ω</span></td><td>R_S</td><td class="n">2.7 kΩ</td><td class="n">—</td><td><span class="tag ok">S11.4</span></td></tr>
 <tr><td><span class="tag o">Ω</span></td><td>Sujeción, sumidero y bloqueo</td><td class="n">2 × BAV199, 2 × BZT52C5V6, BAT54 de bloqueo</td><td class="n">C85084 (BAT54)</td><td><span class="tag ok">S11.4</span></td></tr>
@@ -150,5 +150,5 @@ code{font:.9em var(--mono);color:var(--accent)}
 <tr><td>24.247.x</td><td class="n">C106273 …</td><td class="n">60 V · 24 A</td><td>rojo, negro, amarillo</td><td class="n">0.13–0.14 USD</td><td class="n">6 242</td><td>Solo 60 V</td></tr>
 </table></div>
 <p><b>Elegidos: 24.245.1 (rojo) para V/Ω y para A, y 24.245.2 (negro) para COM.</b> Son los únicos de la lista que van soldados a la placa y además aíslan 1 kV, con el contacto protegido para puntas de seguridad. Cuestan ≈ 3.8 USD los tres. Falta leer su hoja: la huella, la separación entre bornes y la altura sobre la placa.</p>
-</div>
+<div class="foot">Fuentes: <code>03_simulaciones/DMM/</code> (planes, actas y auditorías S11.1–S11.4 y S13, <code>REDISENO_BLOQUE1.md</code>, <code>GDT_SEGUIMIENTO.md</code>) y <code>ai-context/DECISIONS.md</code>, 7 y 8 oct. Página hermana: <code>01_diseno/dmm_rev21.html</code> (sección H, diseño de partida).</div>
 </div>

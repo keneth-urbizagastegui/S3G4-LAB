@@ -25,7 +25,14 @@ Estado a 6 oct 2026. El estado compartido y oficial está en `ai-context/STATE.m
 
 ## Siguiente, en este orden (Keneth, 6 oct)
 
-1. **DMM** (RD-01…RD-10). *7 oct: arquitectura decidida y sección H escrita (`01_diseno/dmm_rev21.html`, hoja `00_requisitos/especificaciones_dmm.html`); siguiente, la simulación S11 con Codex.*
+1. **DMM** (RD-01…RD-10).
+   - *7 oct:* arquitectura decidida y sección H escrita (`01_diseno/dmm_rev21.html`, hoja `00_requisitos/especificaciones_dmm.html`).
+   - *7–8 oct:* se diseña **por bloques**, y cada uno se simula con Codex y se audita con Opus:
+     - bloque 1, bornes y protección: **cerrado** (S11.1–S11.4);
+     - bloque 2, frontal de tensión: **cerrado** (S12–S12d);
+     - bloque 3, ohmios, diodo y continuidad: **cerrado** (S13);
+     - **siguen el bloque 4 (corriente) y el 5 (driver y ADC5).**
+   - Decisiones en `ai-context/DECISIONS.md` (7–8 oct); estado en `ai-context/journal/2026-10-08-claude-retomar-dmm-bloques.md`.
    - 50 V en continua, 50 Vrms en alterna y 2 A, 4½ dígitos, tres bornes (V/Ω, COM y A);
    - entrada V/Ω y su protección para 71 Vpk continuos, con aviso en el panel y el manual;
    - prueba de diodo de 3.5 V con divisor antes de PB14;
@@ -66,8 +73,8 @@ Estado a 6 oct 2026. El estado compartido y oficial está en `ai-context/STATE.m
 - Tope RE-01 de 120 USD: **en espera** (6 oct). CH1 cuesta ≈ 19.6 USD por canal: el AFE ronda los 59 USD.
 - P13 (CPU a 104 MHz con el ADC síncrono).
 - TVS de riel y circuito común del economizador: por elegir (paso 4).
-- ¿Cuánto debe aguantar el DMM si se conecta a la red por error (RD-10)?
+- ~~¿Cuánto debe aguantar el DMM si se conecta a la red (RD-10)?~~ Decidido el 7 oct: 230 Vrms durante 10 s en tensión y en el borne A; en ohmios, 60 V, como el ELVIS II.
 - RG-07: el AWG como fuente de continua a través de 50 Ω.
-- ¿Interruptor de carga propio para el DMM (RF-18)?
+- ~~¿Interruptor de carga propio para el DMM (RF-18)?~~ Sí (D7, 7 oct); la pieza está por elegir.
 - Mantenimiento de los relés desde el buck de 3.3 V (propuesta de G.3, 6 oct).
 - Propuestas P1–P16: todas siguen sin aplicar, salvo lo que recogen D-xx, RF, RD y RG.

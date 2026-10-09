@@ -245,49 +245,13 @@ No se ha elegido automáticamente uno de estos frentes como nueva tarea de ingen
   - **Falta:** que Keneth deje los modelos de TI (OPA2188, TLV2372 y REF3325) y las hojas del §2 del plan; Claude puede bajarlos con su permiso. Después, lanzar Codex. CLI: `…\Codex\bin\5ea220ae823df3d7\codex.exe`, 0.160.1.
   - Detalle en `journal/2026-10-07-claude-encargo-s11a.md`.
 
-## Punto de retomada — referencias del DMM (7 oct 2026, Claude)
+## Punto de retomada — DMM por bloques (8 oct 2026, Claude)
 
-- **Retomar con:** `ai-context/journal/2026-10-07-claude-retomar-referencias-dmm.md`. Contiene:
-  - el estado: las 9 referencias hechas (TIDA-01012, HydraMeter, TIDA-00879, 121GW, Micro-DMM, Martin, EEWorld 77845, Analog Devices y 34401A);
-  - las propuestas P17–P42 resumidas, sin aplicar;
-  - los riesgos para la síntesis;
-  - el orden siguiente: ~~respuestas a D1–D7~~, ~~revisión de la sección H~~, ~~D8~~ y ~~encargo S11a~~ (hechos el 7 oct) → modelos y hojas de TI → lanzar S11a → circuito de P42 y S11b;
-  - las herramientas y las trampas conocidas.
-- La sección H del DMM está revisada y P43 aceptada (7 oct). El encargo S11a está escrito y sin lanzar.
-- **7 oct, DMM por bloques y opción B:** Keneth decidió avanzar por bloques (bornes y protección → tensión → ohmios → corriente → driver/ADC) y poner un relé (TQ2SA, como el osciloscopio) que conecta la fuente de ohmios solo en Ω/diodo/continuidad (DECISIONS). DF08S en el borne A. S11a aparcado sin lanzar. Hojas y modelos de TI ya en el proyecto (los bajó Keneth). Pendiente de Keneth: cómo se protege la fuente en modo ohmios con la red (10 mA + escalera P42, o 1 mA máx. + PTC de 250 V + TVS); después, plan del bloque 1.
-- **7 oct, bloque 1 del DMM:** Keneth eligió B2. La fuente de ohmios da 1 mA como máximo, sin escalera P42. Camino: relé TQ2SA → PTC PTCTL4MR500SBE (35 Ω, 600 V) → TVS SMAJ12CA → R_S → BAV199. Con eso, ≈ 3.7–4.0 V para la prueba de diodo. Encargo `03_simulaciones/DMM/ENCARGO_CODEX_S11_1.md` y plan `PLAN_SIMULACION_S11_1.md` (P0–P7, C1–C7) escritos, **sin lanzar**. Faltan las hojas de la PTC y de la SMAJ12CA. La sección H se actualiza al cerrar el bloque.
-- **7 oct, S11.1 terminado (Codex) — bloque 1 NO aprobado, sin auditar aún por Claude.** `03_simulaciones/DMM/ACTA_S11_1.md`.
-  - **Borne A:** DF08S con 93–386 A de pico e I²t de 33–604 A²s (red de 2–0.5 Ω), frente a 50 A y 10.4 A²s.
-  - **Ohmios con la red:** la PTC dispara a los 34–78 ms; la TVS SMAJ12CA recibe 0.42–0.65 J por semiciclo y hasta ≈ 4.7 J en total, demasiado para una SMA de 400 W.
-  - **Rieles:** con el DMM encendido suben hasta 24 V entre ellos (límite 11 V); apagado, ≤ 9.1 V.
-  - **Relé:** conmutar 230 Vac supera sus 125 Vac.
-  - **Fuga del modelo de la TVS en N1:** inaceptable para 2–20 MΩ (falta un dato garantizado a 4 V).
-  - Diodo: ≥ 4.1 V, pasa.
-- **7 oct, auditoría de S11.1 (Opus):** `03_simulaciones/DMM/AUDITORIA_CLAUDE_S11_1.md`. La reejecución coincide exactamente (3974 valores) y el bloque 1 se confirma NO aprobado. Fallos reales:
-  - **Rieles:** 65–131 mA entran por el diodo de cuerpo del BSS84 y por la protección del 4051, frente a 3 mA de carga.
-  - **Relé:** con la orden a 20 ms corta 4.6 A a 230 V.
-  - **TVS:** 128 W repetidos, frente a ≈ 150–200 W no repetitivos.
-  - **PTC:** 7.7 A de pico frente a 1 A de Imax.
-  - **DF08S:** 386 A (falta la I²t de fusión del fusible para cerrarlo).
-  - **Fuga de la TVS:** el 74 % era exagerado, pero C5 sigue sin poder cumplirse.
-  - BSS84 a 24 V: no es fallo.
-  - Siguiente: rediseño del bloque 1, opción (b).
-- **7 oct, S11.2 auditada y opción B:**
-  - O2 no validado (ESD, R_LIM y diodo).
-  - Keneth relajó RD-10 en ohmios a 60 V, como el ELVIS (DECISIONS). En tensión y en el borne A sigue aguantando la red.
-  - Borne A resuelto en simulación: GBU808 + Littelfuse 0216, al 6.6 % de su I²t.
-  - **Siguiente:** S11.3, la simulación de cierre del bloque 1 con O4, la R de 100 Ω en el mux y ESD. Después, actualizar la sección H.
-- **7 oct, S11.4 auditada:** el bloque 1 queda **cerrado en simulación**, con condiciones (`03_simulaciones/DMM/AUDITORIA_CLAUDE_S11_4.md`). Lo que no se pudo demostrar:
-  - **El modelo del GDT es optimista:** ceba casi al instante. Si el real fuera lento, Rprot vería 1.26 kV durante 35 µs y el relé, 3.8 kV.
-  - **MPN:** hay que pedir resistencias antipulso (≥ 1.5 kV a 1.2/50 µs en 1206; ≥ 2 kV en 2512) y la hoja del fabricante del GDT.
-  - **Prototipo:** ensayo de ESD IEC 61000-4-2 y red a 230/253 Vrms.
-  - **Riesgo abierto:** si una sobretensión de red ceba el GDT, el arco cortocircuita la red y la rama V/Ω no tiene fusible.
-- **7 oct, BLOQUE 1 DEL DMM CERRADO en simulación.** Keneth aceptó el GDT + varistor 14D431K. Diseño vigente en `01_diseno/dmm_bloque1.html` (v3); la sección H (v5) avisa de qué queda superado. **Siguiente: bloque 2, el frontal de tensión** (divisor de precisión, mux, OPA2188 ×1/×10 y compensación de alterna).
-- **8 oct, BLOQUE 2 DEL DMM CERRADO en simulación** (S12 → S12d). Frontal de tensión:
-  - un OPA4192 con buffers en X0 y X2;
-  - sin toma ÷10: el rango de 20 V va por ÷100 con ×10;
-  - divisor de 6 × 1.5 MΩ;
-  - 74HCT4051 y TMUX4053.
-  - Decisiones en DECISIONS; condiciones de prototipo en `AUDITORIA_CLAUDE_S12d.md`.
-  - **Siguiente: bloque 3 (ohmios).** Pendiente conocido: con 4.9 kΩ en serie, la fuente no llega a 1 mA en 200 Ω, 2 kΩ y el diodo de silicio.
-- **8 oct, BLOQUE 3 DEL DMM CERRADO en simulación** (S13): fuente P43 con BSS84/BSS138 inyectada en N1 (c1), 3 × 510 Ω, diodo como el ELVIS por X2 y continuidad en 31 µs. Condiciones en `AUDITORIA_CLAUDE_S13.md`. **Siguiente: bloque 4 (corriente).**
+- **Retomar con `ai-context/journal/2026-10-08-claude-retomar-dmm-bloques.md`.** Contiene el método por bloques, el reparto de modelos, cómo se lanza Codex, el estado y las piezas de cada bloque, los pendientes de MPN, prototipo y firmware, y el siguiente paso.
+- **Estado:**
+  - bloques 1 (bornes y protección), 2 (frontal de tensión) y 3 (ohmios, diodo y continuidad) **cerrados en simulación** (S11.1–S13, auditados);
+  - **siguiente: bloque 4, corriente**; después, el bloque 5 (driver y ADC5);
+  - luego, el AWG (PLAN, paso 2).
+- **Criterio vigente de Keneth (8 oct):** que funcione con margen y sin complicar.
+- **Crónica del 7 oct** (síntesis, H revisada, D1–D8, S11a aparcado, bloque 1): diarios `2026-10-07-claude-*.md`. **Del 8 oct:** diarios `2026-10-08-*` y DECISIONS.
+- **La sección H** (`01_diseno/dmm_rev21.html`) es el diseño de partida: lo vigente de los bloques 1–3 está en DECISIONS y en las actas o auditorías.

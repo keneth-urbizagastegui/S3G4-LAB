@@ -89,17 +89,22 @@ svg .lineB{stroke:var(--bad);stroke-width:2;fill:none}
 
 <p class="lead">Esta página explica <b>qué hace cada bloque del DMM y por qué</b>, con números. Igual que en la guía de CH1, usa ejemplos de principio a fin: una pila de <b>12 V</b> en continua, una corriente de <b>150 mA</b> y una resistencia de <b>4.7 kΩ</b>. Las cifras son el diseño propuesto; las que dependen de la placa se comprueban en la simulación S11 antes del esquema, y el resto se ajusta <b>calibrando por software al fabricar</b>.</p>
 
-<div class="box warn"><b>Bornes y protección: superado por el bloque 1 (7 oct)</b><br>
-El DMM se diseña ahora por bloques. El bloque 1, bornes y protección, está cerrado en simulación (S11.1–S11.4) y su diseño vigente está en <code>01_diseno/dmm_bloque1.html</code>. Lo que esta página dice de esos temas queda superado, en concreto:
+<div class="box warn"><b>Diseño de partida: los bloques 1–3 ya lo sustituyen (7–8 oct)</b><br>
+El DMM se diseña ahora por bloques, simulados por Codex y auditados. Lo vigente está en <code>ai-context/DECISIONS.md</code> y en <code>03_simulaciones/DMM/</code>; esta página queda como el diseño de partida.
 <ul>
-<li>la protección de la fuente de ohmios: P42, la PTC y el BSS126;</li>
-<li>el DF10S y la protección del borne A;</li>
-<li>la supervivencia a la red en ohmios, que ahora es de 60 V, como el ELVIS;</li>
-<li>la rama de ESD, que ahora es un GDT con un varistor;</li>
-<li>la prueba de diodo, que ahora es como la del ELVIS;</li>
-<li>la corriente máxima de la fuente, que ahora es de 1 mA.</li>
-</ul>
-El resto, del frontal de tensión al ADC5, se revisa al cerrar cada bloque.</div>
+<li><b>Bloque 1, bornes y protección (S11.1–S11.4):</b> <code>01_diseno/dmm_bloque1.html</code>. GDT + varistor para la ESD; en ohmios, 60 V, como el ELVIS; GBU808 y Littelfuse 0216 en A. Sustituye a P42, la PTC y el DF10S.</li>
+<li><b>Bloque 2, frontal de tensión (S12–S12d):</b>
+  <ul>
+  <li>un OPA4192 con buffers en X0 y X2, en lugar del OPA2188;</li>
+  <li><b>sin toma ÷10:</b> el rango de 20 V va por ÷100 con ×10;</li>
+  <li>divisor de 6 × 1.5 MΩ + 910 kΩ + 100 kΩ;</li>
+  <li>ganancia con 91 k/10 k y TMUX4053;</li>
+  <li>74HCT4051.</li>
+  </ul>
+  Corrige §3 ②–④ y §4.</li>
+<li><b>Bloque 3, ohmios, diodo y continuidad (S13):</b> la fuente P43 inyecta antes de R_S, con un BSS84 de paso y un BSS138 en la referencia. Corrientes de 1 mA a 0.30 µA. Diodo como el ELVIS (1 mA y 100 µA) por ÷100 ×10. Sin detección de cable abierto (P33). Corrige §6.</li>
+<li><b>Pendientes:</b> el bloque 4 (corriente) y el 5 (driver y ADC5).</li>
+</ul></div>
 <div class="box"><b>Qué cambió en esta revisión</b><br>
 Se aplicaron las decisiones D1–D7 de la <code>01_diseno/dmm_sintesis.html</code> (síntesis de las nueve referencias). D1 queda <b>sin ADC externo</b>: la no linealidad del ADC5 se corrige al fabricar.
 <ul>
