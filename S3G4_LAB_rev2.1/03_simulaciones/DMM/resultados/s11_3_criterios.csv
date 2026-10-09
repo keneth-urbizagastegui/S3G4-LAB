@@ -1,0 +1,9 @@
+﻿criterion,limit,reason,status,unit,value
+C1,504,C0G 100p/630V; ademas rohm supera margen supuesto 0.5W,FALLA / faltan ratings,V,2014.7530367735812
+C2,11,Zener aproximado sin hoja,PASA modelo,V,10.673144667215933
+C3,0.01,Referencia; variante RX0/RX2=100 deja X1 11.832mA a8kV,FALLA,A,0.07326722192815627
+C4,0.5,Margen 50% supuesto1W no cierra; no modelo destructivo ni MPN,NO CERTIFICADO,W,0.5048269341786706
+C5,,Modelo fuga TVS lineal a12V; sin garantia a4V,INFORMATIVO,,
+C6,3.5,A1mA se informa corriente real,FALLA,V,3.046638341706405
+C7,1,9ok y9timeout; proxy una cuenta100uV,PARCIAL / NO CERTIFICADO,s,0.028213199727005644
+C8,83,166A2s de hoja; sin comparar IFSM8.3ms con pulso corto,PASA modelo,A2s,10.930299068819608

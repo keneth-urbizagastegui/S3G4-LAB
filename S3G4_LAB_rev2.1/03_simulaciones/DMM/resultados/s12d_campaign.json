@@ -1,0 +1,14 @@
+{
+  "total": 234,
+  "ok": 234,
+  "elapsed_s": 1238.672043300001,
+  "reused": 7,
+  "workers": 10,
+  "timeout_s": 900,
+  "n_population": 200,
+  "started_local": "2026-10-08T16:42:17-0500",
+  "collect_elapsed_s": 239.5102328999783,
+  "collect_reexecuted": 8,
+  "reaudited_exact_deck": 226,
+  "repair_reason": "AC_meas_state_prefix;electrical_deck_unchanged"
+}

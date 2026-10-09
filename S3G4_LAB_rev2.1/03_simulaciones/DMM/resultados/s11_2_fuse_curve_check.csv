@@ -1,0 +1,5 @@
+current_multiple,current_A,adiabatic_melting_s,datasheet_min_s,datasheet_max_s,comparison,source
+2.75,8.6625,0.08928701569394211,0.01,2,within_IEC_range_not_digitized_mean_curve,Littelfuse216_p1_p2
+4,12.6,0.04220206601158982,0.003,0.3,within_IEC_range_not_digitized_mean_curve,Littelfuse216_p1_p2
+10,31.5,0.006752330561854371,,0.02,within_IEC_range_not_digitized_mean_curve,Littelfuse216_p1_p2
+1.5,4.725,0.30010358052686104,3600,,adiabatic_law_invalid_at_low_overcurrent_NOT_used_in_Q5,Littelfuse216_p1

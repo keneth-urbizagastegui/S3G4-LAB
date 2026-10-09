@@ -1,0 +1,19 @@
+{
+  "Rcold_contract_ohm": 35,
+  "Rcold_datasheet_ohm": 50,
+  "Rcold_datasheet_tolerance": 0.2,
+  "Ecrit_J": 34.65586841452748,
+  "G_W": 0.686,
+  "tau_s": 50.51875862176018,
+  "Rhot_assumed_ohm": 1000000.0,
+  "theta_growth_start": 1,
+  "theta_growth_end": 1.4,
+  "target_trip_1A_s": 1,
+  "ltspice_trip_1A_s": 1.0,
+  "elapsed_s": 0.7037267000123393,
+  "source": "ptctl.pdf p.1; 3 technical pages, no timing or R(T) curve",
+  "unique_physical_fit": false,
+  "thermal_mass_identified": false,
+  "caveat": "140mA is treated as an asymptotic threshold, not its guaranteed finite tripping current. Hot resistance, growth interval and cooling are unverified assumptions.",
+  "relative_timing_error": 0.0
+}

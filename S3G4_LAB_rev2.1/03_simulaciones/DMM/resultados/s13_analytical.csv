@@ -1,0 +1,6 @@
+﻿term,unit,value
+drift_RSS_endpoint,ppm,217.64650238402638
+drift_linear_endpoint,ppm,399
+threshold_uncalibrated,ohm,3.1683168316831685
+threshold_calibrated_7mV_assumed,ohm,1.3861386138613863
+P34_20mV_signal,ADC_counts,20.17982017982018

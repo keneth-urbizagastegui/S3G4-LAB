@@ -1,0 +1,2 @@
+﻿amp,charge,elapsed_s,final,gain,id,kind,leak,model,q,rail,returncode,sel,settle_s,signature,status,stop,supply_mW,target_V,temp,tmux,unit
+0.2,0,148.27421479998156,2.01997763517,10.1,a0d2_cq0_g10d1_kzero_i0_m192_qE3_r4d9_x0_s0d008_t23_ron60_u0,zero,0,192,E3,4.9,0,0,2.1495399291972597e-05,198a38fe7ea0702d97b7f9d616cb8c2cdbc41dc6b6d529aca815e1fff1f7d26e,ok,0.008,10.27520258759063,2.0199776408501764,23,60,0

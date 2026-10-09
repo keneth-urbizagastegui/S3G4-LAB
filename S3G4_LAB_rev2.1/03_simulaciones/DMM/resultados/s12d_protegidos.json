@@ -1,0 +1,16 @@
+{
+  "agent": "Codex",
+  "date_local": "2026-10-08",
+  "protected_file_count_initial": 18286,
+  "protected_file_count_final": 18286,
+  "aggregate_sha256_initial": "9645fd7ea830a00c9186f3d923924b4f998e57b5275c75ae948ce549b2a0fada",
+  "aggregate_sha256_final": "9645fd7ea830a00c9186f3d923924b4f998e57b5275c75ae948ce549b2a0fada",
+  "unchanged": true,
+  "scope": "Simulation_LTSpice/models; rev2.1/01_diseno; ai-context/STATE.md and DECISIONS.md; previous DMM files",
+  "excluded": "new S12d artifacts and comun/dmm_bloque2d.inc; S12d directory; __pycache__; .raw/.log/.net/.op.raw",
+  "case_count": 234,
+  "valid": 234,
+  "exact_decks": 234,
+  "current_signatures": 234,
+  "real_state_meas_prefixes": 234
+}

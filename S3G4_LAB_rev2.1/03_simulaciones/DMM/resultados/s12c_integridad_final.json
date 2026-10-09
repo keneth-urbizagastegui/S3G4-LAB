@@ -1,0 +1,10 @@
+{
+  "checked_at": "2026-10-08T13:37:23.556705-05:00",
+  "protected_files": 167,
+  "protected_changed": [],
+  "campaign_rows": 1215,
+  "campaign_valid": 1215,
+  "signature_and_exact_deck_proof": 1215,
+  "meas_names_match_actual_state": 1215,
+  "proof_note": "Independent full case/deck/signature/.meas comparison executed before closure; no subsequent runner/include/model changes."
+}

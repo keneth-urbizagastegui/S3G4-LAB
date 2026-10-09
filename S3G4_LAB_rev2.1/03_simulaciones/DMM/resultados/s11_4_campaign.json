@@ -1,0 +1,9 @@
+{
+  "total": 223,
+  "ok": 223,
+  "reused": 9,
+  "elapsed_s": 853.8065139999962,
+  "workers": 10,
+  "timeout_s": 900,
+  "csv": "C:\\Users\\Keneth\\Desktop\\S3G4 LAB\\S3G4_LAB_rev2.1\\03_simulaciones\\DMM\\resultados\\s11_4_campaign.csv"
+}

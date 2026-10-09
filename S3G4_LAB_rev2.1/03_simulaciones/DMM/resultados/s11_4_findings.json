@@ -1,0 +1,1148 @@
+{
+  "expected": 223,
+  "valid": 223,
+  "missing": [],
+  "counts": {
+    "T2": {
+      "ok": 144
+    },
+    "T1": {
+      "ok": 16
+    },
+    "T3": {
+      "ok": 18
+    },
+    "T4": {
+      "ok": 36
+    },
+    "T5": {
+      "ok": 9
+    }
+  },
+  "esd": [
+    {
+      "gdc": 420,
+      "amplitude_abs": 4000,
+      "mode": "v",
+      "cases": 18,
+      "gdt_voltage_peak_V": {
+        "value": 1067.170967106604,
+        "case": "T2_vo_v_rel0_rs2700_rx100_100_none_p0_b1_r1d02_i0_tap0_ph0_gdc420_gimp1000_esd_am4000_t5em05_off10d0_reduced"
+      },
+      "gdt_arc_peak_A": {
+        "value": 21.52812266899819,
+        "case": "T2_vo_v_rel0_rs2700_rx100_100_none_p0_b1_r1d02_i0_tap0_ph0_gdc420_gimp1000_esd_am4000_t5em05_off10d0_reduced"
+      },
+      "gdt_arc_E_J": {
+        "value": 1.653638493768709e-05,
+        "case": "T2_vo_v_rel0_rs2700_rx100_100_none_p0_b1_r0d98_i0_tap0_ph0_gdc420_gimp1000_esd_am4000_t5em05_off10d0_reduced"
+      },
+      "gdt_state_max": {
+        "value": 1.0028114625483728,
+        "case": "T2_vo_v_rel0_rs2700_rx100_100_none_p1_b0_r1d02_i0_tap0_ph0_gdc420_gimp1000_esd_am4000_t5em05_off10d0_reduced"
+      },
+      "relay_drop_max_V": {
+        "value": 38.5939933302415,
+        "case": "T2_vo_v_rel0_rs2700_rx100_100_none_p0_b1_r0d98_i0_tap0_ph0_gdc420_gimp1000_esd_am4000_t5em05_off10d0_reduced"
+      },
+      "rprot1_V": {
+        "value": 355.6684850531617,
+        "case": "T2_vo_v_rel0_rs2700_rx100_100_none_p0_b1_r1d02_i0_tap0_ph0_gdc420_gimp1000_esd_am4000_t5em05_off10d0_reduced"
+      },
+      "rdiv1_V": {
+        "value": 355.717203709517,
+        "case": "T2_vo_v_rel0_rs2700_rx100_100_none_p0_b1_r1d02_i0_tap0_ph0_gdc420_gimp1000_esd_am4000_t5em05_off10d0_reduced"
+      },
+      "rc1_V": {
+        "value": 355.65902180866533,
+        "case": "T2_vo_v_rel0_rs2700_rx100_100_none_p0_b1_r1d02_i0_tap0_ph0_gdc420_gimp1000_esd_am4000_t5em05_off10d0_reduced"
+      },
+      "rohm1_V": {
+        "value": 518.6969841032512,
+        "case": "T2_vo_v_rel0_rs2700_rx100_100_none_p0_b1_r1d02_i0_tap0_ph0_gdc420_gimp1000_esd_am4000_t5em05_off10d0_reduced"
+      },
+      "cc1_voltage_peak_V": {
+        "value": 6.648906744146609,
+        "case": "T2_vo_v_rel0_rs2700_rx100_100_none_p0_b0_r0d98_i0_tap0_ph0_gdc420_gimp1000_esd_a4000_t5em05_off10d0_reduced"
+      },
+      "xh0_clamp_peak_A": {
+        "value": 0.00022030476580887296,
+        "case": "T2_vo_v_rel0_rs2700_rx100_100_none_p0_b0_r0d98_i0_tap0_ph0_gdc420_gimp1000_esd_a4000_t5em05_off10d0_reduced"
+      },
+      "xh1_clamp_peak_A": {
+        "value": 0.0011770051813587436,
+        "case": "T2_vo_v_rel0_rs2700_rx100_100_none_p0_b0_r0d98_i0_tap0_ph0_gdc420_gimp1000_esd_a4000_t5em05_off10d0_reduced"
+      },
+      "xh0_sustained20ns_A": {
+        "value": 0.00021964736504279648,
+        "case": "T2_vo_v_rel0_rs2700_rx100_100_none_p0_b0_r0d98_i0_tap0_ph0_gdc420_gimp1000_esd_a4000_t5em05_off10d0_reduced"
+      },
+      "xh1_sustained20ns_A": {
+        "value": 0.00117298290181798,
+        "case": "T2_vo_v_rel0_rs2700_rx100_100_none_p0_b0_r0d98_i0_tap0_ph0_gdc420_gimp1000_esd_a4000_t5em05_off10d0_reduced"
+      },
+      "span_max": {
+        "value": 9.996,
+        "case": "T2_vo_v_rel0_rs2700_rx100_100_none_p1_b0_r1d02_i0_tap0_ph0_gdc420_gimp1000_esd_am4000_t5em05_off10d0_reduced"
+      },
+      "ignited": 18,
+      "first_ignition_s": {
+        "value": 1.0074733425614561e-07,
+        "case": "T2_vo_v_rel0_rs2700_rx100_100_none_p1_b0_r0d98_i0_tap0_ph0_gdc420_gimp1000_esd_a4000_t5em05_off10d0_reduced"
+      },
+      "last_ignition_s": {
+        "value": 1.009361509288953e-07,
+        "case": "T2_vo_v_rel0_rs2700_rx100_100_none_p0_b1_r1d02_i0_tap0_ph0_gdc420_gimp1000_esd_am4000_t5em05_off10d0_reduced"
+      }
+    },
+    {
+      "gdc": 420,
+      "amplitude_abs": 4000,
+      "mode": "ohm",
+      "cases": 18,
+      "gdt_voltage_peak_V": {
+        "value": 1059.6235462963334,
+        "case": "T2_vo_ohm_rel1_rs2700_rx100_100_none_p1_b0_r1d02_i0d001_tap1_ph0_gdc420_gimp1000_esd_a4000_t5em05_off10d0_reduced"
+      },
+      "gdt_arc_peak_A": {
+        "value": 21.500370333177248,
+        "case": "T2_vo_ohm_rel1_rs2700_rx100_100_none_p1_b0_r1d02_i0d001_tap1_ph0_gdc420_gimp1000_esd_a4000_t5em05_off10d0_reduced"
+      },
+      "gdt_arc_E_J": {
+        "value": 1.6501877655811518e-05,
+        "case": "T2_vo_ohm_rel1_rs2700_rx100_100_none_p1_b0_r1d02_i0d001_tap1_ph0_gdc420_gimp1000_esd_a4000_t5em05_off10d0_reduced"
+      },
+      "gdt_state_max": {
+        "value": 1.0039189886985875,
+        "case": "T2_vo_ohm_rel1_rs2700_rx100_100_none_p0_b0_r0d98_i0d001_tap1_ph0_gdc420_gimp1000_esd_am4000_t5em05_off10d0_reduced"
+      },
+      "relay_drop_max_V": {
+        "value": 0.04750768906046687,
+        "case": "T2_vo_ohm_rel1_rs2700_rx100_100_none_p1_b0_r1d02_i0d001_tap1_ph0_gdc420_gimp1000_esd_a4000_t5em05_off10d0_reduced"
+      },
+      "rprot1_V": {
+        "value": 351.69351224980016,
+        "case": "T2_vo_ohm_rel1_rs2700_rx100_100_none_p1_b0_r0d98_i0d001_tap1_ph0_gdc420_gimp1000_esd_a4000_t5em05_off10d0_reduced"
+      },
+      "rdiv1_V": {
+        "value": 353.0540717740939,
+        "case": "T2_vo_ohm_rel1_rs2700_rx100_100_none_p1_b0_r1d02_i0d001_tap1_ph0_gdc420_gimp1000_esd_a4000_t5em05_off10d0_reduced"
+      },
+      "rc1_V": {
+        "value": 351.6960498705474,
+        "case": "T2_vo_ohm_rel1_rs2700_rx100_100_none_p1_b0_r0d98_i0d001_tap1_ph0_gdc420_gimp1000_esd_a4000_t5em05_off10d0_reduced"
+      },
+      "rohm1_V": {
+        "value": 522.3772107826996,
+        "case": "T2_vo_ohm_rel1_rs2700_rx100_100_none_p1_b0_r1d02_i0d001_tap1_ph0_gdc420_gimp1000_esd_a4000_t5em05_off10d0_reduced"
+      },
+      "cc1_voltage_peak_V": {
+        "value": 5.456499084240731,
+        "case": "T2_vo_ohm_rel1_rs2700_rx100_100_none_p1_b0_r1d02_i0d001_tap1_ph0_gdc420_gimp1000_esd_a4000_t5em05_off10d0_reduced"
+      },
+      "xh0_clamp_peak_A": {
+        "value": 0.00028320698757381546,
+        "case": "T2_vo_ohm_rel1_rs2700_rx100_100_none_p0_b0_r1_i0d001_tap1_ph0_gdc420_gimp1000_esd_a4000_t5em05_off10d0_reduced"
+      },
+      "xh1_clamp_peak_A": {
+        "value": 0.0011041038725950478,
+        "case": "T2_vo_ohm_rel1_rs2700_rx100_100_none_p0_b0_r0d98_i0d001_tap1_ph0_gdc420_gimp1000_esd_am4000_t5em05_off10d0_reduced"
+      },
+      "xh0_sustained20ns_A": {
+        "value": 0.00025952513631154114,
+        "case": "T2_vo_ohm_rel1_rs2700_rx100_100_none_p0_b0_r0d98_i0d001_tap1_ph0_gdc420_gimp1000_esd_am4000_t5em05_off10d0_reduced"
+      },
+      "xh1_sustained20ns_A": {
+        "value": 0.0011003065145010326,
+        "case": "T2_vo_ohm_rel1_rs2700_rx100_100_none_p0_b0_r0d98_i0d001_tap1_ph0_gdc420_gimp1000_esd_am4000_t5em05_off10d0_reduced"
+      },
+      "span_max": {
+        "value": 9.996,
+        "case": "T2_vo_ohm_rel1_rs2700_rx100_100_none_p1_b0_r1d02_i0d001_tap1_ph0_gdc420_gimp1000_esd_am4000_t5em05_off10d0_reduced"
+      },
+      "ignited": 18,
+      "first_ignition_s": {
+        "value": 1.0082464512320884e-07,
+        "case": "T2_vo_ohm_rel1_rs2700_rx100_100_none_p0_b0_r0d98_i0d001_tap1_ph0_gdc420_gimp1000_esd_am4000_t5em05_off10d0_reduced"
+      },
+      "last_ignition_s": {
+        "value": 1.0090226573696076e-07,
+        "case": "T2_vo_ohm_rel1_rs2700_rx100_100_none_p1_b0_r1d02_i0d001_tap1_ph0_gdc420_gimp1000_esd_a4000_t5em05_off10d0_reduced"
+      }
+    },
+    {
+      "gdc": 420,
+      "amplitude_abs": 8000,
+      "mode": "v",
+      "cases": 18,
+      "gdt_voltage_peak_V": {
+        "value": 1064.2519371972794,
+        "case": "T2_vo_v_rel0_rs2700_rx100_100_none_p0_b1_r1d02_i0_tap0_ph0_gdc420_gimp1000_esd_am8000_t5em05_off10d0_reduced"
+      },
+      "gdt_arc_peak_A": {
+        "value": 22.981827935597476,
+        "case": "T2_vo_v_rel0_rs2700_rx100_100_none_p1_b0_r1d02_i0_tap0_ph0_gdc420_gimp1000_esd_am8000_t5em05_off10d0_reduced"
+      },
+      "gdt_arc_E_J": {
+        "value": 3.2625712946921775e-05,
+        "case": "T2_vo_v_rel0_rs2700_rx100_100_none_p0_b1_r0d98_i0_tap0_ph0_gdc420_gimp1000_esd_am8000_t5em05_off10d0_reduced"
+      },
+      "gdt_state_max": {
+        "value": 1.003121001668947,
+        "case": "T2_vo_v_rel0_rs2700_rx100_100_none_p1_b0_r0d98_i0_tap0_ph0_gdc420_gimp1000_esd_a8000_t5em05_off10d0_reduced"
+      },
+      "relay_drop_max_V": {
+        "value": 38.03649802616443,
+        "case": "T2_vo_v_rel0_rs2700_rx100_100_none_p0_b1_r0d98_i0_tap0_ph0_gdc420_gimp1000_esd_am8000_t5em05_off10d0_reduced"
+      },
+      "rprot1_V": {
+        "value": 354.6710634950705,
+        "case": "T2_vo_v_rel0_rs2700_rx100_100_none_p0_b1_r1d02_i0_tap0_ph0_gdc420_gimp1000_esd_am8000_t5em05_off10d0_reduced"
+      },
+      "rdiv1_V": {
+        "value": 354.7418288497048,
+        "case": "T2_vo_v_rel0_rs2700_rx100_100_none_p0_b1_r1d02_i0_tap0_ph0_gdc420_gimp1000_esd_am8000_t5em05_off10d0_reduced"
+      },
+      "rc1_V": {
+        "value": 354.66237339484746,
+        "case": "T2_vo_v_rel0_rs2700_rx100_100_none_p0_b1_r1d02_i0_tap0_ph0_gdc420_gimp1000_esd_am8000_t5em05_off10d0_reduced"
+      },
+      "rohm1_V": {
+        "value": 517.7816575616079,
+        "case": "T2_vo_v_rel0_rs2700_rx100_100_none_p0_b1_r1d02_i0_tap0_ph0_gdc420_gimp1000_esd_am8000_t5em05_off10d0_reduced"
+      },
+      "cc1_voltage_peak_V": {
+        "value": 7.64904411957694,
+        "case": "T2_vo_v_rel0_rs2700_rx100_100_none_p0_b0_r0d98_i0_tap0_ph0_gdc420_gimp1000_esd_a8000_t5em05_off10d0_reduced"
+      },
+      "xh0_clamp_peak_A": {
+        "value": 0.0002559435625054261,
+        "case": "T2_vo_v_rel0_rs2700_rx100_100_none_p0_b0_r1_i0_tap0_ph0_gdc420_gimp1000_esd_a8000_t5em05_off10d0_reduced"
+      },
+      "xh1_clamp_peak_A": {
+        "value": 0.001324274867051487,
+        "case": "T2_vo_v_rel0_rs2700_rx100_100_none_p0_b0_r0d98_i0_tap0_ph0_gdc420_gimp1000_esd_am8000_t5em05_off10d0_reduced"
+      },
+      "xh0_sustained20ns_A": {
+        "value": 0.0002463286905383639,
+        "case": "T2_vo_v_rel0_rs2700_rx100_100_none_p0_b0_r0d98_i0_tap0_ph0_gdc420_gimp1000_esd_a8000_t5em05_off10d0_reduced"
+      },
+      "xh1_sustained20ns_A": {
+        "value": 0.0013202151421385113,
+        "case": "T2_vo_v_rel0_rs2700_rx100_100_none_p0_b0_r0d98_i0_tap0_ph0_gdc420_gimp1000_esd_am8000_t5em05_off10d0_reduced"
+      },
+      "span_max": {
+        "value": 9.996,
+        "case": "T2_vo_v_rel0_rs2700_rx100_100_none_p1_b0_r1d02_i0_tap0_ph0_gdc420_gimp1000_esd_am8000_t5em05_off10d0_reduced"
+      },
+      "ignited": 18,
+      "first_ignition_s": {
+        "value": 1.0090645692666289e-07,
+        "case": "T2_vo_v_rel0_rs2700_rx100_100_none_p1_b0_r0d98_i0_tap0_ph0_gdc420_gimp1000_esd_am8000_t5em05_off10d0_reduced"
+      },
+      "last_ignition_s": {
+        "value": 1.0092519355316467e-07,
+        "case": "T2_vo_v_rel0_rs2700_rx100_100_none_p0_b1_r0d98_i0_tap0_ph0_gdc420_gimp1000_esd_a8000_t5em05_off10d0_reduced"
+      }
+    },
+    {
+      "gdc": 420,
+      "amplitude_abs": 8000,
+      "mode": "ohm",
+      "cases": 18,
+      "gdt_voltage_peak_V": {
+        "value": 1101.0160193518625,
+        "case": "T2_vo_ohm_rel1_rs2700_rx100_100_none_p1_b0_r1d02_i0d001_tap1_ph0_gdc420_gimp1000_esd_a8000_t5em05_off10d0_reduced"
+      },
+      "gdt_arc_peak_A": {
+        "value": 23.643710889262287,
+        "case": "T2_vo_ohm_rel1_rs2700_rx100_100_none_p0_b0_r0d98_i0d001_tap1_ph0_gdc420_gimp1000_esd_a8000_t5em05_off10d0_reduced"
+      },
+      "gdt_arc_E_J": {
+        "value": 3.259890135327308e-05,
+        "case": "T2_vo_ohm_rel1_rs2700_rx100_100_none_p1_b0_r1d02_i0d001_tap1_ph0_gdc420_gimp1000_esd_a8000_t5em05_off10d0_reduced"
+      },
+      "gdt_state_max": {
+        "value": 1.0040619651524276,
+        "case": "T2_vo_ohm_rel1_rs2700_rx100_100_none_p0_b0_r0d98_i0d001_tap1_ph0_gdc420_gimp1000_esd_am8000_t5em05_off10d0_reduced"
+      },
+      "relay_drop_max_V": {
+        "value": 0.049347591557079795,
+        "case": "T2_vo_ohm_rel1_rs2700_rx100_100_none_p1_b0_r1d02_i0d001_tap1_ph0_gdc420_gimp1000_esd_a8000_t5em05_off10d0_reduced"
+      },
+      "rprot1_V": {
+        "value": 366.0302200089603,
+        "case": "T2_vo_ohm_rel1_rs2700_rx100_100_none_p1_b0_r1d02_i0d001_tap1_ph0_gdc420_gimp1000_esd_am8000_t5em05_off10d0_reduced"
+      },
+      "rdiv1_V": {
+        "value": 366.85216795976237,
+        "case": "T2_vo_ohm_rel1_rs2700_rx100_100_none_p1_b0_r1d02_i0d001_tap1_ph0_gdc420_gimp1000_esd_a8000_t5em05_off10d0_reduced"
+      },
+      "rc1_V": {
+        "value": 366.033681315158,
+        "case": "T2_vo_ohm_rel1_rs2700_rx100_100_none_p1_b0_r1d02_i0d001_tap1_ph0_gdc420_gimp1000_esd_am8000_t5em05_off10d0_reduced"
+      },
+      "rohm1_V": {
+        "value": 543.0700943505713,
+        "case": "T2_vo_ohm_rel1_rs2700_rx100_100_none_p1_b0_r1d02_i0d001_tap1_ph0_gdc420_gimp1000_esd_a8000_t5em05_off10d0_reduced"
+      },
+      "cc1_voltage_peak_V": {
+        "value": 6.395053859574448,
+        "case": "T2_vo_ohm_rel1_rs2700_rx100_100_none_p0_b0_r0d98_i0d001_tap1_ph0_gdc420_gimp1000_esd_am8000_t5em05_off10d0_reduced"
+      },
+      "xh0_clamp_peak_A": {
+        "value": 0.0003035780417519128,
+        "case": "T2_vo_ohm_rel1_rs2700_rx100_100_none_p0_b0_r1_i0d001_tap1_ph0_gdc420_gimp1000_esd_am8000_t5em05_off10d0_reduced"
+      },
+      "xh1_clamp_peak_A": {
+        "value": 0.001250360566274349,
+        "case": "T2_vo_ohm_rel1_rs2700_rx100_100_none_p0_b0_r0d98_i0d001_tap1_ph0_gdc420_gimp1000_esd_a8000_t5em05_off10d0_reduced"
+      },
+      "xh0_sustained20ns_A": {
+        "value": 0.00028701977337572773,
+        "case": "T2_vo_ohm_rel1_rs2700_rx100_100_none_p0_b0_r1_i0d001_tap1_ph0_gdc420_gimp1000_esd_am8000_t5em05_off10d0_reduced"
+      },
+      "xh1_sustained20ns_A": {
+        "value": 0.0012462972025741083,
+        "case": "T2_vo_ohm_rel1_rs2700_rx100_100_none_p0_b0_r0d98_i0d001_tap1_ph0_gdc420_gimp1000_esd_a8000_t5em05_off10d0_reduced"
+      },
+      "span_max": {
+        "value": 9.996,
+        "case": "T2_vo_ohm_rel1_rs2700_rx100_100_none_p1_b0_r1d02_i0d001_tap1_ph0_gdc420_gimp1000_esd_am8000_t5em05_off10d0_reduced"
+      },
+      "ignited": 18,
+      "first_ignition_s": {
+        "value": 1.0073679543262344e-07,
+        "case": "T2_vo_ohm_rel1_rs2700_rx100_100_none_p1_b0_r0d98_i0d001_tap1_ph0_gdc420_gimp1000_esd_am8000_t5em05_off10d0_reduced"
+      },
+      "last_ignition_s": {
+        "value": 1.0089967180741227e-07,
+        "case": "T2_vo_ohm_rel1_rs2700_rx100_100_none_p1_b0_r1d02_i0d001_tap1_ph0_gdc420_gimp1000_esd_a8000_t5em05_off10d0_reduced"
+      }
+    },
+    {
+      "gdc": 780,
+      "amplitude_abs": 4000,
+      "mode": "v",
+      "cases": 18,
+      "gdt_voltage_peak_V": {
+        "value": 1067.170967106602,
+        "case": "T2_vo_v_rel0_rs2700_rx100_100_none_p0_b1_r1d02_i0_tap0_ph0_gdc780_gimp1000_esd_am4000_t5em05_off10d0_reduced"
+      },
+      "gdt_arc_peak_A": {
+        "value": 21.528122668998154,
+        "case": "T2_vo_v_rel0_rs2700_rx100_100_none_p0_b1_r1d02_i0_tap0_ph0_gdc780_gimp1000_esd_am4000_t5em05_off10d0_reduced"
+      },
+      "gdt_arc_E_J": {
+        "value": 1.6536384937687044e-05,
+        "case": "T2_vo_v_rel0_rs2700_rx100_100_none_p0_b1_r0d98_i0_tap0_ph0_gdc780_gimp1000_esd_am4000_t5em05_off10d0_reduced"
+      },
+      "gdt_state_max": {
+        "value": 1.0028114625483826,
+        "case": "T2_vo_v_rel0_rs2700_rx100_100_none_p1_b0_r1d02_i0_tap0_ph0_gdc780_gimp1000_esd_am4000_t5em05_off10d0_reduced"
+      },
+      "relay_drop_max_V": {
+        "value": 38.593993330241446,
+        "case": "T2_vo_v_rel0_rs2700_rx100_100_none_p0_b1_r0d98_i0_tap0_ph0_gdc780_gimp1000_esd_am4000_t5em05_off10d0_reduced"
+      },
+      "rprot1_V": {
+        "value": 355.6684850531842,
+        "case": "T2_vo_v_rel0_rs2700_rx100_100_none_p0_b1_r1d02_i0_tap0_ph0_gdc780_gimp1000_esd_am4000_t5em05_off10d0_reduced"
+      },
+      "rdiv1_V": {
+        "value": 355.7172037095164,
+        "case": "T2_vo_v_rel0_rs2700_rx100_100_none_p0_b1_r1d02_i0_tap0_ph0_gdc780_gimp1000_esd_am4000_t5em05_off10d0_reduced"
+      },
+      "rc1_V": {
+        "value": 355.65902180866465,
+        "case": "T2_vo_v_rel0_rs2700_rx100_100_none_p0_b1_r1d02_i0_tap0_ph0_gdc780_gimp1000_esd_am4000_t5em05_off10d0_reduced"
+      },
+      "rohm1_V": {
+        "value": 518.6969841032502,
+        "case": "T2_vo_v_rel0_rs2700_rx100_100_none_p0_b1_r1d02_i0_tap0_ph0_gdc780_gimp1000_esd_am4000_t5em05_off10d0_reduced"
+      },
+      "cc1_voltage_peak_V": {
+        "value": 6.648906744146611,
+        "case": "T2_vo_v_rel0_rs2700_rx100_100_none_p0_b0_r0d98_i0_tap0_ph0_gdc780_gimp1000_esd_a4000_t5em05_off10d0_reduced"
+      },
+      "xh0_clamp_peak_A": {
+        "value": 0.00022030476580887334,
+        "case": "T2_vo_v_rel0_rs2700_rx100_100_none_p0_b0_r0d98_i0_tap0_ph0_gdc780_gimp1000_esd_a4000_t5em05_off10d0_reduced"
+      },
+      "xh1_clamp_peak_A": {
+        "value": 0.0011770051813587417,
+        "case": "T2_vo_v_rel0_rs2700_rx100_100_none_p0_b0_r0d98_i0_tap0_ph0_gdc780_gimp1000_esd_a4000_t5em05_off10d0_reduced"
+      },
+      "xh0_sustained20ns_A": {
+        "value": 0.00021964736504279648,
+        "case": "T2_vo_v_rel0_rs2700_rx100_100_none_p0_b0_r0d98_i0_tap0_ph0_gdc780_gimp1000_esd_a4000_t5em05_off10d0_reduced"
+      },
+      "xh1_sustained20ns_A": {
+        "value": 0.0011729829018179779,
+        "case": "T2_vo_v_rel0_rs2700_rx100_100_none_p0_b0_r0d98_i0_tap0_ph0_gdc780_gimp1000_esd_a4000_t5em05_off10d0_reduced"
+      },
+      "span_max": {
+        "value": 9.996,
+        "case": "T2_vo_v_rel0_rs2700_rx100_100_none_p1_b0_r1d02_i0_tap0_ph0_gdc780_gimp1000_esd_am4000_t5em05_off10d0_reduced"
+      },
+      "ignited": 18,
+      "first_ignition_s": {
+        "value": 1.0074733425614393e-07,
+        "case": "T2_vo_v_rel0_rs2700_rx100_100_none_p1_b0_r0d98_i0_tap0_ph0_gdc780_gimp1000_esd_a4000_t5em05_off10d0_reduced"
+      },
+      "last_ignition_s": {
+        "value": 1.0093615092889529e-07,
+        "case": "T2_vo_v_rel0_rs2700_rx100_100_none_p0_b1_r1d02_i0_tap0_ph0_gdc780_gimp1000_esd_am4000_t5em05_off10d0_reduced"
+      }
+    },
+    {
+      "gdc": 780,
+      "amplitude_abs": 4000,
+      "mode": "ohm",
+      "cases": 18,
+      "gdt_voltage_peak_V": {
+        "value": 1059.6235462963334,
+        "case": "T2_vo_ohm_rel1_rs2700_rx100_100_none_p1_b0_r1d02_i0d001_tap1_ph0_gdc780_gimp1000_esd_a4000_t5em05_off10d0_reduced"
+      },
+      "gdt_arc_peak_A": {
+        "value": 21.50037033317724,
+        "case": "T2_vo_ohm_rel1_rs2700_rx100_100_none_p1_b0_r1d02_i0d001_tap1_ph0_gdc780_gimp1000_esd_a4000_t5em05_off10d0_reduced"
+      },
+      "gdt_arc_E_J": {
+        "value": 1.6502045325453706e-05,
+        "case": "T2_vo_ohm_rel1_rs2700_rx100_100_none_p1_b0_r1d02_i0d001_tap1_ph0_gdc780_gimp1000_esd_a4000_t5em05_off10d0_reduced"
+      },
+      "gdt_state_max": {
+        "value": 1.0039189886985875,
+        "case": "T2_vo_ohm_rel1_rs2700_rx100_100_none_p0_b0_r0d98_i0d001_tap1_ph0_gdc780_gimp1000_esd_am4000_t5em05_off10d0_reduced"
+      },
+      "relay_drop_max_V": {
+        "value": 0.04750768906046687,
+        "case": "T2_vo_ohm_rel1_rs2700_rx100_100_none_p1_b0_r1d02_i0d001_tap1_ph0_gdc780_gimp1000_esd_a4000_t5em05_off10d0_reduced"
+      },
+      "rprot1_V": {
+        "value": 351.6935122498144,
+        "case": "T2_vo_ohm_rel1_rs2700_rx100_100_none_p1_b0_r0d98_i0d001_tap1_ph0_gdc780_gimp1000_esd_a4000_t5em05_off10d0_reduced"
+      },
+      "rdiv1_V": {
+        "value": 353.0540717740939,
+        "case": "T2_vo_ohm_rel1_rs2700_rx100_100_none_p1_b0_r1d02_i0d001_tap1_ph0_gdc780_gimp1000_esd_a4000_t5em05_off10d0_reduced"
+      },
+      "rc1_V": {
+        "value": 351.69604987054754,
+        "case": "T2_vo_ohm_rel1_rs2700_rx100_100_none_p1_b0_r0d98_i0d001_tap1_ph0_gdc780_gimp1000_esd_a4000_t5em05_off10d0_reduced"
+      },
+      "rohm1_V": {
+        "value": 522.3772107826996,
+        "case": "T2_vo_ohm_rel1_rs2700_rx100_100_none_p1_b0_r1d02_i0d001_tap1_ph0_gdc780_gimp1000_esd_a4000_t5em05_off10d0_reduced"
+      },
+      "cc1_voltage_peak_V": {
+        "value": 5.449332628857668,
+        "case": "T2_vo_ohm_rel1_rs2700_rx100_100_none_p1_b0_r1d02_i0d001_tap1_ph0_gdc780_gimp1000_esd_a4000_t5em05_off10d0_reduced"
+      },
+      "xh0_clamp_peak_A": {
+        "value": 0.00028320698757367614,
+        "case": "T2_vo_ohm_rel1_rs2700_rx100_100_none_p0_b0_r1_i0d001_tap1_ph0_gdc780_gimp1000_esd_a4000_t5em05_off10d0_reduced"
+      },
+      "xh1_clamp_peak_A": {
+        "value": 0.0011041038725950474,
+        "case": "T2_vo_ohm_rel1_rs2700_rx100_100_none_p0_b0_r0d98_i0d001_tap1_ph0_gdc780_gimp1000_esd_am4000_t5em05_off10d0_reduced"
+      },
+      "xh0_sustained20ns_A": {
+        "value": 0.00025952513631154124,
+        "case": "T2_vo_ohm_rel1_rs2700_rx100_100_none_p0_b0_r0d98_i0d001_tap1_ph0_gdc780_gimp1000_esd_am4000_t5em05_off10d0_reduced"
+      },
+      "xh1_sustained20ns_A": {
+        "value": 0.0011003065145010324,
+        "case": "T2_vo_ohm_rel1_rs2700_rx100_100_none_p0_b0_r0d98_i0d001_tap1_ph0_gdc780_gimp1000_esd_am4000_t5em05_off10d0_reduced"
+      },
+      "span_max": {
+        "value": 9.996,
+        "case": "T2_vo_ohm_rel1_rs2700_rx100_100_none_p1_b0_r1d02_i0d001_tap1_ph0_gdc780_gimp1000_esd_am4000_t5em05_off10d0_reduced"
+      },
+      "ignited": 18,
+      "first_ignition_s": {
+        "value": 1.0082464512320886e-07,
+        "case": "T2_vo_ohm_rel1_rs2700_rx100_100_none_p0_b0_r0d98_i0d001_tap1_ph0_gdc780_gimp1000_esd_am4000_t5em05_off10d0_reduced"
+      },
+      "last_ignition_s": {
+        "value": 1.0090226573696075e-07,
+        "case": "T2_vo_ohm_rel1_rs2700_rx100_100_none_p1_b0_r1d02_i0d001_tap1_ph0_gdc780_gimp1000_esd_a4000_t5em05_off10d0_reduced"
+      }
+    },
+    {
+      "gdc": 780,
+      "amplitude_abs": 8000,
+      "mode": "v",
+      "cases": 18,
+      "gdt_voltage_peak_V": {
+        "value": 1064.2519371972794,
+        "case": "T2_vo_v_rel0_rs2700_rx100_100_none_p0_b1_r1d02_i0_tap0_ph0_gdc780_gimp1000_esd_am8000_t5em05_off10d0_reduced"
+      },
+      "gdt_arc_peak_A": {
+        "value": 22.981827935597476,
+        "case": "T2_vo_v_rel0_rs2700_rx100_100_none_p1_b0_r1d02_i0_tap0_ph0_gdc780_gimp1000_esd_am8000_t5em05_off10d0_reduced"
+      },
+      "gdt_arc_E_J": {
+        "value": 3.2625712946921775e-05,
+        "case": "T2_vo_v_rel0_rs2700_rx100_100_none_p0_b1_r0d98_i0_tap0_ph0_gdc780_gimp1000_esd_am8000_t5em05_off10d0_reduced"
+      },
+      "gdt_state_max": {
+        "value": 1.003121001668947,
+        "case": "T2_vo_v_rel0_rs2700_rx100_100_none_p1_b0_r0d98_i0_tap0_ph0_gdc780_gimp1000_esd_a8000_t5em05_off10d0_reduced"
+      },
+      "relay_drop_max_V": {
+        "value": 38.03649802616443,
+        "case": "T2_vo_v_rel0_rs2700_rx100_100_none_p0_b1_r0d98_i0_tap0_ph0_gdc780_gimp1000_esd_am8000_t5em05_off10d0_reduced"
+      },
+      "rprot1_V": {
+        "value": 354.6710634950705,
+        "case": "T2_vo_v_rel0_rs2700_rx100_100_none_p0_b1_r1d02_i0_tap0_ph0_gdc780_gimp1000_esd_am8000_t5em05_off10d0_reduced"
+      },
+      "rdiv1_V": {
+        "value": 354.7418288497048,
+        "case": "T2_vo_v_rel0_rs2700_rx100_100_none_p0_b1_r1d02_i0_tap0_ph0_gdc780_gimp1000_esd_am8000_t5em05_off10d0_reduced"
+      },
+      "rc1_V": {
+        "value": 354.66237339484746,
+        "case": "T2_vo_v_rel0_rs2700_rx100_100_none_p0_b1_r1d02_i0_tap0_ph0_gdc780_gimp1000_esd_am8000_t5em05_off10d0_reduced"
+      },
+      "rohm1_V": {
+        "value": 517.7816575616079,
+        "case": "T2_vo_v_rel0_rs2700_rx100_100_none_p0_b1_r1d02_i0_tap0_ph0_gdc780_gimp1000_esd_am8000_t5em05_off10d0_reduced"
+      },
+      "cc1_voltage_peak_V": {
+        "value": 7.64904411957694,
+        "case": "T2_vo_v_rel0_rs2700_rx100_100_none_p0_b0_r0d98_i0_tap0_ph0_gdc780_gimp1000_esd_a8000_t5em05_off10d0_reduced"
+      },
+      "xh0_clamp_peak_A": {
+        "value": 0.0002559435625054261,
+        "case": "T2_vo_v_rel0_rs2700_rx100_100_none_p0_b0_r1_i0_tap0_ph0_gdc780_gimp1000_esd_a8000_t5em05_off10d0_reduced"
+      },
+      "xh1_clamp_peak_A": {
+        "value": 0.001324274867051487,
+        "case": "T2_vo_v_rel0_rs2700_rx100_100_none_p0_b0_r0d98_i0_tap0_ph0_gdc780_gimp1000_esd_am8000_t5em05_off10d0_reduced"
+      },
+      "xh0_sustained20ns_A": {
+        "value": 0.0002463286905383639,
+        "case": "T2_vo_v_rel0_rs2700_rx100_100_none_p0_b0_r0d98_i0_tap0_ph0_gdc780_gimp1000_esd_a8000_t5em05_off10d0_reduced"
+      },
+      "xh1_sustained20ns_A": {
+        "value": 0.0013202151421385113,
+        "case": "T2_vo_v_rel0_rs2700_rx100_100_none_p0_b0_r0d98_i0_tap0_ph0_gdc780_gimp1000_esd_am8000_t5em05_off10d0_reduced"
+      },
+      "span_max": {
+        "value": 9.996,
+        "case": "T2_vo_v_rel0_rs2700_rx100_100_none_p1_b0_r1d02_i0_tap0_ph0_gdc780_gimp1000_esd_am8000_t5em05_off10d0_reduced"
+      },
+      "ignited": 18,
+      "first_ignition_s": {
+        "value": 1.0090645692666289e-07,
+        "case": "T2_vo_v_rel0_rs2700_rx100_100_none_p1_b0_r0d98_i0_tap0_ph0_gdc780_gimp1000_esd_am8000_t5em05_off10d0_reduced"
+      },
+      "last_ignition_s": {
+        "value": 1.0092519355316467e-07,
+        "case": "T2_vo_v_rel0_rs2700_rx100_100_none_p0_b1_r0d98_i0_tap0_ph0_gdc780_gimp1000_esd_a8000_t5em05_off10d0_reduced"
+      }
+    },
+    {
+      "gdc": 780,
+      "amplitude_abs": 8000,
+      "mode": "ohm",
+      "cases": 18,
+      "gdt_voltage_peak_V": {
+        "value": 1101.0160193518611,
+        "case": "T2_vo_ohm_rel1_rs2700_rx100_100_none_p1_b0_r1d02_i0d001_tap1_ph0_gdc780_gimp1000_esd_a8000_t5em05_off10d0_reduced"
+      },
+      "gdt_arc_peak_A": {
+        "value": 23.643710889262383,
+        "case": "T2_vo_ohm_rel1_rs2700_rx100_100_none_p0_b0_r0d98_i0d001_tap1_ph0_gdc780_gimp1000_esd_a8000_t5em05_off10d0_reduced"
+      },
+      "gdt_arc_E_J": {
+        "value": 3.259889763714942e-05,
+        "case": "T2_vo_ohm_rel1_rs2700_rx100_100_none_p1_b0_r1d02_i0d001_tap1_ph0_gdc780_gimp1000_esd_a8000_t5em05_off10d0_reduced"
+      },
+      "gdt_state_max": {
+        "value": 1.0040619651524276,
+        "case": "T2_vo_ohm_rel1_rs2700_rx100_100_none_p0_b0_r0d98_i0d001_tap1_ph0_gdc780_gimp1000_esd_am8000_t5em05_off10d0_reduced"
+      },
+      "relay_drop_max_V": {
+        "value": 0.04934759155730717,
+        "case": "T2_vo_ohm_rel1_rs2700_rx100_100_none_p1_b0_r1d02_i0d001_tap1_ph0_gdc780_gimp1000_esd_a8000_t5em05_off10d0_reduced"
+      },
+      "rprot1_V": {
+        "value": 366.0302200089517,
+        "case": "T2_vo_ohm_rel1_rs2700_rx100_100_none_p1_b0_r1d02_i0d001_tap1_ph0_gdc780_gimp1000_esd_am8000_t5em05_off10d0_reduced"
+      },
+      "rdiv1_V": {
+        "value": 366.852167959762,
+        "case": "T2_vo_ohm_rel1_rs2700_rx100_100_none_p1_b0_r1d02_i0d001_tap1_ph0_gdc780_gimp1000_esd_a8000_t5em05_off10d0_reduced"
+      },
+      "rc1_V": {
+        "value": 366.033681315158,
+        "case": "T2_vo_ohm_rel1_rs2700_rx100_100_none_p1_b0_r1d02_i0d001_tap1_ph0_gdc780_gimp1000_esd_am8000_t5em05_off10d0_reduced"
+      },
+      "rohm1_V": {
+        "value": 543.0700943505705,
+        "case": "T2_vo_ohm_rel1_rs2700_rx100_100_none_p1_b0_r1d02_i0d001_tap1_ph0_gdc780_gimp1000_esd_a8000_t5em05_off10d0_reduced"
+      },
+      "cc1_voltage_peak_V": {
+        "value": 6.395053859574448,
+        "case": "T2_vo_ohm_rel1_rs2700_rx100_100_none_p0_b0_r0d98_i0d001_tap1_ph0_gdc780_gimp1000_esd_am8000_t5em05_off10d0_reduced"
+      },
+      "xh0_clamp_peak_A": {
+        "value": 0.0003035780417519117,
+        "case": "T2_vo_ohm_rel1_rs2700_rx100_100_none_p0_b0_r1_i0d001_tap1_ph0_gdc780_gimp1000_esd_am8000_t5em05_off10d0_reduced"
+      },
+      "xh1_clamp_peak_A": {
+        "value": 0.0012503605662743502,
+        "case": "T2_vo_ohm_rel1_rs2700_rx100_100_none_p0_b0_r0d98_i0d001_tap1_ph0_gdc780_gimp1000_esd_a8000_t5em05_off10d0_reduced"
+      },
+      "xh0_sustained20ns_A": {
+        "value": 0.0002870197733757279,
+        "case": "T2_vo_ohm_rel1_rs2700_rx100_100_none_p0_b0_r1_i0d001_tap1_ph0_gdc780_gimp1000_esd_am8000_t5em05_off10d0_reduced"
+      },
+      "xh1_sustained20ns_A": {
+        "value": 0.0012462972025741096,
+        "case": "T2_vo_ohm_rel1_rs2700_rx100_100_none_p0_b0_r0d98_i0d001_tap1_ph0_gdc780_gimp1000_esd_a8000_t5em05_off10d0_reduced"
+      },
+      "span_max": {
+        "value": 9.996,
+        "case": "T2_vo_ohm_rel1_rs2700_rx100_100_none_p1_b0_r1d02_i0d001_tap1_ph0_gdc780_gimp1000_esd_am8000_t5em05_off10d0_reduced"
+      },
+      "ignited": 18,
+      "first_ignition_s": {
+        "value": 1.0073679543262344e-07,
+        "case": "T2_vo_ohm_rel1_rs2700_rx100_100_none_p1_b0_r0d98_i0d001_tap1_ph0_gdc780_gimp1000_esd_am8000_t5em05_off10d0_reduced"
+      },
+      "last_ignition_s": {
+        "value": 1.0089967180741227e-07,
+        "case": "T2_vo_ohm_rel1_rs2700_rx100_100_none_p1_b0_r1d02_i0d001_tap1_ph0_gdc780_gimp1000_esd_a8000_t5em05_off10d0_reduced"
+      }
+    }
+  ],
+  "diode": [
+    {
+      "id": "T1_vo_diode_rel1_rs2700_rx100_100_none_p1_b0_r0d98_i0d001_tap1_ph0_gdc420_gimp1000_sweep_a60_t0d02_off10d0_full",
+      "mode": "diode",
+      "rail": 0.98,
+      "source": 0.001,
+      "amplitude": 60,
+      "compliance99_V": null,
+      "dut_compliance99_V": null,
+      "source_at_065_A": 0.0006960442211878814,
+      "dut_at_065_A": 0.0006950454461520524,
+      "dut_at_35V_A": 0.00012349810262581902,
+      "dut_final_A": null,
+      "source_at_dut_A": null,
+      "dut_at_dut_A": null
+    },
+    {
+      "id": "T1_vo_silicon_rel1_rs2700_rx100_100_none_p1_b0_r0d98_i0d001_tap1_ph0_gdc420_gimp1000_dut_a0d65_t0d02_off10d0_full",
+      "mode": "silicon",
+      "rail": 0.98,
+      "source": 0.001,
+      "amplitude": 0.65,
+      "compliance99_V": null,
+      "dut_compliance99_V": null,
+      "source_at_065_A": 0.0006967175118499644,
+      "dut_at_065_A": 0.0006957438011529431,
+      "dut_at_35V_A": null,
+      "dut_final_A": 0.0006957438011529431,
+      "source_at_dut_A": 0.0006967175118499644,
+      "dut_at_dut_A": 0.0006957438011529431
+    },
+    {
+      "id": "T1_vo_led_rel1_rs2700_rx100_100_none_p1_b0_r0d98_i0d001_tap1_ph0_gdc420_gimp1000_dut_a3d0_t0d02_off10d0_full",
+      "mode": "led",
+      "rail": 0.98,
+      "source": 0.001,
+      "amplitude": 3.0,
+      "compliance99_V": null,
+      "dut_compliance99_V": null,
+      "source_at_065_A": null,
+      "dut_at_065_A": null,
+      "dut_at_35V_A": null,
+      "dut_final_A": 0.000222434843125733,
+      "source_at_dut_A": 0.00022418907336148303,
+      "dut_at_dut_A": 0.000222434843125733
+    },
+    {
+      "id": "T1_vo_led_rel1_rs2700_rx100_100_none_p1_b0_r0d98_i0d001_tap1_ph0_gdc420_gimp1000_dut_a3d2_t0d02_off10d0_full",
+      "mode": "led",
+      "rail": 0.98,
+      "source": 0.001,
+      "amplitude": 3.2,
+      "compliance99_V": null,
+      "dut_compliance99_V": null,
+      "source_at_065_A": null,
+      "dut_at_065_A": null,
+      "dut_at_35V_A": null,
+      "dut_final_A": 0.00018266765177893734,
+      "source_at_dut_A": 0.0001844887807909042,
+      "dut_at_dut_A": 0.00018266765177893734
+    },
+    {
+      "id": "T1_vo_diode_rel1_rs2700_rx100_100_none_p1_b0_r0d98_i0d0001_tap1_ph0_gdc420_gimp1000_sweep_a60_t0d02_off10d0_full",
+      "mode": "diode",
+      "rail": 0.98,
+      "source": 0.0001,
+      "amplitude": 60,
+      "compliance99_V": 3.606261895664905,
+      "dut_compliance99_V": 1.7313368956649047,
+      "source_at_065_A": 9.999999600440534e-05,
+      "dut_at_065_A": 9.956198441327887e-05,
+      "dut_at_35V_A": 9.80845273656132e-05,
+      "dut_final_A": null,
+      "source_at_dut_A": null,
+      "dut_at_dut_A": null
+    },
+    {
+      "id": "T1_vo_silicon_rel1_rs2700_rx100_100_none_p1_b0_r0d98_i0d0001_tap1_ph0_gdc420_gimp1000_dut_a0d65_t0d02_off10d0_full",
+      "mode": "silicon",
+      "rail": 0.98,
+      "source": 0.0001,
+      "amplitude": 0.65,
+      "compliance99_V": null,
+      "dut_compliance99_V": null,
+      "source_at_065_A": 9.999999799679628e-05,
+      "dut_at_065_A": 9.957280823604988e-05,
+      "dut_at_35V_A": null,
+      "dut_final_A": 9.957280823604988e-05,
+      "source_at_dut_A": 9.999999799679628e-05,
+      "dut_at_dut_A": 9.957280823604988e-05
+    },
+    {
+      "id": "T1_vo_led_rel1_rs2700_rx100_100_none_p1_b0_r0d98_i0d0001_tap1_ph0_gdc420_gimp1000_dut_a3d0_t0d02_off10d0_full",
+      "mode": "led",
+      "rail": 0.98,
+      "source": 0.0001,
+      "amplitude": 3.0,
+      "compliance99_V": null,
+      "dut_compliance99_V": null,
+      "source_at_065_A": null,
+      "dut_at_065_A": null,
+      "dut_at_35V_A": null,
+      "dut_final_A": 9.835950991093746e-05,
+      "source_at_dut_A": 9.999999799680545e-05,
+      "dut_at_dut_A": 9.835950991093746e-05
+    },
+    {
+      "id": "T1_vo_led_rel1_rs2700_rx100_100_none_p1_b0_r0d98_i0d0001_tap1_ph0_gdc420_gimp1000_dut_a3d2_t0d02_off10d0_full",
+      "mode": "led",
+      "rail": 0.98,
+      "source": 0.0001,
+      "amplitude": 3.2,
+      "compliance99_V": null,
+      "dut_compliance99_V": null,
+      "source_at_065_A": null,
+      "dut_at_065_A": null,
+      "dut_at_35V_A": null,
+      "dut_final_A": 9.825625047617004e-05,
+      "source_at_dut_A": 9.999999799679773e-05,
+      "dut_at_dut_A": 9.825625047617004e-05
+    },
+    {
+      "id": "T1_vo_diode_rel1_rs2700_rx100_100_none_p1_b0_r1_i0d001_tap1_ph0_gdc420_gimp1000_sweep_a60_t0d02_off10d0_full",
+      "mode": "diode",
+      "rail": 1,
+      "source": 0.001,
+      "amplitude": 60,
+      "compliance99_V": null,
+      "dut_compliance99_V": null,
+      "source_at_065_A": 0.0007157579100491709,
+      "dut_at_065_A": 0.0007147422532848416,
+      "dut_at_35V_A": 0.00014269966106874156,
+      "dut_final_A": null,
+      "source_at_dut_A": null,
+      "dut_at_dut_A": null
+    },
+    {
+      "id": "T1_vo_silicon_rel1_rs2700_rx100_100_none_p1_b0_r1_i0d001_tap1_ph0_gdc420_gimp1000_dut_a0d65_t0d02_off10d0_full",
+      "mode": "silicon",
+      "rail": 1,
+      "source": 0.001,
+      "amplitude": 0.65,
+      "compliance99_V": null,
+      "dut_compliance99_V": null,
+      "source_at_065_A": 0.000716535814793902,
+      "dut_at_065_A": 0.0007155439527570592,
+      "dut_at_35V_A": null,
+      "dut_final_A": 0.0007155439527570592,
+      "source_at_dut_A": 0.000716535814793902,
+      "dut_at_dut_A": 0.0007155439527570592
+    },
+    {
+      "id": "T1_vo_led_rel1_rs2700_rx100_100_none_p1_b0_r1_i0d001_tap1_ph0_gdc420_gimp1000_dut_a3d0_t0d02_off10d0_full",
+      "mode": "led",
+      "rail": 1,
+      "source": 0.001,
+      "amplitude": 3.0,
+      "compliance99_V": null,
+      "dut_compliance99_V": null,
+      "source_at_065_A": null,
+      "dut_at_065_A": null,
+      "dut_at_35V_A": null,
+      "dut_final_A": 0.00024194497363918283,
+      "source_at_dut_A": 0.00024371708934543948,
+      "dut_at_dut_A": 0.00024194497363918283
+    },
+    {
+      "id": "T1_vo_led_rel1_rs2700_rx100_100_none_p1_b0_r1_i0d001_tap1_ph0_gdc420_gimp1000_dut_a3d2_t0d02_off10d0_full",
+      "mode": "led",
+      "rail": 1,
+      "source": 0.001,
+      "amplitude": 3.2,
+      "compliance99_V": null,
+      "dut_compliance99_V": null,
+      "source_at_065_A": null,
+      "dut_at_065_A": null,
+      "dut_at_35V_A": null,
+      "dut_final_A": 0.0002020906612463461,
+      "source_at_dut_A": 0.0002039295958631397,
+      "dut_at_dut_A": 0.0002020906612463461
+    },
+    {
+      "id": "T1_vo_diode_rel1_rs2700_rx100_100_none_p1_b0_r1_i0d0001_tap1_ph0_gdc420_gimp1000_sweep_a60_t0d02_off10d0_full",
+      "mode": "diode",
+      "rail": 1,
+      "source": 0.0001,
+      "amplitude": 60,
+      "compliance99_V": 3.7042638614153955,
+      "dut_compliance99_V": 1.7314638614153954,
+      "source_at_065_A": 9.999999608128399e-05,
+      "dut_at_065_A": 9.956215305862111e-05,
+      "dut_at_35V_A": 9.808457329705217e-05,
+      "dut_final_A": null,
+      "source_at_dut_A": null,
+      "dut_at_dut_A": null
+    },
+    {
+      "id": "T1_vo_silicon_rel1_rs2700_rx100_100_none_p1_b0_r1_i0d0001_tap1_ph0_gdc420_gimp1000_dut_a0d65_t0d02_off10d0_full",
+      "mode": "silicon",
+      "rail": 1,
+      "source": 0.0001,
+      "amplitude": 0.65,
+      "compliance99_V": null,
+      "dut_compliance99_V": null,
+      "source_at_065_A": 9.99999979967978e-05,
+      "dut_at_065_A": 9.957280805872266e-05,
+      "dut_at_35V_A": null,
+      "dut_final_A": 9.957280805872266e-05,
+      "source_at_dut_A": 9.99999979967978e-05,
+      "dut_at_dut_A": 9.957280805872266e-05
+    },
+    {
+      "id": "T1_vo_led_rel1_rs2700_rx100_100_none_p1_b0_r1_i0d0001_tap1_ph0_gdc420_gimp1000_dut_a3d0_t0d02_off10d0_full",
+      "mode": "led",
+      "rail": 1,
+      "source": 0.0001,
+      "amplitude": 3.0,
+      "compliance99_V": null,
+      "dut_compliance99_V": null,
+      "source_at_065_A": null,
+      "dut_at_065_A": null,
+      "dut_at_35V_A": null,
+      "dut_final_A": 9.835950973709947e-05,
+      "source_at_dut_A": 9.999999799681175e-05,
+      "dut_at_dut_A": 9.835950973709947e-05
+    },
+    {
+      "id": "T1_vo_led_rel1_rs2700_rx100_100_none_p1_b0_r1_i0d0001_tap1_ph0_gdc420_gimp1000_dut_a3d2_t0d02_off10d0_full",
+      "mode": "led",
+      "rail": 1,
+      "source": 0.0001,
+      "amplitude": 3.2,
+      "compliance99_V": null,
+      "dut_compliance99_V": null,
+      "source_at_065_A": null,
+      "dut_at_065_A": null,
+      "dut_at_35V_A": null,
+      "dut_final_A": 9.825625030278973e-05,
+      "source_at_dut_A": 9.999999799680988e-05,
+      "dut_at_dut_A": 9.825625030278973e-05
+    }
+  ],
+  "long": {
+    "T3": {
+      "gdt_voltage_peak_V": {
+        "value": 325.26911934255014,
+        "case": "T3_vo_v_rel0_rs2700_rx100_100_none_p1_b0_r1d02_i0_tap0_ph90_gdc420_gimp1000_mains_a230_t1d0_off10d0_reduced"
+      },
+      "gdt_arc_peak_A": {
+        "value": 0.0,
+        "case": "T3_vo_v_rel0_rs2700_rx100_100_none_p1_b0_r1d02_i0_tap0_ph90_gdc420_gimp1000_mains_a230_t1d0_off10d0_reduced"
+      },
+      "gdt_state_max": {
+        "value": 0.0,
+        "case": "T3_vo_v_rel0_rs2700_rx100_100_none_p1_b0_r1d02_i0_tap0_ph90_gdc420_gimp1000_mains_a230_t1d0_off10d0_reduced"
+      },
+      "span_max": {
+        "value": 10.181226770238183,
+        "case": "T3_vo_v_rel0_rs2700_rx100_100_none_p1_b0_r1d02_i0_tap0_ph90_gdc420_gimp1000_mains_a230_t1d0_off10d0_reduced"
+      },
+      "rprot1_P_period_W": {
+        "value": 0.17216800159665727,
+        "case": "T3_vo_v_rel0_rs2700_rx100_100_none_p0_b1_r0d98_i0_tap0_ph0_gdc420_gimp1000_mains_a230_t1d0_off10d0_reduced"
+      },
+      "rprot1_E_sim_J": {
+        "value": 0.1721691768764802,
+        "case": "T3_vo_v_rel0_rs2700_rx100_100_none_p0_b1_r0d98_i0_tap0_ph90_gdc420_gimp1000_mains_a230_t1d0_off10d0_reduced"
+      },
+      "rprot1_E_extrap_J": {
+        "value": 1.5495120143699155,
+        "case": "T3_vo_v_rel0_rs2700_rx100_100_none_p0_b1_r0d98_i0_tap0_ph0_gdc420_gimp1000_mains_a230_t1d0_off10d0_reduced"
+      },
+      "rprot1_E10_J": {
+        "value": 1.7216636036860886,
+        "case": "T3_vo_v_rel0_rs2700_rx100_100_none_p0_b1_r0d98_i0_tap0_ph0_gdc420_gimp1000_mains_a230_t1d0_off10d0_reduced"
+      },
+      "rohm1_V": {
+        "value": 0.00013488762068052714,
+        "case": "T3_vo_v_rel0_rs2700_rx100_100_none_p0_b0_r1_i0_tap0_ph0_gdc420_gimp1000_mains_a230_t1d0_off10d0_reduced"
+      },
+      "rohm1_P_period_W": {
+        "value": 8.275047443567651e-12,
+        "case": "T3_vo_v_rel0_rs2700_rx100_100_none_p1_b0_r0d98_i0_tap0_ph90_gdc420_gimp1000_mains_a230_t1d0_off10d0_reduced"
+      },
+      "rohm1_E_sim_J": {
+        "value": 8.270199808960799e-12,
+        "case": "T3_vo_v_rel0_rs2700_rx100_100_none_p1_b0_r1d02_i0_tap0_ph90_gdc420_gimp1000_mains_a230_t1d0_off10d0_reduced"
+      },
+      "rohm1_E_extrap_J": {
+        "value": 7.447542699210887e-11,
+        "case": "T3_vo_v_rel0_rs2700_rx100_100_none_p1_b0_r0d98_i0_tap0_ph90_gdc420_gimp1000_mains_a230_t1d0_off10d0_reduced"
+      },
+      "rohm1_E10_J": {
+        "value": 8.274562275301731e-11,
+        "case": "T3_vo_v_rel0_rs2700_rx100_100_none_p1_b0_r0d98_i0_tap0_ph90_gdc420_gimp1000_mains_a230_t1d0_off10d0_reduced"
+      },
+      "btvs_P_period_W": {
+        "value": 1.8114284289266986e-08,
+        "case": "T3_vo_v_rel0_rs2700_rx100_100_none_p1_b0_r0d98_i0_tap0_ph90_gdc420_gimp1000_mains_a230_t1d0_off10d0_reduced"
+      },
+      "x0_recovery_s": {
+        "value": null,
+        "case": null
+      },
+      "n2_recovery_s": {
+        "value": null,
+        "case": null
+      },
+      "x0_end_drift_V": {
+        "value": null,
+        "case": null
+      },
+      "n2_end_drift_V": {
+        "value": null,
+        "case": null
+      }
+    },
+    "T4": {
+      "gdt_voltage_peak_V": {
+        "value": 84.8528137097003,
+        "case": "T4_vo_ohm_rel1_rs2700_rx100_100_none_p0_b0_r1d02_i0_tap1_ph90_gdc420_gimp1000_mains_a60_t1d0_off10d0_reduced"
+      },
+      "gdt_arc_peak_A": {
+        "value": 0.0,
+        "case": "T4_vo_ohm_rel1_rs2700_rx100_100_none_p1_b0_r1d02_i0_tap1_ph90_gdc420_gimp1000_mains_a60_t1d0_off10d0_reduced"
+      },
+      "gdt_state_max": {
+        "value": 0.0,
+        "case": "T4_vo_ohm_rel1_rs2700_rx100_100_none_p1_b0_r1d02_i0_tap1_ph90_gdc420_gimp1000_mains_a60_t1d0_off10d0_reduced"
+      },
+      "span_max": {
+        "value": 10.569050902189765,
+        "case": "T4_vo_ohm_rel1_rs2700_rx100_100_none_p1_b0_r1d02_i0_tap1_ph90_gdc420_gimp1000_mains_a60_t1d0_off10d0_reduced"
+      },
+      "rprot1_P_period_W": {
+        "value": 0.01024321088175114,
+        "case": "T4_vo_ohm_rel1_rs2700_rx100_100_none_p0_b1_r0d98_i0_tap1_ph0_gdc420_gimp1000_mains_a60_t1d0_off10d0_reduced"
+      },
+      "rprot1_E_sim_J": {
+        "value": 0.010244645596881924,
+        "case": "T4_vo_ohm_rel1_rs2700_rx100_100_none_p0_b1_r0d98_i0_tap1_ph90_gdc420_gimp1000_mains_a60_t1d0_off10d0_reduced"
+      },
+      "rprot1_E_extrap_J": {
+        "value": 0.09218889793576027,
+        "case": "T4_vo_ohm_rel1_rs2700_rx100_100_none_p0_b1_r0d98_i0_tap1_ph0_gdc420_gimp1000_mains_a60_t1d0_off10d0_reduced"
+      },
+      "rprot1_E10_J": {
+        "value": 0.10243169854835654,
+        "case": "T4_vo_ohm_rel1_rs2700_rx100_100_none_p0_b1_r0d98_i0_tap1_ph0_gdc420_gimp1000_mains_a60_t1d0_off10d0_reduced"
+      },
+      "rohm1_V": {
+        "value": 35.071482140272266,
+        "case": "T4_vo_ohm_rel1_rs2700_rx100_100_none_p0_b1_r1d02_i0_tap1_ph90_gdc420_gimp1000_mains_a60_t1d0_off10d0_reduced"
+      },
+      "rohm1_P_period_W": {
+        "value": 0.5050165740887246,
+        "case": "T4_vo_ohm_rel1_rs2700_rx100_100_none_p0_b1_r0d98_i0_tap1_ph0_gdc420_gimp1000_mains_a60_t1d0_off10d0_reduced"
+      },
+      "rohm1_E_sim_J": {
+        "value": 0.5050145563927089,
+        "case": "T4_vo_ohm_rel1_rs2700_rx100_100_none_p0_b1_r0d98_i0_tap1_ph90_gdc420_gimp1000_mains_a60_t1d0_off10d0_reduced"
+      },
+      "rohm1_E_extrap_J": {
+        "value": 4.545149166798521,
+        "case": "T4_vo_ohm_rel1_rs2700_rx100_100_none_p0_b1_r0d98_i0_tap1_ph0_gdc420_gimp1000_mains_a60_t1d0_off10d0_reduced"
+      },
+      "rohm1_E10_J": {
+        "value": 5.050163136431592,
+        "case": "T4_vo_ohm_rel1_rs2700_rx100_100_none_p0_b1_r0d98_i0_tap1_ph0_gdc420_gimp1000_mains_a60_t1d0_off10d0_reduced"
+      },
+      "btvs_P_period_W": {
+        "value": 0.2581126017276829,
+        "case": "T4_vo_ohm_rel1_rs2700_rx100_100_none_p0_b0_r1d02_i0_tap1_ph0_gdc420_gimp1000_dc_am60_t1d0_off10d0_reduced"
+      },
+      "x0_recovery_s": {
+        "value": null,
+        "case": null
+      },
+      "n2_recovery_s": {
+        "value": null,
+        "case": null
+      },
+      "x0_end_drift_V": {
+        "value": null,
+        "case": null
+      },
+      "n2_end_drift_V": {
+        "value": null,
+        "case": null
+      }
+    },
+    "T5": {
+      "gdt_voltage_peak_V": {
+        "value": 325.2187590528397,
+        "case": "T5_vo_v_rel0_rs2700_rx100_100_none_p1_b0_r1d02_i0_tap0_ph0_gdc420_gimp1000_recovery_a230_t12d0_off10d0_reduced"
+      },
+      "gdt_arc_peak_A": {
+        "value": 0.0,
+        "case": "T5_vo_v_rel0_rs2700_rx100_100_none_p1_b0_r1d02_i0_tap0_ph0_gdc420_gimp1000_recovery_a230_t12d0_off10d0_reduced"
+      },
+      "gdt_state_max": {
+        "value": 0.0,
+        "case": "T5_vo_v_rel0_rs2700_rx100_100_none_p1_b0_r1d02_i0_tap0_ph0_gdc420_gimp1000_recovery_a230_t12d0_off10d0_reduced"
+      },
+      "span_max": {
+        "value": 10.180566204093001,
+        "case": "T5_vo_v_rel0_rs2700_rx100_100_none_p1_b0_r1d02_i0_tap0_ph0_gdc420_gimp1000_recovery_a230_t12d0_off10d0_reduced"
+      },
+      "rprot1_P_period_W": {
+        "value": null,
+        "case": null
+      },
+      "rprot1_E_sim_J": {
+        "value": 1.7210473536539297,
+        "case": "T5_vo_v_rel0_rs2700_rx100_100_none_p0_b1_r0d98_i0_tap0_ph0_gdc420_gimp1000_recovery_a230_t12d0_off10d0_reduced"
+      },
+      "rprot1_E_extrap_J": {
+        "value": null,
+        "case": null
+      },
+      "rprot1_E10_J": {
+        "value": null,
+        "case": null
+      },
+      "rohm1_V": {
+        "value": 0.0010289258669823505,
+        "case": "T5_vo_v_rel0_rs2700_rx100_100_none_p0_b1_r1d02_i0_tap0_ph0_gdc420_gimp1000_recovery_a230_t12d0_off10d0_reduced"
+      },
+      "rohm1_P_period_W": {
+        "value": null,
+        "case": null
+      },
+      "rohm1_E_sim_J": {
+        "value": 8.267632348183116e-11,
+        "case": "T5_vo_v_rel0_rs2700_rx100_100_none_p1_b0_r1d02_i0_tap0_ph0_gdc420_gimp1000_recovery_a230_t12d0_off10d0_reduced"
+      },
+      "rohm1_E_extrap_J": {
+        "value": null,
+        "case": null
+      },
+      "rohm1_E10_J": {
+        "value": null,
+        "case": null
+      },
+      "btvs_P_period_W": {
+        "value": null,
+        "case": null
+      },
+      "x0_recovery_s": {
+        "value": 0.027943986661895792,
+        "case": "T5_vo_v_rel0_rs2700_rx100_100_none_p0_b0_r1_i0_tap0_ph0_gdc420_gimp1000_recovery_a230_t12d0_off10d0_reduced"
+      },
+      "n2_recovery_s": {
+        "value": 2.0,
+        "case": "T5_vo_v_rel0_rs2700_rx100_100_none_p0_b1_r1d02_i0_tap0_ph0_gdc420_gimp1000_recovery_a230_t12d0_off10d0_reduced"
+      },
+      "x0_end_drift_V": {
+        "value": 1.9536995052665577e-08,
+        "case": "T5_vo_v_rel0_rs2700_rx100_100_none_p0_b0_r0d98_i0_tap0_ph0_gdc420_gimp1000_recovery_a230_t12d0_off10d0_reduced"
+      },
+      "n2_end_drift_V": {
+        "value": 0.001407976442266451,
+        "case": "T5_vo_v_rel0_rs2700_rx100_100_none_p0_b0_r0d98_i0_tap0_ph0_gdc420_gimp1000_recovery_a230_t12d0_off10d0_reduced"
+      }
+    }
+  },
+  "criteria": [
+    {
+      "criterion": "D1",
+      "result": "NO CERTIFICADO / supera tensi\u00f3n de trabajo",
+      "value": 543.0700943505713,
+      "limit": 200,
+      "unit": "V Rohm,80% de250V trabajo",
+      "reason": "Pulso supera margen de tensi\u00f3n de trabajo; sin rating de pulso no demuestra destrucci\u00f3n ni supervivencia. Faltan ratings por pieza/energ\u00eda"
+    },
+    {
+      "criterion": "D2",
+      "result": "PARCIAL / NO CERTIFICADO",
+      "value": 38.5939933302415,
+      "limit": 1200,
+      "unit": "V rel\u00e9 abierto",
+      "reason": "Rel\u00e9 contra 1500V pulso p6; faltan tensiones de sobrecarga garantizadas de cada1206"
+    },
+    {
+      "criterion": "D3",
+      "result": "CUMPLE EN MODELO",
+      "value": 325.26911934255014,
+      "limit": 336,
+      "unit": "V GDT",
+      "reason": "80% de420V; verificar ausencia de corriente de arco"
+    },
+    {
+      "criterion": "D4",
+      "result": "CUMPLE EN MODELO",
+      "value": 0.0011770051813587436,
+      "limit": 0.01,
+      "unit": "A clamp X0/X1 contacto",
+      "reason": "Pico bruto, sin descartar muestras;m\u00e1ximo absoluto20mA HC4051 p5"
+    },
+    {
+      "criterion": "D5",
+      "result": "CUMPLE EN MODELO",
+      "value": 3.606261895664905,
+      "limit": 3.5,
+      "unit": "V compliance fuente99%",
+      "reason": "100uA,riel-2%; corriente DUT informada aparte"
+    },
+    {
+      "criterion": "D6",
+      "result": "NO ACREDITADO EN VENTANA",
+      "value": ">2, censurado",
+      "limit": 1,
+      "unit": "s recuperaci\u00f3n",
+      "reason": "Seis N2 apagados siguen derivando a2s;100uV respecto a media final no es referencia estacionaria. No presentar el extremo como tiempo de recuperaci\u00f3n"
+    },
+    {
+      "criterion": "D7",
+      "result": "CUMPLE EN MODELO",
+      "value": 10.569050902189765,
+      "limit": 11,
+      "unit": "V entre rieles",
+      "reason": "T2\u2013T4; zener aproximado"
+    }
+  ]
+}

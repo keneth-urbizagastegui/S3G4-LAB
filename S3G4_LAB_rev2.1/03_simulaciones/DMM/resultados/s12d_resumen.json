@@ -1,0 +1,281 @@
+{
+  "total": 234,
+  "valid": 234,
+  "groups": {
+    "E2": 24,
+    "E3": 56,
+    "E5": 4,
+    "E8": 150
+  },
+  "E2": {
+    "spice_offset_counts": 3.9226897030188126,
+    "spice_gain_ppm": 0.0020599127958931263,
+    "budgets": [
+      {
+        "range_V": 0.2,
+        "gain_p95_ppm": 176.12268176097058,
+        "offset_budget_counts": 4.435361302553938,
+        "leak_max_nA": 0.5035729209946668,
+        "fixed_counts": 1.7264046046338954,
+        "assumed_leak_nA": 0.6,
+        "mux_ON25_A": 4e-07,
+        "mux_ON23_A": 3.4822022531844966e-07,
+        "source_ohm": 109000.0,
+        "vos_counts": 0.5,
+        "Ib_counts": 0.0903573749231917,
+        "TMUX_counts": 0.11196069557213363,
+        "mux_counts": 1.02408653413857,
+        "input_leak_counts": 2.7089566979200423,
+        "assumptions": "signed_ON0.4uA_at25;double_per10C_assumed;23C_cal;18_28C;Ib20pA_extra;Rout1ohm;Ron70ohm;SOIC0.5uV_C_per_channel"
+      },
+      {
+        "range_V": 2,
+        "gain_p95_ppm": 0.0,
+        "offset_budget_counts": 0.43234006069818043,
+        "leak_max_nA": 8.501920193942773,
+        "fixed_counts": 0.16144439090617618,
+        "assumed_leak_nA": 0.6,
+        "mux_ON25_A": 4e-07,
+        "mux_ON23_A": 3.4822022531844966e-07,
+        "source_ohm": 109000.0,
+        "vos_counts": 0.05,
+        "Ib_counts": 0.00903573749231917,
+        "TMUX_counts": 0.0,
+        "mux_counts": 0.102408653413857,
+        "input_leak_counts": 0.27089566979200425,
+        "assumptions": "signed_ON0.4uA_at25;double_per10C_assumed;23C_cal;18_28C;Ib20pA_extra;Rout1ohm;Ron70ohm;SOIC0.5uV_C_per_channel"
+      },
+      {
+        "range_V": 20,
+        "gain_p95_ppm": 234.60485192571264,
+        "offset_budget_counts": 4.439822345097359,
+        "leak_max_nA": 0.5026830656613707,
+        "fixed_counts": 1.7281318376656543,
+        "assumed_leak_nA": 0.6,
+        "mux_ON25_A": 4e-07,
+        "mux_ON23_A": 3.4822022531844966e-07,
+        "source_ohm": 109000.999000999,
+        "vos_counts": 0.5005000000000001,
+        "Ib_counts": 0.09044856072523966,
+        "TMUX_counts": 0.11207265626770578,
+        "mux_counts": 1.0251106206727087,
+        "input_leak_counts": 2.7116905074317046,
+        "assumptions": "signed_ON0.4uA_at25;double_per10C_assumed;23C_cal;18_28C;Ib20pA_extra;Rout1ohm;Ron70ohm;SOIC0.5uV_C_per_channel"
+      },
+      {
+        "range_V": 50,
+        "gain_p95_ppm": 136.01163426186773,
+        "offset_budget_counts": 0.4327749688829653,
+        "leak_max_nA": 8.492991522463138,
+        "fixed_counts": 0.16160591813979486,
+        "assumed_leak_nA": 0.6,
+        "mux_ON25_A": 4e-07,
+        "mux_ON23_A": 3.4822022531844966e-07,
+        "source_ohm": 109000.999000999,
+        "vos_counts": 0.050050000000000004,
+        "Ib_counts": 0.009044856072523966,
+        "TMUX_counts": 0.0,
+        "mux_counts": 0.10251106206727087,
+        "input_leak_counts": 0.27116905074317044,
+        "assumptions": "signed_ON0.4uA_at25;double_per10C_assumed;23C_cal;18_28C;Ib20pA_extra;Rout1ohm;Ron70ohm;SOIC0.5uV_C_per_channel"
+      }
+    ],
+    "calibrated": [
+      {
+        "range_V": 0.2,
+        "temp_C": 18,
+        "leaksign": -1,
+        "offset_counts": -2.8295855542625326,
+        "gain_drift_ppm": 0.0014202528042517315,
+        "fit_residual_V": 2.4992410928412114e-07
+      },
+      {
+        "range_V": 0.2,
+        "temp_C": 28,
+        "leaksign": -1,
+        "offset_counts": 3.9187463896337755,
+        "gain_drift_ppm": -0.0020338901673966348,
+        "fit_residual_V": 2.499245833141161e-07
+      },
+      {
+        "range_V": 0.2,
+        "temp_C": 18,
+        "leaksign": 1,
+        "offset_counts": 2.4293481581292147,
+        "gain_drift_ppm": 0.0014196928077581106,
+        "fit_residual_V": 2.4992436724628406e-07
+      },
+      {
+        "range_V": 0.2,
+        "temp_C": 28,
+        "leaksign": 1,
+        "offset_counts": -3.5185089888535668,
+        "gain_drift_ppm": -0.002034383550508778,
+        "fit_residual_V": 2.4992485320109344e-07
+      },
+      {
+        "range_V": 2,
+        "temp_C": 18,
+        "leaksign": -1,
+        "offset_counts": -0.2829576258641399,
+        "gain_drift_ppm": 0.0014379117896368143,
+        "fit_residual_V": 2.962203723896737e-08
+      },
+      {
+        "range_V": 2,
+        "temp_C": 28,
+        "leaksign": -1,
+        "offset_counts": 0.3918736963241731,
+        "gain_drift_ppm": -0.0020599127958931263,
+        "fit_residual_V": 2.967014800736795e-08
+      },
+      {
+        "range_V": 2,
+        "temp_C": 18,
+        "leaksign": 1,
+        "offset_counts": 0.24293569091927544,
+        "gain_drift_ppm": 0.001437921781644036,
+        "fit_residual_V": 2.9622761160209062e-08
+      },
+      {
+        "range_V": 2,
+        "temp_C": 28,
+        "leaksign": 1,
+        "offset_counts": -0.35185176418199393,
+        "gain_drift_ppm": -0.002059828529965557,
+        "fit_residual_V": 2.9670396023981707e-08
+      },
+      {
+        "range_V": 20,
+        "temp_C": 18,
+        "leaksign": -1,
+        "offset_counts": -2.8324325085562445,
+        "gain_drift_ppm": 1.2745360322696797e-07,
+        "fit_residual_V": 2.4968763550898936e-07
+      },
+      {
+        "range_V": 20,
+        "temp_C": 28,
+        "leaksign": -1,
+        "offset_counts": 3.9226897030188126,
+        "gain_drift_ppm": 3.3728575488112256e-07,
+        "fit_residual_V": 2.496839851717954e-07
+      },
+      {
+        "range_V": 20,
+        "temp_C": 18,
+        "leaksign": 1,
+        "offset_counts": 2.431794949591233,
+        "gain_drift_ppm": 1.5720758028692217e-07,
+        "fit_residual_V": 2.4969043669958394e-07
+      },
+      {
+        "range_V": 20,
+        "temp_C": 28,
+        "leaksign": 1,
+        "offset_counts": -3.5220521455039075,
+        "gain_drift_ppm": -3.473887844052115e-07,
+        "fit_residual_V": 2.4969545337665336e-07
+      },
+      {
+        "range_V": 50,
+        "temp_C": 18,
+        "leaksign": -1,
+        "offset_counts": -0.28324231907617675,
+        "gain_drift_ppm": -1.2101430968414206e-07,
+        "fit_residual_V": 7.388567026843167e-09
+      },
+      {
+        "range_V": 50,
+        "temp_C": 28,
+        "leaksign": -1,
+        "offset_counts": 0.39226802818249396,
+        "gain_drift_ppm": -1.2467804566540508e-07,
+        "fit_residual_V": 7.388600164500011e-09
+      },
+      {
+        "range_V": 50,
+        "temp_C": 18,
+        "leaksign": 1,
+        "offset_counts": 0.24318037096829553,
+        "gain_drift_ppm": 1.1746159600534156e-07,
+        "fit_residual_V": 7.3882413307826056e-09
+      },
+      {
+        "range_V": 50,
+        "temp_C": 28,
+        "leaksign": 1,
+        "offset_counts": -0.3522060806017831,
+        "gain_drift_ppm": 3.064215547965432e-08,
+        "fit_residual_V": 7.388345470881385e-09
+      }
+    ]
+  },
+  "E3": {
+    "dc_wait_counts": 0.4145606097129534,
+    "settling_counts": 0.0004077176572156449,
+    "ac_wait_counts": 0.12715285470990323,
+    "mux_peak_V": 4.899244090083473,
+    "continuous_A": 4.0048146728780554e-05,
+    "rail_failures": 0,
+    "continuous_failures": 0,
+    "accuracy_failures": 0,
+    "dc_cases": 28,
+    "ac_cases": 2
+  },
+  "E5": {
+    "min_pm_deg": 43.61172479380435,
+    "cases": [
+      {
+        "gain": 1,
+        "tmux": 60,
+        "pm_deg": 49.03201915702113,
+        "unity_hz": 8968923.449353162
+      },
+      {
+        "gain": 1,
+        "tmux": 400,
+        "pm_deg": 43.61172479380435,
+        "unity_hz": 8152905.306467246
+      },
+      {
+        "gain": 10.1,
+        "tmux": 60,
+        "pm_deg": 64.52980716474455,
+        "unity_hz": 707365.8588440778
+      },
+      {
+        "gain": 10.1,
+        "tmux": 400,
+        "pm_deg": 64.14771561249496,
+        "unity_hz": 702318.6488774802
+      }
+    ]
+  },
+  "E8": {
+    "max_clamp_A": 0.0004612673539131356,
+    "failures": 0,
+    "50V": {
+      "cases": 2,
+      "clamp_A": 2.391478878990563e-05
+    },
+    "4kV": {
+      "cases": 72,
+      "clamp_A": 0.0004271793926825301
+    },
+    "8kV": {
+      "cases": 72,
+      "clamp_A": 0.0004612673539131356
+    },
+    "red": {
+      "cases": 4,
+      "clamp_A": 3.343935611232922e-05
+    }
+  },
+  "integrity": {
+    "cases": 234,
+    "exact_decks": 234,
+    "signatures": 234,
+    "meas_state": 234
+  }
+}

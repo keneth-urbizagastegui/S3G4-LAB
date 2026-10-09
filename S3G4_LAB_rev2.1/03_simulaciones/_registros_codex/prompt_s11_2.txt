@@ -1,0 +1,32 @@
+Encargo S11.2 (DMM, bloque 1 rediseñado). Arrancas en la raíz C:\Users\Keneth\Desktop\S3G4 LAB (ruta con espacio: entrecomilla siempre).
+
+Contrato: S3G4_LAB_rev2.1/03_simulaciones/DMM/PLAN_SIMULACION_S11_2.md. Léelo entero junto con los documentos que manda leer.
+
+El entorno es el mismo de ENCARGO_CODEX_S11_1.md:
+- LTspice en C:\Users\Keneth\AppData\Local\Programs\ADI\LTspice\LTspice.exe -b;
+- modelos en Simulation_LTSpice\models;
+- hojas en "datasheet - componentes\";
+- Python 3.12 con numpy, scipy y pymupdf.
+
+Qué hacer:
+1. Lee AGENTS.md y ai-context/START.md. Abre tu diario en ai-context/journal/ al empezar.
+2. Q0 primero: el modelo del BSS126 desde su hoja y la R_LIM. Anótalos en el diario antes de seguir.
+3. Escribe comun/dmm_bloque1_o2.inc y ejecutar_s11_2.py (10 trabajadores, --smoke, --resume, S3G4_MODELS, 300 s por caso). Comprueba que un caso de Q3 converge antes de la campaña.
+4. Pasa --smoke y luego la campaña. Prioridad: Q3, Q5, Q4, Q1, Q6, Q7.
+5. Escribe ACTA_S11_2.md y cierra el diario.
+
+Reglas:
+- No cambies piezas ni topología salvo R_LIM. No añadas protecciones.
+- Las contradicciones se anotan, no se resuelven.
+- Cada .meas lleva en el nombre su estado real.
+- No toques los archivos de S11.1, 01_diseno, models, STATE.md ni DECISIONS.md. No descargues nada.
+
+Respuesta final:
+- ficheros creados;
+- número de simulaciones y tiempo;
+- Q0 con sus páginas y la R_LIM elegida;
+- la tabla C1–C8;
+- el BSS126 en sus extremos (corriente límite, potencia y temperatura de unión);
+- el borne A con el fusible abriendo;
+- la ESD sin TVS;
+- dudas.

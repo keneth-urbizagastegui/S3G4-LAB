@@ -1,0 +1,15 @@
+1/14 ok P1_t25_vo_v_k0_rs100_pwr1_body0_rail0d98_open0_actual0_ph0_i0_tap2_dc_ampm50_f50_fuse1_macrofull 58.48s
+2/14 numerical_failure P4_t25_vo_v_k0_rs100_pwr0_body0_rail0d98_open0_actual0_ph0_i0_tap0_mains_amp230_f60_fuse1_macrofull_ptc40 6.08s
+3/14 numerical_failure P4_t25_vo_v_k0_rs330_pwr0_body0_rail0d98_open0_actual0_ph0_i0_tap0_mains_amp230_f60_fuse1_macrofull_ptc40 6.66s
+4/14 ok P5_t25_a_v_k0_rs100_pwr1_body0_rail0d98_open0_actual0_ph0_i0_tap4_mains_amp230_f60_fuse1_macrofull_ptc40 26.91s
+5/14 ok P5_t25_a_v_k0_rs330_pwr1_body0_rail0d98_open0_actual0_ph0_i0_tap4_mains_amp230_f60_fuse1_macrofull_ptc40 27.17s
+6/14 timeout P3_t25_vo_ohm_k1_rs100_pwr1_body0_rail0d98_open0d02_actual0d023_ph0_i0d001_tap6_mains_amp230_f60_fuse1_macrofull_ptc40 60.37s
+7/14 timeout P2_t25_vo_v_k0_rs100_pwr1_body0_rail0d98_open0_actual0_ph0_i0_tap2_mains_amp230_f60_fuse1_macrofull_ptc40 60.36s
+8/14 timeout P6_t25_vo_v_k0_rs100_pwr1_body0_rail0d98_open0_actual0_ph0_i0_tap0_esd_ampm4000_f60_fuse1_macrofull_ptc40 60.37s
+9/14 timeout P2_t25_vo_v_k0_rs330_pwr1_body0_rail0d98_open0_actual0_ph0_i0_tap2_mains_amp230_f60_fuse1_macrofull_ptc40 60.53s
+10/14 timeout P1_t25_vo_v_k0_rs330_pwr1_body0_rail0d98_open0_actual0_ph0_i0_tap2_dc_ampm50_f60_fuse1_macrofull_ptc40 60.54s
+11/14 timeout P3_t25_vo_ohm_k1_rs330_pwr1_body0_rail0d98_open0d02_actual0d023_ph0_i0d001_tap6_mains_amp230_f60_fuse1_macrofull_ptc40 60.54s
+12/14 timeout P6_t25_vo_v_k0_rs330_pwr1_body0_rail0d98_open0_actual0_ph0_i0_tap0_esd_ampm4000_f60_fuse1_macrofull_ptc40 60.38s
+13/14 timeout P7_t25_vo_v_k0_rs100_pwr1_body0_rail0d98_opennever_actual0_ph0_i0_tap0_mains_amp230_f60_fuse1_macrofull_ptc40 60.36s
+14/14 numerical_failure P7_t25_vo_v_k0_rs330_pwr1_body0_rail0d98_opennever_actual0_ph0_i0_tap0_mains_amp230_f60_fuse1_macrofull_ptc40 57.63s
+{"total": 14, "ok": 3, "elapsed_s": 84.62946300001931, "workers": 10, "timeout": 60.0, "thermal": {"Rcold": [40, 60], "G_per_ohm": 0.019600000000000003, "Ecrit_per_ohm": 0.9901676689864997, "tau": 50.51875862176018, "trip_1A_s": 1}, "csv": "C:\\Users\\Keneth\\Desktop\\S3G4 LAB\\S3G4_LAB_rev2.1\\03_simulaciones\\DMM\\resultados\\s11_1_smoke_full.csv", "smoke": true}

@@ -1,0 +1,24 @@
+Encargo S11.4 (DMM, bloque 1, confirmación final). Arrancas en la raíz C:\Users\Keneth\Desktop\S3G4 LAB (ruta con espacio: entrecomilla siempre).
+
+Contrato: S3G4_LAB_rev2.1/03_simulaciones/DMM/PLAN_SIMULACION_S11_4.md. Léelo entero con los documentos que manda leer. El entorno es el de ENCARGO_CODEX_S11_1.md.
+
+Qué hacer:
+1. Lee AGENTS.md y ai-context/START.md. Abre tu diario en ai-context/journal/.
+2. Escribe comun/dmm_bloque1_final.inc (con el modelo del GDT) y ejecutar_s11_4.py, a partir de los de S11.3.
+3. Pasa --smoke y luego las pruebas. Prioridad: T2, T1, T3, T4, T5.
+4. Escribe ACTA_S11_4.md y cierra el diario.
+
+Reglas:
+- No cambies piezas.
+- Las contradicciones se anotan.
+- Cada .meas lleva en el nombre su estado real.
+- No toques los archivos de S11.1–S11.3, 01_diseno, models, STATE.md ni DECISIONS.md. No descargues nada.
+
+Respuesta final:
+- ficheros;
+- número de simulaciones y tiempo;
+- la tabla D1–D7;
+- el diodo a 100 µA y a 1 mA;
+- la ESD con el cebado mínimo y el máximo del GDT;
+- la lista de piezas final;
+- dudas.

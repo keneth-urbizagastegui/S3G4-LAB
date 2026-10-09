@@ -1,0 +1,16 @@
+{
+  "total": 2,
+  "ok": 0,
+  "elapsed_s": 60.48934030000237,
+  "workers": 10,
+  "timeout": 60.0,
+  "thermal": {
+    "Rcold": 35,
+    "G": 0.686,
+    "Ecrit": 34.65586841452748,
+    "tau": 50.51875862176018,
+    "trip_1A_s": 1.0
+  },
+  "csv": "C:\\Users\\Keneth\\Desktop\\S3G4 LAB\\S3G4_LAB_rev2.1\\03_simulaciones\\DMM\\resultados\\s11_1_smoke.csv",
+  "smoke": true
+}

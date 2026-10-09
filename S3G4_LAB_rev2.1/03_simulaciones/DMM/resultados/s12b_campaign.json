@@ -1,0 +1,15 @@
+{
+  "total": 1191,
+  "ok": 1191,
+  "elapsed_s": 1391.2168673000415,
+  "reused": 198,
+  "workers": 10,
+  "timeout_s": 900,
+  "n_population": 200,
+  "before_reaudit_ok": 1191,
+  "reaudited": 1191,
+  "analysis_elapsed_s": 33.35308610001812,
+  "correction50V_elapsed_s": 11.102884499996435,
+  "phase_previa_process_wall_s": 1625.14,
+  "elapsed_phases_sum_s": 3060.8128379000564
+}

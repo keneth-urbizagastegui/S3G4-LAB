@@ -1,0 +1,25 @@
+Encargo S11.3 (DMM, bloque 1, simulación de cierre). Arrancas en la raíz C:\Users\Keneth\Desktop\S3G4 LAB (ruta con espacio: entrecomilla siempre).
+
+Contrato: S3G4_LAB_rev2.1/03_simulaciones/DMM/PLAN_SIMULACION_S11_3.md. Léelo entero junto con los documentos que manda leer. El entorno es el de ENCARGO_CODEX_S11_1.md.
+
+Qué hacer:
+1. Lee AGENTS.md y ai-context/START.md. Abre tu diario en ai-context/journal/ al empezar.
+2. Escribe comun/dmm_bloque1_o4.inc y ejecutar_s11_3.py (reutiliza los de S11.2). Comprueba que un caso de R3 converge.
+3. Pasa --smoke y luego la campaña. Prioridad: R3, R6, R2, R5, R1, R7, R3b.
+4. Escribe ACTA_S11_3.md y cierra el diario.
+
+Reglas:
+- No cambies piezas salvo R_X0/R_X2. No añadas protecciones.
+- Las contradicciones se anotan.
+- Cada .meas lleva en el nombre su estado real.
+- No toques los archivos de S11.1/S11.2, 01_diseno, models, STATE.md ni DECISIONS.md. No descargues nada.
+
+Respuesta final:
+- ficheros;
+- número de simulaciones y tiempo;
+- la tabla C1–C8;
+- la pieza más cargada de cada prueba;
+- el diodo a 1 mA y a 100 µA;
+- R3b (qué se rompe con la red en ohmios);
+- la lista de piezas final del bloque 1;
+- dudas.

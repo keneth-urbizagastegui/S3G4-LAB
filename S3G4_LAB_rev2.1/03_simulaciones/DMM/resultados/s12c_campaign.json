@@ -1,0 +1,27 @@
+{
+  "total": 1215,
+  "ok": 1215,
+  "elapsed_s": 1490.3850747999968,
+  "reused": 15,
+  "workers": 10,
+  "timeout_s": 900,
+  "n_population": 200,
+  "started_local": "2026-10-08T12:44:37-0500",
+  "ok_before_collect": 1213,
+  "collect_elapsed_s": 39.48957750003319,
+  "collect_reexecuted": 2,
+  "reaudited_exact_deck": 1213,
+  "audit_source_sha256": "2f0cb60cde070ca3de938fa45ff82d3a2be39b4edbaf75291c8cecd09509d895",
+  "collect_history": [
+    {
+      "collect_elapsed_s": 189.4263031000155,
+      "collect_reexecuted": 2,
+      "ok": 1213
+    },
+    {
+      "collect_elapsed_s": 127.19581950001884,
+      "collect_reexecuted": 2,
+      "ok": 1213
+    }
+  ]
+}

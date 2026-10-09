@@ -1,0 +1,19 @@
+{
+  "total": 14,
+  "ok": 3,
+  "elapsed_s": 84.06502639999962,
+  "workers": 10,
+  "timeout": 60.0,
+  "thermal": {
+    "Rcold": [
+      40,
+      60
+    ],
+    "G_per_ohm": 0.019600000000000003,
+    "Ecrit_per_ohm": 0.9901676689864997,
+    "tau": 50.51875862176018,
+    "trip_1A_s": 1
+  },
+  "csv": "C:\\Users\\Keneth\\Desktop\\S3G4 LAB\\S3G4_LAB_rev2.1\\03_simulaciones\\DMM\\resultados\\s11_1_smoke_full.csv",
+  "smoke": true
+}

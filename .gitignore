@@ -82,3 +82,11 @@ ltspice-mcp.toml
 
 # Modelo 3D del display (49 MB): en local, fuera de GitHub (6 oct).
 /S3G4_LAB_rev2.1/04_esquematicos/kicad/lib/3d/ER-TFTM035-6_3D.step
+
+# DMM (S11.x–S13): las corridas se quedan en local; van a git los scripts, las actas, los prompts y las tablas de resultados.
+/S3G4_LAB_rev2.1/03_simulaciones/DMM/S1*/**/*.*
+!/S3G4_LAB_rev2.1/03_simulaciones/DMM/S1*/**/*.py
+!/S3G4_LAB_rev2.1/03_simulaciones/DMM/S1*/**/*.md
+/S3G4_LAB_rev2.1/03_simulaciones/DMM/resultados/**/*.jsonl
+/S3G4_LAB_rev2.1/03_simulaciones/DMM/resultados/intentos/
+/S3G4_LAB_rev2.1/03_simulaciones/_registros_codex/*.log

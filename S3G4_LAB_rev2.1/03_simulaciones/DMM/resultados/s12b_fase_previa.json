@@ -1,0 +1,10 @@
+{
+  "process_wall_elapsed_s": 1625.14,
+  "completed_E3_cases": 48,
+  "completed_E8_protection_cases": 148,
+  "workers": 10,
+  "timeout_s": 900,
+  "reason_stopped": "E8 extreme DC OP convergence; replace by ramp/hold, E2 by settled plateaus",
+  "preservation": "204 exact canonical decks reaudited from RAW by refrescar_s12b.py; no errors. Includes 196 completed E3/E8 and 8 earlier smoke records",
+  "excluded": "earlier development attempts and interrupted preliminary campaigns; retained logs/journal"
+}

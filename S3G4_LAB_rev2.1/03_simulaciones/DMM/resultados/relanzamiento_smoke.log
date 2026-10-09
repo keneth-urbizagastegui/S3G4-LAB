@@ -1,0 +1,32 @@
+1/14 ok P1_t25_vo_v_k0_rs100_pwr1_body0_rail0d98_open0_actual0_ph0_i0_tap2_dc_ampm50_f50_fuse1_macrofull 58.48s
+2/14 numerical_failure P4_t25_vo_v_k0_rs100_pwr0_body0_rail0d98_open0_actual0_ph0_i0_tap0_mains_amp230_f60_fuse1_macrofull_ptc40 8.95s
+3/14 numerical_failure P4_t25_vo_v_k0_rs330_pwr0_body0_rail0d98_open0_actual0_ph0_i0_tap0_mains_amp230_f60_fuse1_macrofull_ptc40 10.44s
+4/14 numerical_failure P2_t25_vo_v_k0_rs330_pwr1_body0_rail0d98_open0_actual0_ph0_i0_tap2_mains_amp230_f60_fuse1_macrofull_ptc40 12.26s
+5/14 numerical_failure P5_t25_a_v_k0_rs100_pwr1_body0_rail0d98_open0_actual0_ph0_i0_tap4_mains_amp230_f60_fuse1_macrofull_ptc40 12.47s
+6/14 numerical_failure P1_t25_vo_v_k0_rs330_pwr1_body0_rail0d98_open0_actual0_ph0_i0_tap2_dc_ampm50_f60_fuse1_macrofull_ptc40 12.95s
+7/14 numerical_failure P6_t25_vo_v_k0_rs100_pwr1_body0_rail0d98_open0_actual0_ph0_i0_tap0_esd_ampm4000_f60_fuse1_macrofull_ptc40 13.99s
+8/14 numerical_failure P5_t25_a_v_k0_rs330_pwr1_body0_rail0d98_open0_actual0_ph0_i0_tap4_mains_amp230_f60_fuse1_macrofull_ptc40 13.99s
+9/14 numerical_failure P2_t25_vo_v_k0_rs100_pwr1_body0_rail0d98_open0_actual0_ph0_i0_tap2_mains_amp230_f60_fuse1_macrofull_ptc40 14.23s
+10/14 numerical_failure P6_t25_vo_v_k0_rs330_pwr1_body0_rail0d98_open0_actual0_ph0_i0_tap0_esd_ampm4000_f60_fuse1_macrofull_ptc40 7.32s
+11/14 numerical_failure P7_t25_vo_v_k0_rs100_pwr1_body0_rail0d98_opennever_actual0_ph0_i0_tap0_mains_amp230_f60_fuse1_macrofull_ptc40 7.26s
+12/14 numerical_failure P7_t25_vo_v_k0_rs330_pwr1_body0_rail0d98_opennever_actual0_ph0_i0_tap0_mains_amp230_f60_fuse1_macrofull_ptc40 5.74s
+Traceback (most recent call last):
+  File "C:\Users\Keneth\Desktop\S3G4 LAB\S3G4_LAB_rev2.1\03_simulaciones\DMM\ejecutar_s11_1.py", line 310, in <module>
+    
+  File "C:\Users\Keneth\Desktop\S3G4 LAB\S3G4_LAB_rev2.1\03_simulaciones\DMM\ejecutar_s11_1.py", line 295, in main
+    for future in cf.as_completed(futs):
+            ^^^^^^^^^^^^^^^
+  File "C:\Users\Keneth\AppData\Local\Programs\Python\Python312\Lib\concurrent\futures\_base.py", line 449, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Keneth\AppData\Local\Programs\Python\Python312\Lib\concurrent\futures\_base.py", line 401, in __get_result
+    raise self._exception
+  File "C:\Users\Keneth\AppData\Local\Programs\Python\Python312\Lib\concurrent\futures\thread.py", line 59, in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Keneth\Desktop\S3G4 LAB\S3G4_LAB_rev2.1\03_simulaciones\DMM\ejecutar_s11_1.py", line 255, in run
+    raw=p.with_suffix(suffix)
+                              
+  File "C:\Users\Keneth\AppData\Local\Programs\Python\Python312\Lib\pathlib.py", line 1342, in unlink
+    os.unlink(self)
+PermissionError: [WinError 32] El proceso no tiene acceso al archivo porque está siendo utilizado por otro proceso: 'C:\\Users\\Keneth\\Desktop\\S3G4 LAB\\S3G4_LAB_rev2.1\\03_simulaciones\\DMM\\S11_1\\P3_t25_vo_ohm_k1_rs100_pwr1_body0_rail0d98_open0d02_actual0d023_ph0_i0d001_tap6_mains_amp230_f60_fuse1_macrofull_ptc40.raw'

@@ -1,0 +1,8 @@
+Reanudación de S11.1 (DMM, bloque 1). Keneth paró la primera campaña: casi todos los transitorios de 10 s agotaban el tiempo límite. Tu trabajo anterior está en S3G4_LAB_rev2.1/03_simulaciones/DMM (comun/, S11_1/, ejecutar_s11_1.py, diagnosticar_s11_1.py, resultados/) y en tu diario ai-context/journal/2026-10-07-codex-s11-1.md.
+
+1. Lee tu diario y vuelve a leer DMM/PLAN_SIMULACION_S11_1.md entero. Fíjate en el §3b nuevo, «Cambios del relanzamiento»: red a 60 Hz; PTC de 50 Ω ±20 % con casos de 40 y 60 Ω; transitorios hasta el disparo o 1 s y el resto extrapolado en Python; pasos de ESD; se conservan P0 y los casos ok.
+2. Anota la reanudación en el mismo diario antes de tocar nada.
+3. Adapta ejecutar_s11_1.py (sigue con 10 trabajadores, --smoke, --resume y S3G4_MODELS). Pasa --smoke y luego la campaña. Prioridad: P3, P2, P4, P5, P1, P6, P7.
+4. Escribe ACTA_S11_1.md y cierra el diario.
+
+Las reglas y la respuesta final son las de DMM/ENCARGO_CODEX_S11_1.md (léelo). Además, en la respuesta final separa la energía simulada de la extrapolada.

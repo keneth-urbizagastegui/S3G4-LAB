@@ -1,0 +1,6 @@
+- [ACTA_S11_4.md](<C:/Users/Keneth/Desktop/S3G4 LAB/S3G4_LAB_rev2.1/03_simulaciones/DMM/ACTA_S11_4.md>) — **223/223 simulaciones válidas**, sin timeout; smoke + campaña: **19 min 1 s**. Incluye D1–D7, diodo, ESD mínimo/máximo, piezas y dudas. **Bloque no aprobado:** D1/D2 sin ratings verificables y D6 sin recuperación acreditada en seis estados apagados.
+- [dmm_bloque1_final.inc](<C:/Users/Keneth/Desktop/S3G4 LAB/S3G4_LAB_rev2.1/03_simulaciones/DMM/comun/dmm_bloque1_final.inc>) — Circuito final y modelo del GDT con sus supuestos.
+- [ejecutar_s11_4.py](<C:/Users/Keneth/Desktop/S3G4 LAB/S3G4_LAB_rev2.1/03_simulaciones/DMM/ejecutar_s11_4.py>) — Diez trabajadores, `--smoke`, `--resume` y 900 s por caso.
+- [CSV definitivo](<C:/Users/Keneth/Desktop/S3G4 LAB/S3G4_LAB_rev2.1/03_simulaciones/DMM/resultados/s11_4_campaign_audited.csv>) — Los 223 estados; CSV adicionales de criterios, diodo, ESD y esfuerzos en la misma carpeta.
+- [analizar_s11_4.py](<C:/Users/Keneth/Desktop/S3G4 LAB/S3G4_LAB_rev2.1/03_simulaciones/DMM/analizar_s11_4.py>) — Consolidación reproducible y control de firmas.
+- [Diario cerrado](<C:/Users/Keneth/Desktop/S3G4 LAB/ai-context/journal/2026-10-07-codex-s11-4.md>) — Evidencia, contradicciones y pendientes; sincronización completada sin modificar los archivos protegidos.

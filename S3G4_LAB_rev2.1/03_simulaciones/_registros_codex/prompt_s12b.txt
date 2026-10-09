@@ -1,0 +1,19 @@
+Encargo S12b (DMM, bloque 2: confirmación con el buffer). Arrancas en la raíz C:\Users\Keneth\Desktop\S3G4 LAB (ruta con espacio: entrecomilla siempre).
+
+Contrato: S3G4_LAB_rev2.1/03_simulaciones/DMM/PLAN_SIMULACION_S12b.md. Léelo entero con los documentos que manda leer. El entorno es el de ENCARGO_CODEX_S11_1.md.
+
+Qué hacer:
+1. Lee AGENTS.md y ai-context/START.md. Abre tu diario.
+2. Escribe comun/dmm_bloque2b.inc y ejecutar_s12b.py (a partir de los de S12), con 10 trabajadores, --smoke, --resume y 900 s por caso.
+3. Pasa --smoke y luego la campaña. Prioridad: E3, E8, E2, E1, E6, E5, E4, E7.
+4. Escribe ACTA_S12b.md y cierra el diario.
+
+Reglas: no cambies piezas; anota las contradicciones; cada .meas lleva en el nombre su estado real; no toques los archivos de S11.x/S12, 01_diseno, models, STATE.md ni DECISIONS.md; no descargues nada.
+
+Respuesta final:
+- ficheros;
+- número de simulaciones y tiempo;
+- la tabla E1–E8;
+- la fuga máxima tolerable;
+- la lista de piezas final;
+- dudas.

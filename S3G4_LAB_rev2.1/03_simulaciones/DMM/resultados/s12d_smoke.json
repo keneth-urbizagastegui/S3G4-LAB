@@ -1,0 +1,10 @@
+{
+  "total": 7,
+  "ok": 7,
+  "elapsed_s": 96.8084480999969,
+  "reused": 0,
+  "workers": 10,
+  "timeout_s": 900,
+  "n_population": 200,
+  "started_local": "2026-10-08T16:40:29-0500"
+}

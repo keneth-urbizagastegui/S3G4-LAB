@@ -1,0 +1,13 @@
+Segunda reanudación de S11.1 (DMM, bloque 1). Keneth paró la campaña: P3 no convergía en el punto de operación inicial (226 de 226) y P4 daba fallos numéricos. Tu trabajo está en S3G4_LAB_rev2.1/03_simulaciones/DMM y en tu diario ai-context/journal/2026-10-07-codex-s11-1.md.
+
+1. Lee tu diario y vuelve a leer DMM/PLAN_SIMULACION_S11_1.md entero. Fíjate en el §3c nuevo, «Segundo relanzamiento»:
+   - modelo reducido de los integrados en P2–P7 y modelos completos solo en P1;
+   - 300 s de límite por caso;
+   - comprobar que un caso de P3 converge antes de la campaña;
+   - P5 con impedancias de red de 0.5, 1 y 2 Ω.
+2. Anota la reanudación en el diario antes de tocar nada.
+3. Escribe el modelo reducido con los datos de las hojas, citando las páginas, y comprueba un caso de P3. Si no converge, para y escribe el acta con lo que haya.
+4. Pasa --smoke y luego la campaña: 10 trabajadores, --resume y S3G4_MODELS. Prioridad: P3, P2, P4, P5, P1, P6, P7.
+5. Escribe ACTA_S11_1.md y cierra el diario.
+
+Reglas y respuesta final: las de DMM/ENCARGO_CODEX_S11_1.md. En la respuesta, separa la energía simulada de la extrapolada e incluye la tabla del DF08S de P5.

@@ -1,0 +1,24 @@
+Encargo S12 (DMM, bloque 2: frontal de tensión). Arrancas en la raíz C:\Users\Keneth\Desktop\S3G4 LAB (ruta con espacio: entrecomilla siempre).
+
+Contrato: S3G4_LAB_rev2.1/03_simulaciones/DMM/PLAN_SIMULACION_S12.md. Léelo entero con los documentos que manda leer. El entorno es el de ENCARGO_CODEX_S11_1.md.
+
+Qué hacer:
+1. Lee AGENTS.md y ai-context/START.md. Abre tu diario en ai-context/journal/.
+2. Comprueba antes que nada el modelo del OPA2192 (orden de pines con un seguidor, Ib, GBW y modo común frente a la hoja). Anótalo en el diario.
+3. Escribe comun/dmm_bloque2.inc y ejecutar_s12.py. Comprueba que un caso converge.
+4. Pasa --smoke y luego la campaña. Prioridad: E4, E1, E2, E3, E5, E6, E7.
+5. Escribe ACTA_S12.md y cierra el diario.
+
+Reglas:
+- No cambies piezas.
+- Las contradicciones se anotan.
+- Cada .meas lleva en el nombre su estado real.
+- No toques los archivos de S11.x, 01_diseno, models, STATE.md ni DECISIONS.md. No descargues nada.
+
+Respuesta final:
+- ficheros;
+- número de simulaciones y tiempo;
+- el modelo del OPA2192 frente a su hoja;
+- la tabla E1–E7;
+- la fuga máxima tolerable por rango;
+- dudas.

@@ -1,0 +1,6 @@
+- [ACTA_S11_3.md](<C:/Users/Keneth/Desktop/S3G4 LAB/S3G4_LAB_rev2.1/03_simulaciones/DMM/ACTA_S11_3.md>): bloque **no aprobado**; 630 estados, 621 válidos y nueve timeout; campaña inicial 23 min 43 s. Incluye C1–C8, esfuerzos, diodo, R3b, piezas y dudas.
+- [Resultados definitivos](<C:/Users/Keneth/Desktop/S3G4 LAB/S3G4_LAB_rev2.1/03_simulaciones/DMM/resultados/s11_3_campaign_audited.csv>): 630 filas con estados y medidas auditadas.
+- [dmm_bloque1_o4.inc](<C:/Users/Keneth/Desktop/S3G4 LAB/S3G4_LAB_rev2.1/03_simulaciones/DMM/comun/dmm_bloque1_o4.inc>): circuito O4 ensayado.
+- [ejecutar_s11_3.py](<C:/Users/Keneth/Desktop/S3G4 LAB/S3G4_LAB_rev2.1/03_simulaciones/DMM/ejecutar_s11_3.py>): ejecutor con smoke, reanudación y límite por caso.
+- [analizar_s11_3.py](<C:/Users/Keneth/Desktop/S3G4 LAB/S3G4_LAB_rev2.1/03_simulaciones/DMM/analizar_s11_3.py>): extracción y consolidación de resultados.
+- [Diario cerrado](<C:/Users/Keneth/Desktop/S3G4 LAB/ai-context/journal/2026-10-07-codex-s11-3.md>): incidencias, pruebas, archivos protegidos y sincronización completada.

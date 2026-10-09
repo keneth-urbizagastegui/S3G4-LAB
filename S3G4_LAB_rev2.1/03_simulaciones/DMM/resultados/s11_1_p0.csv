@@ -1,0 +1,61 @@
+pieza,hoja,pagina,limite,valor,unidad,condicion,limitacion
+PTCTL4MR500SBE,ptctl.pdf,1,R25,50,ohm,+-20 %,plan indica 35 ohm min
+PTCTL4MR500SBE,ptctl.pdf,1,Vmax,600,V,rms o DC,
+PTCTL4MR500SBE,ptctl.pdf,1,Int,0.05,A,70 C,
+PTCTL4MR500SBE,ptctl.pdf,1,It,0.14,A,25 C,
+PTCTL4MR500SBE,ptctl.pdf,1,ttrip_max,1,s,1 A,no curva ni masa termica ni enfriamiento
+PTCTL4MR500SBE,ptctl.pdf,1,Imax,1,A,a Vmax,
+SMAJ12CA,SMAJ12CA.pdf,2,Ppulse,400,W,no repetitivo,NO 400 W durante 10 s
+SMAJ12CA,SMAJ12CA.pdf,2,Psteady,1,W,TL=75 C,terminales mantenidos a temperatura
+SMAJ12CA,SMAJ12CA.pdf,3,VRWM,12,V,,avalancha intencional no es sobretension absoluta
+SMAJ12CA,SMAJ12CA.pdf,3,VBRmin,13.3,V,IT=1 mA,
+SMAJ12CA,SMAJ12CA.pdf,3,VBRmax,14.7,V,IT=1 mA,
+SMAJ12CA,SMAJ12CA.pdf,3,VCmax,19.9,V,IPP=20.1 A,
+SMAJ12CA,SMAJ12CA.pdf,3,IRmax,5e-6,A,12 V y 25 C,sin valor garantizado a 4 V
+BAV199,BAV199.pdf,2,VR,75,V,DC,
+BAV199,BAV199.pdf,2,VRRM,85,V,repetitivo,
+BAV199,BAV199.pdf,2,IF,0.14,A,ambos diodos cargados,
+BAV199,BAV199.pdf,2,IFRM,0.5,A,repetitivo,
+BAV199,BAV199.pdf,2,IFSM,4,A,1 us cuadrado,no rating IEC
+BAV199,BAV199.pdf,2,IFSM,1,A,1 ms cuadrado,
+BAV199,BAV199.pdf,2,IFSM,0.5,A,1 s cuadrado,
+BAV199,BAV199.pdf,2,Ptot,0.25,W,25 C FR4,
+BAV199,BAV199.pdf,3,IRmax,5e-9,A,75 V y 25 C,sin valor garantizado a 4 V
+BSS84,BSS84.pdf,2,VDS,50,V,,modelo nativo NXP frente a hoja Diodes
+BSS84,BSS84.pdf,2,VGS,20,V,,
+BSS84,BSS84.pdf,2,ID,0.13,A,continuo,
+BSS84,BSS84.pdf,2,IDM,1.2,A,pulso,sin duracion equivalente definida
+BSS84,BSS84.pdf,2,PD,0.3,W,25 C y PCB especificado,
+DF08S,DF08S.pdf,2,VRRM,800,V,,
+DF08S,DF08S.pdf,2,IO,1,A,40 C,
+DF08S,DF08S.pdf,2,IFSM,50,A,8.3 ms media senoide,
+DF08S,DF08S.pdf,2,I2t,10.4,A2s,t menor 8.3 ms,no extrapolar garantia a 10 ms
+DF08S,DF08S.pdf,2,VFmax,1.1,V,1 A por elemento,ajuste un punto extrapolacion alta corriente incierta
+74HC4051,74HC_HCT4051.pdf,5,VCCmax,11,V,,VCC menos VEE criterio contractual
+74HC4051,74HC_HCT4051.pdf,5,ISK,0.02,A,,criterio C3 50 %
+74HC4051,74HC_HCT4051.pdf,5,ISW,0.025,A,,
+74HC4051,74HC_HCT4051.pdf,5,P_switch,0.1,W,,
+74HC4051,74HC_HCT4051.pdf,6,VSrecommended,10,V,,
+OPA2188,opa2188.pdf,4,VSmax,40,V,,
+OPA2188,opa2188.pdf,4,input_rail_excess,0.5,V,,no convertir corriente pequena en permiso de tension
+OPA2188,opa2188.pdf,4,input_current,0.01,A,,criterio C3 50 %
+TQ2SA,C46047.pdf,6,switch_voltage_AC,125,V,AC,no garantiza conmutacion a 230 Vac
+TQ2SA,C46047.pdf,6,switch_voltage_DC,220,V,DC,
+TQ2SA,C46047.pdf,6,switch_current,2,A,,
+TQ2SA,C46047.pdf,6,open_contact_insulation,1000,Vrms,1 minuto,no equivale a tension de conmutacion
+TQ2SA,C46047.pdf,6,release_max,0.004,s,sin diodo,contrato 0.003 s
+R_C_fusible_shunt,no MPN,,ratings_no_disponibles,,,no elegir piezas,no certificar por formato
+TLV2372,tlv2372.pdf,8,VSmax,16.5,V,,
+TLV2372,tlv2372.pdf,8,input_rail_excess,0.2,V,,
+TLV2372,tlv2372.pdf,8,input_current,0.01,A,,criterio C3 50 %
+TLV2372,tlv2372.pdf,11,Ccommon,8e-12,F,f=21 kHz,
+TLV2372,tlv2372.pdf,13,IQ_channel,0.00055,A,VDD=5 V tipico,aproximado a 9.8 V en reducido
+OPA2188,opa2188.pdf,5,Ccommon,9.5e-12,F,operacion alta tension,
+OPA2188,opa2188.pdf,5,Cdiff,6e-12,F,,
+OPA2188,opa2188.pdf,6,IQ_channel,0.000415,A,tipico,
+74HC4051,74HC_HCT4051.pdf,9,ICCmax,16e-6,A,VCC=10 V y 25 C,equivalente resistivo no caracteriza apagado
+74HC4051,74HC_HCT4051.pdf,10,CYn,5e-12,F,tipico,
+74HC4051,74HC_HCT4051.pdf,10,CZ,25e-12,F,tipico,
+BSS84,BSS84.pdf,2,Ciss,24.6e-12,F,tipico a -25 V,
+BSS84,BSS84.pdf,2,Coss,4.7e-12,F,tipico a -25 V,
+BSS84,BSS84.pdf,2,Crss,2.8e-12,F,tipico a -25 V,

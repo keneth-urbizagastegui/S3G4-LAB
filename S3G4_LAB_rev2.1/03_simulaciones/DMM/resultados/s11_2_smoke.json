@@ -1,0 +1,11 @@
+{
+  "total": 5,
+  "ok": 5,
+  "reused": 0,
+  "elapsed_s": 41.41927090001991,
+  "workers": 10,
+  "timeout_s": 300,
+  "rlim_ohm": 700,
+  "rlim_status": "diagnostic_only_no_guaranteed_solution",
+  "csv": "C:\\Users\\Keneth\\Desktop\\S3G4 LAB\\S3G4_LAB_rev2.1\\03_simulaciones\\DMM\\resultados\\s11_2_smoke.csv"
+}

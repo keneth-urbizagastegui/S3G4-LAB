@@ -1,0 +1,8 @@
+﻿criterion,limit,reason,result,unit,value
+D1,200,Pulso supera margen de tensión de trabajo; sin rating de pulso no demuestra destrucción ni supervivencia. Faltan ratings por pieza/energía,NO CERTIFICADO / supera tensión de trabajo,"V Rohm,80% de250V trabajo",543.0700943505713
+D2,1200,Relé contra 1500V pulso p6; faltan tensiones de sobrecarga garantizadas de cada1206,PARCIAL / NO CERTIFICADO,V relé abierto,38.5939933302415
+D3,336,80% de420V; verificar ausencia de corriente de arco,CUMPLE EN MODELO,V GDT,325.26911934255014
+D4,0.01,"Pico bruto, sin descartar muestras;máximo absoluto20mA HC4051 p5",CUMPLE EN MODELO,A clamp X0/X1 contacto,0.0011770051813587436
+D5,3.5,"100uA,riel-2%; corriente DUT informada aparte",CUMPLE EN MODELO,V compliance fuente99%,3.606261895664905
+D6,1,Seis N2 apagados siguen derivando a2s;100uV respecto a media final no es referencia estacionaria. No presentar el extremo como tiempo de recuperación,NO ACREDITADO EN VENTANA,s recuperación,">2, censurado"
+D7,11,T2–T4; zener aproximado,CUMPLE EN MODELO,V entre rieles,10.569050902189765

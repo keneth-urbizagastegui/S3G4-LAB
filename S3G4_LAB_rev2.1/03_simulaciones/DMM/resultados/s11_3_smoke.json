@@ -1,0 +1,9 @@
+{
+  "total": 7,
+  "ok": 7,
+  "reused": 0,
+  "elapsed_s": 274.3526023000013,
+  "workers": 10,
+  "timeout_s": 300,
+  "csv": "C:\\Users\\Keneth\\Desktop\\S3G4 LAB\\S3G4_LAB_rev2.1\\03_simulaciones\\DMM\\resultados\\s11_3_smoke.csv"
+}

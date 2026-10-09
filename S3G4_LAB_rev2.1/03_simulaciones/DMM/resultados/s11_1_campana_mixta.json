@@ -1,0 +1,19 @@
+{
+  "total": 570,
+  "ok": 536,
+  "elapsed_s": 1969.3316897000186,
+  "workers": 10,
+  "timeout": 300.0,
+  "thermal": {
+    "Rcold": [
+      40,
+      60
+    ],
+    "G_per_ohm": 0.019600000000000003,
+    "Ecrit_per_ohm": 0.9901676689864997,
+    "tau": 50.51875862176018,
+    "trip_1A_s": 1
+  },
+  "csv": "C:\\Users\\Keneth\\Desktop\\S3G4 LAB\\S3G4_LAB_rev2.1\\03_simulaciones\\DMM\\resultados\\s11_1_campana_mixta.csv",
+  "smoke": false
+}

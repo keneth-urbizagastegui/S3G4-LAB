@@ -1,0 +1,3 @@
+﻿amplitude,body,borne,elapsed_s,frequency,fuse,id,load,mode,opening,p,phase,power,rail,relay,remove,returncode,rs,signature,source,status,step,stimulus,stop,tap
+230,0,vo,60.43377390000387,50,1,P2_vo_v_k0_rs100_pwr1_body0_rail0d98_open0_ph0_i0_tap2_mains_amp230_f50_fuse1,0,v,0,P2,0,1,0.98,0,10.0,,100,1c172fec05fb3e67321b8f828b92208160ca0d0c56452615abbb28b56f68bf97,0,timeout,0.0001,mains,10.0,2
+230,0,vo,60.479083799989894,50,1,P2_vo_v_k0_rs330_pwr1_body0_rail0d98_open0_ph0_i0_tap2_mains_amp230_f50_fuse1,0,v,0,P2,0,1,0.98,0,10.0,,330,783a4369940d15351eb9c8a30a0aee6800a58c2a50af1d65f8b86c975237fb9e,0,timeout,0.0001,mains,10.0,2

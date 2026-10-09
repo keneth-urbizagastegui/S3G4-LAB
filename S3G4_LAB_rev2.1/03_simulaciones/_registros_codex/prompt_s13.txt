@@ -1,0 +1,22 @@
+Encargo S13 (DMM, bloque 3: ohmios, diodo y continuidad). Arrancas en la raíz C:\Users\Keneth\Desktop\S3G4 LAB (ruta con espacio: entrecomilla siempre).
+
+Contrato: S3G4_LAB_rev2.1/03_simulaciones/DMM/PLAN_SIMULACION_S13.md. Léelo entero con los documentos que manda leer, sobre todo ESTUDIO_BLOQUE3.md. El entorno es el de ENCARGO_CODEX_S11_1.md.
+
+Qué hacer:
+1. Lee AGENTS.md y ai-context/START.md. Abre tu diario.
+2. Escribe comun/dmm_bloque3.inc y ejecutar_s13.py, partiendo de los decks de estudio_bloque3/ y del ejecutor de S11.4 (para C1). Comprueba que un caso converge.
+3. Pasa --smoke y luego la campaña. Prioridad: C2, C1, C3, C5, C4, C6.
+4. Escribe ACTA_S13.md y cierra el diario.
+
+Reglas:
+- No cambies piezas.
+- Clasifica los fallos marginales (físico, modelo o criterio) sin perseguirlos.
+- Cada .meas lleva en el nombre su estado real.
+- No toques los archivos anteriores, 01_diseno, models, STATE.md ni DECISIONS.md. No descargues nada.
+
+Respuesta final:
+- ficheros;
+- número de simulaciones y tiempo;
+- la tabla C1–C6;
+- la lista de piezas;
+- dudas.
