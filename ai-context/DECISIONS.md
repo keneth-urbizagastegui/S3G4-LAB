@@ -484,6 +484,24 @@ Keneth aprueba «todo» lo que quedaba del estudio del bloque 3:
   - tensión en vacío de ≈ 4.75 V, a corregir en la hoja de especificaciones.
 - Fuente: chat del 8 oct; `03_simulaciones/DMM/ESTUDIO_BLOQUE3.md`.
 
+### 2026-10-08 — DMM bloque 3 cerrado en simulación (S13)
+
+Según `03_simulaciones/DMM/ACTA_S13.md` y `AUDITORIA_CLAUDE_S13.md`:
+- **Cumplen C1–C4 y C6.** El diodo da 99.8 µA a 3.6 V y 1.002 mA a 0.65 V.
+- **Los fallos de C2 son márgenes de criterio:** 3 placas por Vos, que se calibra, y otras 3 por la Ron excesiva del modelo SWI1.
+- **C5 es marginal con 1 nA,** como se esperaba.
+- **Piezas:**
+  - TLV2372, 2 × BSS138, BSS84, 2 × 74HCT4051 y 2 × BAT54;
+  - R_k de 499 Ω, 4.99 kΩ, 49.9 kΩ, 420 kΩ y 1.7 MΩ;
+  - referencia de 24.9 kΩ / 4.99 kΩ;
+  - compensación de 1 kΩ + 1 nF y divisor de PB14 de 2 × 10 kΩ.
+- **Condiciones para el prototipo:**
+  - compliancia a 1 mA en 2 kΩ con el riel mínimo ≥ V_x + 0.25 V (y medir la Ron del 4051);
+  - error de corriente tras calibrar ≤ 0.1 %;
+  - fuga total ≤ 1 nA, o deriva 23–28 °C ≤ 0.1 % en 2 MΩ y ≤ 0.5 % en 20 MΩ; si no, TMUX1208.
+- **Abiertos:** P41, el impulso del HoCR2512 y del GDT, el MPN del BSS138 y la secuencia EN/INH.
+- Fuente: chat del 8 oct.
+
 ### 2026-10-06 — D-07 aceptada, RE-01 en espera y orden: DMM → AWG → mapa de pines
 
 Keneth, 6 oct, tras cerrar CH1–CH3:

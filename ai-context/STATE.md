@@ -290,3 +290,4 @@ No se ha elegido automáticamente uno de estos frentes como nueva tarea de ingen
   - 74HCT4051 y TMUX4053.
   - Decisiones en DECISIONS; condiciones de prototipo en `AUDITORIA_CLAUDE_S12d.md`.
   - **Siguiente: bloque 3 (ohmios).** Pendiente conocido: con 4.9 kΩ en serie, la fuente no llega a 1 mA en 200 Ω, 2 kΩ y el diodo de silicio.
+- **8 oct, BLOQUE 3 DEL DMM CERRADO en simulación** (S13): fuente P43 con BSS84/BSS138 inyectada en N1 (c1), 3 × 510 Ω, diodo como el ELVIS por X2 y continuidad en 31 µs. Condiciones en `AUDITORIA_CLAUDE_S13.md`. **Siguiente: bloque 4 (corriente).**
