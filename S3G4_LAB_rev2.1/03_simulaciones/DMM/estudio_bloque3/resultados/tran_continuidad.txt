@@ -1,0 +1,4 @@
+c1: 1 mA, R_serie 1.53 kΩ, corto 20 Ω: abierto: V_bor 4.75 V, PB14 2385 mV; umbral 50 Ω = 254 mV; cruza en 14.5 µs; final PB14 100.7 mV (ideal 101.4); asiento 2 % 32 µs
+c1: 1 mA, R_serie 1.53 kΩ, corto 40 Ω: abierto: V_bor 4.75 V, PB14 2385 mV; umbral 50 Ω = 254 mV; cruza en 26.6 µs; final PB14 201.4 mV (ideal 202.8); asiento 2 % 32 µs
+a: 0.5 mA, R_serie 4.9 kΩ, corto 20 Ω: abierto: V_bor 4.75 V, PB14 2385 mV; umbral 50 Ω = 127 mV; cruza en 13.7 µs; final PB14 50.2 mV (ideal 50.6); asiento 2 % 67 µs
+a: 0.5 mA, R_serie 4.9 kΩ, corto 40 Ω: abierto: V_bor 4.75 V, PB14 2385 mV; umbral 50 Ω = 127 mV; cruza en 61.1 µs; final PB14 100.5 mV (ideal 101.2); asiento 2 % 67 µs

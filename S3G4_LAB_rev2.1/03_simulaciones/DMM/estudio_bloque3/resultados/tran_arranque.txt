@@ -1,0 +1,10 @@
+1mA Rx=2000: V_bor final 1.9937 V, I_total 997.1 uA, 1 % en 0.028 ms, 0.1 % en 0.031 ms, 0.01 % en 0.033 ms
+1mA Rx=200: V_bor final 0.1994 V, I_total 997.1 uA, 1 % en 0.024 ms, 0.1 % en 0.027 ms, 0.01 % en 0.028 ms
+100uA Rx=20000: V_bor final 1.9902 V, I_total 99.71 uA, 1 % en 0.099 ms, 0.1 % en 0.131 ms, 0.01 % en 0.162 ms
+100uA Rx=2000: V_bor final 0.1994 V, I_total 99.71 uA, 1 % en 0.047 ms, 0.1 % en 0.051 ms, 0.01 % en 0.055 ms
+10uA Rx=200000: V_bor final 1.9551 V, I_total 9.971 uA, 1 % en 0.807 ms, 0.1 % en 1.099 ms, 0.01 % en 1.391 ms
+10uA Rx=20000: V_bor final 0.1990 V, I_total 9.971 uA, 1 % en 0.292 ms, 0.1 % en 0.322 ms, 0.01 % en 0.354 ms
+1uA Rx=2e+06: V_bor final 1.6620 V, I_total 0.9971 uA, 1 % en 6.903 ms, 0.1 % en 9.353 ms, 0.01 % en 11.803 ms
+1uA Rx=200000: V_bor final 0.1955 V, I_total 0.9971 uA, 1 % en 2.624 ms, 0.1 % en 2.914 ms, 0.01 % en 3.204 ms
+0.2uA Rx=2e+07: V_bor final 1.3281 V, I_total 0.1991 uA, 1 % en 29.148 ms, 0.1 % en 38.898 ms, 0.01 % en 48.648 ms
+0.2uA Rx=2e+06: V_bor final 0.3318 V, I_total 0.1991 uA, 1 % en 14.583 ms, 0.1 % en 17.033 ms, 0.01 % en 19.433 ms

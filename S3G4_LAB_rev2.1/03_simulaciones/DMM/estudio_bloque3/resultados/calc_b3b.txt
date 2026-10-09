@@ -1,0 +1,42 @@
+## Cuentas de pantalla que cubrirían la INL (la especificación D5 da 40 garantizada y 10 calibrada; 20 MΩ igual)
+
+Da: 4.9 kΩ, 0.5 mA (200 Ω ×10.1, 2 kΩ ×1)
+  200 Ω: garantizada 74 (D5: 40), calibrada 17 (D5: 10)
+  2 kΩ: garantizada 75 (D5: 40), calibrada 17 (D5: 10)
+  20 kΩ: garantizada 36 (D5: 40), calibrada 7 (D5: 10)
+
+Db: ≤1.5 kΩ, 1 mA (200 Ω ×10.1, 2 kΩ ×1)
+  200 Ω: garantizada 36 (D5: 40), calibrada 7 (D5: 10)
+  2 kΩ: garantizada 36 (D5: 40), calibrada 7 (D5: 10)
+  20 kΩ: garantizada 36 (D5: 40), calibrada 7 (D5: 10)
+
+Dc: 2.2 kΩ+R_S→0 (2.2 kΩ), 0.8 mA
+  200 Ω: garantizada 46 (D5: 40), calibrada 10 (D5: 10)
+  2 kΩ: garantizada 46 (D5: 40), calibrada 10 (D5: 10)
+  20 kΩ: garantizada 36 (D5: 40), calibrada 7 (D5: 10)
+
+## Deriva de la corriente tras calibrar (23 ± 5 °C), ppm
+R_k 125, R2/R1 177 (rss) / 250 (lineal), Vos de B 20, Vos de A 4, NPN de la etapa 1 (β=150, +0.6 %/°C) 199
+total rss con NPN 295 ppm; con MOSFET en la etapa 1 217 ppm; peor caso lineal sin NPN 399 ppm
+PNP de paso (β=150): corriente perdida 6623 ppm, deriva 199 ppm; a 0.2 µA la β baja (MMBT3906 hFE ≥ 60 a 10 µA)
+ganancia de ohmios con MOSFET: rss(corriente 217, driver 250, patrón 500) = 600 ppm (H: 630)
+
+## Fuga tolerable en el nodo de la corriente (fuente → borne): deriva ×(√2−1)=0.41 de la fuga a 23 °C ≤ 25 % de la tolerancia que sobra tras la ganancia
+  200 Ω (I 1e+03 µA): ΔI ≤ 350 nA → fuga a 23 °C ≤ 846 nA
+  2 kΩ (I 1e+03 µA): ΔI ≤ 350 nA → fuga a 23 °C ≤ 846 nA
+  20 kΩ (I 100 µA): ΔI ≤ 35 nA → fuga a 23 °C ≤ 84.6 nA
+  200 kΩ (I 10 µA): ΔI ≤ 3.5 nA → fuga a 23 °C ≤ 8.46 nA
+  2 MΩ (I 1 µA): ΔI ≤ 0.35 nA → fuga a 23 °C ≤ 0.846 nA
+  20 MΩ (I 0.2 µA): ΔI ≤ 0.47 nA → fuga a 23 °C ≤ 1.14 nA
+
+## Diodo: tensión disponible a 100 µA y a la corriente de silicio, rail -2 %
+  R_serie 4.9 kΩ, 100 µA: 3.53 V
+  R_serie 4.9 kΩ, 500 µA: 1.45 V
+  R_serie 4.9 kΩ, 1000 µA: -1.11 V
+  R_serie 1.5 kΩ, 100 µA: 3.87 V
+  R_serie 1.5 kΩ, 500 µA: 3.16 V
+  R_serie 1.5 kΩ, 1000 µA: 2.33 V
+
+## Continuidad: umbral 50 Ω; PB14 = A_out/2; comparador COMP7 y DAC2 (hoja DS12712 Rev 5, Tabla 74 y 72)
+  I 0.5 mA: V_x(50 Ω) = 25.0 mV; A_out = 252 mV; PB14 = 126 mV; DAC2 ≈ código 207; incertidumbre sin calibrar ±12 mV en PB14 = ±4.8 Ω (10 % del umbral); histéresis HYST=1 típ. 9 mV = 3.6 Ω
+  I 1 mA: V_x(50 Ω) = 50.0 mV; A_out = 505 mV; PB14 = 252 mV; DAC2 ≈ código 414; incertidumbre sin calibrar ±12 mV en PB14 = ±2.4 Ω (5 % del umbral); histéresis HYST=1 típ. 9 mV = 1.8 Ω

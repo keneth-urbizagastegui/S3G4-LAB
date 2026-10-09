@@ -1,0 +1,39 @@
+* Estudio bloque 3 - fuente de corriente P43 (MOS)
+.include "C:\Users\Keneth\Desktop\S3G4 LAB\Simulation_LTSpice\models\TLV2372\TLV2372.LIB"
+.model NPNREF NPN(IS=1e-14 BF=200 VAF=100 CJE=8p CJC=4p TF=0.4n)
+.model PNPPAS PNP(IS=1e-14 BF=150 VAF=100 CJE=8p CJC=4p TF=0.4n)
+.model BSS84 VDMOS(pchan Rg=3 Vto=-2.0 Rd=2.4 Rs=1.8 Rb=3 Kp=.2 Cgdmax=.04n Cgdmin=.001n Cgs=.02n Cjo=.01n Is=2p ksubthres=.1)
+.model BAT54 D(Is=.1u Rs=2.2 N=1 Cjo=12p M=.3 Eg=.69 Xti=2)
+Vp vp 0 4.8
+Vn vn 0 -4.8
+Vref ref 0 2.5
+* etapa 1: V_set = VREF*R2/R1 bajo el riel
+XU1 ref e1 vp vn o1 TLV2372
+Rb1 o1 b1 10k
+Q1 cn b1 e1 NPNREF
+R1 e1 0 24.9k
+R2 vp cn 4.99k
+* etapa 2: amplificador B + elemento de paso. R_k entre riel y S; 4051 de fuerza (Ron 110, Cz 25p) entre S y F; sentido por 4051 (Ron 110, Cz 25p + Cin 8p)
+Rk vp s 2499000.0
+Rf s f 110
+Cz f 0 25p
+Cy s 0 5p
+Rsn s sno 1000.0
+Vsn sno sni 0
+Cs sni 0 33p
+Ct sni 0 0
+XU2 cn sni vp vn ogi TLV2372
+Vinj ogi og 0 AC 1
+Cc og sni 1n
+Rg og gate 1k
+M1 d gate f f BSS84
+* cadena de bloque 1: BAT54, R_S, TVS (200 pF) en N1, R1, borne con 25 pF, Rx y divisor
+Dblk d n2 BAT54
+Rs n2 n1 500
+Ctvs n1 0 200p
+R1c n1 bor 1000
+Cbor bor 0 25p
+Rx bor 0 20000000.0
+Rdiv bor 0 10.01Meg
+.ac dec 60 10 200Meg
+.end

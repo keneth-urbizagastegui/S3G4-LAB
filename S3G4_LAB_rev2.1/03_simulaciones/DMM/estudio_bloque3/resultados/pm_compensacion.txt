@@ -1,0 +1,40 @@
+A sin comp 1mA -2.0 fc=1.56e+06 PM=47
+A sin comp 1mA -0.8 fc=1.68e+06 PM=46
+A sin comp 100uA -2.0 fc=2.13e+06 PM=8
+A sin comp 100uA -0.8 fc=2.42e+06 PM=9
+A sin comp 10uA -2.0 fc=1.1e+06 PM=30
+A sin comp 10uA -0.8 fc=1.14e+06 PM=30
+A sin comp 0.2uA -2.0 fc=8.78e+05 PM=75
+A sin comp 0.2uA -0.8 fc=8.64e+05 PM=76
+B 10k+330p 1mA -2.0 fc=2.27e+06 PM=87
+B 10k+330p 1mA -0.8 fc=2.27e+06 PM=84
+B 10k+330p 100uA -2.0 fc=2.26e+06 PM=76
+B 10k+330p 100uA -0.8 fc=2.35e+06 PM=72
+B 10k+330p 10uA -2.0 fc=2.33e+06 PM=77
+B 10k+330p 10uA -0.8 fc=2.35e+06 PM=75
+B 10k+330p 0.2uA -2.0 fc=2.37e+06 PM=74
+B 10k+330p 0.2uA -0.8 fc=2.38e+06 PM=74
+C 10k+100p 1mA -2.0 fc=1.96e+06 PM=89
+C 10k+100p 1mA -0.8 fc=1.96e+06 PM=87
+C 10k+100p 100uA -2.0 fc=1.95e+06 PM=78
+C 10k+100p 100uA -0.8 fc=2.04e+06 PM=74
+C 10k+100p 10uA -2.0 fc=2.02e+06 PM=80
+C 10k+100p 10uA -0.8 fc=2.03e+06 PM=78
+C 10k+100p 0.2uA -2.0 fc=2.07e+06 PM=77
+C 10k+100p 0.2uA -0.8 fc=2.08e+06 PM=77
+D 1k+1n 1mA -2.0 fc=2.28e+06 PM=98
+D 1k+1n 1mA -0.8 fc=2.26e+06 PM=95
+D 1k+1n 100uA -2.0 fc=2.25e+06 PM=80
+D 1k+1n 100uA -0.8 fc=2.33e+06 PM=74
+D 1k+1n 10uA -2.0 fc=2.31e+06 PM=78
+D 1k+1n 10uA -0.8 fc=2.33e+06 PM=76
+D 1k+1n 0.2uA -2.0 fc=2.34e+06 PM=75
+D 1k+1n 0.2uA -0.8 fc=2.35e+06 PM=74
+E 10k+1n 1mA -2.0 fc=2.37e+06 PM=85
+E 10k+1n 1mA -0.8 fc=2.37e+06 PM=83
+E 10k+1n 100uA -2.0 fc=2.37e+06 PM=76
+E 10k+1n 100uA -0.8 fc=2.45e+06 PM=71
+E 10k+1n 10uA -2.0 fc=2.44e+06 PM=76
+E 10k+1n 10uA -0.8 fc=2.45e+06 PM=74
+E 10k+1n 0.2uA -2.0 fc=2.47e+06 PM=73
+E 10k+1n 0.2uA -0.8 fc=2.49e+06 PM=72

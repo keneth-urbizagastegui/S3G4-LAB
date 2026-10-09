@@ -1,0 +1,4 @@
+b (1.5 kΩ) 1 mA: I_ref 997.1 µA; 99 % hasta Rx = 2506 Ω, V_bor = 2.473 V
+b (1.5 kΩ) 100 µA: I_ref 99.71 µA; 99 % hasta Rx = 4.038e+04 Ω, V_bor = 3.969 V
+a (4.9 kΩ) 0.5 mA: I_ref 497.5 µA; 99 % hasta Rx = 3282 Ω, V_bor = 1.616 V
+a (4.9 kΩ) 100 µA: I_ref 99.71 µA; 99 % hasta Rx = 3.695e+04 Ω, V_bor = 3.634 V

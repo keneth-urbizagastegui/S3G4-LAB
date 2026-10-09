@@ -1,0 +1,6 @@
+| Opción | R_serie | I (200 Ω y 2 kΩ) | V_x a fondo 2 kΩ / V_ADC (ventana) | V_disponible | margen | LED 100 µA: V_disp | silicio: I y V_disp | cuentas/Ω en 200 Ω | dígitos necesarios (garantizada / calibrada) | error/tolerancia (garantizada / calibrada), 2 kΩ |
+|---|---|---|---|---|---|---|---|---|---|---|
+| a · 4.9 kΩ | 4.9 kΩ | 0.501 mA | 1.00 V / 50 % | 1.44 V | +0.44 V | 3.53 V | 0.50 mA, 1.44 V | 51 | 75 / 17 | 182 % / 157 % |
+| c2 · 2.2 kΩ (inyectar en N1) | 2.2 kΩ | 0.790 mA | 1.58 V / 79 % | 2.12 V | +0.54 V | 3.80 V | 0.79 mA, 2.12 V | 80 | 47 / 10 | 115 % / 99 % |
+| c1 · 1.53 kΩ (R1 = 3 × 510 Ω) | 1.5 kΩ | 1.004 mA | 2.01 V / 100 % | 2.29 V | +0.28 V | 3.87 V | 1.00 mA, 2.29 V | 101 | 36 / 7 | 91 % / 78 % |
+| b · 1.5 kΩ (R1 = 3 × 330 Ω + R_S 510 Ω) | 1.5 kΩ | 1.004 mA | 2.01 V / 100 % | 2.32 V | +0.31 V | 3.87 V | 1.00 mA, 2.32 V | 101 | 36 / 7 | 91 % / 78 % |

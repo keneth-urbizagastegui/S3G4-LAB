@@ -1,0 +1,5 @@
+1mA: PM mínimo 92° en Vth=-0.8, Ron=60, C×1.5, riel 5.0 V (fc 2.11 MHz)
+100uA: PM mínimo 74° en Vth=-0.8, Ron=60, C×1.5, riel 5.0 V (fc 2.16 MHz)
+10uA: PM mínimo 74° en Vth=-0.8, Ron=60, C×0.6, riel 5.0 V (fc 2.55 MHz)
+1uA: PM mínimo 73° en Vth=-0.8, Ron=60, C×0.6, riel 5.0 V (fc 2.57 MHz)
+0.2uA: PM mínimo 72° en Vth=-0.8, Ron=60, C×0.6, riel 5.0 V (fc 2.58 MHz)
